@@ -1,176 +1,167 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation"; // Path check karne ke liye hook
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
-const Navbar = ({ theme = 'dark' }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+const navLinks = [
+  { name: "About Us", href: "/about" },
+  { name: "Services", href: "/services" },
+  { name: "Work", href: "/case-studies" },
+  { name: "Pricing", href: "/pricing" },
+  { name: "Blog", href: "/blog" },
+  { name: "Career", href: "/careers" },
+];
+
+export default function Navbar() {
   const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const isDark = theme === 'dark';
-
-  // Naye Pages Yahan Add Kiye Gaye Hain 👇
-  const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Services', href: '/services' },
-    { name: 'Case Studies', href: '/case-studies' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'About Us', href: '/about' },
-    { name: 'Careers', href: '/careers' },
-    { name: 'Blog', href: '/blog' },
-  ];
+  // 1. Agar path Sanity Studio ka hai, toh Navbar hide kar do
+  if (pathname.startsWith("/studio")) {
+    return null;
+  }
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navBaseClass = "fixed top-0 w-full z-50 transition-all duration-500 ease-in-out border-b";
-  
-  const darkScrolledClass = "bg-[#030712]/85 backdrop-blur-xl border-white/5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] py-2 md:py-3";
-  const darkTopClass = "bg-transparent border-transparent py-4 md:py-5";
-  
-  const lightScrolledClass = "bg-white/90 backdrop-blur-xl border-gray-200 shadow-sm py-2 md:py-3";
-  const lightTopClass = "bg-white border-gray-100 py-4 md:py-5";
-
-  const currentNavClass = `${navBaseClass} ${
-    isDark 
-      ? (isScrolled ? darkScrolledClass : darkTopClass)
-      : (isScrolled ? lightScrolledClass : lightTopClass)
-  }`;
+  const customEase = [0.16, 1, 0.3, 1];
 
   return (
-    <nav className={currentNavClass}>
-      {isDark && (
-        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#3AE272]/20 to-transparent opacity-50"></div>
-      )}
-
-      <div className="max-w-[1400px] mx-auto px-6 lg:px-8">
-        <div className="flex justify-between items-center transition-all duration-500">
+    <>
+      <motion.nav
+        initial={{ y: -100, backgroundColor: "rgba(249, 250, 251, 0)" }}
+        animate={{ 
+          y: 0, 
+          backgroundColor: isScrolled ? "rgba(255, 255, 255, 0.85)" : "rgba(255, 255, 255, 0)" 
+        }}
+        transition={{ duration: 0.8, ease: customEase }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          isScrolled ? "backdrop-blur-xl border-b border-gray-200" : "border-b border-transparent"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
           
-          {/* Left: Logo Section */}
-          <Link href="/" className="flex-1 flex justify-start items-center group cursor-pointer gap-3">
-            <img 
-              className={`h-8 sm:h-10 w-auto object-contain transition-transform duration-500 group-hover:scale-105 ${!isDark ? 'brightness-0' : ''}`} 
-              src="/logo.png" 
-              alt="Logo"
-              onError={(e) => e.target.style.display = 'none'}
-            />
-            <span className={`font-extrabold text-lg md:text-xl tracking-tight transition-colors duration-300 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              GET INTO FEED
+          {/* Brand Logo */}
+          <Link href="/" className="relative z-50 group">
+            <span className="text-xl md:text-2xl font-black tracking-tighter text-slate-900 uppercase flex items-center gap-1">
+              Get Into Feed
+              <span className="w-2 h-2 rounded-full bg-[#C9A227] group-hover:scale-150 transition-transform duration-500 ease-out"></span>
             </span>
           </Link>
 
-          {/* Center: Desktop Menu */}
-          <div className="hidden lg:flex flex-none justify-center">
-            <div className={`relative flex items-center rounded-full p-1.5 transition-all duration-500 ${
-              isDark 
-                ? 'bg-[#0f172a]/80 backdrop-blur-md border border-white/5 shadow-[inset_0_0_20px_rgba(0,0,0,0.5)]' 
-                : 'bg-gray-100/80 backdrop-blur-md border border-gray-200/50'
-            }`}>
-              {navLinks.map((link) => {
-                const isActive = pathname === link.href; 
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className={`relative px-3 xl:px-5 py-2.5 rounded-full text-[12px] xl:text-[13px] font-semibold tracking-wide transition-all duration-300 ease-out overflow-hidden z-10 ${
-                      isActive
-                        ? (isDark ? 'text-white' : 'text-slate-900')
-                        : (isDark ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-900 hover:bg-black/5')
-                    }`}
-                  >
-                    {isActive && (
-                      <span className={`absolute inset-0 rounded-full -z-10 transition-all duration-500 ${
-                        isDark 
-                          ? 'bg-gradient-to-r from-[#3AE272]/0 via-[#3AE272]/15 to-[#3AE272]/0 border border-[#3AE272]/30 shadow-[inset_0_0_15px_rgba(58,226,114,0.2)]' 
-                          : 'bg-white shadow-sm border border-gray-200/50'
-                      }`}></span>
-                    )}
-                    <span className="relative z-10">{link.name}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Right: CTA Button & Mobile Toggle */}
-          <div className="flex-1 flex justify-end items-center gap-4">
-            <Link href="/contact" className={`hidden md:block relative group font-bold px-8 py-3 rounded-full transition-all duration-300 overflow-hidden ${
-              isDark 
-                ? 'bg-[#3AE272] text-[#022c22] hover:bg-[#4df287] shadow-[0_0_20px_rgba(58,226,114,0.2)] hover:shadow-[0_0_30px_rgba(58,226,114,0.4)]' 
-                : 'bg-slate-900 text-white hover:bg-slate-800 shadow-md hover:shadow-lg hover:-translate-y-0.5'
-            }`}>
-              {isDark && <span className="absolute inset-0 w-full h-full bg-white/30 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] skew-x-12"></span>}
-              <span className="relative z-10">Contact Us</span>
-            </Link>
-
-            <div className="lg:hidden flex items-center">
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className={`p-2 rounded-full transition-all duration-300 ${
-                  isDark 
-                    ? 'bg-white/5 border border-white/10 text-white hover:bg-white/10 hover:text-[#3AE272]' 
-                    : 'bg-gray-100 border border-gray-200 text-slate-800 hover:bg-gray-200'
-                }`}
-              >
-                {isOpen ? <X size={20} /> : <Menu size={20} />}
-              </button>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      {/* --- Mobile Menu Dropdown --- */}
-      <div 
-        className={`lg:hidden absolute top-full left-0 w-full overflow-hidden transition-all duration-500 ease-in-out origin-top ${
-          isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 pointer-events-none'
-        }`}
-      >
-        <div className={`px-6 pt-4 pb-8 space-y-2 border-b shadow-2xl ${
-          isDark 
-            ? 'bg-[#0b1015]/95 backdrop-blur-2xl border-white/10' 
-            : 'bg-white/95 backdrop-blur-2xl border-gray-200'
-        }`}>
-          {navLinks.map((link) => {
-            const isActive = pathname === link.href;
-            return (
+          {/* Desktop Links */}
+          <div className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link, index) => (
               <Link
-                key={link.name}
+                key={index}
                 href={link.href}
-                onClick={() => setIsOpen(false)}
-                className={`block w-full text-left px-5 py-3.5 rounded-xl text-base font-bold transition-all duration-300 relative overflow-hidden ${
-                  isActive
-                    ? (isDark ? 'text-[#3AE272] bg-[#3AE272]/10' : 'text-slate-900 bg-gray-100')
-                    : (isDark ? 'text-slate-400 hover:text-white hover:bg-white/5' : 'text-slate-500 hover:text-slate-900 hover:bg-gray-50')
-                }`}
+                className="group relative font-mono text-[10px] xl:text-[11px] font-bold text-gray-500 hover:text-slate-900 uppercase tracking-[0.2em] transition-colors duration-300"
               >
-                {isActive && isDark && (
-                  <span className="absolute left-0 top-0 bottom-0 w-1 bg-[#3AE272]"></span>
-                )}
                 {link.name}
+                <span className="absolute -bottom-2 left-0 w-0 h-[1.5px] bg-[#C9A227] transition-all duration-500 ease-[0.16,1,0.3,1] group-hover:w-full"></span>
               </Link>
-            );
-          })}
-          
-          <Link href="/contact" onClick={() => setIsOpen(false)} className={`mt-6 block w-full text-center font-bold px-6 py-4 rounded-xl transition-all ${
-            isDark 
-              ? 'bg-[#3AE272] text-[#022c22] shadow-[0_0_15px_rgba(58,226,114,0.2)]' 
-              : 'bg-slate-900 text-white shadow-md'
-          }`}>
-            Contact Us
-          </Link>
-        </div>
-      </div>
-    </nav>
-  );
-};
+            ))}
+            
+            <Link href="/contact" passHref>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="ml-6 px-7 py-3 bg-slate-900 text-white font-mono text-[10px] font-bold uppercase tracking-[0.2em] rounded-full hover:bg-[#C9A227] transition-colors duration-300"
+              >
+                Let's Talk
+              </motion.button>
+            </Link>
+          </div>
 
-export default Navbar;
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className={`lg:hidden relative z-50 p-2 transition-colors duration-300 ${
+              isMobileMenuOpen ? "text-white" : "text-slate-900"
+            }`}
+          >
+            {isMobileMenuOpen ? <X size={28} strokeWidth={1.5} /> : <Menu size={28} strokeWidth={1.5} />}
+          </button>
+        </div>
+      </motion.nav>
+
+      {/* Fullscreen Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: "-100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "-100%" }}
+            transition={{ duration: 0.7, ease: customEase }}
+            className="fixed inset-0 z-40 bg-slate-900 flex flex-col items-center justify-center px-6"
+          >
+            <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#C9A227] rounded-full mix-blend-screen filter blur-[120px] opacity-20 pointer-events-none"></div>
+
+            <div className="flex flex-col items-center gap-6 text-center mt-12 w-full max-w-md relative z-10">
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6, ease: customEase }}
+              >
+                <Link
+                  href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter hover:text-[#C9A227] transition-colors duration-300 leading-[1.1]"
+                >
+                  Home
+                </Link>
+              </motion.div>
+
+              {navLinks.map((link, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + (i + 1) * 0.05, duration: 0.6, ease: customEase }}
+                >
+                  <Link
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter hover:text-[#C9A227] transition-colors duration-300 leading-[1.1]"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              ))}
+              
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.6, duration: 0.5, ease: customEase }}
+                className="mt-8 w-full"
+              >
+                <Link href="/lets-talk" passHref>
+                  <button
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="w-full px-8 py-5 bg-white text-slate-900 font-mono text-[11px] font-bold uppercase tracking-[0.2em] rounded-full hover:bg-[#C9A227] hover:text-white transition-all duration-300"
+                  >
+                    Let's Talk
+                  </button>
+                </Link>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
