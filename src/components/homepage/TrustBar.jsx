@@ -1,8 +1,11 @@
 "use client";
 
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, useAnimationFrame, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Infinity, Search, ShoppingBag, Mail, CreditCard, BarChart2 } from 'lucide-react';
+
+// 🟢 Import your custom smooth scroll hook!
+import { useSmoothScroll } from "../../hooks/useSmoothScroll";
 
 // --- Premium Partner Badge Component ---
 const PartnerBadge = ({ icon: Icon, name, highlight }) => (
@@ -22,7 +25,15 @@ const PartnerBadge = ({ icon: Icon, name, highlight }) => (
 );
 
 export default function TrustBar() {
-  // We duplicate the array to create a seamless, infinite loop
+  // 1. Extract raw velocity from our smooth scroll hook
+  const { velocity } = useSmoothScroll();
+  
+  // 2. Pass velocity through a spring so the speed changes smoothly
+  const smoothVelocity = useSpring(velocity, { damping: 50, stiffness: 400 });
+  
+  // Base X position tracker
+  const baseX = useMotionValue(0);
+
   const partners = [
     { icon: Infinity, name: "Meta", highlight: "Business Partner" },
     { icon: Search, name: "Google", highlight: "Premium Partner" },
@@ -31,6 +42,29 @@ export default function TrustBar() {
     { icon: BarChart2, name: "SEMrush", highlight: "Agency Partner" },
     { icon: CreditCard, name: "Stripe", highlight: "Verified" },
   ];
+
+  // 🟢 3. FIXED VELOCITY LOGIC
+  useAnimationFrame((time, delta) => {
+    // FIX: Changed base speed from 15 to 2.5 for a slow, premium crawl
+    let moveBy = -1 * (delta / 1000) * 2.5; 
+
+    // FIX: Reduced the scroll multiplier from 0.02 to 0.005 so it doesn't spin out of control on fast scrolls
+    moveBy += moveBy * smoothVelocity.get() * 0.005; 
+
+    let currentX = baseX.get() + moveBy;
+    
+    // Wrap Logic
+    if (currentX <= -25) {
+      currentX += 25;
+    } else if (currentX >= 0) {
+      currentX -= 25;
+    }
+
+    baseX.set(currentX);
+  });
+
+  // Convert the raw number into a percentage string for CSS transform
+  const x = useTransform(baseX, (v) => `${v}%`);
 
   return (
     <div className="pt-6 pb-10 bg-white border-b border-[#E5E7EB] overflow-hidden relative flex flex-col items-center z-10 shadow-[0_10px_40px_-20px_rgba(15,23,42,0.05)]">
@@ -47,33 +81,22 @@ export default function TrustBar() {
 
       {/* Marquee Container */}
       <div className="relative w-full flex items-center overflow-hidden">
-        {/* Crisp Edge Fades (Matches pure white background) */}
+        {/* Crisp Edge Fades */}
         <div className="absolute inset-y-0 left-0 w-32 md:w-64 bg-gradient-to-r from-white via-white/80 to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-y-0 right-0 w-32 md:w-64 bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none" />
         
-        {/* Sliding Track - Flawless Framer Motion Loop */}
+        {/* Sliding Track - Powered by Velocity */}
         <motion.div 
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{ 
-            repeat: Infinity, 
-            ease: "linear", 
-            duration: 35 // Increase or decrease for speed control
-          }}
+          style={{ x }}
           className="flex w-max items-center"
         >
-          {/* First Render */}
-          <div className="flex items-center">
-            {partners.map((partner, idx) => (
-              <PartnerBadge key={`first-${idx}`} {...partner} />
-            ))}
-          </div>
-          
-          {/* Second Render (Creates the infinite illusion) */}
-          <div className="flex items-center">
-            {partners.map((partner, idx) => (
-              <PartnerBadge key={`second-${idx}`} {...partner} />
-            ))}
-          </div>
+          {[1, 2, 3, 4].map((set) => (
+            <div key={set} className="flex items-center">
+              {partners.map((partner, idx) => (
+                <PartnerBadge key={`${set}-${idx}`} {...partner} />
+              ))}
+            </div>
+          ))}
         </motion.div>
       </div>
     </div>

@@ -1,8 +1,11 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, useTransform } from "framer-motion";
 import { LineChart, Flame, Users, LayoutTemplate } from "lucide-react";
+
+// 🟢 Import your custom smooth scroll hook!
+import { useSmoothScroll } from "../../hooks/useSmoothScroll";
 
 // --- Premium Animation Settings ---
 const premiumEase = [0.16, 1, 0.3, 1];
@@ -55,10 +58,24 @@ const painCards = [
 ];
 
 export default function PainSection() {
+  // 🟢 1. Initialize Smooth Scroll Hook
+  const { scrollY } = useSmoothScroll();
+
+  // 🟢 2. Dynamic Parallax Transforms
+  // Background gradient moves slightly DOWN as you scroll DOWN (creates depth)
+  const bgParallax = useTransform(scrollY, (y) => y * 0.15);
+  
+  // The cards grid moves slightly UP faster than the rest of the page
+  const cardsParallax = useTransform(scrollY, (y) => y * -0.05);
+
   return (
     <section className="relative py-12 md:py-20 bg-[#F8F9FB] overflow-hidden text-[#0F172A]">
-      {/* Subtle Teal Gradient Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#2ED1B2]/[0.08] via-[#F8F9FB]/0 to-transparent pointer-events-none" />
+      
+      {/* 🟢 Subtle Teal Gradient Glow with Parallax */}
+      <motion.div 
+        style={{ y: bgParallax }}
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#2ED1B2]/[0.08] via-[#F8F9FB]/0 to-transparent pointer-events-none" 
+      />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
         <motion.div
@@ -85,8 +102,11 @@ export default function PainSection() {
             </p>
           </motion.div>
 
-          {/* Pain Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full">
+          {/* 🟢 Pain Cards Grid with Parallax Float Effect */}
+          <motion.div 
+            style={{ y: cardsParallax }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 w-full"
+          >
             {painCards.map((card) => (
               <motion.div
                 key={card.id}
@@ -113,7 +133,7 @@ export default function PainSection() {
                 </p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Transition Line */}
           <motion.div 

@@ -2,9 +2,11 @@
 
 import React, { useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { TrendingUp, ArrowRight, Play, Search, Target, Zap, BarChart3 } from 'lucide-react';
-// Updated Imports: Removed itemFadeUp, added blurFadeUp
+import { TrendingUp, ArrowRight, Play, Search, Target, Zap, BarChart3, ShieldCheck } from 'lucide-react';
+
+// Import animations & Custom Scroll Hook
 import { staggerContainer, fadeUp, blurFadeUp, premiumEase } from '../../utils/animations';
+import { useSmoothScroll } from '../../hooks/useSmoothScroll';
 import VideoModal from './VideoModal';
 
 // --- Helper Component: 3D Tilt Card ---
@@ -53,30 +55,42 @@ const TiltCard = ({ children, className = "" }) => {
 export default function Hero() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
+  // 1. Initialize Smooth Scroll Hook
+  const { scrollY } = useSmoothScroll();
+
+  // 2. Create Parallax Transforms
+  const bgParallax = useTransform(scrollY, [0, 800], [0, 150]);
+  const textParallaxY = useTransform(scrollY, [0, 600], [0, -100]);
+  const textOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const visualsParallaxY = useTransform(scrollY, [0, 600], [0, -250]);
+
   return (
     <>
       <section className="relative w-full pt-32 pb-10 md:pt-40 md:pb-12 overflow-hidden bg-[#F8F9FB]">
+        
         {/* Premium Background Gradients & Depth */}
-        <div className="absolute top-[-10%] right-[-5%] w-[50vw] h-[50vw] rounded-full bg-[#2ED1B2]/10 blur-[120px] pointer-events-none -z-10" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-[#0EA5A4]/5 blur-[100px] pointer-events-none -z-10" />
+        <motion.div style={{ y: bgParallax }} className="absolute top-[-10%] right-[-5%] w-[50vw] h-[50vw] rounded-full bg-[#2ED1B2]/10 blur-[120px] pointer-events-none -z-10" />
+        <motion.div style={{ y: bgParallax }} className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-[#0EA5A4]/5 blur-[100px] pointer-events-none -z-10" />
 
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
           
-          {/* Left Column: Copywriting & CTAs */}
+          {/* ================= Left Column: Copywriting & CTAs ================= */}
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
             animate="visible"
-            className="flex flex-col gap-8 relative z-20"
+            style={{ y: textParallaxY, opacity: textOpacity }}
+            className="flex flex-col gap-6 md:gap-8 relative z-20"
           >
+            {/* Small Badge */}
             <motion.div variants={fadeUp}>
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#E5E7EB] text-[#0F172A] text-xs font-semibold w-max shadow-[0_8px_30px_rgb(0,0,0,0.04)] uppercase tracking-widest">
                 <Zap className="w-4 h-4 text-[#2ED1B2] fill-[#2ED1B2]/20" /> 
-                Get Into Feed — Elite Growth
+                Get Into Feed — Growth System
               </div>
             </motion.div>
             
-            {/* Typography: Used blurFadeUp for an ultra-premium load effect */}
+            {/* Headline */}
             <motion.h1
               variants={blurFadeUp}
               className="text-4xl md:text-5xl lg:text-[4rem] xl:text-[4.2rem] font-bold leading-[1.05] tracking-tight text-[#0F172A]"
@@ -87,49 +101,55 @@ export default function Hero() {
               </span>
             </motion.h1>
             
-            {/* Swapped itemFadeUp with fadeUp */}
+            {/* Subheadline (High Conversion Focus) */}
             <motion.p variants={fadeUp} className="text-[#475569] text-lg md:text-xl max-w-lg leading-relaxed font-medium">
-              We engineer scalable marketing systems that drive high-intent lead generation and exponential sales growth. Stop competing—start dominating.
+              We build high-performing marketing systems that generate leads, scale revenue, and turn attention into customers.
             </motion.p>
 
-            {/* Swapped itemFadeUp with fadeUp */}
-            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-4">
-              {/* Primary CTA */}
+            {/* CTAs */}
+            <motion.div variants={fadeUp} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-2">
               <motion.button 
                 whileHover={{ y: -4, scale: 1.02 }} 
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.3, ease: premiumEase }}
-                className="px-8 py-4 rounded-full bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4] text-white font-bold uppercase tracking-widest shadow-[0_15px_40px_-10px_rgba(46,209,178,0.4)] flex items-center gap-2 group text-sm relative overflow-hidden"
+                className="px-8 py-4 rounded-full bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4] text-white font-bold uppercase tracking-widest shadow-[0_15px_40px_-10px_rgba(46,209,178,0.4)] flex items-center gap-2 group text-sm relative overflow-hidden w-full sm:w-auto justify-center"
               >
                 <span className="relative z-10 flex items-center gap-2">
-                  Book Free Strategy Call
+                  Book Your Free Growth Call
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </span>
-                {/* Subtle sheen effect on hover */}
                 <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
               </motion.button>
               
-              {/* Secondary CTA */}
               <motion.button 
                 whileHover={{ y: -4, scale: 1.02 }} 
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.3, ease: premiumEase }}
                 onClick={() => setIsVideoOpen(true)} 
-                className="px-8 py-4 rounded-full bg-white border border-[#E5E7EB] text-[#0F172A] font-bold uppercase tracking-widest hover:border-[#2ED1B2]/30 hover:bg-[#F8F9FB] transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-3 group text-sm"
+                className="px-8 py-4 rounded-full bg-white border border-[#E5E7EB] text-[#0F172A] font-bold uppercase tracking-widest hover:border-[#2ED1B2]/30 hover:bg-[#F8F9FB] transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-3 group text-sm w-full sm:w-auto justify-center"
               >
                 <div className="w-8 h-8 rounded-full bg-[#F8F9FB] flex items-center justify-center group-hover:bg-[#2ED1B2]/10 transition-colors">
                   <Play className="w-3.5 h-3.5 text-[#0F172A] ml-0.5" /> 
                 </div>
-                See How We Grow Brands
+                Watch How It Works
               </motion.button>
             </motion.div>
+
+            {/* Micro Trust Line */}
+            <motion.div variants={fadeUp} className="flex items-center gap-2 mt-2 text-sm font-semibold text-slate-500">
+              <ShieldCheck className="w-4 h-4 text-[#2ED1B2]" />
+              <p>Helping brands generate consistent leads & revenue</p>
+            </motion.div>
+
           </motion.div>
 
-          {/* Right Column: Premium Interactive Visuals */}
+          {/* ================= Right Column: Premium Interactive Visuals ================= */}
           <motion.div 
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, delay: 0.4, ease: premiumEase }}
+            style={{ y: visualsParallaxY }}
+            // Hidden on mobile to keep CTA above the fold & simplify experience
             className="relative h-[550px] w-full hidden lg:block perspective-[1200px]"
           >
             {/* Ambient Rings */}
@@ -190,7 +210,7 @@ export default function Hero() {
                </div>
             </TiltCard>
 
-            {/* Central Core Element: z-40 so it stays above the other cards */}
+            {/* Central Core Element */}
             <motion.div 
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}

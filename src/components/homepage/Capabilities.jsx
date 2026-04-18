@@ -5,6 +5,9 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
+// 🟢 Import your custom smooth scroll hook!
+import { useSmoothScroll } from "../../hooks/useSmoothScroll";
+
 // ----------------------------------------------------------------------
 // Premium Spring Configurations
 // ----------------------------------------------------------------------
@@ -25,7 +28,11 @@ const wordVariants = {
 export default function Capabilities({ services }) {
   const containerRef = useRef(null);
 
-  // Scroll Progress Tracker for the sticky line
+  // 🟢 1. Global Smooth Scroll for Parallax
+  const { scrollY } = useSmoothScroll();
+  const headerParallax = useTransform(scrollY, [0, 3000], [0, -150]);
+
+  // Scroll Progress Tracker for the sticky line (Kept native for accurate DOM mapping)
   const { scrollYProgress: sectionScrollY } = useScroll({
     target: containerRef,
     offset: ["start center", "end center"],
@@ -38,7 +45,6 @@ export default function Capabilities({ services }) {
   const headingText = "Turning Attention Into".split(" ");
 
   return (
-    // FIX 1: Reduced bottom padding (changed py-32 to pt-32 pb-16)
     <section ref={containerRef} className="relative pt-24 md:pt-32 pb-12 md:pb-16 bg-white selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start relative">
@@ -51,8 +57,11 @@ export default function Capabilities({ services }) {
             />
           </div>
 
-          {/* LEFT COLUMN: Sticky Header */}
-          <div className="lg:col-span-5 lg:sticky lg:top-40 lg:h-fit self-start lg:pl-10 flex flex-col items-start justify-start text-left z-20">
+          {/* LEFT COLUMN: Sticky Header + 🟢 Parallax */}
+          <motion.div 
+            style={{ y: headerParallax }}
+            className="lg:col-span-5 lg:sticky lg:top-40 lg:h-fit self-start lg:pl-10 flex flex-col items-start justify-start text-left z-20"
+          >
             <motion.div
               initial="hidden"
               whileInView="visible"
@@ -94,10 +103,9 @@ export default function Capabilities({ services }) {
                 </p>
               </motion.div>
             </motion.div>
-          </div>
+          </motion.div>
 
           {/* RIGHT COLUMN: Floating Dynamic Services List */}
-          {/* FIX 2: Reduced pb-32 to pb-8 to prevent internal gap */}
           <div className="lg:col-span-7 relative z-10 flex flex-col gap-10 mt-16 lg:mt-0 pt-4 lg:pt-0 pb-8">
             {services.map((service, index) => (
               <FloatingServiceRow key={service._id || index} service={service} index={index} />
@@ -110,15 +118,22 @@ export default function Capabilities({ services }) {
 }
 
 // ----------------------------------------------------------------------
-// Advanced Card Component
+// Advanced Card Component with 🟢 Velocity Physics
 // ----------------------------------------------------------------------
 function FloatingServiceRow({ service, index }) {
   const cardRef = useRef(null);
 
+  // 1. Dynamic Stacking Physics (Native Scroll for perfect responsive offsets)
   const { scrollYProgress } = useScroll({
     target: cardRef,
     offset: ["0 1.15", "1 1"],
   });
+
+  // 2. 🟢 Velocity Skew Physics (Custom Smooth Scroll Hook)
+  const { velocity } = useSmoothScroll();
+  const smoothVelocity = useSpring(velocity, { damping: 40, stiffness: 400 });
+  // Converts scroll speed into a subtle angle (-2deg to 2deg)
+  const skewY = useTransform(smoothVelocity, [-1000, 1000], [2, -2]);
 
   const rawY = useTransform(scrollYProgress, [0, 1], [80, 0]);
   const rawOpacity = useTransform(scrollYProgress, [0, 1], [0, 1]);
@@ -140,7 +155,8 @@ function FloatingServiceRow({ service, index }) {
   return (
     <motion.div
       ref={cardRef}
-      style={{ y, opacity, scale, rotateX, transformOrigin: "bottom center" }}
+      // 🟢 Applied the new skewY here along with your stacking physics
+      style={{ y, opacity, scale, rotateX, skewY, transformOrigin: "bottom center" }}
       className="w-full perspective-[1200px]"
     >
       <Link 
