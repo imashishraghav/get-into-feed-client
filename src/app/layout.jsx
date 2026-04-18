@@ -1,3 +1,4 @@
+import { Suspense } from 'react'; // 🟢 YEH IMPORT ADD KIYA HAI
 import './globals.css'; 
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -7,10 +8,10 @@ import ScrollToTop from '../components/ScrollToTop';
 
 export const metadata = {
   title: {
-    default: 'Get Into Feed',
+    default: 'Dominate the Feed | Get Into Feed',
     template: '%s | Get Into Feed'
   },
-  description: 'Premium Growth Engine for global brands',
+  description: 'We engineer scalable marketing systems that drive high-intent lead generation and exponential sales growth. Stop competing—start dominating.',
 };
 
 export default function RootLayout({ children }) {
@@ -18,34 +19,35 @@ export default function RootLayout({ children }) {
     <html 
       lang="en" 
       dir="ltr"
-      className="dark"
-      suppressHydrationWarning
+      suppressHydrationWarning 
     >
-      {/* 👇 🟢 YAHAN DHYAN DIJIYE: suppressHydrationWarning add kiya hai 👇 */}
       <body 
         suppressHydrationWarning 
-        className="bg-[#020408] text-slate-300 antialiased font-sans overflow-x-hidden"
+        className="bg-[#F8F9FB] text-[#0F172A] antialiased font-sans overflow-x-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]"
       >
-
-        {/* 🧠 Global UX Layer */}
-        <CookieBanner />
-        <ScrollToTop />
-
-        {/* 🚀 Smooth Scroll Wrapper (GLOBAL) */}
-        <SmoothScroll>
+        {/* 🟢 SUSPENSE WRAPPER ADD KIYA HAI */}
+        <Suspense fallback={<div className="min-h-screen bg-[#F8F9FB]"></div>}>
           
-          {/* 🌍 Layout */}
-          <Navbar />
-          
-          <main className="relative z-10 min-h-screen will-change-transform">
-            {children}
-          </main>
-          
-          <Footer />
+          {/* 🧠 Global UX Layer */}
+          <CookieBanner />
+          <ScrollToTop />
 
-        </SmoothScroll>
+          {/* 🚀 Smooth Scroll Wrapper (GLOBAL) */}
+          <SmoothScroll>
+            
+            {/* 🌍 Layout */}
+            <Navbar />
+            
+            <main className="relative z-10 min-h-screen will-change-transform">
+              {children}
+            </main>
+            
+            <Footer />
 
+          </SmoothScroll>
+
+        </Suspense>
       </body>
     </html>
   );
-} 
+}
