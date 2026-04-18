@@ -3,7 +3,6 @@ import { createClient } from "next-sanity";
 import { PortableText } from '@portabletext/react';
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight, LayoutGrid, Calendar, Target } from "lucide-react";
-import CustomCursor from '@/components/CustomCursor';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
