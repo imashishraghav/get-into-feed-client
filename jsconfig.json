@@ -1,7 +1,51 @@
 {
   "compilerOptions": {
+    // ==========================================================================
+    // 1. ADVANCED PATH ALIASES (Clean Architecture)
+    // ==========================================================================
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+      "@/*": ["./src/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/sanity/*": ["./src/sanity/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/styles/*": ["./src/styles/*"]
+    },
+
+    // ==========================================================================
+    // 2. IDE & INTELLISENSE SUPERCHARGER
+    // ==========================================================================
+    "checkJs": true,           // 🟢 PRO FEATURE: Automatically type-checks JS files for bugs
+    "jsx": "preserve",         // Lets Next.js handle JSX compilation optimally
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false,           // Set to true if you want TypeScript-level strictness in JS
+    "forceConsistentCasingInFileNames": true, // Prevents Windows/Mac case-sensitivity bugs
+    
+    // ==========================================================================
+    // 3. NEXT.JS OPTIMIZED MODULE RESOLUTION
+    // ==========================================================================
+    "noEmit": true,            // Next.js handles the build, so we tell the editor not to emit files
+    "esModuleInterop": true,   // Allows importing CommonJS modules cleanly
+    "module": "esnext",
+    "moduleResolution": "bundler", // Modern resolution specifically for Next.js App Router/Webpack/Turbopack
+    "resolveJsonModule": true, // Allows importing .json files directly
+    "isolatedModules": true,
+    "incremental": true        // Speeds up subsequent builds and linting significantly
+  },
+  
+  // ==========================================================================
+  // 4. NEXT.JS APP ROUTER TYPE SUPPORT
+  // ==========================================================================
+  "include": [
+    "next-env.d.ts",
+    "**/*.js",
+    "**/*.jsx",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"      // 🟢 CRITICAL: Gives you autocomplete for Next.js Server Components
+  ],
+  "exclude": ["node_modules", ".next", "out", "build"]
 }

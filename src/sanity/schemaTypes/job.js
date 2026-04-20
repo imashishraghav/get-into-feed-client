@@ -1,26 +1,28 @@
 import { defineType, defineField, defineArrayMember } from 'sanity'
-import { CaseIcon, ListIcon, CheckmarkCircleIcon, EarthAmericasIcon } from '@sanity/icons'
+import { 
+  CaseIcon, 
+  ListIcon, 
+  CheckmarkCircleIcon, 
+  EarthAmericasIcon, 
+  CogIcon 
+} from '@sanity/icons'
 
 export default defineType({
   name: 'job',
   title: 'Job Postings',
   type: 'document',
-  icon: CaseIcon, // Yahan bhi update kar dein agar pehle BriefcaseIcon tha
-  // ... baaki code
+  icon: CaseIcon, 
   
   // 🟢 1. Clean UI Tabs for HR / Admin
   groups: [
     { name: 'core', title: 'Job Overview', default: true },
-    { name: 'details', title: 'Responsibilities & Requirements', icon: ThListIcon },
+    { name: 'details', title: 'Responsibilities & Requirements', icon: ListIcon }, // Changed ThListIcon -> ListIcon
     { name: 'perks', title: 'Benefits & Perks', icon: CheckmarkCircleIcon },
-    { name: 'seo', title: 'SEO', icon: EarthGlobeIcon },
-    { name: 'settings', title: 'Status & Apply' },
+    { name: 'seo', title: 'SEO', icon: EarthAmericasIcon }, // Changed EarthGlobeIcon -> EarthAmericasIcon
+    { name: 'settings', title: 'Status & Apply', icon: CogIcon },
   ],
 
   fields: [
-    // ==========================================
-    // GROUP: JOB OVERVIEW
-    // ==========================================
     defineField({
       name: 'role',
       title: 'Job Role / Title',
@@ -97,9 +99,7 @@ export default defineType({
       validation: (Rule) => Rule.required().max(250),
     }),
 
-    // ==========================================
     // GROUP: RESPONSIBILITIES & REQUIREMENTS
-    // ==========================================
     defineField({
       name: 'responsibilities',
       title: 'Key Responsibilities',
@@ -117,9 +117,7 @@ export default defineType({
       description: 'Software, skills, ya mindset jo candidate mein hona chahiye.',
     }),
 
-    // ==========================================
     // GROUP: BENEFITS & PERKS
-    // ==========================================
     defineField({
       name: 'perks',
       title: 'Benefits & Perks',
@@ -129,9 +127,7 @@ export default defineType({
       description: 'Why should they join Get Into Feed? (e.g. Health Insurance, Gym Allowance, Weekend Offs)',
     }),
 
-    // ==========================================
     // GROUP: SEO
-    // ==========================================
     defineField({
       name: 'seoTitle',
       title: 'SEO Title',
@@ -148,9 +144,7 @@ export default defineType({
       description: 'Max 160 characters. Job search engines (Google Jobs) ke liye zaroori.',
     }),
 
-    // ==========================================
     // GROUP: SETTINGS & APPLY
-    // ==========================================
     defineField({
       name: 'applyLink',
       title: 'Application Link (Google Form / HR Email)',
@@ -163,7 +157,7 @@ export default defineType({
       title: 'Is this Job Active?',
       type: 'boolean',
       group: 'settings',
-      description: 'Agar hiring band ho gayi hai, toh ise OFF kar dein (Delete karne ki zaroorat nahi hai).',
+      description: 'Agar hiring band ho gayi hai, toh ise OFF kar dein.',
       initialValue: true,
     }),
   ],
@@ -180,7 +174,7 @@ export default defineType({
       return {
         title: title,
         subtitle: `${isActive ? '🟢 ACTIVE' : '🔴 CLOSED'} | ${department || 'General'} | ${type}`,
-        icon: BriefcaseIcon,
+        icon: CaseIcon, // Changed BriefcaseIcon -> CaseIcon
       }
     },
   },

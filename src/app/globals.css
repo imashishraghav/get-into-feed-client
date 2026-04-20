@@ -2,28 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   1. BASE STYLES & TYPOGRAPHY FIXES
+   ========================================================================== */
 @layer base {
+  /* 🟢 FIX: Used 'font-sans' instead of 'font-inter' */
   body {
-    @apply bg-background text-navy font-inter antialiased selection:bg-primary/30 selection:text-navy;
+    @apply bg-background text-navy font-sans overflow-x-hidden;
+    /* High-end typography rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
+
+  /* 🟢 FIX: Used 'font-heading' instead of 'font-sora' */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sora tracking-tight;
+    @apply font-heading tracking-tight text-navy;
+  }
+
+  /* Premium Text Selection Effect */
+  ::selection {
+    @apply bg-primary/20 text-navy;
+  }
+
+  /* Smooth native scroll behavior */
+  html {
+    scroll-behavior: smooth;
   }
 }
 
-/* 🟢 ADD THIS: Custom Utilities */
+/* ==========================================================================
+   2. ADVANCED REUSABLE COMPONENTS
+   ========================================================================== */
+@layer components {
+  /* Standard 2D Premium Card (Your Brand Identity) */
+  .premium-card {
+    @apply bg-white border border-[#E5E7EB] rounded-[2rem] shadow-[0_8px_30px_-12px_rgba(0,0,0,0.06)] transition-all duration-500 hover:border-navy/20 hover:shadow-[0_20px_40px_-15px_rgba(15,23,42,0.08)];
+  }
+
+  /* Dark Authority Card */
+  .premium-card-dark {
+    @apply bg-[#0F172A] border border-slate-800 rounded-[2rem] shadow-2xl;
+  }
+}
+
+/* ==========================================================================
+   3. CUSTOM UTILITIES (Hacks & Fixes)
+   ========================================================================== */
 @layer utilities {
-  /* Hides scrollbar for clean carousels */
+  /* Hides scrollbar for clean carousels (Grid/Filters) */
   .scrollbar-hide {
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
   }
+  
   .scrollbar-hide::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
   }
+
+  /* Hardware acceleration for buttery smooth Framer Motion animations */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+  }
   
-  /* Smooth native scroll behavior just in case */
-  html {
-    scroll-behavior: smooth;
+  /* Text balance for perfect headlines (No widow words) */
+  .text-balance {
+    text-wrap: balance;
   }
 }

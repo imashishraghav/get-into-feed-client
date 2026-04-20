@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
@@ -81,7 +82,7 @@ export default function BlogHero() {
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
-        className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 text-center flex flex-col items-center"
+        className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 text-center flex flex-col items-center gpu-accelerated"
       >
         
         {/* 1. Small Authority Label */}
@@ -94,7 +95,7 @@ export default function BlogHero() {
         {/* 2. Main Headline */}
         <motion.h1 
           variants={blurFadeUp}
-          className="font-['Plus_Jakarta_Sans',sans-serif] text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#0F172A] tracking-tight leading-[1.1] mb-8"
+          className="font-['Plus_Jakarta_Sans',sans-serif] text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#0F172A] tracking-tight leading-[1.1] mb-8 text-balance"
         >
           Insights That Drive <br className="hidden md:block" />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
@@ -105,7 +106,7 @@ export default function BlogHero() {
         {/* 3. Subheadline */}
         <motion.p 
           variants={fadeUp}
-          className="font-['Inter',sans-serif] text-lg md:text-xl text-[#475569] font-medium leading-relaxed max-w-2xl mb-12"
+          className="font-['Inter',sans-serif] text-lg md:text-xl text-[#475569] font-medium leading-relaxed max-w-2xl mb-12 text-balance"
         >
           Learn how to generate leads, scale your campaigns, and build predictable growth systems.
         </motion.p>

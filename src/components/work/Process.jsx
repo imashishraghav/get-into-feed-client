@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React from "react";
@@ -75,10 +76,12 @@ export default function Process() {
           variants={fadeUpHeader}
           className="text-center max-w-3xl mx-auto mb-16 md:mb-24"
         >
-          <h2 className="font-['Plus_Jakarta_Sans',sans-serif] text-4xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight mb-6 leading-tight">
+          {/* 🟢 FIX: Used global 'font-heading' */}
+          <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight mb-6 leading-tight text-balance">
             How We Work
           </h2>
-          <p className="font-['Inter',sans-serif] text-lg md:text-xl text-[#475569] font-medium leading-relaxed">
+          {/* 🟢 FIX: Used global 'font-sans' */}
+          <p className="font-sans text-lg md:text-xl text-[#475569] font-medium leading-relaxed text-balance">
             A proven, structured approach to ensure smooth onboarding and rapid results. No guesswork, just execution.
           </p>
         </motion.div>
@@ -89,7 +92,7 @@ export default function Process() {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={staggerContainer}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 relative"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 relative gpu-accelerated"
         >
           {/* Subtle connecting line for Desktop (Hidden on mobile/tablet) */}
           <div className="hidden lg:block absolute top-[28px] left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-[#E5E7EB] via-[#2ED1B2]/40 to-[#E5E7EB] z-0" />
@@ -113,21 +116,22 @@ function ProcessCard({ data }) {
       variants={fadeUp}
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="relative z-10 group bg-white border border-[#E5E7EB] rounded-[2rem] p-8 md:p-10 transition-all duration-500 ease-out hover:border-[#0F172A]/30 hover:shadow-[0_20px_40px_-15px_rgba(15,23,42,0.08)] flex flex-col h-full"
+      // 🟢 FIX: Replaced long classes with our custom global utility class
+      className="premium-card relative z-10 group p-8 md:p-10 flex flex-col h-full"
     >
       {/* Number Badge (Authority Black Theme) */}
       <div className="w-14 h-14 rounded-2xl bg-[#0F172A] flex items-center justify-center mb-8 shadow-md group-hover:bg-[#2ED1B2] group-hover:shadow-lg transition-all duration-500 ease-out mx-auto lg:mx-0">
-        <span className="font-['Plus_Jakarta_Sans',sans-serif] text-xl font-extrabold text-white group-hover:text-[#0F172A] transition-colors duration-500">
+        <span className="font-heading text-xl font-extrabold text-white group-hover:text-[#0F172A] transition-colors duration-500">
           {data.num}
         </span>
       </div>
 
       {/* Text Content */}
       <div className="text-center lg:text-left flex-grow flex flex-col">
-        <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-xl md:text-2xl font-bold text-[#0F172A] tracking-tight mb-4 transition-colors duration-300">
+        <h3 className="font-heading text-xl md:text-2xl font-bold text-[#0F172A] tracking-tight mb-4 transition-colors duration-300">
           {data.title}
         </h3>
-        <p className="font-['Inter',sans-serif] text-[16px] text-[#475569] font-medium leading-relaxed flex-grow">
+        <p className="font-sans text-[16px] text-[#475569] font-medium leading-relaxed flex-grow">
           {data.description}
         </p>
       </div>
