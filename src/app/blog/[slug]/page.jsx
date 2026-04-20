@@ -1,87 +1,169 @@
-import React from 'react';
-import { createClient } from "next-sanity";
-import { PortableText } from '@portabletext/react';
+import React from "react";
 import Link from "next/link";
-import { ArrowLeft, Clock, Calendar } from "lucide-react";
+import { ArrowLeft, Clock, Calendar, Share2 } from "lucide-react";
+import Newsletter from "@/components/blog/Newsletter";
+import BlogCTA from "@/components/blog/BlogCTA";
 
-// CACHE KILLER
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+// ============================================================================
+// 🔌 SANITY CLIENT IMPORT (Uncomment when connecting Sanity)
+// import { client } from "@/sanity/lib/client"; 
+// import { PortableText } from "@portabletext/react";
+// ============================================================================
 
-const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-  apiVersion: "2024-01-01",
-  useCdn: false,
-});
+// ============================================================================
+// 🟢 1. DYNAMIC SEO METADATA
+// ============================================================================
+export async function generateMetadata({ params }) {
+  // const query = `*[_type == "post" && slug.current == $slug][0]{ title, excerpt }`;
+  // const post = await client.fetch(query, { slug: params.slug });
+  
+  return {
+    title: `The 2026 Guide to Scaling Luxury Real Estate | Get Into Feed`, // Use post?.title in production
+    description: "Discover the exact full-funnel strategy we use to generate highly qualified leads.", // Use post?.excerpt
+  };
+}
 
+// ============================================================================
+// 🟢 2. MAIN PAGE COMPONENT
+// ============================================================================
 export default async function SingleBlogPage({ params }) {
-  const resolvedParams = await params;
-  const slug = resolvedParams.slug;
+  // const slug = params.slug;
 
-  const query = `*[_type == "post" && slug.current == $slug][0]{
-    title,
-    "imageUrl": mainImage.asset->url,
-    publishedAt,
-    body,
-    "authorName": author->name,
-    "authorImage": author->image.asset->url,
-    "categories": categories[]->title
-  }`;
+  // FETCH DATA FROM SANITY (Replace this block with actual fetch)
+  // const query = `*[_type == "post" && slug.current == $slug][0]{
+  //   title,
+  //   "category": categories[0]->title,
+  //   "imageUrl": mainImage.asset->url,
+  //   readTime,
+  //   publishedAt,
+  //   body
+  // }`;
+  // const post = await client.fetch(query, { slug });
 
-  const post = await client.fetch(query, { slug: slug });
-
-  if (!post) {
-    return (
-      <div className="min-h-screen bg-[#020408] flex items-center justify-center text-white flex-col pt-32">
-        <h1 className="text-4xl font-bold mb-4">Blog Not Found!</h1>
-        <Link href="/blog" className="text-[#3AE272] font-bold underline">Go back to all articles</Link>
-      </div>
-    );
-  }
-
-  const components = {
-    block: {
-      h1: ({children}) => <h1 className="text-3xl md:text-5xl font-extrabold mt-16 mb-8 text-white leading-tight tracking-tight">{children}</h1>,
-      h2: ({children}) => <h2 className="text-2xl md:text-3xl font-bold mt-12 mb-6 text-white tracking-wide">{children}</h2>,
-      h3: ({children}) => <h3 className="text-xl md:text-2xl font-bold mt-10 mb-4 text-[#3AE272]">{children}</h3>,
-      normal: ({children}) => <p className="text-slate-300 text-[17px] md:text-lg leading-relaxed mb-8 font-medium">{children}</p>,
-    }
+  // ----------------------------------------------------------------------
+  // FALLBACK DATA (For visualization before Sanity is connected)
+  // ----------------------------------------------------------------------
+  const post = {
+    title: "How We Scaled a Real Estate Brand to ₹5Cr+ Using Full-Funnel Systems",
+    category: "Performance Marketing",
+    imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+    readTime: "8 min read",
+    publishedAt: "April 18, 2026",
+    // We simulate body text here for testing
   };
 
   return (
-    <div className="bg-[#020408] min-h-screen pt-28 pb-20 font-['Plus_Jakarta_Sans',sans-serif] relative overflow-hidden">
-      <div className="max-w-[850px] mx-auto px-6 md:px-8 relative z-10 mb-8">
-        <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-[#3AE272] transition-colors uppercase tracking-wider w-max group">
-          <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" /> Back to insights
+    <main className="flex flex-col min-h-screen w-full bg-white overflow-hidden scroll-smooth">
+      
+      {/* ================= 1. ARTICLE HEADER ================= */}
+      <article className="pt-32 pb-16 md:pt-40 md:pb-24 px-6 md:px-12 max-w-4xl mx-auto w-full selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
+        
+        {/* Back to Blog Link */}
+        <Link 
+          href="/blog" 
+          className="inline-flex items-center gap-2 text-slate-500 hover:text-[#0F172A] transition-colors duration-300 font-['Inter',sans-serif] font-medium mb-10 group"
+        >
+          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center group-hover:bg-[#0F172A] group-hover:text-white transition-all duration-300">
+            <ArrowLeft className="w-4 h-4" />
+          </div>
+          Back to all insights
         </Link>
-      </div>
 
-      {post.imageUrl && (
-        <div className="max-w-[1200px] mx-auto px-4 md:px-8 mb-16 relative z-10">
-           <div className="relative rounded-[2rem] overflow-hidden border border-white/10 group">
-             <img src={post.imageUrl} alt={post.title} className="w-full h-[300px] md:h-[500px] object-cover relative z-10 group-hover:scale-[1.02] transition-transform duration-1000" />
-           </div>
+        {/* Category & Meta */}
+        <div className="flex flex-wrap items-center gap-4 md:gap-6 mb-8">
+          <span className="font-['Plus_Jakarta_Sans',sans-serif] text-sm font-bold text-[#0F172A] uppercase tracking-widest bg-slate-100 border border-slate-200 px-4 py-2 rounded-full">
+            {post.category}
+          </span>
+          <div className="flex items-center gap-4 text-slate-500 font-['Inter',sans-serif] text-[15px] font-medium">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-4 h-4" />
+              <span>{post.publishedAt}</span>
+            </div>
+            <div className="w-1 h-1 rounded-full bg-slate-300" />
+            <div className="flex items-center gap-1.5">
+              <Clock className="w-4 h-4" />
+              <span>{post.readTime}</span>
+            </div>
+          </div>
         </div>
-      )}
 
-      <div className="max-w-[850px] mx-auto px-6 md:px-8 relative z-10">
-        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-10 text-white leading-[1.1]">
+        {/* Post Title */}
+        <h1 className="font-['Plus_Jakarta_Sans',sans-serif] text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0F172A] leading-[1.15] mb-12 tracking-tight">
           {post.title}
         </h1>
-        
-        {/* Social Share (Error Fixed with SVG) */}
-        <div className="flex items-center gap-3 mb-10">
-          <span className="text-slate-400 text-sm font-medium mr-2">Share:</span>
-          <button className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:bg-[#1877F2] transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-          </button>
+
+        {/* Hero Image */}
+        <div className="w-full aspect-[16/9] md:aspect-[2/1] rounded-[2rem] overflow-hidden mb-16 bg-slate-100 border border-[#E5E7EB] shadow-sm">
+          <img 
+            src={post.imageUrl} 
+            alt={post.title} 
+            className="w-full h-full object-cover object-center"
+          />
         </div>
 
-        <div className="prose-container">
-          <PortableText value={post.body} components={components} />
+        {/* ================= 2. ARTICLE CONTENT (Reading Area) ================= */}
+        {/* We use a narrower width (max-w-3xl) for optimal reading experience */}
+        <div className="max-w-3xl mx-auto w-full">
+          
+          {/* 🔌 SANITY PORTABLE TEXT INTEGRATION
+            In production, replace the dummy HTML below with:
+            <div className="prose prose-lg prose-slate max-w-none prose-headings:font-['Plus_Jakarta_Sans'] prose-headings:font-bold prose-headings:text-[#0F172A] prose-p:font-['Inter'] prose-a:text-[#0EA5A4]">
+              <PortableText value={post.body} />
+            </div>
+          */}
+
+          <div className="font-['Inter',sans-serif] text-[19px] leading-relaxed text-[#475569] space-y-8">
+            <p className="text-2xl text-[#0F172A] font-medium leading-snug">
+              Stop relying on disjointed campaigns. Discover the exact step-by-step blueprint we use to connect high-converting landing pages with data-driven Meta ads.
+            </p>
+            
+            <p>
+              In the fast-paced world of digital marketing, relying on single-channel tactics is a surefire way to burn your budget. Most agencies focus on vanity metrics—likes, clicks, and impressions. But at Get Into Feed, we focus on what actually matters: <strong>predictable revenue and high-quality lead generation.</strong>
+            </p>
+
+            <h2 className="font-['Plus_Jakarta_Sans',sans-serif] text-3xl font-bold text-[#0F172A] mt-12 mb-6">
+              The Problem with Standard Campaigns
+            </h2>
+            
+            <p>
+              When a luxury real estate developer approached us, they were spending heavily on Meta Ads but getting terrible conversion rates. The leads were cheap, but they were entirely unqualified. Their sales team was wasting hours calling people who had no real buying intent.
+            </p>
+
+            <ul className="list-disc pl-6 space-y-3 marker:text-[#2ED1B2]">
+              <li>Low-intent lead forms directly on Facebook.</li>
+              <li>No landing page to educate the buyer.</li>
+              <li>Zero retargeting strategy for warm audiences.</li>
+            </ul>
+
+            <h2 className="font-['Plus_Jakarta_Sans',sans-serif] text-3xl font-bold text-[#0F172A] mt-12 mb-6">
+              The Full-Funnel Solution
+            </h2>
+
+            <p>
+              We overhauled their entire system. First, we shifted the primary branding colors from white to a sharp, professional black to immediately elevate the perceived value of the properties. Next, we built a custom Next.js landing page that filtered users based on their investment budget before they could even submit their details.
+            </p>
+          </div>
+
+          {/* Share Article Bottom Bar */}
+          <div className="flex items-center justify-between border-t border-b border-[#E5E7EB] py-6 mt-16">
+            <span className="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[#0F172A]">
+              Share this article
+            </span>
+            <div className="flex gap-3">
+              <button className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-[#0F172A] hover:text-white transition-all duration-300">
+                <Share2 className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
         </div>
-      </div>
-    </div>
+      </article>
+
+      {/* ================= 3. BOTTOM SECTIONS ================= */}
+      {/* Reusing your high-converting components at the end of the post */}
+      <Newsletter />
+      <BlogCTA />
+
+    </main>
   );
 }

@@ -1,8 +1,9 @@
 // Default Sanity Schemas (Blog ke liye)
-import {blockContentType} from './blockContentType'
-import {categoryType} from './categoryType'
-import {postType} from './postType'
-import {authorType} from './authorType'
+// 🟢 FIX: 'blockContentType' import kiya gaya hai
+import { blockContentType } from './blockContent' 
+import { categoryType } from './categoryType'
+import { postType } from './post'
+import { authorType } from './authorType'
 
 // Custom Agency Schemas (Aapke banaye hue)
 import testimonial from './testimonial' 
@@ -13,7 +14,7 @@ import job from './job'                 // 🚀 NAYA: Careers Page ke liye
 
 export const schema = {
   types: [
-    blockContentType, 
+    blockContentType, // 🟢 FIX: Yahan bhi blockContentType aayega
     categoryType, 
     postType, 
     authorType, 

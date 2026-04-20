@@ -10,3 +10,20 @@
     @apply font-sora tracking-tight;
   }
 }
+
+/* 🟢 ADD THIS: Custom Utilities */
+@layer utilities {
+  /* Hides scrollbar for clean carousels */
+  .scrollbar-hide {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  /* Smooth native scroll behavior just in case */
+  html {
+    scroll-behavior: smooth;
+  }
+}
