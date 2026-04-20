@@ -1,11 +1,12 @@
 import { defineType, defineField, defineArrayMember } from 'sanity'
-import { BriefcaseIcon, ThListIcon, CheckmarkCircleIcon, EarthGlobeIcon } from '@sanity/icons'
+import { CaseIcon, ListIcon, CheckmarkCircleIcon, EarthAmericasIcon } from '@sanity/icons'
 
 export default defineType({
   name: 'job',
-  title: 'Careers / Jobs',
+  title: 'Job Postings',
   type: 'document',
-  icon: BriefcaseIcon,
+  icon: CaseIcon, // Yahan bhi update kar dein agar pehle BriefcaseIcon tha
+  // ... baaki code
   
   // 🟢 1. Clean UI Tabs for HR / Admin
   groups: [
