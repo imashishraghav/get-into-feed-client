@@ -1,8 +1,8 @@
+// @ts-nocheck
 "use client";
 
 import React from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, XCircle } from "lucide-react";
 
 // ----------------------------------------------------------------------
 // Framer Motion Variants
@@ -11,7 +11,7 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.2, delayChildren: 0.1 },
   },
 };
 
@@ -25,110 +25,113 @@ const fadeUp = {
 };
 
 // ----------------------------------------------------------------------
-// Content Data
+// Process Data
 // ----------------------------------------------------------------------
-const isForData = [
-  "Businesses ready to scale aggressively",
-  "Brands already generating revenue",
-  "Founders serious about long-term growth",
-  "Companies wanting predictable lead generation",
+const processData = [
+  {
+    step: "01",
+    title: "Submit Your Details",
+    description: "Tell us about your business and goals.",
+  },
+  {
+    step: "02",
+    title: "We Review Your Business",
+    description: "We analyze your current setup and growth potential.",
+  },
+  {
+    step: "03",
+    title: "Strategy Call",
+    description: "We discuss your goals, challenges, and opportunities.",
+  },
+  {
+    step: "04",
+    title: "Growth Plan",
+    description: "We create a clear roadmap to scale your business.",
+  },
 ];
 
-const isNotForData = [
-  "Looking for cheap or 'budget' services",
-  "Want instant, overnight results",
-  "Not ready to invest in their own growth",
-  "Just exploring without any commitment",
-];
-
-export default function QualificationCriteria() {
+export default function Process() {
   return (
-    <section className="relative w-full bg-white py-20 md:py-28 selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4] border-b border-[#E5E7EB]/50">
-      <div className="max-w-5xl mx-auto px-6 md:px-12">
+    <section className="relative w-full bg-background py-24 md:py-32 selection:bg-primary/20 selection:text-secondary transform-gpu">
+      <div className="max-w-6xl mx-auto px-6 md:px-12">
         
         {/* ================= 1. SECTION HEADER ================= */}
         <motion.div 
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
+          viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          className="text-center max-w-2xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-16 md:mb-24 transform-gpu"
         >
           <motion.h2 
             variants={fadeUp}
-            className="font-['Plus_Jakarta_Sans',sans-serif] text-3xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight mb-4"
+            className="font-heading text-3xl md:text-5xl font-extrabold text-navy tracking-tight mb-4 text-balance"
           >
-            Is This Right For You?
+            What Happens Next
           </motion.h2>
           <motion.p 
             variants={fadeUp}
-            className="font-['Inter',sans-serif] text-lg text-[#475569] font-medium leading-relaxed"
+            className="font-sans text-lg text-navy/70 font-medium leading-relaxed text-balance"
           >
-            We don’t work with everyone. We only partner with brands where we know we can deliver massive ROI.
+            A simple, transparent process designed to get you results faster.
           </motion.p>
         </motion.div>
 
-        {/* ================= 2. TWO-COLUMN COMPARISON ================= */}
+        {/* ================= 2. PROCESS TIMELINE ================= */}
         <motion.div 
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={staggerContainer}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10"
+          className="relative transform-gpu"
         >
-          
-          {/* ================= COLUMN 1: WHO THIS IS FOR (The Perfect Match) ================= */}
-          <motion.div
-            variants={fadeUp}
-            whileHover={{ y: -4 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            className="bg-[#F8F9FB] border border-[#2ED1B2]/30 rounded-[2rem] p-8 md:p-10 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(46,209,178,0.12)] transition-all duration-300 relative overflow-hidden"
-          >
-            {/* Soft Green Glow in background */}
-            <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#2ED1B2]/10 rounded-full blur-3xl pointer-events-none" />
-            
-            <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-2xl font-extrabold text-[#0F172A] mb-8 flex items-center gap-3">
-              <span className="bg-[#2ED1B2]/10 text-[#0EA5A4] p-2 rounded-xl">Who this is FOR</span>
-            </h3>
+          {/* Premium Connecting Line (Hidden on mobile, visible on desktop) */}
+          <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-transparent via-navy/10 to-transparent z-0" />
 
-            <ul className="flex flex-col gap-5">
-              {isForData.map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-[#2ED1B2] shrink-0 mt-0.5" />
-                  <span className="font-['Inter',sans-serif] text-[#0F172A] font-semibold text-lg leading-snug">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
-
-          {/* ================= COLUMN 2: WHO THIS IS NOT FOR (The Filter) ================= */}
-          <motion.div
-            variants={fadeUp}
-            whileHover={{ y: -4 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            className="bg-white border border-[#E5E7EB] rounded-[2rem] p-8 md:p-10 shadow-sm hover:shadow-xl transition-all duration-300"
-          >
-            <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-2xl font-extrabold text-[#475569] mb-8 flex items-center gap-3">
-              <span className="bg-slate-100 text-slate-500 p-2 rounded-xl">Who this is NOT for</span>
-            </h3>
-
-            <ul className="flex flex-col gap-5 opacity-80">
-              {isNotForData.map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <XCircle className="w-6 h-6 text-slate-400 shrink-0 mt-0.5" />
-                  <span className="font-['Inter',sans-serif] text-[#475569] font-medium text-lg leading-snug">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </motion.div>
-
+          {/* Grid Layout for Steps */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-6 relative z-10">
+            {processData.map((item, index) => (
+              <ProcessStep key={index} data={item} isLast={index === processData.length - 1} />
+            ))}
+          </div>
         </motion.div>
+
       </div>
     </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// Individual Step Component
+// ----------------------------------------------------------------------
+function ProcessStep({ data, isLast }) {
+  return (
+    <motion.div
+      variants={fadeUp}
+      whileHover={{ y: -6 }}
+      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      className="group relative flex flex-col items-center text-center md:px-4 cursor-default transform-gpu"
+    >
+      {/* Step Number Badge */}
+      <div className="relative w-14 h-14 rounded-2xl bg-white border border-navy/10 shadow-sm flex items-center justify-center mb-6 group-hover:border-primary/40 group-hover:bg-primary/5 transition-all duration-300 z-10">
+        <span className="font-heading font-extrabold text-lg text-navy group-hover:text-secondary transition-colors duration-300">
+          {data.step}
+        </span>
+        
+        {/* Mobile Connecting Line (Vertical) - Shows only on small screens */}
+        {!isLast && (
+          <div className="md:hidden absolute top-14 left-1/2 -translate-x-1/2 w-[2px] h-12 bg-gradient-to-b from-navy/10 to-transparent -z-10" />
+        )}
+      </div>
+
+      {/* Content */}
+      <h3 className="font-heading text-xl font-bold text-navy mb-3 tracking-tight">
+        {data.title}
+      </h3>
+      <p className="font-sans text-[15px] text-navy/70 font-medium leading-relaxed max-w-[260px] mx-auto">
+        {data.description}
+      </p>
+
+    </motion.div>
   );
 }

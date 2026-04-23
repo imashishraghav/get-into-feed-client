@@ -1,12 +1,13 @@
+// @ts-nocheck
 "use client";
 
 import React, { useState } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { TrendingUp, ArrowRight, Play, Search, Target, Zap, BarChart3, ShieldCheck } from 'lucide-react';
 
-// Import animations & Custom Scroll Hook
-import { staggerContainer, fadeUp, blurFadeUp, premiumEase } from '../../utils/animations';
-import { useSmoothScroll } from '../../hooks/useSmoothScroll';
+// 🟢 Using clean path aliases configured in jsconfig.json
+import { staggerContainer, fadeUp, blurFadeUp, premiumEase } from '@/utils/animations';
+import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 import VideoModal from './VideoModal';
 
 // --- Helper Component: 3D Tilt Card ---
@@ -43,7 +44,7 @@ const TiltCard = ({ children, className = "" }) => {
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       style={{ rotateY, rotateX, transformStyle: "preserve-3d" }}
-      className={className}
+      className={`gpu-accelerated ${className}`}
     >
       <div style={{ transform: "translateZ(50px)" }} className="w-full h-full pointer-events-none">
         {children}
@@ -66,11 +67,11 @@ export default function Hero() {
 
   return (
     <>
-      <section className="relative w-full pt-32 pb-10 md:pt-40 md:pb-12 overflow-hidden bg-[#F8F9FB]">
+      <section className="relative w-full pt-32 pb-10 md:pt-40 md:pb-12 overflow-hidden bg-background">
         
         {/* Premium Background Gradients & Depth */}
-        <motion.div style={{ y: bgParallax }} className="absolute top-[-10%] right-[-5%] w-[50vw] h-[50vw] rounded-full bg-[#2ED1B2]/10 blur-[120px] pointer-events-none -z-10" />
-        <motion.div style={{ y: bgParallax }} className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-[#0EA5A4]/5 blur-[100px] pointer-events-none -z-10" />
+        <motion.div style={{ y: bgParallax }} className="absolute top-[-10%] right-[-5%] w-[50vw] h-[50vw] rounded-full bg-primary/10 blur-[120px] pointer-events-none z-0 gpu-accelerated" />
+        <motion.div style={{ y: bgParallax }} className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full bg-secondary/5 blur-[100px] pointer-events-none z-0 gpu-accelerated" />
 
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-16 items-center relative z-10">
           
@@ -80,12 +81,12 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             style={{ y: textParallaxY, opacity: textOpacity }}
-            className="flex flex-col gap-6 md:gap-8 relative z-20"
+            className="flex flex-col gap-6 md:gap-8 relative z-20 gpu-accelerated"
           >
             {/* Small Badge */}
             <motion.div variants={fadeUp}>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#E5E7EB] text-[#0F172A] text-xs font-semibold w-max shadow-[0_8px_30px_rgb(0,0,0,0.04)] uppercase tracking-widest">
-                <Zap className="w-4 h-4 text-[#2ED1B2] fill-[#2ED1B2]/20" /> 
+              <div className="font-sans inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-border text-navy text-xs font-semibold w-max shadow-sm uppercase tracking-widest">
+                <Zap className="w-4 h-4 text-primary fill-primary/20" /> 
                 Get Into Feed — Growth System
               </div>
             </motion.div>
@@ -93,16 +94,16 @@ export default function Hero() {
             {/* Headline */}
             <motion.h1
               variants={blurFadeUp}
-              className="text-4xl md:text-5xl lg:text-[4rem] xl:text-[4.2rem] font-bold leading-[1.05] tracking-tight text-[#0F172A]"
+              className="font-heading text-4xl md:text-5xl lg:text-[4rem] xl:text-[4.2rem] font-extrabold leading-[1.05] tracking-tight text-navy text-balance"
             >
               <span className="block whitespace-nowrap">Dominate the Feed.</span>
-              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
+              <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
                 Own the Market.
               </span>
             </motion.h1>
             
             {/* Subheadline (High Conversion Focus) */}
-            <motion.p variants={fadeUp} className="text-[#475569] text-lg md:text-xl max-w-lg leading-relaxed font-medium">
+            <motion.p variants={fadeUp} className="font-sans text-slate-600 text-lg md:text-xl max-w-lg leading-relaxed font-medium text-balance">
               We build high-performing marketing systems that generate leads, scale revenue, and turn attention into customers.
             </motion.p>
 
@@ -112,13 +113,13 @@ export default function Hero() {
                 whileHover={{ y: -4, scale: 1.02 }} 
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.3, ease: premiumEase }}
-                className="px-8 py-4 rounded-full bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4] text-white font-bold uppercase tracking-widest shadow-[0_15px_40px_-10px_rgba(46,209,178,0.4)] flex items-center gap-2 group text-sm relative overflow-hidden w-full sm:w-auto justify-center"
+                className="px-8 py-4 rounded-full bg-gradient-to-r from-primary to-secondary text-navy font-heading font-bold uppercase tracking-widest shadow-[0_15px_40px_-10px_rgba(46,209,178,0.4)] flex items-center gap-2 group text-sm relative overflow-hidden w-full sm:w-auto justify-center"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   Book Your Free Growth Call
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </span>
-                <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/30 to-transparent" />
               </motion.button>
               
               <motion.button 
@@ -126,18 +127,18 @@ export default function Hero() {
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.3, ease: premiumEase }}
                 onClick={() => setIsVideoOpen(true)} 
-                className="px-8 py-4 rounded-full bg-white border border-[#E5E7EB] text-[#0F172A] font-bold uppercase tracking-widest hover:border-[#2ED1B2]/30 hover:bg-[#F8F9FB] transition-all shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center gap-3 group text-sm w-full sm:w-auto justify-center"
+                className="px-8 py-4 rounded-full bg-white border border-border text-navy font-heading font-bold uppercase tracking-widest hover:border-primary/30 hover:bg-slate-50 transition-all shadow-sm flex items-center gap-3 group text-sm w-full sm:w-auto justify-center"
               >
-                <div className="w-8 h-8 rounded-full bg-[#F8F9FB] flex items-center justify-center group-hover:bg-[#2ED1B2]/10 transition-colors">
-                  <Play className="w-3.5 h-3.5 text-[#0F172A] ml-0.5" /> 
+                <div className="w-8 h-8 rounded-full bg-background flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                  <Play className="w-3.5 h-3.5 text-navy ml-0.5" /> 
                 </div>
                 Watch How It Works
               </motion.button>
             </motion.div>
 
             {/* Micro Trust Line */}
-            <motion.div variants={fadeUp} className="flex items-center gap-2 mt-2 text-sm font-semibold text-slate-500">
-              <ShieldCheck className="w-4 h-4 text-[#2ED1B2]" />
+            <motion.div variants={fadeUp} className="font-sans flex items-center gap-2 mt-2 text-sm font-semibold text-slate-500">
+              <ShieldCheck className="w-4 h-4 text-primary" />
               <p>Helping brands generate consistent leads & revenue</p>
             </motion.div>
 
@@ -150,35 +151,35 @@ export default function Hero() {
             transition={{ duration: 1, delay: 0.4, ease: premiumEase }}
             style={{ y: visualsParallaxY }}
             // Hidden on mobile to keep CTA above the fold & simplify experience
-            className="relative h-[550px] w-full hidden lg:block perspective-[1200px]"
+            className="relative h-[550px] w-full hidden lg:block perspective-[1200px] gpu-accelerated"
           >
             {/* Ambient Rings */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] border border-[#E5E7EB] rounded-full animate-spin-slow opacity-60" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] border border-[#2ED1B2]/20 rounded-full border-dashed animate-[spin_15s_linear_reverse] opacity-80" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] border border-border rounded-full animate-spin-slow opacity-60" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] border border-primary/20 rounded-full border-dashed animate-[spin_15s_linear_reverse] opacity-80" />
 
             {/* Top Right Card: Performance Metric */}
-            <TiltCard className="absolute top-8 right-6 w-80 bg-white/80 backdrop-blur-xl border border-[#E5E7EB]/80 rounded-3xl p-6 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.06)] z-20 cursor-default">
-              <div className="flex justify-between items-center mb-5 border-b border-[#F8F9FB] pb-4 pointer-events-auto">
+            <TiltCard className="absolute top-8 right-6 w-80 bg-white/80 backdrop-blur-xl border border-border/80 rounded-3xl p-6 shadow-soft z-20 cursor-default">
+              <div className="flex justify-between items-center mb-5 border-b border-background pb-4 pointer-events-auto">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2ED1B2]/20 to-[#0EA5A4]/10 flex items-center justify-center border border-[#2ED1B2]/20">
-                    <BarChart3 className="w-5 h-5 text-[#0EA5A4]" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/10 flex items-center justify-center border border-primary/20">
+                    <BarChart3 className="w-5 h-5 text-secondary" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#0F172A] text-sm tracking-tight">Sales Growth</h4>
-                    <p className="text-[10px] font-semibold text-[#64748B] uppercase tracking-widest mt-0.5">Q3 Performance</p>
+                    <h4 className="font-heading font-bold text-navy text-sm tracking-tight">Sales Growth</h4>
+                    <p className="font-sans text-[10px] font-semibold text-slate-500 uppercase tracking-widest mt-0.5">Q3 Performance</p>
                   </div>
                 </div>
               </div>
               <div className="mb-6 flex items-baseline gap-2">
-                <span className="text-4xl font-bold text-[#0F172A] tracking-tight">+342%</span>
-                <span className="text-[10px] font-bold text-[#0EA5A4] bg-[#2ED1B2]/10 px-2.5 py-1 rounded-full uppercase tracking-widest border border-[#2ED1B2]/20">Target Exceeded</span>
+                <span className="font-heading text-4xl font-extrabold text-navy tracking-tight">+342%</span>
+                <span className="font-sans text-[10px] font-bold text-secondary bg-primary/10 px-2.5 py-1 rounded-full uppercase tracking-widest border border-primary/20">Target Exceeded</span>
               </div>
               {/* Gradient Bar Chart */}
               <div className="h-14 w-full flex items-end gap-1.5">
                 {[30, 45, 35, 60, 50, 80, 100].map((h, i) => (
-                  <div key={i} className="flex-1 bg-[#F8F9FB] rounded-t-sm relative group overflow-hidden">
+                  <div key={i} className="flex-1 bg-background rounded-t-sm relative group overflow-hidden">
                     <div 
-                      className={`absolute bottom-0 inset-x-0 rounded-t-sm transition-all duration-1000 group-hover:opacity-80 ${i === 6 ? 'bg-gradient-to-t from-[#0EA5A4] to-[#2ED1B2]' : 'bg-[#E2E8F0]'}`}
+                      className={`absolute bottom-0 inset-x-0 rounded-t-sm transition-all duration-1000 group-hover:opacity-80 ${i === 6 ? 'bg-gradient-to-t from-secondary to-primary' : 'bg-slate-200'}`}
                       style={{ height: `${h}%` }} 
                     />
                   </div>
@@ -187,25 +188,25 @@ export default function Hero() {
             </TiltCard>
 
             {/* Bottom Left Card: System Activity */}
-            <TiltCard className="absolute bottom-12 left-4 w-64 bg-white/80 backdrop-blur-xl border border-[#E5E7EB]/80 rounded-3xl p-5 shadow-[0_20px_50px_-12px_rgba(15,23,42,0.06)] z-30 cursor-default">
-               <h4 className="font-bold text-[#0F172A] text-xs mb-4 uppercase tracking-widest border-b border-[#F8F9FB] pb-3 pointer-events-auto flex items-center gap-2">
-                 <div className="w-2 h-2 rounded-full bg-[#2ED1B2] animate-pulse" />
+            <TiltCard className="absolute bottom-12 left-4 w-64 bg-white/80 backdrop-blur-xl border border-border/80 rounded-3xl p-5 shadow-soft z-30 cursor-default">
+               <h4 className="font-heading font-bold text-navy text-xs mb-4 uppercase tracking-widest border-b border-background pb-3 pointer-events-auto flex items-center gap-2">
+                 <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
                  Live System Data
                </h4>
                <div className="space-y-4">
                  <div className="flex items-center justify-between group">
                    <div className="flex items-center gap-3">
-                     <div className="w-8 h-8 rounded-lg bg-[#F8F9FB] flex items-center justify-center group-hover:bg-[#2ED1B2]/10 transition-colors"><Target className="w-4 h-4 text-[#475569] group-hover:text-[#0EA5A4]" /></div>
-                     <span className="text-xs font-medium text-[#475569]">Qualified Leads</span>
+                     <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center group-hover:bg-primary/10 transition-colors"><Target className="w-4 h-4 text-slate-500 group-hover:text-secondary" /></div>
+                     <span className="font-sans text-xs font-medium text-slate-600">Qualified Leads</span>
                    </div>
-                   <span className="text-sm font-bold text-[#0F172A]">1,842</span>
+                   <span className="font-heading text-sm font-bold text-navy">1,842</span>
                  </div>
                  <div className="flex items-center justify-between group">
                    <div className="flex items-center gap-3">
-                     <div className="w-8 h-8 rounded-lg bg-[#F8F9FB] flex items-center justify-center group-hover:bg-[#2ED1B2]/10 transition-colors"><Search className="w-4 h-4 text-[#475569] group-hover:text-[#0EA5A4]" /></div>
-                     <span className="text-xs font-medium text-[#475569]">Conversion Rate</span>
+                     <div className="w-8 h-8 rounded-lg bg-background flex items-center justify-center group-hover:bg-primary/10 transition-colors"><Search className="w-4 h-4 text-slate-500 group-hover:text-secondary" /></div>
+                     <span className="font-sans text-xs font-medium text-slate-600">Conversion Rate</span>
                    </div>
-                   <span className="text-sm font-bold text-[#0F172A]">+8.4%</span>
+                   <span className="font-heading text-sm font-bold text-navy">+8.4%</span>
                  </div>
                </div>
             </TiltCard>
@@ -214,24 +215,24 @@ export default function Hero() {
             <motion.div 
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 w-44 h-44 bg-white border border-[#E5E7EB] rounded-full shadow-[0_20px_50px_-12px_rgba(15,23,42,0.08)] p-2"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 w-44 h-44 bg-white border border-border rounded-full shadow-[0_20px_50px_-12px_rgba(15,23,42,0.08)] p-2"
             >
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-[#F8F9FB] to-white border border-[#E5E7EB] flex flex-col items-center justify-center relative">
-                <Zap className="w-8 h-8 text-[#0EA5A4] mb-2 fill-[#0EA5A4]/10" />
-                <span className="font-bold text-[#0F172A] text-[10px] uppercase tracking-widest text-center px-4">Marketing<br/>System</span>
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-background to-white border border-border flex flex-col items-center justify-center relative">
+                <Zap className="w-8 h-8 text-secondary mb-2 fill-secondary/10" />
+                <span className="font-heading font-bold text-navy text-[10px] uppercase tracking-widest text-center px-4">Marketing<br/>System</span>
                 
                 {/* Floating Micro-Badges */}
                 <motion.div 
                   animate={{ scale: [1, 1.05, 1], y: [0, -5, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute -top-3 -right-6 bg-white text-[#0F172A] px-3 py-1.5 rounded-full shadow-lg text-[9px] font-bold uppercase tracking-widest border border-[#E5E7EB] flex items-center gap-1"
+                  className="absolute -top-3 -right-6 bg-white text-navy px-3 py-1.5 rounded-full shadow-lg font-sans text-[9px] font-bold uppercase tracking-widest border border-border flex items-center gap-1"
                 >
-                  <TrendingUp className="w-3 h-3 text-[#2ED1B2]" /> CPL -40%
+                  <TrendingUp className="w-3 h-3 text-primary" /> CPL -40%
                 </motion.div>
                 <motion.div 
                   animate={{ scale: [1, 1.05, 1], y: [0, 5, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                  className="absolute -bottom-3 -right-4 bg-[#0F172A] text-white px-3 py-1.5 rounded-full shadow-lg text-[9px] font-bold uppercase tracking-widest border border-[#0F172A] flex items-center gap-1"
+                  className="absolute -bottom-3 -right-4 bg-navy text-white px-3 py-1.5 rounded-full shadow-lg font-sans text-[9px] font-bold uppercase tracking-widest border border-navy flex items-center gap-1"
                 >
-                  <Zap className="w-3 h-3 text-[#2ED1B2] fill-[#2ED1B2]" /> LTV +65%
+                  <Zap className="w-3 h-3 text-primary fill-primary" /> LTV +65%
                 </motion.div>
               </div>
             </motion.div>

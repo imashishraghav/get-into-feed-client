@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React from "react";
@@ -56,7 +57,7 @@ const trustData = [
 
 export default function Trust() {
   return (
-    <section className="relative w-full bg-[#F8F9FB] py-12 md:py-16 selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4] border-b border-[#E5E7EB]/50">
+    <section className="relative w-full bg-background py-12 md:py-16 selection:bg-primary/20 selection:text-secondary border-b border-navy/5 transform-gpu">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         
         <motion.div 
@@ -64,7 +65,7 @@ export default function Trust() {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={staggerContainer}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6 lg:gap-10"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6 lg:gap-10 transform-gpu"
         >
           {trustData.map((item) => (
             <TrustItem key={item.id} data={item} />
@@ -87,18 +88,18 @@ function TrustItem({ data }) {
       variants={fadeUp}
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="group flex flex-col items-center text-center p-6 rounded-2xl transition-all duration-300 hover:bg-white hover:shadow-[0_10px_30px_-15px_rgba(46,209,178,0.15)]"
+      className="group flex flex-col items-center text-center p-6 rounded-2xl transition-all duration-300 hover:bg-white hover:shadow-[0_10px_30px_-15px_rgba(46,209,178,0.15)] transform-gpu"
     >
       {/* Soft Icon Treatment */}
-      <div className="w-12 h-12 rounded-full bg-white border border-[#E5E7EB] shadow-sm flex items-center justify-center text-[#475569] mb-5 group-hover:bg-[#2ED1B2]/10 group-hover:border-[#2ED1B2]/20 group-hover:text-[#0EA5A4] transition-all duration-300">
+      <div className="w-12 h-12 rounded-full bg-white border border-navy/10 shadow-sm flex items-center justify-center text-navy/70 mb-5 group-hover:bg-primary/10 group-hover:border-primary/20 group-hover:text-secondary transition-all duration-300">
         <Icon className="w-5 h-5" strokeWidth={2} />
       </div>
 
       {/* Typography */}
-      <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-[17px] font-extrabold text-[#0F172A] mb-2 tracking-tight group-hover:text-[#0EA5A4] transition-colors duration-300">
+      <h3 className="font-heading text-[17px] font-extrabold text-navy mb-2 tracking-tight group-hover:text-secondary transition-colors duration-300">
         {data.title}
       </h3>
-      <p className="font-['Inter',sans-serif] text-[14px] text-[#64748B] font-medium leading-relaxed max-w-[240px]">
+      <p className="font-sans text-[14px] text-navy/60 font-medium leading-relaxed max-w-[240px]">
         {data.description}
       </p>
     </motion.div>

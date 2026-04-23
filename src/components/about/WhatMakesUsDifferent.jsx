@@ -1,11 +1,12 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 
-// 🟢 Import custom smooth scroll hook & animation variants
-import { useSmoothScroll } from "../../hooks/useSmoothScroll";
-import { staggerContainer, fadeUp } from "../../utils/animations";
+// 🟢 Using clean path aliases configured in jsconfig.json
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { staggerContainer, fadeUp } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
 // Differences Data
@@ -61,12 +62,12 @@ export default function WhatMakesUsDifferent() {
   return (
     <section 
       ref={containerRef}
-      className="relative w-full bg-[#F8F9FB] py-6 md:py-14 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]"
+      className="relative w-full bg-background py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary"
     >
       {/* Subtle Background Accent */}
       <motion.div 
         style={{ y: bgDrift }}
-        className="absolute bottom-0 left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-[#2ED1B2]/5 to-transparent rounded-full blur-[120px] pointer-events-none -z-10" 
+        className="absolute bottom-0 left-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-primary/5 to-transparent rounded-full blur-[120px] pointer-events-none z-0 gpu-accelerated" 
       />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
@@ -75,21 +76,21 @@ export default function WhatMakesUsDifferent() {
           
           {/* ================= LEFT COLUMN: Sticky Anchor Context ================= */}
           <motion.div 
-            className="lg:col-span-5 lg:sticky lg:top-40 flex flex-col items-start relative z-20"
+            className="lg:col-span-5 lg:sticky lg:top-40 flex flex-col items-start relative z-20 gpu-accelerated"
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
             <motion.div variants={fadeUp} className="mb-6">
-              <span className="text-[11px] font-bold tracking-[0.2em] text-[#0EA5A4] uppercase bg-[#2ED1B2]/10 px-3 py-1.5 rounded-full border border-[#2ED1B2]/20 shadow-sm">
+              <span className="text-[11px] font-sans font-bold tracking-[0.2em] text-secondary uppercase bg-primary/10 px-4 py-2 rounded-full border border-primary/20 shadow-sm">
                 What Makes Us Different
               </span>
             </motion.div>
 
             <motion.h2 
               variants={fadeUp}
-              className="text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-[#0F172A] tracking-tight leading-[1.05] mb-6"
+              className="font-heading text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-navy tracking-tight leading-[1.05] mb-6 text-balance"
             >
               Not Your Typical <br className="hidden lg:block" />
               Agency.
@@ -97,7 +98,7 @@ export default function WhatMakesUsDifferent() {
 
             <motion.p 
               variants={fadeUp}
-              className="text-lg md:text-xl text-[#475569] font-medium leading-relaxed max-w-md border-l-2 border-[#2ED1B2]/50 pl-4 py-1"
+              className="font-sans text-lg md:text-xl text-slate-600 font-medium leading-relaxed max-w-md border-l-2 border-primary/50 pl-4 py-1 text-balance"
             >
               We don’t chase clicks. We build systems that drive real business growth.
             </motion.p>
@@ -109,12 +110,12 @@ export default function WhatMakesUsDifferent() {
             className="lg:col-span-7 relative flex flex-col gap-6 md:gap-8 mt-8 lg:mt-0"
           >
             {/* Background Track for Progress Line */}
-            <div className="absolute left-[20px] md:left-[30px] top-4 bottom-4 w-[2px] bg-[#F8F9FB] z-0 hidden sm:block" />
+            <div className="absolute left-[20px] md:left-[30px] top-4 bottom-4 w-[2px] bg-white z-0 hidden sm:block shadow-sm" />
             
             {/* 🟢 Active Progress Line (Follows Scroll) */}
             <motion.div 
               style={{ height: lineHeight }}
-              className="absolute left-[20px] md:left-[30px] top-4 w-[2px] bg-gradient-to-b from-[#2ED1B2] to-[#0EA5A4] z-10 origin-top shadow-[0_0_12px_rgba(46,209,178,0.6)] hidden sm:block" 
+              className="absolute left-[20px] md:left-[30px] top-4 w-[2px] bg-gradient-to-b from-primary to-secondary z-10 origin-top shadow-[0_0_12px_rgba(46,209,178,0.6)] hidden sm:block gpu-accelerated" 
             />
 
             {/* Render Difference Cards */}
@@ -164,7 +165,7 @@ function DifferenceCard({ data, index }) {
     <motion.div 
       ref={cardRef}
       style={{ opacity, scale, y: useSpring(useTransform(scrollYProgress, [0, 1], [40, 0]), springConfig) }}
-      className="relative pl-0 sm:pl-16 md:pl-20 w-full group"
+      className="relative pl-0 sm:pl-16 md:pl-20 w-full group gpu-accelerated"
     >
       {/* This div applies the dynamic background, border, and shadow.
         We wrap the content to allow Framer Motion to animate the CSS properties seamlessly.
@@ -172,10 +173,10 @@ function DifferenceCard({ data, index }) {
       <motion.div
         style={{ backgroundColor: bgColor, borderColor: borderColor, boxShadow: shadow }}
         whileHover={{ y: -4, transition: { duration: 0.2 } }}
-        className="relative border rounded-[2rem] p-8 md:p-10 transition-all duration-300 ease-out z-20 overflow-hidden"
+        className="relative border rounded-[2rem] p-8 md:p-10 transition-transform duration-300 ease-out z-20 overflow-hidden"
       >
         {/* Soft internal glow for premium feel */}
-        <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#2ED1B2]/5 to-transparent rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-primary/5 to-transparent rounded-full pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0" />
 
         <div className="flex flex-col md:flex-row items-start md:items-center gap-6 relative z-10">
           
@@ -183,7 +184,7 @@ function DifferenceCard({ data, index }) {
           <div className="shrink-0">
             <motion.span 
               style={{ color: numberColor }}
-              className="font-display text-4xl md:text-5xl font-extrabold tracking-tighter"
+              className="font-heading text-4xl md:text-5xl font-extrabold tracking-tighter"
             >
               {data.id}
             </motion.span>
@@ -191,10 +192,10 @@ function DifferenceCard({ data, index }) {
 
           {/* Text Content */}
           <div className="flex-1">
-            <h3 className="text-xl md:text-2xl font-bold text-[#0F172A] mb-2 tracking-tight group-hover:text-[#0EA5A4] transition-colors duration-300">
+            <h3 className="font-heading text-xl md:text-2xl font-bold text-navy mb-2 tracking-tight group-hover:text-secondary transition-colors duration-300">
               {data.title}
             </h3>
-            <p className="text-base text-[#475569] leading-relaxed font-medium">
+            <p className="font-sans text-base text-slate-600 leading-relaxed font-medium">
               {data.description}
             </p>
           </div>

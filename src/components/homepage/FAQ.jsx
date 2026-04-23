@@ -1,11 +1,12 @@
+// @ts-nocheck
 "use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Plus } from "lucide-react";
 
-// Import your global motion system (adjust path as needed)
-import { staggerContainer, fadeUp, premiumEase, smoothEase } from "../../utils/animations";
+// 🟢 Using clean path aliases configured in jsconfig.json
+import { staggerContainer, fadeUp, premiumEase, smoothEase } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
 // High-Converting FAQ Data
@@ -44,7 +45,7 @@ export default function FAQ() {
 
   return (
     // TIGHTENED: Reduced section py-24/32 to py-16/20
-    <section className="relative py-16 md:py-20 bg-[#F8F9FB] selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
+    <section className="relative py-16 md:py-20 bg-background selection:bg-primary/20 selection:text-secondary">
       <div className="max-w-4xl mx-auto px-6 lg:px-12 relative z-10">
         
         {/* Header Section */}
@@ -54,12 +55,12 @@ export default function FAQ() {
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
           // TIGHTENED: Reduced mb-16/20 to mb-10/12
-          className="text-center mb-10 md:mb-12"
+          className="text-center mb-10 md:mb-12 gpu-accelerated"
         >
           {/* TIGHTENED: Reduced mb-6 to mb-4 */}
-          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-slate-200 mb-4 shadow-sm">
-            <span className="w-2 h-2 rounded-full bg-[#0EA5A4] animate-pulse" />
-            <span className="text-[11px] font-bold tracking-widest text-slate-600 uppercase">
+          <motion.div variants={fadeUp} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-border mb-4 shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-secondary animate-pulse" />
+            <span className="font-sans text-[11px] font-bold tracking-widest text-slate-600 uppercase">
               Clarity & Transparency
             </span>
           </motion.div>
@@ -67,14 +68,14 @@ export default function FAQ() {
           {/* TIGHTENED: Reduced mb-5 to mb-3 */}
           <motion.h2 
             variants={fadeUp}
-            className="text-4xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight mb-3 leading-tight"
+            className="font-heading text-4xl md:text-5xl font-extrabold text-navy tracking-tight mb-3 leading-tight text-balance"
           >
             Common Questions.
           </motion.h2>
 
           <motion.p 
             variants={fadeUp}
-            className="text-lg text-slate-500 font-medium max-w-xl mx-auto"
+            className="font-sans text-lg text-slate-500 font-medium max-w-xl mx-auto text-balance"
           >
             Everything you need to know about our process, pricing, and how we scale your business.
           </motion.p>
@@ -87,7 +88,7 @@ export default function FAQ() {
           viewport={{ once: true, margin: "-50px" }}
           variants={staggerContainer}
           // TIGHTENED: Reduced space-y-4 to space-y-3
-          className="space-y-3"
+          className="space-y-3 gpu-accelerated"
         >
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index;
@@ -110,8 +111,8 @@ export default function FAQ() {
                 >
                   <motion.h3 
                     layout="position"
-                    className={`text-lg font-bold transition-colors duration-300 pr-8 ${
-                      isOpen ? "text-[#0EA5A4]" : "text-[#0F172A] group-hover:text-[#0EA5A4]"
+                    className={`font-heading text-lg font-bold transition-colors duration-300 pr-8 ${
+                      isOpen ? "text-secondary" : "text-navy group-hover:text-secondary"
                     }`}
                   >
                     {faq.question}
@@ -124,10 +125,10 @@ export default function FAQ() {
                     transition={{ duration: 0.4, ease: premiumEase }}
                     // TIGHTENED: Slightly smaller icon container (w-7 h-7)
                     className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center transition-colors duration-300 ${
-                      isOpen ? "bg-[#2ED1B2]/10" : "bg-slate-100 group-hover:bg-[#2ED1B2]/10"
+                      isOpen ? "bg-primary/10" : "bg-slate-100 group-hover:bg-primary/10"
                     }`}
                   >
-                    <Plus className={`w-4 h-4 transition-colors duration-300 ${isOpen ? "text-[#0EA5A4]" : "text-slate-500 group-hover:text-[#0EA5A4]"}`} />
+                    <Plus className={`w-4 h-4 transition-colors duration-300 ${isOpen ? "text-secondary" : "text-slate-500 group-hover:text-secondary"}`} />
                   </motion.div>
                 </button>
 
@@ -141,7 +142,7 @@ export default function FAQ() {
                       transition={{ duration: 0.4, ease: smoothEase }}
                     >
                       {/* TIGHTENED: Reduced bottom padding to pb-5/6 and top margin to mt-1 */}
-                      <div className="px-6 pb-5 md:px-8 md:pb-6 pt-0 text-slate-500 font-medium leading-relaxed text-[15px] border-t border-slate-50 mt-1">
+                      <div className="px-6 pb-5 md:px-8 md:pb-6 pt-0 text-slate-500 font-sans font-medium leading-relaxed text-[15px] border-t border-slate-50 mt-1">
                         <motion.p
                           initial={{ y: -10, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}

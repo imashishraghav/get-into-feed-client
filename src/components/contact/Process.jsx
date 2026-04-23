@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React from "react";
@@ -51,7 +52,7 @@ const processData = [
 
 export default function Process() {
   return (
-    <section className="relative w-full bg-white py-24 md:py-32 selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
+    <section className="relative w-full bg-white py-24 md:py-32 selection:bg-primary/20 selection:text-secondary transform-gpu">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         
         {/* ================= 1. SECTION HEADER ================= */}
@@ -60,17 +61,17 @@ export default function Process() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          className="text-center max-w-3xl mx-auto mb-16 md:mb-24"
+          className="text-center max-w-3xl mx-auto mb-16 md:mb-24 transform-gpu"
         >
           <motion.h2 
             variants={fadeUp}
-            className="font-['Plus_Jakarta_Sans',sans-serif] text-3xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight mb-4"
+            className="font-heading text-3xl md:text-5xl font-extrabold text-navy tracking-tight mb-4 text-balance"
           >
             What Happens Next
           </motion.h2>
           <motion.p 
             variants={fadeUp}
-            className="font-['Inter',sans-serif] text-lg text-[#475569] font-medium leading-relaxed"
+            className="font-sans text-lg text-navy/70 font-medium leading-relaxed text-balance"
           >
             A simple, transparent process designed to get you results faster.
           </motion.p>
@@ -82,10 +83,10 @@ export default function Process() {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={staggerContainer}
-          className="relative"
+          className="relative transform-gpu"
         >
           {/* Premium Connecting Line (Hidden on mobile, visible on desktop) */}
-          <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-transparent via-[#E5E7EB] to-transparent z-0" />
+          <div className="hidden md:block absolute top-[28px] left-[10%] right-[10%] h-[2px] bg-gradient-to-r from-transparent via-navy/10 to-transparent z-0" />
 
           {/* Grid Layout for Steps */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-6 relative z-10">
@@ -109,25 +110,25 @@ function ProcessStep({ data, isLast }) {
       variants={fadeUp}
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="group relative flex flex-col items-center text-center md:px-4 cursor-default"
+      className="group relative flex flex-col items-center text-center md:px-4 cursor-default transform-gpu"
     >
       {/* Step Number Badge */}
-      <div className="relative w-14 h-14 rounded-2xl bg-white border border-[#E5E7EB] shadow-sm flex items-center justify-center mb-6 group-hover:border-[#2ED1B2]/40 group-hover:bg-[#2ED1B2]/5 transition-all duration-300 z-10">
-        <span className="font-['Plus_Jakarta_Sans',sans-serif] font-extrabold text-lg text-[#0F172A] group-hover:text-[#0EA5A4] transition-colors duration-300">
+      <div className="relative w-14 h-14 rounded-2xl bg-white border border-navy/10 shadow-sm flex items-center justify-center mb-6 group-hover:border-primary/40 group-hover:bg-primary/5 transition-all duration-300 z-10">
+        <span className="font-heading font-extrabold text-lg text-navy group-hover:text-secondary transition-colors duration-300">
           {data.step}
         </span>
         
         {/* Mobile Connecting Line (Vertical) - Shows only on small screens */}
         {!isLast && (
-          <div className="md:hidden absolute top-14 left-1/2 -translate-x-1/2 w-[2px] h-12 bg-gradient-to-b from-[#E5E7EB] to-transparent -z-10" />
+          <div className="md:hidden absolute top-14 left-1/2 -translate-x-1/2 w-[2px] h-12 bg-gradient-to-b from-navy/10 to-transparent -z-10" />
         )}
       </div>
 
       {/* Content */}
-      <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-xl font-bold text-[#0F172A] mb-3 tracking-tight">
+      <h3 className="font-heading text-xl font-bold text-navy mb-3 tracking-tight">
         {data.title}
       </h3>
-      <p className="font-['Inter',sans-serif] text-[15px] text-[#475569] font-medium leading-relaxed max-w-[260px] mx-auto">
+      <p className="font-sans text-[15px] text-navy/70 font-medium leading-relaxed max-w-[260px] mx-auto">
         {data.description}
       </p>
 

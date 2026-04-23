@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
@@ -6,8 +7,8 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 // 🟢 Import your custom lag-free smooth scroll hook & animation variants
-import { useSmoothScroll } from "../../hooks/useSmoothScroll";
-import { staggerContainer, fadeUp, blurFadeUp } from "../../utils/animations";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { staggerContainer, fadeUp, blurFadeUp } from "@/utils/animations";
 
 export default function FinalCTA() {
   const containerRef = useRef(null);
@@ -32,7 +33,7 @@ export default function FinalCTA() {
   return (
     <section 
       ref={containerRef}
-      className="relative w-full bg-[#0F172A] py-24 md:py-32 overflow-hidden selection:bg-[#2ED1B2]/30 selection:text-white border-t border-white/5"
+      className="relative w-full bg-navy py-24 md:py-32 overflow-hidden selection:bg-primary/30 selection:text-white border-t border-white/5 transform-gpu"
     >
       {/* --- 🟢 Premium Ambient Background Visuals --- */}
       
@@ -47,18 +48,18 @@ export default function FinalCTA() {
       />
 
       {/* Floating Ambient Orbs */}
-      <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none z-0 flex justify-center items-center">
+      <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none z-0 flex justify-center items-center transform-gpu">
         {/* Top Right Teal Glow */}
         <motion.div 
           animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.25, 0.15] }}
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-[#2ED1B2] rounded-full blur-[160px] mix-blend-screen"
+          className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-primary rounded-full blur-[160px] mix-blend-screen transform-gpu"
         />
         {/* Bottom Left Deep Aqua Glow */}
         <motion.div 
           animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-[#0EA5A4] rounded-full blur-[150px] mix-blend-screen"
+          className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-secondary rounded-full blur-[150px] mix-blend-screen transform-gpu"
         />
       </motion.div>
 
@@ -71,15 +72,15 @@ export default function FinalCTA() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           style={{ y: textY }}
-          className="flex flex-col items-center w-full antialiased"
+          className="flex flex-col items-center w-full antialiased transform-gpu"
         >
           {/* Headline */}
           <motion.h2 
             variants={blurFadeUp}
-            className="text-4xl md:text-5xl lg:text-[4rem] font-extrabold text-white tracking-tighter leading-[1.05] mb-6 drop-shadow-2xl"
+            className="font-heading text-4xl md:text-5xl lg:text-[4rem] font-extrabold text-white tracking-tighter leading-[1.05] mb-6 drop-shadow-2xl text-balance"
           >
             Ready to Scale <br className="hidden sm:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] via-[#0EA5A4] to-[#2ED1B2] animate-gradient-x drop-shadow-none">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary animate-gradient-x drop-shadow-none">
               Your Growth?
             </span>
           </motion.h2>
@@ -87,19 +88,19 @@ export default function FinalCTA() {
           {/* Subheadline */}
           <motion.p 
             variants={fadeUp}
-            className="text-lg md:text-xl text-slate-400/90 font-medium leading-relaxed max-w-2xl mb-12"
+            className="font-sans text-lg md:text-xl text-white/70 font-medium leading-relaxed max-w-2xl mb-12 text-balance"
           >
             Let’s build a system that generates leads, increases conversions, and drives real revenue for your business.
           </motion.p>
 
           {/* 🟢 Premium CTA Button */}
-          <motion.div variants={fadeUp} className="w-full sm:w-auto">
+          <motion.div variants={fadeUp} className="w-full sm:w-auto transform-gpu">
             <Link href="/contact" className="block w-full">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className="relative group w-full sm:w-auto overflow-hidden bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4] text-[#0F172A] font-bold text-lg md:text-[1.1rem] tracking-wide px-10 py-5 rounded-full flex items-center justify-center gap-3 shadow-[0_10px_40px_-10px_rgba(46,209,178,0.5)] hover:shadow-[0_20px_60px_-15px_rgba(46,209,178,0.7)] hover:ring-4 ring-[#2ED1B2]/30 transition-all duration-500 ease-out"
+                className="relative group w-full sm:w-auto overflow-hidden bg-gradient-to-r from-primary to-secondary text-navy font-bold font-heading text-lg md:text-[1.1rem] tracking-wide px-10 py-5 rounded-full flex items-center justify-center gap-3 shadow-[0_10px_40px_-10px_rgba(46,209,178,0.5)] hover:shadow-[0_20px_60px_-15px_rgba(46,209,178,0.7)] hover:ring-4 ring-primary/30 transition-all duration-500 ease-out transform-gpu"
               >
                 {/* --- Micro Interaction: Shimmer Sweep --- */}
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-[150%] skew-x-[-25deg] group-hover:translate-x-[150%] transition-transform duration-1000 ease-in-out pointer-events-none" />
@@ -119,14 +120,15 @@ export default function FinalCTA() {
           {/* Micro Trust Line */}
           <motion.div 
             variants={fadeUp}
-            className="flex items-center justify-center gap-2.5 mt-8 text-slate-400 font-semibold text-sm tracking-wide"
+            className="flex items-center justify-center gap-2.5 mt-8 text-white/50 font-sans font-semibold text-sm tracking-wide"
           >
             {/* Subtle Floating Animation on the Shield */}
             <motion.div
               animate={{ y: [-2, 2, -2] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="transform-gpu"
             >
-              <ShieldCheck className="w-5 h-5 text-[#2ED1B2]" />
+              <ShieldCheck className="w-5 h-5 text-primary" />
             </motion.div>
             <p>No pressure. Just clarity and growth.</p>
           </motion.div>

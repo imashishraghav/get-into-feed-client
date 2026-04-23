@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React from "react";
@@ -85,7 +86,7 @@ export default function BlogGrid({ posts = [] }) {
   const displayPosts = posts.length > 0 ? posts : fallbackPosts;
 
   return (
-    <section className="relative w-full bg-[#F8F9FB] py-12 md:py-20 selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
+    <section className="relative w-full bg-background py-12 md:py-20 selection:bg-primary/20 selection:text-secondary transform-gpu">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         
         <motion.div
@@ -93,10 +94,10 @@ export default function BlogGrid({ posts = [] }) {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={staggerContainer}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10 transform-gpu"
         >
           {displayPosts.map((post, index) => (
-            <BlogCard key={index} post={post} />
+            <BlogCard key={post.id || index} post={post} />
           ))}
         </motion.div>
 
@@ -114,19 +115,19 @@ function BlogCard({ post }) {
       variants={fadeUp}
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="h-full"
+      className="h-full transform-gpu"
     >
-      <Link href={`/blog/${post.slug}`} className="group flex flex-col h-full bg-white rounded-3xl border border-[#E5E7EB] shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] hover:border-black/10 overflow-hidden transition-all duration-500 ease-out outline-none">
+      <Link href={`/blog/${post.slug}`} className="group flex flex-col h-full bg-white rounded-3xl border border-navy/10 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] hover:border-navy/20 overflow-hidden transition-all duration-500 ease-out outline-none">
         
         {/* ================= TOP: IMAGE ================= */}
         <div className="relative w-full aspect-[16/10] overflow-hidden bg-slate-100">
           <img 
             src={post.imageUrl || post.image} // Handles standard or Sanity resolved URL
             alt={post.title}
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-[800ms] ease-[0.16,1,0.3,1]"
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-[800ms] ease-[0.16,1,0.3,1] transform-gpu"
           />
           {/* Subtle overlay to enhance contrast */}
-          <div className="absolute inset-0 bg-[#0F172A]/[0.02] group-hover:bg-transparent transition-colors duration-500" />
+          <div className="absolute inset-0 bg-navy/[0.02] group-hover:bg-transparent transition-colors duration-500" />
         </div>
 
         {/* ================= BOTTOM: CONTENT ================= */}
@@ -134,11 +135,11 @@ function BlogCard({ post }) {
           
           {/* Meta Row: Category & Time */}
           <div className="flex items-center justify-between gap-4 mb-4">
-            <span className="font-['Plus_Jakarta_Sans',sans-serif] text-xs font-bold text-[#0F172A] uppercase tracking-widest bg-slate-100 px-3 py-1.5 rounded-md">
+            <span className="font-heading text-xs font-bold text-navy uppercase tracking-widest bg-slate-100 px-3 py-1.5 rounded-md">
               {post.category}
             </span>
             {post.readTime && (
-              <div className="flex items-center gap-1.5 text-slate-400 font-['Inter',sans-serif] text-[13px] font-medium">
+              <div className="flex items-center gap-1.5 text-navy/50 font-sans text-[13px] font-medium">
                 <Clock className="w-3.5 h-3.5" />
                 <span>{post.readTime}</span>
               </div>
@@ -146,21 +147,21 @@ function BlogCard({ post }) {
           </div>
 
           {/* Title */}
-          <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-xl md:text-2xl font-extrabold text-[#0F172A] leading-tight mb-3 group-hover:text-[#0EA5A4] transition-colors duration-300 line-clamp-2">
+          <h3 className="font-heading text-xl md:text-2xl font-extrabold text-navy leading-tight mb-3 group-hover:text-secondary transition-colors duration-300 line-clamp-2">
             {post.title}
           </h3>
 
           {/* Excerpt */}
-          <p className="font-['Inter',sans-serif] text-[#475569] font-medium leading-relaxed mb-8 line-clamp-3 flex-grow">
+          <p className="font-sans text-navy/70 font-medium leading-relaxed mb-8 line-clamp-3 flex-grow">
             {post.excerpt}
           </p>
 
           {/* Premium CTA Row */}
-          <div className="mt-auto flex items-center justify-between border-t border-[#E5E7EB]/60 pt-5">
-            <span className="font-['Plus_Jakarta_Sans',sans-serif] font-bold text-[#0F172A] text-[15px]">
+          <div className="mt-auto flex items-center justify-between border-t border-navy/10 pt-5">
+            <span className="font-heading font-bold text-navy text-[15px]">
               Read More
             </span>
-            <div className="w-8 h-8 rounded-full bg-[#F8F9FB] text-[#0F172A] flex items-center justify-center group-hover:bg-[#0F172A] group-hover:text-white transition-all duration-300">
+            <div className="w-8 h-8 rounded-full bg-background text-navy flex items-center justify-center group-hover:bg-navy group-hover:text-white transition-all duration-300">
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300" />
             </div>
           </div>

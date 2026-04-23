@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
@@ -6,8 +7,8 @@ import { Quote, Star } from "lucide-react";
 import Image from "next/image";
 
 // 🟢 Import your custom lag-free smooth scroll hook & animation utils
-import { useSmoothScroll } from "../../hooks/useSmoothScroll";
-import { staggerContainer, fadeUp } from "../../utils/animations";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { staggerContainer, fadeUp } from "@/utils/animations";
 
 /* // ============================================================================
 // 🔌 SANITY CMS INTEGRATION (SERVER COMPONENT USAGE)
@@ -64,7 +65,7 @@ const fallbackTestimonials = [
 const renderStars = () => (
   <div className="flex gap-1 mb-5">
     {Array.from({ length: 5 }).map((_, i) => (
-      <Star key={i} size={16} className="fill-[#2ED1B2] text-[#2ED1B2]" />
+      <Star key={i} size={16} className="fill-primary text-primary" />
     ))}
   </div>
 );
@@ -72,7 +73,7 @@ const renderStars = () => (
 const FallbackAvatar = ({ name, className }) => {
   const initial = name ? name.charAt(0).toUpperCase() : "U";
   return (
-    <div className={`rounded-full bg-gradient-to-br from-[#F8F9FB] to-[#E5E7EB] border border-[#E5E7EB] flex items-center justify-center text-[#0EA5A4] font-bold shadow-sm ${className}`}>
+    <div className={`rounded-full bg-gradient-to-br from-background to-navy/5 border border-navy/10 flex items-center justify-center text-secondary font-heading font-bold shadow-sm ${className}`}>
       {initial}
     </div>
   );
@@ -99,12 +100,12 @@ export default function TestimonialsSection({ testimonials = fallbackTestimonial
   return (
     <section 
       ref={containerRef}
-      className="relative w-full bg-[#F8F9FB] py-16 md:py-24 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]"
+      className="relative w-full bg-background py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary transform-gpu"
     >
       {/* Subtle Background Glow */}
       <motion.div 
         style={{ y: bgDrift }}
-        className="absolute top-1/2 left-[-10%] w-[500px] h-[500px] bg-gradient-to-tr from-[#2ED1B2]/10 to-transparent rounded-full blur-[140px] pointer-events-none -z-0" 
+        className="absolute top-1/2 left-[-10%] w-[500px] h-[500px] bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-[140px] pointer-events-none -z-0 transform-gpu" 
       />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
@@ -116,27 +117,27 @@ export default function TestimonialsSection({ testimonials = fallbackTestimonial
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           style={{ y: sectionLift }}
-          className="text-center max-w-2xl mx-auto mb-16 md:mb-20 flex flex-col items-center"
+          className="text-center max-w-2xl mx-auto mb-16 md:mb-20 flex flex-col items-center transform-gpu"
         >
-          <motion.div variants={fadeUp} className="mb-6">
-            <span className="text-[11px] font-bold tracking-[0.2em] text-[#0EA5A4] uppercase bg-white px-4 py-2 rounded-full border border-[#E5E7EB] shadow-sm">
+          <motion.div variants={fadeUp} className="mb-6 transform-gpu">
+            <span className="font-heading text-[11px] font-bold tracking-[0.2em] text-secondary uppercase bg-white px-4 py-2 rounded-full border border-navy/10 shadow-sm">
               Testimonials
             </span>
           </motion.div>
 
           <motion.h2 
             variants={fadeUp}
-            className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-[#0F172A] tracking-tight leading-[1.1] mb-6"
+            className="font-heading text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-navy tracking-tight leading-[1.1] mb-6 text-balance transform-gpu"
           >
             Trusted by Brands That <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
               Want Real Growth.
             </span>
           </motion.h2>
 
           <motion.p 
             variants={fadeUp}
-            className="text-lg md:text-xl text-[#475569] font-medium leading-relaxed"
+            className="font-sans text-lg md:text-xl text-navy/70 font-medium leading-relaxed text-balance transform-gpu"
           >
             Here’s what our clients say about working with our systems.
           </motion.p>
@@ -150,7 +151,7 @@ export default function TestimonialsSection({ testimonials = fallbackTestimonial
           viewport={{ once: true, margin: "-50px" }}
           style={{ y: sectionLift }}
           /* Mobile: Swipeable Carousel | Desktop: 3-Column Grid */
-          className="flex overflow-x-auto md:grid md:grid-cols-3 gap-6 pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide -mx-6 px-6 md:mx-0 md:px-0"
+          className="flex overflow-x-auto md:grid md:grid-cols-3 gap-6 pb-8 md:pb-0 snap-x snap-mandatory scrollbar-hide -mx-6 px-6 md:mx-0 md:px-0 transform-gpu"
         >
           {displayData.map((testimonial, index) => (
             <TestimonialCard key={testimonial._id || index} data={testimonial} index={index} />
@@ -173,24 +174,24 @@ function TestimonialCard({ data, index }) {
     <motion.div
       variants={fadeUp}
       whileHover={{ y: -6, transition: hoverTransition }} // 🟢 FIX APPLIED HERE
-      className="group relative bg-white border border-[#E5E7EB] rounded-3xl p-8 min-w-[85vw] sm:min-w-[400px] md:min-w-0 snap-center transition-all duration-300 ease-out hover:border-[#2ED1B2]/40 hover:shadow-[0_20px_40px_-10px_rgba(46,209,178,0.12)] flex flex-col h-full overflow-hidden shrink-0 md:shrink"
+      className="group relative bg-white border border-navy/10 rounded-3xl p-8 min-w-[85vw] sm:min-w-[400px] md:min-w-0 snap-center transition-all duration-300 ease-out hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 flex flex-col h-full overflow-hidden shrink-0 md:shrink transform-gpu"
     >
       {/* Decorative Quote Icon Background */}
-      <Quote className="absolute top-6 right-6 text-[#F8F9FB] w-16 h-16 rotate-180 transition-transform duration-500 group-hover:scale-110 z-0" />
+      <Quote className="absolute top-6 right-6 text-navy/5 w-16 h-16 rotate-180 transition-transform duration-500 group-hover:scale-110 z-0 transform-gpu" />
 
       {/* Premium Top Border Glow on Hover */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10" />
 
       <div className="relative z-10 flex flex-col flex-1">
         {renderStars()}
         
-        <blockquote className="text-[#475569] text-base md:text-[17px] leading-relaxed font-medium mb-8 flex-1">
+        <blockquote className="font-sans text-navy/70 text-base md:text-[17px] leading-relaxed font-medium mb-8 flex-1">
           "{data.testimonial}"
         </blockquote>
         
         {/* Client Details Section */}
-        <div className="flex items-center gap-4 pt-6 border-t border-[#E5E7EB]/50 mt-auto">
-          <div className="shrink-0 w-12 h-12 relative rounded-full overflow-hidden border border-[#E5E7EB] shadow-sm">
+        <div className="flex items-center gap-4 pt-6 border-t border-navy/10 mt-auto">
+          <div className="shrink-0 w-12 h-12 relative rounded-full overflow-hidden border border-navy/10 shadow-sm">
             {data.imageUrl ? (
               <Image src={data.imageUrl} alt={data.name} fill className="object-cover" />
             ) : (
@@ -198,11 +199,11 @@ function TestimonialCard({ data, index }) {
             )}
           </div>
           <div>
-            <h4 className="text-[15px] font-bold text-[#0F172A] leading-tight">
+            <h4 className="font-heading text-[15px] font-bold text-navy leading-tight">
               {data.name}
             </h4>
-            <p className="text-xs font-semibold text-[#475569] mt-1">
-              {data.role} <span className="text-[#2ED1B2] mx-1">•</span> {data.company}
+            <p className="font-sans text-xs font-semibold text-navy/60 mt-1">
+              {data.role} <span className="text-primary mx-1">•</span> {data.company}
             </p>
           </div>
         </div>

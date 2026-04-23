@@ -3,132 +3,164 @@
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowRight, Flame, TrendingUp, Target } from "lucide-react";
 
-// 🟢 Custom Hook (Lag-free smooth scroll integration)
+// 🟢 Import your custom animation variants & smooth scroll hook
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { staggerContainer, fadeUp } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
-// Advanced Framer Motion Variants
+// Fallback Contextual Data (Runs only if Sanity is empty or loading)
 // ----------------------------------------------------------------------
-const staggerContainer = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.2, delayChildren: 0.1 },
+const fallbackCaseStudies = [
+  {
+    _id: "1",
+    title: "Eldeco 7 Peaks",
+    slug: "eldeco-7-peaks",
+    industry: "Real Estate",
+    problem: "Needed a massive influx of high-intent buyers for a new luxury project launch.",
+    result: "+120% Qualified Leads",
+    shortDescription: "Orchestrated comprehensive lead generation campaigns optimizing meta tags and landing pages.",
+    imageUrl: null, 
+    icon: TrendingUp
   },
-};
+  {
+    _id: "2",
+    title: "Sobha Sector 1",
+    slug: "sobha-sector-1",
+    industry: "Luxury Real Estate",
+    problem: "Struggling to maintain profitability while scaling digital ad spend.",
+    result: "3.5x Average ROAS",
+    shortDescription: "Managed aggressive digital marketing updates and seamless performance scaling.",
+    imageUrl: null,
+    icon: Target
+  }
+];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 300, damping: 25 } 
-  },
-};
-
-const blurFadeUp = {
-  hidden: { opacity: 0, y: 40, filter: "blur(12px)" },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    filter: "blur(0px)", 
-    transition: { duration: 0.8, ease: "easeOut" } // Changed from array to string
-  },
-};
-
-export default function FinalCTA() {
+export default function CaseStudiesGrid({ caseStudies = fallbackCaseStudies }) {
   const containerRef = useRef(null);
 
-  // 🟢 Smooth Scroll tracking context
-  const { scrollY } = useSmoothScroll(); 
-
-  // 🟢 Localized Scroll Tracking for Parallax Background
+  // 🟢 Subtle Scroll Parallax for the entire grid
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start end", "end start"], 
+    offset: ["start end", "end start"],
   });
 
-  // Smooth spring parallax for the background glow
-  const glowY = useTransform(scrollYProgress, [0, 1], [-120, 120]);
-  const springGlowY = useSpring(glowY, { stiffness: 80, damping: 30 });
+  const rawY = useTransform(scrollYProgress, [0, 1], [40, -40]);
+  const gridLift = useSpring(rawY, { stiffness: 90, damping: 25 });
+
+  // 🟢 Connection Logic: Agar Sanity se data aaya hai, toh use karo, warna fallback dikhao
+  const displayData = caseStudies?.length > 0 ? caseStudies : fallbackCaseStudies;
 
   return (
     <section 
-      ref={containerRef} 
-      className="relative w-full bg-[#0F172A] py-28 md:py-32 overflow-hidden selection:bg-[#2ED1B2]/30 selection:text-white"
+      ref={containerRef}
+      className="relative w-full bg-background py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary transform-gpu"
     >
-      {/* ================= 1. BACKGROUND EFFECTS ================= */}
-      <motion.div 
-        style={{ y: springGlowY }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] md:w-[700px] md:h-[700px] bg-gradient-to-br from-[#2ED1B2]/20 to-[#0EA5A4]/5 rounded-full blur-[100px] md:blur-[120px] pointer-events-none"
-      />
-      
-      {/* SVG Noise Texture for Premium Matte Finish */}
-      <div className="absolute inset-0 opacity-[0.03] mix-blend-overlay pointer-events-none bg-[url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E')]" />
+      <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
 
-      {/* ================= 2. MAIN CONTENT ================= */}
-      <motion.div 
-        variants={staggerContainer}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        className="relative z-10 max-w-3xl mx-auto px-6 md:px-12 text-center flex flex-col items-center w-full gpu-accelerated"
-      >
-          
-        {/* Headline */}
-        <motion.h2 
-          variants={blurFadeUp}
-          className="font-['Plus_Jakarta_Sans',sans-serif] text-4xl md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.15] mb-6 text-balance"
+        {/* ================= GRID LAYOUT ================= */}
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          style={{ y: gridLift }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 transform-gpu"
         >
-          Let’s Start Building Your <br className="hidden md:block" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
-            Growth System
-          </span>
-        </motion.h2>
-
-        {/* Subheadline */}
-        <motion.p 
-          variants={fadeUp}
-          className="font-['Inter',sans-serif] text-lg md:text-xl text-slate-300 font-medium leading-relaxed max-w-2xl mb-10 text-balance"
-        >
-          Fill out the form and let’s create a strategy that drives real results for your business.
-        </motion.p>
-
-        {/* CTA Button (Scrolls back up to the form smoothly) */}
-        <motion.div variants={fadeUp} className="relative mb-8 w-full sm:w-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4] rounded-2xl blur-xl opacity-30 scale-95 pointer-events-none" />
-          
-          <Link href="#contact-form" className="relative block focus:outline-none scroll-smooth">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="group relative w-full sm:w-auto flex items-center justify-center gap-3 bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4] text-[#0F172A] px-8 py-5 rounded-2xl font-bold text-lg tracking-wide shadow-lg overflow-hidden"
-            >
-              {/* Shine effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[150%] skew-x-[-25deg] group-hover:translate-x-[150%] transition-transform duration-700 ease-out" />
-              
-              <span className="relative z-10 font-['Plus_Jakarta_Sans',sans-serif]">Submit & Book Strategy Call</span>
-              <ArrowRight className="relative z-10 w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300 ease-out" />
-            </motion.button>
-          </Link>
+          {displayData.map((data, index) => (
+            <CaseStudyCard key={data._id || index} data={data} index={index} />
+          ))}
         </motion.div>
 
-        {/* Micro Trust Line */}
-        <motion.div 
-          variants={fadeUp}
-          className="flex items-center justify-center gap-2 text-slate-400 opacity-90"
-        >
-          <ShieldCheck className="w-4 h-4 text-[#2ED1B2]" />
-          <span className="font-['Inter',sans-serif] text-sm font-medium">
-            No pressure. Just clarity and honest insights.
-          </span>
-        </motion.div>
-
-      </motion.div>
+      </div>
     </section>
+  );
+}
+
+// ----------------------------------------------------------------------
+// 🟢 Individual Case Study Card Component
+// ----------------------------------------------------------------------
+function CaseStudyCard({ data, index }) {
+  const hoverTransition = { type: "spring", stiffness: 300, damping: 25 };
+  const ResultIcon = data.icon || Flame; // Fallback icon if none provided
+  
+  // 🟢 Sanity URL Fix: Handles both string and object slug formats
+  const slugPath = data.slug?.current || data.slug;
+
+  return (
+    <motion.div
+      variants={fadeUp}
+      whileHover={{ y: -8, scale: 1.02, transition: hoverTransition }}
+      className="group relative bg-white border border-navy/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-500 ease-out flex flex-col h-full transform-gpu"
+    >
+      {/* 🟢 FIXED: URL path is now /casestudies/ matching your folder structure */}
+      <Link href={`/casestudies/${slugPath}`} className="flex flex-col h-full focus:outline-none">
+        
+        {/* 🟢 1. IMAGE CONTAINER */}
+        <div className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden border-b border-navy/10">
+          {data.imageUrl ? (
+            <Image 
+              src={data.imageUrl} 
+              alt={data.title} 
+              fill 
+              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out transform-gpu"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-navy to-navy/90 flex items-center justify-center p-8 group-hover:scale-105 transition-transform duration-700 ease-in-out transform-gpu">
+               <div className="absolute inset-0 bg-[url('/grid-pattern-light.svg')] opacity-20" style={{ backgroundSize: '24px 24px' }} />
+               <span className="relative z-10 text-white/50 font-heading font-bold text-xl tracking-widest uppercase text-center">{data.title}</span>
+            </div>
+          )}
+          
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        </div>
+
+        {/* 🟢 2. CONTENT CONTAINER */}
+        <div className="p-6 md:p-8 flex flex-col flex-1">
+          
+          {/* Industry Tag */}
+          <div className="mb-4">
+            <span className="inline-block text-[11px] font-bold tracking-[0.15em] text-secondary uppercase bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-md shadow-sm">
+              {data.industry || 'Digital Marketing'}
+            </span>
+          </div>
+
+          {/* Title & Short Description */}
+          <h3 className="text-2xl font-heading font-extrabold text-navy mb-3 leading-tight group-hover:text-secondary transition-colors duration-300">
+            {data.title}
+          </h3>
+          <p className="font-sans text-navy/70 text-[15px] leading-relaxed mb-6 line-clamp-2">
+            {data.shortDescription || 'Read how we transformed this brand.'}
+          </p>
+
+          <div className="mt-auto">
+            {/* 🟢 3. HIGHLIGHT RESULT BLOCK */}
+            <div className="bg-background border border-navy/5 rounded-2xl p-4 flex items-center gap-3 mb-6 transition-colors duration-300 group-hover:bg-primary/5 group-hover:border-primary/20">
+              <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0 text-primary">
+                <ResultIcon className="w-5 h-5" strokeWidth={2.5} />
+              </div>
+              <div className="flex flex-col">
+                <span className="font-sans text-[11px] font-bold text-navy/50 uppercase tracking-wider mb-0.5">
+                  Core Result
+                </span>
+                <span className="font-heading text-lg font-extrabold text-navy">
+                  {data.result || 'Massive Growth'}
+                </span>
+              </div>
+            </div>
+
+            {/* 🟢 4. CTA */}
+            <div className="flex items-center text-sm font-bold font-heading text-navy group-hover:text-primary transition-colors duration-300">
+              <span>View Case Study</span>
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1.5 transition-transform duration-300 ease-out" />
+            </div>
+          </div>
+          
+        </div>
+      </Link>
+    </motion.div>
   );
 }

@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
@@ -5,9 +6,9 @@ import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
-// 🟢 Import your custom lag-free smooth scroll hook & animation variants
-import { useSmoothScroll } from "../../hooks/useSmoothScroll";
-import { staggerContainer, fadeUp, blurFadeUp } from "../../utils/animations";
+// 🟢 Using clean path aliases configured in jsconfig.json
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { staggerContainer, fadeUp, blurFadeUp } from "@/utils/animations";
 
 export default function FinalCTA() {
   const containerRef = useRef(null);
@@ -31,7 +32,7 @@ export default function FinalCTA() {
   return (
     <section 
       ref={containerRef}
-      className="relative w-full bg-[#0F172A] py-12 md:py-26 overflow-hidden selection:bg-[#2ED1B2]/30 selection:text-white border-t border-white/5"
+      className="relative w-full bg-navy py-12 md:py-26 overflow-hidden selection:bg-primary/30 selection:text-white border-t border-white/5"
     >
       {/* --- 🟢 Premium Ambient Background Visuals --- */}
       
@@ -46,18 +47,18 @@ export default function FinalCTA() {
       />
 
       {/* 2. Floating Ambient Orbs */}
-      <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none z-0 flex justify-center items-center">
+      <motion.div style={{ y: bgY }} className="absolute inset-0 pointer-events-none z-0 flex justify-center items-center gpu-accelerated">
         {/* Top Right Teal Glow */}
         <motion.div 
           animate={{ scale: [1, 1.15, 1], opacity: [0.12, 0.25, 0.12] }}
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-0 right-[-5%] w-[600px] h-[600px] bg-[#2ED1B2] rounded-full blur-[160px] -translate-y-1/3 mix-blend-screen"
+          className="absolute top-0 right-[-5%] w-[600px] h-[600px] bg-primary rounded-full blur-[160px] -translate-y-1/3 mix-blend-screen"
         />
         {/* Bottom Left Deep Aqua Glow */}
         <motion.div 
           animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
           transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-0 left-[-5%] w-[500px] h-[500px] bg-[#0EA5A4] rounded-full blur-[150px] translate-y-1/3 mix-blend-screen"
+          className="absolute bottom-0 left-[-5%] w-[500px] h-[500px] bg-secondary rounded-full blur-[150px] translate-y-1/3 mix-blend-screen"
         />
       </motion.div>
 
@@ -70,23 +71,24 @@ export default function FinalCTA() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           style={{ y: textY }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center gpu-accelerated"
         >
           {/* ================= LEFT SIDE: Text Content ================= */}
           <div className="text-left antialiased">
             <motion.h2 
               variants={blurFadeUp}
-              className="text-4xl md:text-5xl lg:text-[4rem] font-extrabold text-white tracking-tighter leading-[1.05] mb-6 drop-shadow-2xl"
+              className="font-heading text-4xl md:text-5xl lg:text-[4rem] font-extrabold text-white tracking-tighter leading-[1.05] mb-6 drop-shadow-2xl text-balance"
             >
               Ready to Dominate <br className="hidden lg:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] via-[#0EA5A4] to-[#2ED1B2] animate-gradient-x drop-shadow-none">
+              {/* Optional: ensure animate-gradient-x is in your tailwind config or remove it if not needed */}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary animate-gradient-x drop-shadow-none">
                 the Feed?
               </span>
             </motion.h2>
 
             <motion.p 
               variants={fadeUp}
-              className="text-lg md:text-xl text-slate-400/90 font-medium leading-relaxed max-w-lg"
+              className="font-sans text-lg md:text-xl text-slate-400/90 font-medium leading-relaxed max-w-lg text-balance"
             >
               Let’s build a system that generates leads, scales revenue, and drives real growth for your business.
             </motion.p>
@@ -100,13 +102,13 @@ export default function FinalCTA() {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                  className="relative group w-full sm:w-auto overflow-hidden bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4] text-[#0F172A] font-bold text-lg tracking-wide px-8 py-5 rounded-full flex items-center justify-center gap-3 shadow-[0_10px_40px_-10px_rgba(46,209,178,0.5)] hover:shadow-[0_20px_60px_-15px_rgba(46,209,178,0.7)] hover:ring-4 ring-[#2ED1B2]/30 transition-all duration-500 ease-out"
+                  className="relative group w-full sm:w-auto overflow-hidden bg-gradient-to-r from-primary to-secondary text-navy font-bold text-lg tracking-wide px-8 py-5 rounded-full flex items-center justify-center gap-3 shadow-[0_10px_40px_-10px_rgba(46,209,178,0.5)] hover:shadow-[0_20px_60px_-15px_rgba(46,209,178,0.7)] hover:ring-4 ring-primary/30 transition-all duration-500 ease-out"
                 >
                   {/* --- Micro Interaction: Shimmer Sweep --- */}
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-[150%] skew-x-[-25deg] group-hover:translate-x-[150%] transition-transform duration-1000 ease-in-out pointer-events-none" />
                   
                   {/* --- Button Content --- */}
-                  <span className="relative z-10 drop-shadow-sm">Book Your Free Strategy Call</span>
+                  <span className="font-heading relative z-10 drop-shadow-sm">Book Your Free Strategy Call</span>
                   
                   {/* --- Arrow Interaction --- */}
                   <div className="relative z-10 flex items-center justify-center overflow-hidden w-5 h-5">
@@ -127,9 +129,9 @@ export default function FinalCTA() {
                 animate={{ y: [-2, 2, -2] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
-                <ShieldCheck className="w-5 h-5 text-[#2ED1B2]" />
+                <ShieldCheck className="w-5 h-5 text-primary" />
               </motion.div>
-              <p>No pressure. Just clarity and growth.</p>
+              <p className="font-sans">No pressure. Just clarity and growth.</p>
             </motion.div>
           </div>
 

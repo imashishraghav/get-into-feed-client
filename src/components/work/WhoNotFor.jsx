@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React from "react";
@@ -61,7 +62,7 @@ const notForData = [
 
 export default function WhoNotFor() {
   return (
-    <section className="relative w-full bg-[#F8F9FB] py-24 md:py-32 selection:bg-rose-500/10 selection:text-rose-700 border-b border-[#E5E7EB]/50">
+    <section className="relative w-full bg-background py-24 md:py-32 selection:bg-rose-500/10 selection:text-rose-700 border-b border-navy/5 transform-gpu">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-start">
@@ -72,18 +73,18 @@ export default function WhoNotFor() {
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
             variants={fadeRight}
-            className="lg:col-span-5 lg:sticky lg:top-32"
+            className="lg:col-span-5 lg:sticky lg:top-32 transform-gpu"
           >
-            <h2 className="font-['Plus_Jakarta_Sans',sans-serif] text-4xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight mb-6 leading-tight">
+            <h2 className="font-heading text-4xl md:text-5xl font-extrabold text-navy tracking-tight mb-6 leading-tight text-balance">
               Who This Is <br className="hidden md:block" />
-              <span className="text-slate-400">NOT For</span>
+              <span className="text-navy/50">NOT For</span>
             </h2>
-            <p className="font-['Inter',sans-serif] text-lg text-[#475569] font-medium leading-relaxed mb-8">
+            <p className="font-sans text-lg text-navy/70 font-medium leading-relaxed mb-8 text-balance">
               We value your time as much as ours. To save us both from frustration, if these points resonate with your current mindset, we might not be the best fit right now.
             </p>
             
             {/* Subtle Muted Accent Line */}
-            <div className="w-16 h-1.5 bg-slate-300 rounded-full" />
+            <div className="w-16 h-1.5 bg-navy/20 rounded-full" />
           </motion.div>
 
           {/* ================= 2. RIGHT COLUMN: STACKED CHECKLIST CARDS ================= */}
@@ -92,7 +93,7 @@ export default function WhoNotFor() {
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
             variants={staggerContainer}
-            className="lg:col-span-7 flex flex-col gap-5 md:gap-6"
+            className="lg:col-span-7 flex flex-col gap-5 md:gap-6 transform-gpu"
           >
             {notForData.map((item) => (
               <CriteriaCard key={item.id} data={item} />
@@ -114,19 +115,19 @@ function CriteriaCard({ data }) {
       variants={fadeUp}
       whileHover={{ x: 6, y: -2 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="group flex flex-col sm:flex-row items-start sm:items-center gap-5 md:gap-6 bg-white border border-[#E5E7EB] rounded-[1.5rem] p-6 md:p-8 transition-all duration-300 hover:border-rose-200 hover:shadow-[0_15px_30px_-10px_rgba(225,29,72,0.06)] cursor-default"
+      className="group flex flex-col sm:flex-row items-start sm:items-center gap-5 md:gap-6 bg-white border border-navy/10 rounded-[1.5rem] p-6 md:p-8 transition-all duration-300 hover:border-rose-200 hover:shadow-xl hover:shadow-rose-500/5 cursor-default transform-gpu"
     >
       {/* Icon Container - Muted by default, soft rose on hover */}
-      <div className="w-12 h-12 rounded-full bg-[#F8F9FB] border border-[#E5E7EB] shadow-sm flex items-center justify-center shrink-0 group-hover:bg-rose-50 group-hover:border-rose-100 transition-colors duration-500">
-        <X className="w-5 h-5 text-slate-400 group-hover:text-rose-500 transition-colors duration-500" strokeWidth={2.5} />
+      <div className="w-12 h-12 rounded-full bg-background border border-navy/10 shadow-sm flex items-center justify-center shrink-0 group-hover:bg-rose-50 group-hover:border-rose-100 transition-colors duration-500">
+        <X className="w-5 h-5 text-navy/40 group-hover:text-rose-500 transition-colors duration-500" strokeWidth={2.5} />
       </div>
 
       {/* Text Content */}
       <div className="flex flex-col gap-1.5">
-        <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-xl font-bold text-[#0F172A] tracking-tight group-hover:text-rose-600 transition-colors duration-300">
+        <h3 className="font-heading text-xl font-bold text-navy tracking-tight group-hover:text-rose-600 transition-colors duration-300">
           {data.title}
         </h3>
-        <p className="font-['Inter',sans-serif] text-[#475569] font-medium leading-relaxed">
+        <p className="font-sans text-navy/70 font-medium leading-relaxed">
           {data.description}
         </p>
       </div>

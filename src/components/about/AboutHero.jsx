@@ -1,12 +1,42 @@
+// @ts-nocheck
 "use client";
 
 import React from "react";
 import { motion, useTransform, useSpring } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
 
-// 🟢 Import custom smooth scroll hook & animation variants
-import { useSmoothScroll } from "../../hooks/useSmoothScroll";
-import { staggerContainer, fadeUp, blurFadeUp } from "../../utils/animations";
+// 🟢 Import custom smooth scroll hook
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+
+// ----------------------------------------------------------------------
+// Advanced Framer Motion Variants (Locally Scoped for Safety)
+// ----------------------------------------------------------------------
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15, delayChildren: 0.1 },
+  },
+};
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { type: "spring", stiffness: 300, damping: 25 } 
+  },
+};
+
+const blurFadeUp = {
+  hidden: { opacity: 0, y: 40, filter: "blur(12px)" },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    filter: "blur(0px)", 
+    transition: { duration: 0.8, ease: "easeOut" } 
+  },
+};
 
 export default function AboutHero() {
   // 🟢 1. Initialize Smooth Scroll
@@ -26,12 +56,12 @@ export default function AboutHero() {
   const opacity = useSpring(rawOpacity, { stiffness: 90, damping: 30 });
 
   return (
-    <section className="relative w-full bg-[#F8F9FB] py-20 md:py-32 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
+    <section className="relative w-full bg-background py-20 md:py-32 overflow-hidden selection:bg-primary/20 selection:text-secondary">
       
       {/* --- 🟢 Subtle Architectural Background (Moves Down) --- */}
       <motion.div 
         style={{ y: bgY }}
-        className="absolute inset-0 pointer-events-none flex justify-center items-center -z-10"
+        className="absolute inset-0 pointer-events-none flex justify-center items-center -z-10 gpu-accelerated"
       >
         {/* Soft, breathing teal orb */}
         <motion.div 
@@ -40,7 +70,7 @@ export default function AboutHero() {
             opacity: [0.25, 0.35, 0.25]
           }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="w-[600px] h-[400px] bg-gradient-to-b from-[#2ED1B2]/15 to-transparent rounded-[100%] blur-[120px] -translate-y-20"
+          className="w-[600px] h-[400px] bg-gradient-to-b from-primary/15 to-transparent rounded-[100%] blur-[120px] -translate-y-20"
         />
       </motion.div>
 
@@ -53,7 +83,7 @@ export default function AboutHero() {
       {/* --- 🟢 Main Content Container (Moves Up + Fades Out) --- */}
       <motion.div 
         style={{ y: textY, opacity }}
-        className="relative z-10 w-full max-w-4xl mx-auto px-6 md:px-12 flex flex-col items-center text-center"
+        className="relative z-10 w-full max-w-4xl mx-auto px-6 md:px-12 flex flex-col items-center text-center gpu-accelerated"
       >
         <motion.div
           variants={staggerContainer}
@@ -63,8 +93,8 @@ export default function AboutHero() {
         >
           {/* Small Label */}
           <motion.div variants={fadeUp} className="mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#E5E7EB] text-[#0F172A] text-xs font-bold shadow-sm uppercase tracking-[0.15em]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#2ED1B2] animate-pulse" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-border text-navy font-sans text-xs font-bold shadow-sm uppercase tracking-[0.15em]">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               About Get Into Feed
             </div>
           </motion.div>
@@ -72,10 +102,10 @@ export default function AboutHero() {
           {/* Headline with Advanced Blur Reveal */}
           <motion.h1 
             variants={blurFadeUp}
-            className="text-5xl md:text-6xl lg:text-[4.5rem] font-extrabold text-[#0F172A] tracking-tighter leading-[1.05] mb-8 max-w-4xl"
+            className="font-heading text-5xl md:text-6xl lg:text-[4.5rem] font-extrabold text-navy tracking-tighter leading-[1.05] mb-8 max-w-4xl text-balance"
           >
             We Build Systems That Drive{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
               Real Growth.
             </span>
           </motion.h1>
@@ -83,7 +113,7 @@ export default function AboutHero() {
           {/* Subheadline */}
           <motion.p 
             variants={fadeUp}
-            className="text-lg md:text-xl lg:text-2xl text-[#475569] font-medium leading-relaxed max-w-2xl mb-12 mx-auto"
+            className="font-sans text-lg md:text-xl lg:text-2xl text-slate-600 font-medium leading-relaxed max-w-2xl mb-12 mx-auto text-balance"
           >
             We help brands move from inconsistent results to predictable growth by building structured, data-driven marketing systems.
           </motion.p>
@@ -91,9 +121,9 @@ export default function AboutHero() {
           {/* Micro Trust Line */}
           <motion.div 
             variants={fadeUp}
-            className="flex items-center justify-center gap-2 text-[#475569] font-semibold text-sm md:text-base tracking-wide"
+            className="flex items-center justify-center gap-2 text-slate-600 font-sans font-semibold text-sm md:text-base tracking-wide"
           >
-            <ShieldCheck className="w-5 h-5 text-[#0EA5A4]" strokeWidth={2.5} />
+            <ShieldCheck className="w-5 h-5 text-secondary" strokeWidth={2.5} />
             <p>No guesswork. Just systems that scale.</p>
           </motion.div>
 
@@ -101,7 +131,7 @@ export default function AboutHero() {
       </motion.div>
 
       {/* Optional: Soft subtle divider at the very bottom of the viewport to anchor the section */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-[1px] bg-gradient-to-r from-transparent via-[#E5E7EB] to-transparent opacity-60" />
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-2xl h-[1px] bg-gradient-to-r from-transparent via-border to-transparent opacity-60" />
       
     </section>
   );

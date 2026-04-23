@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Settings2, X, Cookie, ShieldCheck, ChevronDown, ChevronUp, Info, CheckCircle2 } from 'lucide-react';
+import { Settings2, X, ShieldCheck, ChevronDown, ChevronUp, Info, CheckCircle2 } from 'lucide-react';
 
 const CONSENT_VERSION = "1.0";
 const STORAGE_KEY = 'gif_cookie_consent';
@@ -65,7 +65,6 @@ export default function CookieBanner() {
   const applyConsent = useCallback((prefs) => {
     if (typeof window === "undefined") return;
 
-    // Google Analytics (Gtag) Control
     if (window.gtag) {
       window.gtag('consent', 'update', {
         'analytics_storage': prefs.performance ? 'granted' : 'denied',
@@ -73,7 +72,6 @@ export default function CookieBanner() {
       });
     }
 
-    // Meta Pixel (Fbq) Control
     if (window.fbq) {
       if (prefs.targeting) window.fbq('consent', 'grant');
       else window.fbq('consent', 'revoke');
@@ -93,7 +91,6 @@ export default function CookieBanner() {
       } catch (e) { console.error("Consent Error", e); }
     }
     
-    // Show banner with delay if no consent found
     const timer = setTimeout(() => setIsVisible(true), 2000);
     return () => clearTimeout(timer);
   }, [applyConsent]);
@@ -162,19 +159,24 @@ export default function CookieBanner() {
             
             {/* VIEW 1: COMPACT BANNER */}
             {view === 'banner' && (
-              <div className="pointer-events-auto w-full max-w-[850px] bg-navy/95 backdrop-blur-2xl border border-white/10 shadow-glass rounded-3xl p-4 md:p-3 flex flex-col md:flex-row items-center gap-4 relative overflow-hidden">
+              <div className="pointer-events-auto w-full max-w-[850px] bg-navy/95 backdrop-blur-2xl border border-white/10 shadow-glass rounded-3xl p-4 md:p-3 flex flex-col md:flex-row items-center gap-4 relative overflow-hidden gpu-accelerated">
                 <div className="absolute top-0 left-0 w-full h-full bg-teal-gradient opacity-[0.03] pointer-events-none" />
 
                 <div className="flex items-center gap-4 flex-1 md:pl-3 relative z-10">
-                  <div className="hidden sm:flex w-10 h-10 rounded-full bg-primary/10 border border-primary/20 items-center justify-center shrink-0">
-                     <Cookie className="w-5 h-5 text-primary" />
+                  {/* 🟢 FIXED LOGO: Transparent, Glossy (Glassmorphism), SVG Support */}
+                  <div className="hidden sm:flex w-10 h-10 rounded-xl bg-white/5 border border-white/10 backdrop-blur-md items-center justify-center shrink-0 overflow-hidden shadow-[0_4px_12px_rgba(0,0,0,0.1)] p-1.5 transition-all">
+                    <img 
+                      src="/gif.svg" 
+                      alt="Get Into Feed Logo" 
+                      className="w-full h-full object-contain drop-shadow-[0_0_8px_rgba(46,209,178,0.4)]" 
+                    />
                   </div>
-                  <p className="text-white/80 text-[13px] font-sans leading-relaxed">
+                  <p className="text-white/80 text-[13px] font-sans leading-relaxed mr-6 md:mr-0">
                     We use cookies to optimize lead generation systems and track performance. By clicking "Accept All", you agree to our data processing.
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto shrink-0 relative z-10">
+                <div className="flex items-center gap-2 md:gap-3 w-full md:w-auto shrink-0 relative z-10 font-sans">
                   <button onClick={() => setView('settings')} className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-full text-slate-400 hover:text-white hover:bg-white/5 font-bold text-xs transition-all">
                     <Settings2 className="w-4 h-4" /> Settings
                   </button>
@@ -184,7 +186,18 @@ export default function CookieBanner() {
                   <button onClick={() => handleSaveConsent('accept_all')} className="flex-1 md:flex-none px-6 py-2.5 rounded-full bg-primary text-navy font-bold text-xs hover:bg-[#4df287] transition-all shadow-glow whitespace-nowrap">
                     Accept All
                   </button>
+                  
+                  {/* Desktop Close (X) Icon */}
+                  <div className="hidden md:block w-[1px] h-6 bg-white/10 mx-1"></div>
+                  <button onClick={() => setIsVisible(false)} className="hidden md:flex p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer" aria-label="Dismiss">
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
+
+                {/* Mobile Absolute Close (X) Icon */}
+                <button onClick={() => setIsVisible(false)} className="absolute top-3 right-3 md:hidden p-1.5 bg-white/5 text-slate-400 hover:text-white rounded-full cursor-pointer z-20">
+                  <X className="w-4 h-4" />
+                </button>
               </div>
             )}
 
@@ -192,7 +205,7 @@ export default function CookieBanner() {
             {view === 'settings' && (
               <motion.div 
                 layoutId="cookieModal"
-                className="pointer-events-auto w-full max-w-[700px] bg-white border border-border shadow-soft rounded-[2.5rem] flex flex-col relative overflow-hidden font-sans"
+                className="pointer-events-auto w-full max-w-[700px] bg-white border border-border shadow-soft rounded-[2.5rem] flex flex-col relative overflow-hidden font-sans gpu-accelerated"
                 style={{ maxHeight: '85vh' }}
               >
                 <div className="p-6 md:p-8 pb-4 border-b border-border flex justify-between items-center bg-background/50 backdrop-blur-xl">
@@ -223,14 +236,14 @@ export default function CookieBanner() {
                   {activeTab === 'declaration' ? (
                     <div className="space-y-4">
                       {cookieCategories.map((category) => (
-                        <div key={category.id} className="premium-card p-5 md:p-6 bg-white">
+                        <div key={category.id} className="premium-card p-5 md:p-6 bg-white border border-border rounded-2xl">
                           <div className="flex justify-between items-start mb-3">
                             <div>
-                              <h4 className="text-navy font-bold text-lg mb-1">{category.title}</h4>
-                              <p className="text-slate-500 text-xs leading-relaxed max-w-md">{category.desc}</p>
+                              <h4 className="font-heading text-navy font-bold text-lg mb-1">{category.title}</h4>
+                              <p className="font-sans text-slate-500 text-xs leading-relaxed max-w-md">{category.desc}</p>
                             </div>
                             {category.required ? (
-                              <span className="text-primary text-[10px] font-bold uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">Essential</span>
+                              <span className="font-sans text-primary text-[10px] font-bold uppercase tracking-widest bg-primary/10 px-3 py-1 rounded-full">Essential</span>
                             ) : (
                               <ToggleSwitch 
                                 isOn={preferences[category.id]} 
@@ -239,7 +252,7 @@ export default function CookieBanner() {
                             )}
                           </div>
                           
-                          <button onClick={() => toggleDetails(category.id)} className="flex items-center gap-1.5 text-[11px] font-extrabold text-navy/60 hover:text-primary transition-colors">
+                          <button onClick={() => toggleDetails(category.id)} className="font-sans flex items-center gap-1.5 text-[11px] font-extrabold text-navy/60 hover:text-primary transition-colors">
                             {expandedDetails[category.id] ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                             {expandedDetails[category.id] ? 'Hide Cookies' : `Show Details (${category.cookies.length})`}
                           </button>
@@ -247,7 +260,7 @@ export default function CookieBanner() {
                           <AnimatePresence>
                             {expandedDetails[category.id] && (
                               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="mt-4 pt-4 border-t border-border overflow-x-auto">
-                                <table className="w-full text-left text-[11px]">
+                                <table className="w-full text-left text-[11px] font-sans">
                                   <thead>
                                     <tr className="text-slate-400 uppercase tracking-tighter">
                                       <th className="pb-2 pr-4">Cookie</th>
@@ -272,7 +285,7 @@ export default function CookieBanner() {
                       ))}
                     </div>
                   ) : (
-                    <div className="space-y-6 text-slate-600 text-sm leading-relaxed">
+                    <div className="space-y-6 text-slate-600 text-sm leading-relaxed font-sans">
                       <div className="p-6 bg-primary/5 rounded-[2rem] flex gap-4 items-start">
                         <Info className="w-6 h-6 text-primary shrink-0 mt-1" />
                         <p>We use state-of-the-art tracking to ensure your marketing funnels perform at 100%. Blocking performance cookies may result in a less personalized experience and slower site performance.</p>
@@ -281,7 +294,7 @@ export default function CookieBanner() {
                   )}
                 </div>
 
-                <div className="p-6 md:p-8 bg-slate-50 border-t border-border flex flex-col sm:flex-row justify-between gap-4">
+                <div className="p-6 md:p-8 bg-slate-50 border-t border-border flex flex-col sm:flex-row justify-between gap-4 font-sans">
                   <button onClick={() => handleSaveConsent('save_custom')} className="px-8 py-3 rounded-2xl border border-border text-navy font-bold text-sm hover:bg-white transition-all">
                     Save My Choices
                   </button>

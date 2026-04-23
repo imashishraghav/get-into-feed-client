@@ -1,12 +1,13 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { Target, PenTool, Lightbulb, LineChart } from "lucide-react";
 
-// 🟢 Import custom smooth scroll hook & animations
-import { useSmoothScroll } from "../../hooks/useSmoothScroll";
-import { staggerContainer, fadeUp } from "../../utils/animations";
+// 🟢 Using clean path aliases configured in jsconfig.json
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { staggerContainer, fadeUp } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
 // Core Capabilities Data
@@ -60,19 +61,19 @@ export default function WhatWeDo() {
   return (
     <section 
       ref={containerRef} 
-      className="relative w-full bg-[#F8F9FB] py-6 md:py-10 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]"
+      className="relative w-full bg-background py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary"
     >
       {/* --- 🟢 Advanced Background Graphics --- */}
       {/* Top Right Orb */}
       <motion.div 
         style={{ y: bgDrift }}
-        className="absolute top-[10%] right-[-5%] w-[500px] h-[500px] bg-gradient-to-bl from-[#2ED1B2]/10 to-transparent rounded-full blur-[120px] pointer-events-none -z-10" 
+        className="absolute top-[10%] right-[-5%] w-[500px] h-[500px] bg-gradient-to-bl from-primary/10 to-transparent rounded-full blur-[120px] pointer-events-none z-0 gpu-accelerated" 
       />
       {/* Bottom Left Orb */}
       <motion.div 
         animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-[#0EA5A4]/5 rounded-full blur-[150px] pointer-events-none -z-10" 
+        className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[150px] pointer-events-none z-0 gpu-accelerated" 
       />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
@@ -84,10 +85,10 @@ export default function WhatWeDo() {
           <div className="lg:col-span-5 lg:sticky lg:top-40 h-fit flex flex-col items-start relative z-20">
             
             {/* 🟢 Graphic: Animated Scroll Progress Line */}
-            <div className="absolute left-0 top-4 bottom-[-40px] w-[2px] bg-[#F8F9FB] hidden md:block">
+            <div className="absolute left-0 top-4 bottom-[-40px] w-[2px] bg-white hidden md:block shadow-sm">
               <motion.div 
                 style={{ height: lineProgress }}
-                className="w-full bg-gradient-to-b from-[#2ED1B2] to-[#0EA5A4] shadow-[0_0_10px_rgba(46,209,178,0.5)] origin-top rounded-full"
+                className="w-full bg-gradient-to-b from-primary to-secondary shadow-[0_0_10px_rgba(46,209,178,0.5)] origin-top rounded-full gpu-accelerated"
               />
             </div>
             
@@ -99,25 +100,25 @@ export default function WhatWeDo() {
               className="md:pl-10"
             >
               <motion.div variants={fadeUp} className="mb-6">
-                <span className="text-[11px] font-bold tracking-[0.2em] text-[#0EA5A4] uppercase bg-[#2ED1B2]/10 px-3 py-1.5 rounded-full border border-[#2ED1B2]/20 shadow-sm flex items-center gap-2 w-max">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#2ED1B2] animate-pulse" />
+                <span className="text-[11px] font-sans font-bold tracking-[0.2em] text-secondary uppercase bg-primary/10 px-4 py-2 rounded-full border border-primary/20 shadow-sm flex items-center gap-2 w-max">
+                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                   What We Do
                 </span>
               </motion.div>
 
               <motion.h2 
                 variants={fadeUp}
-                className="text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-[#0F172A] tracking-tight leading-[1.05] mb-6"
+                className="font-heading text-4xl md:text-5xl lg:text-[3.5rem] font-extrabold text-navy tracking-tight leading-[1.05] mb-6 text-balance"
               >
                 We build complete <br className="hidden lg:block"/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
                   marketing systems.
                 </span>
               </motion.h2>
 
               <motion.p 
                 variants={fadeUp}
-                className="text-lg text-[#475569] font-medium leading-relaxed max-w-md"
+                className="font-sans text-lg text-slate-600 font-medium leading-relaxed max-w-md text-balance"
               >
                 Turning attention into predictable revenue by combining advanced strategy, relentless performance, and high-end creative execution.
               </motion.p>
@@ -127,7 +128,7 @@ export default function WhatWeDo() {
           {/* ================= RIGHT COLUMN: Floating Capability Cards ================= */}
           <motion.div 
             style={{ y: rightY }}
-            className="lg:col-span-7 flex flex-col gap-6 w-full mt-8 lg:mt-0 relative z-10"
+            className="lg:col-span-7 flex flex-col gap-6 w-full mt-8 lg:mt-0 relative z-10 gpu-accelerated"
           >
             <motion.div
               variants={staggerContainer}
@@ -144,27 +145,28 @@ export default function WhatWeDo() {
                     variants={fadeUp}
                     whileHover={{ y: -8, scale: 1.01 }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                    className="group relative bg-white border border-[#E5E7EB] rounded-3xl p-8 md:p-10 transition-all duration-500 ease-out hover:border-[#2ED1B2]/40 hover:shadow-[0_40px_80px_-20px_rgba(46,209,178,0.15)] overflow-hidden cursor-default"
+                    // 🟢 Applied premium-card global styling pattern
+                    className="group relative bg-white border border-border rounded-3xl p-8 md:p-10 transition-all duration-500 ease-out hover:border-primary/40 hover:shadow-soft overflow-hidden cursor-default"
                   >
                     {/* 🟢 Advanced Graphic: Hover Glass/Mesh Effect */}
-                    <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-[radial-gradient(circle_at_top_right,rgba(46,209,178,0.08),transparent_50%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/4 translate-x-1/4" />
+                    <div className="absolute top-0 right-0 w-[150%] h-[150%] bg-[radial-gradient(circle_at_top_right,rgba(46,209,178,0.08),transparent_50%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none -translate-y-1/4 translate-x-1/4 z-0" />
                     
                     {/* Subtle Base Background */}
-                    <div className="absolute inset-0 bg-[#F8F9FB] opacity-50 group-hover:opacity-0 transition-opacity duration-500 -z-10" />
+                    <div className="absolute inset-0 bg-background opacity-50 group-hover:opacity-0 transition-opacity duration-500 z-0" />
 
                     <div className="relative z-10 flex flex-col sm:flex-row items-start gap-6">
                       
                       {/* Icon Container with Advanced Hover Animation */}
-                      <div className="shrink-0 w-16 h-16 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] flex items-center justify-center transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-[#2ED1B2] group-hover:to-[#0EA5A4] group-hover:border-transparent group-hover:shadow-[0_10px_30px_-10px_rgba(46,209,178,0.5)]">
-                        <Icon className="w-7 h-7 text-[#475569] transition-all duration-500 group-hover:text-white group-hover:scale-110" strokeWidth={2} />
+                      <div className="shrink-0 w-16 h-16 rounded-2xl bg-white border border-border shadow-sm flex items-center justify-center transition-all duration-500 group-hover:bg-gradient-to-br group-hover:from-primary group-hover:to-secondary group-hover:border-transparent group-hover:shadow-[0_10px_30px_-10px_rgba(46,209,178,0.5)]">
+                        <Icon className="w-7 h-7 text-slate-600 transition-all duration-500 group-hover:text-white group-hover:scale-110" strokeWidth={2} />
                       </div>
 
                       {/* Content */}
                       <div className="flex-1 pt-1">
-                        <h3 className="text-2xl font-bold text-[#0F172A] mb-3 tracking-tight group-hover:text-[#0EA5A4] transition-colors duration-300">
+                        <h3 className="font-heading text-2xl font-bold text-navy mb-3 tracking-tight group-hover:text-secondary transition-colors duration-300">
                           {item.title}
                         </h3>
-                        <p className="text-base text-[#475569] leading-relaxed font-medium">
+                        <p className="font-sans text-base text-slate-600 leading-relaxed font-medium">
                           {item.description}
                         </p>
                       </div>

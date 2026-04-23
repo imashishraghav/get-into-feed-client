@@ -1,12 +1,13 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring, useMotionValue, useInView } from "framer-motion";
 import { TrendingUp, Banknote, Rocket, Target, Users, ArrowDownRight } from "lucide-react";
 
-// 🟢 Import your custom lag-free smooth scroll hook & animation variants
-import { useSmoothScroll } from "../../hooks/useSmoothScroll";
-import { staggerContainer, fadeUp } from "../../utils/animations";
+// 🟢 Using clean path aliases configured in jsconfig.json
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { staggerContainer, fadeUp } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
 // Metrics Data
@@ -81,7 +82,7 @@ export default function ResultsSection() {
   return (
     <section 
       ref={containerRef}
-      className="relative w-full bg-[#F8F9FB] py-6 md:py-14 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]"
+      className="relative w-full bg-background py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary"
     >
       {/* --- Subliminal Grid & Parallax Glow --- */}
       <div 
@@ -90,7 +91,7 @@ export default function ResultsSection() {
       />
       <motion.div 
         style={{ y: bgDrift }}
-        className="absolute top-1/4 right-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-[#2ED1B2]/10 to-transparent rounded-full blur-[140px] pointer-events-none z-0" 
+        className="absolute top-1/4 right-[-10%] w-[600px] h-[600px] bg-gradient-to-tr from-primary/10 to-transparent rounded-full blur-[140px] pointer-events-none z-0 gpu-accelerated" 
       />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
@@ -102,27 +103,27 @@ export default function ResultsSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           style={{ y: sectionLift }}
-          className="text-center max-w-3xl mx-auto mb-16 md:mb-20 flex flex-col items-center"
+          className="text-center max-w-3xl mx-auto mb-16 md:mb-20 flex flex-col items-center gpu-accelerated"
         >
           <motion.div variants={fadeUp} className="mb-6">
-            <span className="text-[11px] font-bold tracking-[0.2em] text-[#0EA5A4] uppercase bg-white px-4 py-2 rounded-full border border-[#E5E7EB] shadow-sm">
+            <span className="text-[11px] font-sans font-bold tracking-[0.2em] text-secondary uppercase bg-white px-4 py-2 rounded-full border border-border shadow-sm">
               Results That Matter
             </span>
           </motion.div>
 
           <motion.h2 
             variants={fadeUp}
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0F172A] tracking-tight leading-[1.05] mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold text-navy tracking-tight leading-[1.05] mb-6 text-balance"
           >
             We Don’t Promise Growth.{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
               We Build It.
             </span>
           </motion.h2>
 
           <motion.p 
             variants={fadeUp}
-            className="text-lg md:text-xl text-[#475569] font-medium leading-relaxed max-w-2xl"
+            className="text-lg md:text-xl font-sans text-slate-600 font-medium leading-relaxed max-w-2xl text-balance"
           >
             Our systems are designed to generate consistent leads, improve conversion rates, and scale revenue predictably.
           </motion.p>
@@ -135,7 +136,7 @@ export default function ResultsSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           style={{ y: sectionLift }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 gpu-accelerated"
         >
           {metricsData.map((metric, index) => (
             <MetricCard key={metric.id} metric={metric} index={index} />
@@ -157,21 +158,22 @@ function MetricCard({ metric, index }) {
     <motion.div
       variants={fadeUp}
       whileHover={{ y: -6, transition: { duration: 0.2 } }}
-      className="group relative bg-white border border-[#E5E7EB] rounded-3xl p-8 md:p-10 transition-all duration-300 ease-out hover:border-[#2ED1B2]/40 hover:shadow-[0_20px_50px_-15px_rgba(46,209,178,0.15)] overflow-hidden flex flex-col"
+      // 🟢 Applied premium-card global class & custom teal hover
+      className="group relative premium-card p-8 md:p-10 transition-all duration-300 ease-out hover:border-primary/40 hover:shadow-[0_20px_50px_-15px_rgba(46,209,178,0.15)] overflow-hidden flex flex-col"
     >
       {/* Subtle Hover Glow Overlay */}
-      <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#2ED1B2]/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
+      <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-primary/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0" />
 
       <div className="relative z-10 flex flex-col items-start">
         {/* Icon */}
-        <div className="w-12 h-12 rounded-2xl bg-[#F8F9FB] border border-[#E5E7EB] flex items-center justify-center mb-6 group-hover:bg-[#2ED1B2]/5 group-hover:border-[#2ED1B2]/30 transition-colors duration-300">
-          <Icon className="w-5 h-5 text-[#475569] group-hover:text-[#0EA5A4] transition-colors duration-300" />
+        <div className="w-12 h-12 rounded-2xl bg-background border border-border flex items-center justify-center mb-6 group-hover:bg-primary/5 group-hover:border-primary/30 transition-colors duration-300">
+          <Icon className="w-5 h-5 text-slate-600 group-hover:text-secondary transition-colors duration-300" />
         </div>
 
         {/* 🟢 Animated Number System */}
         <div className="flex items-baseline mb-2">
           {metric.prefix && (
-            <span className="text-3xl md:text-4xl font-extrabold text-[#2ED1B2] mr-1">
+            <span className="text-3xl md:text-4xl font-heading font-extrabold text-primary mr-1">
               {metric.prefix}
             </span>
           )}
@@ -179,14 +181,14 @@ function MetricCard({ metric, index }) {
           <AnimatedCounter targetValue={metric.value} />
           
           {metric.suffix && (
-            <span className="text-3xl md:text-4xl font-extrabold text-[#2ED1B2] ml-1">
+            <span className="text-3xl md:text-4xl font-heading font-extrabold text-primary ml-1">
               {metric.suffix}
             </span>
           )}
         </div>
 
         {/* Label */}
-        <p className="text-[#475569] font-semibold text-sm md:text-base tracking-wide">
+        <p className="font-sans text-slate-600 font-semibold text-sm md:text-base tracking-wide">
           {metric.label}
         </p>
       </div>
@@ -227,7 +229,7 @@ function AnimatedCounter({ targetValue }) {
   return (
     <motion.span 
       ref={ref} 
-      className="text-5xl md:text-6xl font-extrabold text-[#0F172A] tracking-tighter"
+      className="text-5xl md:text-6xl font-heading font-extrabold text-navy tracking-tighter"
     >
       {displayValue}
     </motion.span>

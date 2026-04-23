@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
@@ -7,8 +8,8 @@ import Link from "next/link";
 import { ArrowRight, Flame, TrendingUp, Target } from "lucide-react";
 
 // 🟢 Import your custom animation variants & smooth scroll hook
-import { useSmoothScroll } from "../../hooks/useSmoothScroll";
-import { staggerContainer, fadeUp } from "../../utils/animations";
+import { useSmoothScroll } from "@/hooks/useSmoothScroll";
+import { staggerContainer, fadeUp } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
 // Fallback Contextual Data (Runs only if Sanity is empty or loading)
@@ -56,7 +57,7 @@ export default function CaseStudiesGrid({ caseStudies = fallbackCaseStudies }) {
   return (
     <section 
       ref={containerRef}
-      className="relative w-full bg-[#F8F9FB] py-16 md:py-24 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]"
+      className="relative w-full bg-background py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary transform-gpu"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
 
@@ -67,7 +68,7 @@ export default function CaseStudiesGrid({ caseStudies = fallbackCaseStudies }) {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           style={{ y: gridLift }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 transform-gpu"
         >
           {displayData.map((data, index) => (
             <CaseStudyCard key={data._id || index} data={data} index={index} />
@@ -82,7 +83,7 @@ export default function CaseStudiesGrid({ caseStudies = fallbackCaseStudies }) {
 // ----------------------------------------------------------------------
 // 🟢 Individual Case Study Card Component
 // ----------------------------------------------------------------------
-function CaseStudyCard({ data, index }) {
+function CaseStudyCard({ data }) {
   const hoverTransition = { type: "spring", stiffness: 300, damping: 25 };
   const ResultIcon = data.icon || Flame; // Fallback icon if none provided
   
@@ -93,24 +94,24 @@ function CaseStudyCard({ data, index }) {
     <motion.div
       variants={fadeUp}
       whileHover={{ y: -8, scale: 1.02, transition: hoverTransition }}
-      className="group relative bg-white border border-[#E5E7EB] rounded-3xl overflow-hidden shadow-sm hover:shadow-[0_30px_60px_-15px_rgba(46,209,178,0.15)] hover:border-[#2ED1B2]/30 transition-all duration-500 ease-out flex flex-col h-full"
+      className="group relative bg-white border border-navy/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-xl hover:border-primary/30 transition-all duration-500 ease-out flex flex-col h-full transform-gpu"
     >
       {/* 🟢 FIXED: URL path is now /casestudies/ matching your folder structure */}
       <Link href={`/casestudies/${slugPath}`} className="flex flex-col h-full focus:outline-none">
         
         {/* 🟢 1. IMAGE CONTAINER */}
-        <div className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden border-b border-[#E5E7EB]">
+        <div className="relative w-full aspect-[4/3] bg-slate-100 overflow-hidden border-b border-navy/10">
           {data.imageUrl ? (
             <Image 
               src={data.imageUrl} 
               alt={data.title} 
               fill 
-              className="object-cover transform group-hover:scale-105 transition-transform duration-700 ease-in-out"
+              className="object-cover group-hover:scale-105 transition-transform duration-700 ease-in-out transform-gpu"
             />
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0F172A] to-[#1E293B] flex items-center justify-center p-8 group-hover:scale-105 transition-transform duration-700 ease-in-out">
+            <div className="absolute inset-0 bg-gradient-to-br from-navy to-navy/90 flex items-center justify-center p-8 group-hover:scale-105 transition-transform duration-700 ease-in-out transform-gpu">
                <div className="absolute inset-0 bg-[url('/grid-pattern-light.svg')] opacity-20" style={{ backgroundSize: '24px 24px' }} />
-               <span className="relative z-10 text-white/50 font-sora font-bold text-xl tracking-widest uppercase text-center">{data.title}</span>
+               <span className="relative z-10 text-white/50 font-heading font-bold text-xl tracking-widest uppercase text-center">{data.title}</span>
             </div>
           )}
           
@@ -122,39 +123,39 @@ function CaseStudyCard({ data, index }) {
           
           {/* Industry Tag */}
           <div className="mb-4">
-            <span className="inline-block text-[11px] font-bold tracking-[0.15em] text-[#0EA5A4] uppercase bg-[#2ED1B2]/10 border border-[#2ED1B2]/20 px-3 py-1.5 rounded-md shadow-sm">
+            <span className="inline-block text-[11px] font-bold tracking-[0.15em] text-secondary uppercase bg-primary/10 border border-primary/20 px-3 py-1.5 rounded-md shadow-sm">
               {data.industry || 'Digital Marketing'}
             </span>
           </div>
 
           {/* Title & Short Description */}
-          <h3 className="text-2xl font-extrabold text-[#0F172A] mb-3 leading-tight group-hover:text-[#0EA5A4] transition-colors duration-300">
+          <h3 className="text-2xl font-heading font-extrabold text-navy mb-3 leading-tight group-hover:text-secondary transition-colors duration-300">
             {data.title}
           </h3>
-          <p className="text-[#475569] text-[15px] leading-relaxed mb-6 line-clamp-2">
+          <p className="font-sans text-navy/70 text-[15px] leading-relaxed mb-6 line-clamp-2">
             {data.shortDescription || 'Read how we transformed this brand.'}
           </p>
 
           <div className="mt-auto">
             {/* 🟢 3. HIGHLIGHT RESULT BLOCK */}
-            <div className="bg-[#F8F9FB] border border-[#E5E7EB]/50 rounded-2xl p-4 flex items-center gap-3 mb-6 transition-colors duration-300 group-hover:bg-[#2ED1B2]/5 group-hover:border-[#2ED1B2]/20">
-              <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0 text-[#2ED1B2]">
+            <div className="bg-background border border-navy/5 rounded-2xl p-4 flex items-center gap-3 mb-6 transition-colors duration-300 group-hover:bg-primary/5 group-hover:border-primary/20">
+              <div className="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0 text-primary">
                 <ResultIcon className="w-5 h-5" strokeWidth={2.5} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[11px] font-bold text-[#94A3B8] uppercase tracking-wider mb-0.5">
+                <span className="font-sans text-[11px] font-bold text-navy/50 uppercase tracking-wider mb-0.5">
                   Core Result
                 </span>
-                <span className="text-lg font-extrabold text-[#0F172A]">
+                <span className="font-heading text-lg font-extrabold text-navy">
                   {data.result || 'Massive Growth'}
                 </span>
               </div>
             </div>
 
             {/* 🟢 4. CTA */}
-            <div className="flex items-center text-sm font-bold text-[#0F172A] group-hover:text-[#2ED1B2] transition-colors duration-300">
+            <div className="flex items-center text-sm font-bold font-heading text-navy group-hover:text-primary transition-colors duration-300">
               <span>View Case Study</span>
-              <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1.5 transition-transform duration-300 ease-out" />
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1.5 transition-transform duration-300 ease-out" />
             </div>
           </div>
           

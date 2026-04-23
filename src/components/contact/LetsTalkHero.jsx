@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
@@ -44,7 +45,8 @@ export default function LetsTalkHero() {
   const containerRef = useRef(null);
 
   // 🟢 Smooth Scroll + Native Scroll Tracking for Parallax
-  const { scrollY } = useSmoothScroll(); 
+  useSmoothScroll(); // Initialize smooth scroll without unused variables
+  
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
@@ -62,13 +64,13 @@ export default function LetsTalkHero() {
   return (
     <section 
       ref={containerRef} 
-      className="relative w-full min-h-[90vh] flex flex-col items-center justify-center bg-[#F8F9FB] overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4] pt-28 pb-16"
+      className="relative w-full min-h-[90vh] flex flex-col items-center justify-center bg-background overflow-hidden selection:bg-primary/20 selection:text-secondary pt-28 pb-16 transform-gpu"
     >
       {/* ================= BACKGROUND EFFECTS ================= */}
       {/* Soft Teal Glowing Orb */}
       <motion.div 
         style={{ y: springOrbY }}
-        className="absolute top-[-5%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] md:w-[900px] md:h-[900px] bg-gradient-to-b from-[#2ED1B2]/10 to-transparent rounded-full blur-[120px] pointer-events-none"
+        className="absolute top-[-5%] left-1/2 -translate-x-1/2 w-[600px] h-[600px] md:w-[900px] md:h-[900px] bg-gradient-to-b from-primary/10 to-transparent rounded-full blur-[120px] pointer-events-none transform-gpu"
       />
       
       {/* Minimal Grid Texture for scale & structure */}
@@ -80,31 +82,31 @@ export default function LetsTalkHero() {
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
-        className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 text-center flex flex-col items-center"
+        className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 text-center flex flex-col items-center transform-gpu"
       >
         
         {/* 1. Welcoming Label */}
-        <motion.div variants={fadeUp} className="mb-6 md:mb-8">
-          <span className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.25em] text-[#0EA5A4] uppercase bg-white/70 backdrop-blur-md border border-[#2ED1B2]/20 px-4 py-2 rounded-full shadow-sm">
+        <motion.div variants={fadeUp} className="mb-6 md:mb-8 transform-gpu">
+          <span className="inline-flex items-center gap-2 text-[11px] font-heading font-bold tracking-[0.25em] text-secondary uppercase bg-white/70 backdrop-blur-md border border-primary/20 px-4 py-2 rounded-full shadow-sm">
             Let's Talk
           </span>
         </motion.div>
 
-        {/* 2. Main Headline (Plus Jakarta Sans) */}
+        {/* 2. Main Headline */}
         <motion.h1 
           variants={blurFadeUp}
-          className="font-['Plus_Jakarta_Sans',sans-serif] text-5xl md:text-7xl font-extrabold text-[#0F172A] tracking-tight leading-[1.1] mb-8"
+          className="font-heading text-5xl md:text-7xl font-extrabold text-navy tracking-tight leading-[1.1] mb-8 text-balance transform-gpu"
         >
           Let’s Build Your <br className="hidden md:block" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
             Growth System.
           </span>
         </motion.h1>
 
-        {/* 3. Subheadline (Inter) */}
+        {/* 3. Subheadline */}
         <motion.p 
           variants={fadeUp}
-          className="font-['Inter',sans-serif] text-lg md:text-xl text-[#475569] font-medium leading-relaxed max-w-2xl mb-12"
+          className="font-sans text-lg md:text-xl text-navy/70 font-medium leading-relaxed max-w-2xl mb-12 text-balance transform-gpu"
         >
           Tell us about your business and we’ll help you generate leads, scale your campaigns, and build predictable growth.
         </motion.p>
@@ -112,12 +114,12 @@ export default function LetsTalkHero() {
         {/* 4. Micro Trust Line (Lowers the barrier to entry) */}
         <motion.div 
           variants={fadeUp}
-          className="flex items-center justify-center gap-2.5 bg-white/60 backdrop-blur-md border border-[#E5E7EB] px-6 py-3 rounded-full shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)]"
+          className="flex items-center justify-center gap-2.5 bg-white/60 backdrop-blur-md border border-navy/10 px-6 py-3 rounded-full shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] transform-gpu"
         >
-          <div className="w-6 h-6 rounded-full bg-[#2ED1B2]/10 flex items-center justify-center shrink-0">
-            <MessageSquareHeart className="w-3.5 h-3.5 text-[#0EA5A4]" />
+          <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <MessageSquareHeart className="w-3.5 h-3.5 text-secondary" />
           </div>
-          <span className="font-['Inter',sans-serif] text-sm md:text-[15px] font-semibold text-[#475569]">
+          <span className="font-sans text-sm md:text-[15px] font-semibold text-navy/70">
             No pressure. Just clarity and honest insights.
           </span>
         </motion.div>

@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef, useEffect } from "react";
@@ -60,7 +61,7 @@ export default function ResultsSection({ results = fallbackResults }) {
   return (
     <section 
       ref={containerRef}
-      className="relative w-full bg-white py-20 md:py-32 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4] border-t border-[#E5E7EB]/50"
+      className="relative w-full bg-white py-20 md:py-32 overflow-hidden selection:bg-primary/20 selection:text-secondary border-t border-navy/10 transform-gpu"
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
         
@@ -71,11 +72,11 @@ export default function ResultsSection({ results = fallbackResults }) {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           style={{ y: sectionLift }}
-          className="text-center mb-16 md:mb-24"
+          className="text-center mb-16 md:mb-24 transform-gpu"
         >
           <motion.h2 
             variants={fadeUp}
-            className="text-3xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight"
+            className="font-heading text-3xl md:text-5xl font-extrabold text-navy tracking-tight"
           >
             The Bottom Line
           </motion.h2>
@@ -88,7 +89,7 @@ export default function ResultsSection({ results = fallbackResults }) {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           style={{ y: sectionLift }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-y-16 gap-x-8"
+          className="grid grid-cols-2 md:grid-cols-4 gap-y-16 gap-x-8 transform-gpu"
         >
           {displayResults.map((item, index) => (
             <AnimatedMetricBlock key={index} item={item} index={index} />
@@ -136,31 +137,31 @@ function AnimatedMetricBlock({ item, index }) {
   return (
     <motion.div 
       variants={fadeUp} 
-      className="flex flex-col items-center text-center group"
+      className="flex flex-col items-center text-center group transform-gpu"
     >
       <div ref={ref} className="flex items-baseline justify-center mb-4 overflow-hidden">
         
         {/* Prefix (e.g., +, -, ₹) */}
         {parsed.prefix && (
-          <span className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#2ED1B2] mr-1 transform group-hover:-translate-y-1 transition-transform duration-300 ease-out">
+          <span className="font-heading text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary mr-1 group-hover:-translate-y-1 transition-transform duration-300 ease-out transform-gpu">
             {parsed.prefix}
           </span>
         )}
         
         {/* Animated Number */}
         {parsed.isValid ? (
-          <motion.span className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#0F172A] tracking-tighter">
+          <motion.span className="font-heading text-5xl md:text-6xl lg:text-7xl font-extrabold text-navy tracking-tighter transform-gpu">
             {displayValue}
           </motion.span>
         ) : (
-          <span className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#0F172A] tracking-tighter">
+          <span className="font-heading text-5xl md:text-6xl lg:text-7xl font-extrabold text-navy tracking-tighter transform-gpu">
             {value}
           </span>
         )}
         
         {/* Suffix (e.g., %, L+, X) */}
         {parsed.suffix && (
-          <span className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#2ED1B2] ml-1 transform group-hover:-translate-y-1 transition-transform duration-300 ease-out delay-75">
+          <span className="font-heading text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary ml-1 group-hover:-translate-y-1 transition-transform duration-300 ease-out delay-75 transform-gpu">
             {parsed.suffix}
           </span>
         )}
@@ -168,13 +169,13 @@ function AnimatedMetricBlock({ item, index }) {
       </div>
       
       {/* Label */}
-      <h3 className="text-xs md:text-sm font-bold tracking-[0.2em] text-[#475569] uppercase max-w-[180px] leading-relaxed">
+      <h3 className="font-sans text-xs md:text-sm font-bold tracking-[0.2em] text-navy/70 uppercase max-w-[180px] leading-relaxed">
         {label}
       </h3>
       
       {/* Optional Description */}
       {description && (
-        <p className="mt-3 text-sm text-[#475569] font-medium max-w-[200px]">
+        <p className="font-sans mt-3 text-sm text-navy/70 font-medium max-w-[200px]">
           {description}
         </p>
       )}

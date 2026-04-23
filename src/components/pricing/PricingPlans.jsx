@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React from "react";
@@ -98,7 +99,7 @@ export default function PricingPlans({ plans = [] }) {
   const displayPlans = plans?.length > 0 ? plans : fallbackPlans;
 
   return (
-    <section className="relative w-full bg-[#F8F9FB] py-20 md:py-32 selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
+    <section className="relative w-full bg-background py-20 md:py-32 selection:bg-primary/20 selection:text-secondary transform-gpu">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
         
         <motion.div
@@ -106,7 +107,7 @@ export default function PricingPlans({ plans = [] }) {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6 xl:gap-10 items-center"
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-6 xl:gap-10 items-center transform-gpu"
         >
           {displayPlans.map((plan, index) => (
             <PricingCard key={index} plan={plan} />
@@ -129,40 +130,40 @@ function PricingCard({ plan }) {
       variants={fadeUp}
       whileHover={{ y: -8 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className={`relative flex flex-col h-full bg-white rounded-3xl p-8 lg:p-10 transition-all duration-500 ease-out 
+      className={`relative flex flex-col h-full bg-white rounded-3xl p-8 lg:p-10 transition-all duration-500 ease-out transform-gpu 
         ${isPremium 
-          ? "border-2 border-[#2ED1B2] shadow-[0_30px_60px_-15px_rgba(46,209,178,0.25)] lg:scale-105 z-20" 
-          : "border border-[#E5E7EB] shadow-sm hover:shadow-xl hover:border-[#2ED1B2]/40 z-10"
+          ? "border-2 border-primary shadow-[0_30px_60px_-15px_rgba(46,209,178,0.25)] lg:scale-105 z-20" 
+          : "border border-navy/10 shadow-sm hover:shadow-xl hover:border-primary/40 z-10"
         }`}
     >
       {/* Premium Badge */}
       {isPremium && (
-        <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4] text-[#0F172A] px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.15em] uppercase flex items-center gap-1.5 shadow-lg shadow-[#2ED1B2]/20">
-          <Star className="w-3.5 h-3.5 fill-[#0F172A]" />
+        <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-secondary text-navy px-4 py-1.5 rounded-full text-xs font-bold tracking-[0.15em] uppercase flex items-center gap-1.5 shadow-lg shadow-primary/20">
+          <Star className="w-3.5 h-3.5 fill-navy" />
           {plan.badge || "MOST POPULAR"}
         </div>
       )}
 
       {/* 1. Header Area */}
       <div className="mb-8">
-        <h3 className="font-['Plus_Jakarta_Sans',sans-serif] text-xl lg:text-2xl font-extrabold text-[#0F172A] mb-3 leading-tight">
+        <h3 className="font-heading text-xl lg:text-2xl font-extrabold text-navy mb-3 leading-tight">
           {plan.planName}
         </h3>
-        <p className="font-['Inter',sans-serif] text-[15px] text-[#475569] font-medium leading-relaxed min-h-[44px]">
+        <p className="font-sans text-[15px] text-navy/70 font-medium leading-relaxed min-h-[44px]">
           {plan.description}
         </p>
       </div>
 
       {/* 2. Price Area */}
-      <div className="mb-8 pb-8 border-b border-[#E5E7EB]">
+      <div className="mb-8 pb-8 border-b border-navy/10">
         <div className="flex items-baseline gap-1">
           {/* Handles "Custom Pricing" cleanly without showing '/month' */}
-          <span className={`font-['Plus_Jakarta_Sans',sans-serif] font-extrabold tracking-tight text-[#0F172A] ${plan.monthlyPrice.toLowerCase().includes('custom') ? 'text-3xl' : 'text-3xl md:text-4xl'}`}>
+          <span className={`font-heading font-extrabold tracking-tight text-navy ${plan.monthlyPrice.toLowerCase().includes('custom') ? 'text-3xl' : 'text-3xl md:text-4xl'}`}>
             {plan.monthlyPrice}
           </span>
         </div>
         {plan.oneTimePrice && (
-          <p className="font-['Inter',sans-serif] text-sm text-[#94A3B8] font-medium mt-2">
+          <p className="font-sans text-sm text-navy/50 font-medium mt-2">
             + {plan.oneTimePrice} setup fee
           </p>
         )}
@@ -170,7 +171,7 @@ function PricingCard({ plan }) {
 
       {/* 3. Features List */}
       <div className="flex-1 mb-10">
-        <p className="text-[13px] font-bold text-[#0F172A] uppercase tracking-wider mb-6">
+        <p className="text-[13px] font-bold text-navy uppercase tracking-wider mb-6">
           What's Included
         </p>
         <ul className="flex flex-col gap-5">
@@ -182,8 +183,8 @@ function PricingCard({ plan }) {
 
             return (
               <li key={i} className={`flex items-start gap-3 ${!isIncluded && "opacity-40"}`}>
-                <CheckCircle2 className={`w-5 h-5 shrink-0 mt-0.5 ${isIncluded ? "text-[#2ED1B2]" : "text-slate-300"}`} />
-                <span className={`font-['Inter',sans-serif] text-[15px] leading-snug ${isHighlighted ? "font-bold text-[#0F172A]" : "font-medium text-[#475569]"}`}>
+                <CheckCircle2 className={`w-5 h-5 shrink-0 mt-0.5 ${isIncluded ? "text-primary" : "text-slate-300"}`} />
+                <span className={`font-sans text-[15px] leading-snug ${isHighlighted ? "font-bold text-navy" : "font-medium text-navy/70"}`}>
                   {featureName}
                 </span>
               </li>
@@ -196,10 +197,10 @@ function PricingCard({ plan }) {
       <Link href="/contact" className="mt-auto block w-full focus:outline-none">
         <motion.button
           whileTap={{ scale: 0.96 }}
-          className={`w-full py-4 rounded-xl font-bold text-base transition-all duration-300 flex justify-center items-center gap-2 
+          className={`w-full py-4 rounded-xl font-bold font-heading text-base transition-all duration-300 flex justify-center items-center gap-2 transform-gpu 
             ${isPremium 
-              ? "bg-[#2ED1B2] text-[#0F172A] shadow-lg shadow-[#2ED1B2]/20 hover:bg-[#28B89D]" 
-              : "bg-[#0F172A] text-white hover:bg-[#1E293B]"
+              ? "bg-primary text-navy shadow-lg shadow-primary/20 hover:bg-primary/90" 
+              : "bg-navy text-white hover:bg-navy/90"
             }`}
         >
           {plan.ctaText || "Apply Now"}

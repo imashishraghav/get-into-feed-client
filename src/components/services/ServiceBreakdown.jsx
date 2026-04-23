@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
@@ -15,7 +16,7 @@ import {
 } from "lucide-react";
 
 // 🟢 Import your custom animation variants
-import { staggerContainer, fadeUp } from "../../utils/animations";
+import { staggerContainer, fadeUp } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
 // Detailed Services Data
@@ -97,7 +98,7 @@ const breakdownData = [
 
 export default function ServiceBreakdown() {
   return (
-    <section className="relative w-full bg-white py-16 md:py-24 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
+    <section className="relative w-full bg-white py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary transform-gpu">
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
         
         {/* ================= HEADER SECTION ================= */}
@@ -106,27 +107,27 @@ export default function ServiceBreakdown() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center max-w-3xl mx-auto mb-20 md:mb-32 flex flex-col items-center"
+          className="text-center max-w-3xl mx-auto mb-20 md:mb-32 flex flex-col items-center transform-gpu"
         >
-          <motion.div variants={fadeUp} className="mb-6">
-            <span className="text-[11px] font-bold tracking-[0.2em] text-[#0EA5A4] uppercase bg-[#F8F9FB] px-4 py-2 rounded-full border border-[#E5E7EB] shadow-sm">
+          <motion.div variants={fadeUp} className="mb-6 transform-gpu">
+            <span className="font-heading text-[11px] font-bold tracking-[0.2em] text-secondary uppercase bg-background px-4 py-2 rounded-full border border-navy/10 shadow-sm">
               Our Services
             </span>
           </motion.div>
 
           <motion.h2 
             variants={fadeUp}
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0F172A] tracking-tight leading-[1.1] mb-6"
+            className="font-heading text-4xl md:text-5xl lg:text-6xl font-extrabold text-navy tracking-tight leading-[1.1] mb-6 text-balance transform-gpu"
           >
             Built to Solve Real <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
               Growth Problems.
             </span>
           </motion.h2>
 
           <motion.p 
             variants={fadeUp}
-            className="text-lg md:text-xl text-[#475569] font-medium leading-relaxed"
+            className="font-sans text-lg md:text-xl text-navy/70 font-medium leading-relaxed text-balance transform-gpu"
           >
             Each service is designed to work together as part of a complete, revenue-generating growth system.
           </motion.p>
@@ -168,20 +169,20 @@ function ServiceBlock({ data, index }) {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-100px" }}
-      className="group relative flex flex-col lg:grid lg:grid-cols-2 gap-10 lg:gap-20 items-center p-8 md:p-12 lg:p-16 rounded-[2.5rem] bg-white border border-[#E5E7EB] transition-all duration-500 ease-out hover:border-[#2ED1B2]/40 hover:shadow-[0_30px_60px_-15px_rgba(46,209,178,0.12)]"
+      className="group relative flex flex-col lg:grid lg:grid-cols-2 gap-10 lg:gap-20 items-center p-8 md:p-12 lg:p-16 rounded-[2.5rem] bg-white border border-navy/10 transition-all duration-500 ease-out hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 transform-gpu"
     >
       {/* Subtle Background Hover Highlight */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#F8F9FB] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem] pointer-events-none -z-0" />
+      <div className="absolute inset-0 bg-gradient-to-br from-background to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-[2.5rem] pointer-events-none -z-0" />
 
       {/* ================= CONTENT COLUMN ================= */}
       {/* Dynamic ordering based on odd/even index */}
       <div className={`relative z-10 flex flex-col ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
         
-        <h3 className="text-3xl md:text-4xl font-extrabold text-[#0F172A] mb-5 tracking-tight group-hover:text-[#0EA5A4] transition-colors duration-300">
+        <h3 className="font-heading text-3xl md:text-4xl font-extrabold text-navy mb-5 tracking-tight group-hover:text-secondary transition-colors duration-300">
           {data.title}
         </h3>
         
-        <p className="text-lg text-[#475569] leading-relaxed font-medium mb-8">
+        <p className="font-sans text-lg text-navy/70 leading-relaxed font-medium mb-8">
           {data.description}
         </p>
 
@@ -189,8 +190,8 @@ function ServiceBlock({ data, index }) {
         <ul className="flex flex-col gap-4 mb-10">
           {data.benefits.map((benefit, i) => (
             <li key={i} className="flex items-start gap-3">
-              <CheckCircle2 className="w-6 h-6 text-[#2ED1B2] shrink-0 mt-0.5" />
-              <span className="text-[15px] md:text-base text-[#475569] font-medium leading-relaxed">
+              <CheckCircle2 className="w-6 h-6 text-primary shrink-0 mt-0.5" />
+              <span className="font-sans text-[15px] md:text-base text-navy/70 font-medium leading-relaxed">
                 {benefit}
               </span>
             </li>
@@ -200,30 +201,30 @@ function ServiceBlock({ data, index }) {
         {/* CTA Button */}
         <div>
           <Link href={data.href} className="inline-flex items-center gap-2 group/btn focus:outline-none">
-            <span className="text-lg font-bold text-[#0F172A] group-hover/btn:text-[#0EA5A4] transition-colors duration-300">
+            <span className="font-heading text-lg font-bold text-navy group-hover/btn:text-secondary transition-colors duration-300">
               Learn More
             </span>
-            <div className="w-8 h-8 rounded-full bg-[#F8F9FB] border border-[#E5E7EB] flex items-center justify-center transition-all duration-300 group-hover/btn:bg-[#2ED1B2]/10 group-hover/btn:border-[#2ED1B2]/30 group-hover/btn:translate-x-1">
-              <ArrowRight className="w-4 h-4 text-[#0F172A] group-hover/btn:text-[#0EA5A4] transition-colors duration-300" />
+            <div className="w-8 h-8 rounded-full bg-background border border-navy/10 flex items-center justify-center transition-all duration-300 group-hover/btn:bg-primary/10 group-hover/btn:border-primary/30 group-hover/btn:translate-x-1 transform-gpu">
+              <ArrowRight className="w-4 h-4 text-navy group-hover/btn:text-secondary transition-colors duration-300" />
             </div>
           </Link>
         </div>
       </div>
 
       {/* ================= VISUAL COLUMN ================= */}
-      <div className={`relative w-full h-full min-h-[300px] flex items-center justify-center rounded-[2rem] bg-[#F8F9FB] border border-[#E5E7EB]/50 overflow-hidden ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+      <div className={`relative w-full h-full min-h-[300px] flex items-center justify-center rounded-[2rem] bg-background border border-navy/5 overflow-hidden ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
         
         {/* Animated Background Mesh in the visual box */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(46,209,178,0.05),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
 
         <motion.div 
           style={{ y: floatY }} 
-          className="relative w-32 h-32 md:w-40 md:h-40 rounded-full bg-white shadow-[0_20px_40px_-10px_rgba(0,0,0,0.05)] border border-[#E5E7EB] flex items-center justify-center transition-transform duration-700 group-hover:scale-105 group-hover:shadow-[0_20px_50px_-10px_rgba(46,209,178,0.2)] group-hover:border-[#2ED1B2]/30"
+          className="relative w-32 h-32 md:w-40 md:h-40 rounded-full bg-white shadow-sm border border-navy/10 flex items-center justify-center transition-transform duration-700 group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-primary/20 group-hover:border-primary/30 transform-gpu"
         >
           {/* Subtle Glow Behind Icon */}
-          <div className="absolute inset-0 bg-[#2ED1B2]/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-primary/5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           
-          <Icon className="w-12 h-12 md:w-16 md:h-16 text-[#475569] transition-colors duration-500 group-hover:text-[#0EA5A4]" strokeWidth={1.5} />
+          <Icon className="w-12 h-12 md:w-16 md:h-16 text-navy/70 transition-colors duration-500 group-hover:text-secondary" strokeWidth={1.5} />
         </motion.div>
       </div>
 

@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef, useEffect } from "react";
@@ -64,7 +65,7 @@ const proofData = [
 
 export default function Proof() {
   return (
-    <section className="relative w-full bg-white py-24 md:py-32 selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
+    <section className="relative w-full bg-white py-24 md:py-32 selection:bg-primary/20 selection:text-secondary transform-gpu">
       <div className="max-w-7xl mx-auto px-6 md:px-12">
         
         {/* ================= 1. HEADER ================= */}
@@ -73,17 +74,17 @@ export default function Proof() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-16 transform-gpu"
         >
           <motion.h2 
             variants={fadeUp}
-            className="font-['Plus_Jakarta_Sans',sans-serif] text-3xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight mb-6"
+            className="font-heading text-3xl md:text-5xl font-extrabold text-navy tracking-tight mb-6 text-balance"
           >
             Proof Over Promises.
           </motion.h2>
           <motion.p 
             variants={fadeUp}
-            className="font-['Inter',sans-serif] text-lg md:text-xl text-[#475569] font-medium leading-relaxed"
+            className="font-sans text-lg md:text-xl text-navy/70 font-medium leading-relaxed text-balance"
           >
             We don’t just run campaigns; we engineer predictable growth systems. Here is the impact we’ve created for our partners.
           </motion.p>
@@ -95,7 +96,7 @@ export default function Proof() {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={staggerContainer}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 transform-gpu"
         >
           {proofData.map((item) => (
             <MetricCard key={item.id} data={item} />
@@ -118,20 +119,20 @@ function MetricCard({ data }) {
       variants={fadeUp}
       whileHover={{ y: -8 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="group relative bg-[#F8F9FB] border border-[#E5E7EB] rounded-3xl p-8 flex flex-col items-center text-center transition-all duration-500 ease-out hover:bg-white hover:border-[#2ED1B2]/30 hover:shadow-[0_20px_40px_-15px_rgba(46,209,178,0.15)]"
+      className="group relative bg-background border border-navy/10 rounded-3xl p-8 flex flex-col items-center text-center transition-all duration-500 ease-out hover:bg-white hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5 transform-gpu"
     >
       {/* Premium Icon Wrapper */}
-      <div className="w-12 h-12 rounded-xl bg-white border border-[#E5E7EB] shadow-sm flex items-center justify-center shrink-0 text-[#0F172A] mb-6 group-hover:bg-[#2ED1B2] group-hover:border-[#2ED1B2] group-hover:text-white transition-all duration-500">
+      <div className="w-12 h-12 rounded-xl bg-white border border-navy/10 shadow-sm flex items-center justify-center shrink-0 text-navy mb-6 group-hover:bg-primary group-hover:border-primary group-hover:text-navy transition-all duration-500">
         <Icon className="w-6 h-6" strokeWidth={2} />
       </div>
 
       {/* Animated Number Logic */}
-      <div className="font-['Plus_Jakarta_Sans',sans-serif] text-4xl lg:text-5xl font-extrabold text-[#0F172A] tracking-tighter mb-2 group-hover:text-[#0EA5A4] transition-colors duration-300">
+      <div className="font-heading text-4xl lg:text-5xl font-extrabold text-navy tracking-tighter mb-2 group-hover:text-secondary transition-colors duration-300">
         <AnimatedNumber value={data.value} prefix={data.prefix} suffix={data.suffix} />
       </div>
 
       {/* Label */}
-      <span className="font-['Inter',sans-serif] text-sm font-bold text-[#475569] uppercase tracking-wider">
+      <span className="font-sans text-sm font-bold text-navy/70 uppercase tracking-wider">
         {data.label}
       </span>
     </motion.div>

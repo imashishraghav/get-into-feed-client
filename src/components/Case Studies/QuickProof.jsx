@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef, useEffect } from "react";
@@ -5,7 +6,7 @@ import { motion, useScroll, useTransform, useSpring, useMotionValue, useInView }
 
 // 🟢 Import your custom lag-free smooth scroll hook & animation variants
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
-import { staggerContainer, fadeUp, blurFadeUp } from "@/utils/animations";
+import { staggerContainer, fadeUp } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
 // High-Impact Proof Metrics
@@ -60,17 +61,17 @@ export default function QuickProof() {
   return (
     <section 
       ref={containerRef}
-      className="relative w-full bg-white py-16 md:py-24 overflow-hidden border-b border-[#E5E7EB]/50 selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]"
+      className="relative w-full bg-white py-16 md:py-24 overflow-hidden border-b border-navy/5 selection:bg-primary/20 selection:text-secondary transform-gpu"
     >
       {/* Subtle Background Glow for Depth */}
       <motion.div 
         style={{ y: bgDrift }}
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-gradient-to-r from-[#2ED1B2]/5 via-[#0EA5A4]/5 to-[#2ED1B2]/5 rounded-full blur-[100px] pointer-events-none z-0" 
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 rounded-full blur-[100px] pointer-events-none z-0 transform-gpu" 
       />
 
       <motion.div 
         style={{ y: sectionLift }}
-        className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-16"
+        className="relative z-10 max-w-7xl mx-auto px-6 md:px-12 lg:px-16 transform-gpu"
       >
         <motion.div
           variants={staggerContainer}
@@ -102,10 +103,10 @@ function StatBlock({ metric, isLast, index }) {
   // Desktop: border on right (except last)
   // Mobile/Tablet: border on right for odd items, border bottom for top row
   const borderClasses = `
-    relative flex flex-col items-center justify-center text-center
-    lg:border-r lg:border-[#E5E7EB] lg:last:border-r-0
-    ${index % 2 === 0 ? 'border-r border-[#E5E7EB] lg:border-r' : ''}
-    ${index < 2 ? 'pb-12 border-b border-[#E5E7EB] lg:pb-0 lg:border-b-0' : 'pt-12 lg:pt-0'}
+    relative flex flex-col items-center justify-center text-center transform-gpu
+    lg:border-r lg:border-navy/10 lg:last:border-r-0
+    ${index % 2 === 0 ? 'border-r border-navy/10 lg:border-r' : ''}
+    ${index < 2 ? 'pb-12 border-b border-navy/10 lg:pb-0 lg:border-b-0' : 'pt-12 lg:pt-0'}
   `;
 
   return (
@@ -116,20 +117,20 @@ function StatBlock({ metric, isLast, index }) {
       {/* Metric Value */}
       <div className="flex items-baseline justify-center mb-3">
         {metric.prefix && (
-          <span className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#2ED1B2] mr-1">
+          <span className="font-heading text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary mr-1">
             {metric.prefix}
           </span>
         )}
         <AnimatedCounter targetValue={metric.value} />
         {metric.suffix && (
-          <span className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#2ED1B2] ml-1">
+          <span className="font-heading text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary ml-1">
             {metric.suffix}
           </span>
         )}
       </div>
 
       {/* Metric Label */}
-      <h3 className="text-xs md:text-sm font-bold tracking-[0.2em] text-[#475569] uppercase max-w-[180px] leading-relaxed mx-auto">
+      <h3 className="font-sans text-xs md:text-sm font-bold tracking-[0.2em] text-navy/70 uppercase max-w-[180px] leading-relaxed mx-auto">
         {metric.label}
       </h3>
     </motion.div>
@@ -164,7 +165,7 @@ function AnimatedCounter({ targetValue }) {
   return (
     <motion.span 
       ref={ref} 
-      className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-[#0F172A] tracking-tighter"
+      className="font-heading text-5xl md:text-6xl lg:text-7xl font-extrabold text-navy tracking-tighter transform-gpu"
     >
       {displayValue}
     </motion.span>

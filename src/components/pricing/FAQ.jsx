@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useState } from "react";
@@ -71,7 +72,7 @@ export default function FAQ() {
   };
 
   return (
-    <section className="relative w-full bg-[#F8F9FB] py-24 md:py-32 selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
+    <section className="relative w-full bg-background py-24 md:py-32 selection:bg-primary/20 selection:text-secondary transform-gpu">
       <div className="max-w-4xl mx-auto px-6 md:px-12">
         
         {/* ================= SECTION HEADER ================= */}
@@ -80,17 +81,17 @@ export default function FAQ() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={staggerContainer}
-          className="text-center mb-16 md:mb-20"
+          className="text-center mb-16 md:mb-20 transform-gpu"
         >
           <motion.h2 
             variants={fadeUp}
-            className="font-['Plus_Jakarta_Sans',sans-serif] text-3xl md:text-5xl font-extrabold text-[#0F172A] tracking-tight mb-6"
+            className="font-heading text-3xl md:text-5xl font-extrabold text-navy tracking-tight mb-6 text-balance"
           >
             Frequently Asked Questions
           </motion.h2>
           <motion.p 
             variants={fadeUp}
-            className="font-['Inter',sans-serif] text-lg md:text-xl text-[#475569] font-medium leading-relaxed max-w-2xl mx-auto"
+            className="font-sans text-lg md:text-xl text-navy/70 font-medium leading-relaxed max-w-2xl mx-auto text-balance"
           >
             Clear answers to help you make a confident decision. No fluff, just the facts about how we operate.
           </motion.p>
@@ -102,7 +103,7 @@ export default function FAQ() {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={staggerContainer}
-          className="flex flex-col gap-4"
+          className="flex flex-col gap-4 transform-gpu"
         >
           {faqs.map((faq, index) => (
             <AccordionItem 
@@ -126,15 +127,15 @@ function AccordionItem({ faq, isOpen, onClick }) {
   return (
     <motion.div 
       variants={fadeUp}
-      className={`bg-white border transition-colors duration-300 rounded-2xl overflow-hidden shadow-sm ${
-        isOpen ? "border-[#2ED1B2]/40" : "border-[#E5E7EB] hover:border-[#2ED1B2]/20"
+      className={`bg-white border transition-colors duration-300 rounded-2xl overflow-hidden shadow-sm transform-gpu ${
+        isOpen ? "border-primary/40" : "border-navy/10 hover:border-primary/20"
       }`}
     >
       <button
         onClick={onClick}
-        className="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2ED1B2]/50 group"
+        className="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 group"
       >
-        <span className="font-['Plus_Jakarta_Sans',sans-serif] text-lg md:text-xl font-bold text-[#0F172A] pr-8 group-hover:text-[#0EA5A4] transition-colors duration-300">
+        <span className="font-heading text-lg md:text-xl font-bold text-navy pr-8 group-hover:text-secondary transition-colors duration-300">
           {faq.question}
         </span>
         
@@ -142,8 +143,8 @@ function AccordionItem({ faq, isOpen, onClick }) {
         <motion.div
           animate={{ rotate: isOpen ? 180 : 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${
-            isOpen ? "bg-[#2ED1B2]/10 text-[#0EA5A4]" : "bg-slate-50 text-slate-400 group-hover:bg-[#2ED1B2]/5 group-hover:text-[#2ED1B2]"
+          className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 transform-gpu ${
+            isOpen ? "bg-primary/10 text-secondary" : "bg-slate-50 text-slate-400 group-hover:bg-primary/5 group-hover:text-primary"
           }`}
         >
           {isOpen ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
@@ -158,9 +159,10 @@ function AccordionItem({ faq, isOpen, onClick }) {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="transform-gpu"
           >
             <div className="px-6 pb-8 md:px-8 md:pb-10 pt-0">
-              <p className="font-['Inter',sans-serif] text-[#475569] font-medium leading-relaxed md:text-lg border-t border-slate-100 pt-6 mt-2">
+              <p className="font-sans text-navy/70 font-medium leading-relaxed md:text-lg border-t border-slate-100 pt-6 mt-2">
                 {faq.answer}
               </p>
             </div>

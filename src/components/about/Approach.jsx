@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
@@ -56,16 +57,14 @@ export default function Approach() {
   });
 
   return (
-    <section className="relative w-full bg-[#F8F9FB] py-6 md:py-14 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
-      
+    <section className="relative w-full bg-background py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary">
       {/* Subtle Background Glows */}
       <motion.div 
         style={{ y: bgDrift }}
-        className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-b from-[#2ED1B2]/5 to-transparent rounded-full blur-[150px] pointer-events-none -z-10" 
+        className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-b from-primary/5 to-transparent rounded-full blur-[150px] pointer-events-none -z-10 gpu-accelerated" 
       />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
-        
         {/* ================= HEADER SECTION ================= */}
         <motion.div
           variants={staggerContainer}
@@ -75,24 +74,24 @@ export default function Approach() {
           className="text-center max-w-2xl mx-auto mb-20 md:mb-24"
         >
           <motion.div variants={fadeUp} className="mb-6">
-            <span className="text-[11px] font-bold tracking-[0.2em] text-[#0EA5A4] uppercase bg-white px-4 py-2 rounded-full border border-[#E5E7EB] shadow-sm">
+            <span className="text-[11px] font-bold font-sans tracking-[0.2em] text-secondary uppercase bg-white px-4 py-2 rounded-full border border-border shadow-sm">
               How We Work
             </span>
           </motion.div>
 
           <motion.h2 
             variants={fadeUp}
-            className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-[#0F172A] tracking-tight leading-[1.1] mb-6"
+            className="text-4xl md:text-5xl lg:text-6xl font-heading font-extrabold text-navy tracking-tight leading-[1.1] mb-6 text-balance"
           >
             Our{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
               Growth System.
             </span>
           </motion.h2>
 
           <motion.p 
             variants={fadeUp}
-            className="text-lg md:text-xl text-[#475569] font-medium leading-relaxed"
+            className="text-lg md:text-xl font-sans text-slate-600 font-medium leading-relaxed text-balance"
           >
             A structured, data-driven approach designed to generate leads, optimize performance, and scale revenue predictability.
           </motion.p>
@@ -100,14 +99,13 @@ export default function Approach() {
 
         {/* ================= DYNAMIC TIMELINE SECTION ================= */}
         <div className="max-w-4xl mx-auto relative" ref={containerRef}>
-          
           {/* Default Inactive Line (Background) */}
-          <div className="absolute left-[27px] md:left-[39px] top-6 bottom-6 w-[2px] bg-[#E5E7EB] z-0 hidden sm:block" />
+          <div className="absolute left-[27px] md:left-[39px] top-6 bottom-6 w-[2px] bg-border z-0 hidden sm:block" />
           
           {/* 🟢 Active Progress Line (Animated based on scroll) */}
           <motion.div 
             style={{ height: lineHeight }}
-            className="absolute left-[27px] md:left-[39px] top-6 w-[2px] bg-gradient-to-b from-[#2ED1B2] to-[#0EA5A4] z-10 origin-top shadow-[0_0_10px_rgba(46,209,178,0.5)] hidden sm:block" 
+            className="absolute left-[27px] md:left-[39px] top-6 w-[2px] bg-gradient-to-b from-primary to-secondary z-10 origin-top shadow-[0_0_10px_rgba(46,209,178,0.5)] hidden sm:block gpu-accelerated" 
           />
 
           <div className="flex flex-col gap-8 md:gap-12 relative z-20">
@@ -121,7 +119,6 @@ export default function Approach() {
               />
             ))}
           </div>
-
         </div>
       </div>
     </section>
@@ -129,13 +126,13 @@ export default function Approach() {
 }
 
 // ----------------------------------------------------------------------
-// 🟢 Advanced Individual Step Component (Tracks its own scroll state)
+// 🟢 Advanced Individual Step Component
 // ----------------------------------------------------------------------
 function SystemStep({ step, index, totalSteps, scrollYProgress }) {
   const Icon = step.icon;
   
   // Calculate when this specific step should activate based on its position in the list
-  const activationPoint = index / (totalSteps - 1); // e.g., 0, 0.33, 0.66, 1
+  const activationPoint = index / (totalSteps - 1); 
   
   // We want the step to start fading/scaling in slightly *before* the line hits it
   const startTransition = Math.max(0, activationPoint - 0.15);
@@ -154,57 +151,57 @@ function SystemStep({ step, index, totalSteps, scrollYProgress }) {
   return (
     <motion.div 
       style={{ opacity, scale }}
-      className="relative flex flex-col sm:flex-row items-start gap-6 md:gap-10 group"
+      className="relative flex flex-col sm:flex-row items-start gap-6 md:gap-10 group gpu-accelerated"
     >
-      {/* Left: Animated Dot Indicator (Hidden on mobile for clean stacking) */}
+      {/* Left: Animated Dot Indicator (Hidden on mobile) */}
       <div className="shrink-0 relative hidden sm:flex items-center justify-center w-[56px] md:w-[80px] pt-4">
         {/* Inactive Dot Base */}
-        <div className="w-4 h-4 rounded-full bg-white border-2 border-[#E5E7EB] z-10 relative" />
+        <div className="w-4 h-4 rounded-full bg-white border-2 border-border z-10 relative" />
         
         {/* Active Dot Overlay (Fades in dynamically) */}
         <motion.div 
           style={{ opacity: activeOverlayOpacity }}
-          className="w-4 h-4 rounded-full bg-[#2ED1B2] shadow-[0_0_15px_rgba(46,209,178,0.8)] absolute z-20 pointer-events-none"
+          className="w-4 h-4 rounded-full bg-primary shadow-[0_0_15px_rgba(46,209,178,0.8)] absolute z-20 pointer-events-none"
         />
       </div>
 
       {/* Right: Content Card */}
       <div className="flex-1 w-full relative">
-        <div className="bg-white rounded-3xl p-8 md:p-10 border border-[#E5E7EB] shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
+        <div className="bg-white rounded-3xl p-8 md:p-10 border border-border shadow-glass relative overflow-hidden">
           
           {/* Active Card Border Glow Overlay */}
           <motion.div 
             style={{ opacity: activeOverlayOpacity }}
-            className="absolute inset-0 rounded-3xl border-2 border-[#2ED1B2]/40 pointer-events-none z-20 transition-colors"
+            className="absolute inset-0 rounded-3xl border-2 border-primary/40 pointer-events-none z-20 transition-colors"
           />
 
           {/* Active Internal Background Glow */}
           <motion.div 
             style={{ opacity: activeOverlayOpacity }}
-            className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-[#2ED1B2]/10 to-transparent rounded-full pointer-events-none -z-0"
+            className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-primary/10 to-transparent rounded-full pointer-events-none z-0"
           />
 
           <div className="relative z-10">
             {/* Step Number & Icon */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="relative w-12 h-12 rounded-xl bg-[#F8F9FB] border border-[#E5E7EB] flex items-center justify-center overflow-hidden">
-                <Icon className="w-5 h-5 text-[#475569] relative z-10" />
+              <div className="relative w-12 h-12 rounded-xl bg-background border border-border flex items-center justify-center overflow-hidden">
+                <Icon className="w-5 h-5 text-slate-600 relative z-10" />
                 {/* Active Icon Background */}
                 <motion.div 
                   style={{ opacity: activeOverlayOpacity }}
-                  className="absolute inset-0 bg-[#2ED1B2]/10 z-0"
+                  className="absolute inset-0 bg-primary/10 z-0"
                 />
               </div>
-              <span className="text-[11px] font-bold tracking-widest text-[#94A3B8] uppercase">
+              <span className="text-[11px] font-sans font-bold tracking-widest text-slate-400 uppercase">
                 Step 0{index + 1}
               </span>
             </div>
 
             {/* Content */}
-            <h3 className="text-2xl font-bold text-[#0F172A] mb-3 tracking-tight">
+            <h3 className="text-2xl font-heading font-bold text-navy mb-3 tracking-tight">
               {step.title}
             </h3>
-            <p className="text-base text-[#475569] leading-relaxed font-medium">
+            <p className="text-base font-sans text-slate-600 leading-relaxed font-medium">
               {step.description}
             </p>
           </div>

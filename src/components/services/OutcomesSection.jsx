@@ -1,3 +1,4 @@
+// @ts-nocheck
 "use client";
 
 import React, { useRef } from "react";
@@ -14,7 +15,7 @@ import {
 } from "lucide-react";
 
 // 🟢 Import your custom animation variants
-import { staggerContainer, fadeUp } from "../../utils/animations";
+import { staggerContainer, fadeUp } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
 // Outcomes Data
@@ -85,10 +86,10 @@ export default function OutcomesSection() {
   return (
     <section 
       ref={containerRef}
-      className="relative w-full bg-[#F8F9FB] py-16 md:py-24 overflow-hidden selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]"
+      className="relative w-full bg-background py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary transform-gpu"
     >
       {/* Subtle Background Glow for depth */}
-      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-b from-[#2ED1B2]/5 to-transparent rounded-full blur-[150px] pointer-events-none -z-0" />
+      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-gradient-to-b from-primary/5 to-transparent rounded-full blur-[150px] pointer-events-none -z-0 transform-gpu" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
         
@@ -99,27 +100,27 @@ export default function OutcomesSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           style={{ y: sectionLift }}
-          className="text-center max-w-2xl mx-auto mb-16 md:mb-20 flex flex-col items-center"
+          className="text-center max-w-2xl mx-auto mb-16 md:mb-20 flex flex-col items-center transform-gpu"
         >
-          <motion.div variants={fadeUp} className="mb-6">
-            <span className="text-[11px] font-bold tracking-[0.2em] text-[#0EA5A4] uppercase bg-white px-4 py-2 rounded-full border border-[#E5E7EB] shadow-sm">
+          <motion.div variants={fadeUp} className="mb-6 transform-gpu">
+            <span className="font-heading text-[11px] font-bold tracking-[0.2em] text-secondary uppercase bg-white px-4 py-2 rounded-full border border-navy/10 shadow-sm">
               What You Get
             </span>
           </motion.div>
 
           <motion.h2 
             variants={fadeUp}
-            className="text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-[#0F172A] tracking-tight leading-[1.1] mb-6"
+            className="font-heading text-4xl md:text-5xl lg:text-[3.25rem] font-extrabold text-navy tracking-tight leading-[1.1] mb-6 text-balance transform-gpu"
           >
             Outcomes That Drive{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2ED1B2] to-[#0EA5A4]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
               Real Growth.
             </span>
           </motion.h2>
 
           <motion.p 
             variants={fadeUp}
-            className="text-lg md:text-xl text-[#475569] font-medium leading-relaxed"
+            className="font-sans text-lg md:text-xl text-navy/70 font-medium leading-relaxed text-balance transform-gpu"
           >
             We focus on results that actually impact your bottom line — not vanity metrics that look good on paper.
           </motion.p>
@@ -132,7 +133,7 @@ export default function OutcomesSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           style={{ y: sectionLift }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 transform-gpu"
         >
           {outcomes.map((item) => (
             <OutcomeCard key={item.id} data={item} />
@@ -155,23 +156,23 @@ function OutcomeCard({ data }) {
       variants={fadeUp}
       whileHover={{ y: -6 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
-      className="group relative bg-white border border-[#E5E7EB] rounded-2xl p-8 transition-all duration-300 ease-out hover:border-[#2ED1B2]/40 hover:shadow-[0_20px_40px_-10px_rgba(46,209,178,0.12)] flex flex-col h-full overflow-hidden"
+      className="group relative bg-white border border-navy/10 rounded-2xl p-8 transition-all duration-300 ease-out hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 flex flex-col h-full overflow-hidden transform-gpu"
     >
       {/* Premium Inner Glow on Hover */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#2ED1B2]/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none transform-gpu" />
 
       <div className="relative z-10 flex flex-col items-start">
         {/* Animated Icon Container */}
-        <div className="w-12 h-12 rounded-xl bg-[#F8F9FB] border border-[#E5E7EB] flex items-center justify-center mb-6 transition-all duration-300 group-hover:bg-[#2ED1B2]/10 group-hover:border-[#2ED1B2]/30 group-hover:scale-110 origin-left">
-          <Icon className="w-5 h-5 text-[#475569] transition-colors duration-300 group-hover:text-[#0EA5A4]" strokeWidth={2} />
+        <div className="w-12 h-12 rounded-xl bg-background border border-navy/10 flex items-center justify-center mb-6 transition-all duration-300 group-hover:bg-primary/10 group-hover:border-primary/30 group-hover:scale-110 origin-left">
+          <Icon className="w-5 h-5 text-navy/70 transition-colors duration-300 group-hover:text-secondary" strokeWidth={2} />
         </div>
 
         {/* Content */}
-        <h3 className="text-xl font-bold text-[#0F172A] mb-3 tracking-tight group-hover:text-[#0EA5A4] transition-colors duration-300">
+        <h3 className="font-heading text-xl font-bold text-navy mb-3 tracking-tight group-hover:text-secondary transition-colors duration-300">
           {data.title}
         </h3>
         
-        <p className="text-[15px] text-[#475569] leading-relaxed font-medium">
+        <p className="font-sans text-[15px] text-navy/70 leading-relaxed font-medium">
           {data.description}
         </p>
       </div>
