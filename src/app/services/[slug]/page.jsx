@@ -1,15 +1,11 @@
 import { notFound } from 'next/navigation';
 import { client } from '@/sanity/lib/client';
-import ServiceClient from '@/app/services/ServiceClient';
 
-// ==========================================
-// ⚡ ISR: REAL-TIME UPDATE SYSTEM (60s)
-// ==========================================
+// 🟢 Sahi Import Path
+import ServiceClient from '@/app/services/ServiceClient'; 
+
 export const revalidate = 60;
 
-// ==========================================
-// 1. STATIC GENERATION (SSG)
-// ==========================================
 export async function generateStaticParams() {
   const query = `*[_type == "service" && defined(slug.current)]{ "slug": slug.current }`;
   const slugs = await client.fetch(query);
@@ -17,9 +13,11 @@ export async function generateStaticParams() {
 }
 
 // ==========================================
-// 2. DYNAMIC SEO METADATA
+// 🟢 FIX 1: generateMetadata mein params ko await kiya
 // ==========================================
 export async function generateMetadata({ params }) {
+  const resolvedParams = await params; // <--- NEXT.JS 16 FIX
+
   const query = `*[_type == "service" && slug.current == $slug][0]{
     seoTitle,
     seoDescription,
@@ -28,7 +26,7 @@ export async function generateMetadata({ params }) {
     "image": coverImage.asset->url
   }`;
   
-  const service = await client.fetch(query, { slug: params.slug });
+  const service = await client.fetch(query, { slug: resolvedParams.slug });
 
   if (!service) return {};
 
@@ -45,10 +43,11 @@ export async function generateMetadata({ params }) {
 }
 
 // ==========================================
-// 3. MAIN SERVER COMPONENT
+// 🟢 FIX 2: Main Component mein params ko await kiya
 // ==========================================
 export default async function ServicePage({ params }) {
-  // 🎯 CRITICAL: SANITY GROQ QUERY FOR SINGLE SERVICE
+  const resolvedParams = await params; // <--- NEXT.JS 16 FIX
+
   const query = `*[_type == "service" && slug.current == $slug][0]{
     title,
     tagline,
@@ -60,13 +59,10 @@ export default async function ServicePage({ params }) {
     seoDescription
   }`;
 
-  const data = await client.fetch(query, { slug: params.slug });
+  const data = await client.fetch(query, { slug: resolvedParams.slug });
 
-  // 🚫 ERROR HANDLING
   if (!data) notFound();
 
-  // 🚀 PASS DATA TO YOUR PREMIUM UI COMPONENT
-  // Note: Aap apne ServiceClient mein Sticky CTA implement kar sakte hain
   return (
     <main className="bg-[#F8F9FB] min-h-screen relative selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
       <ServiceClient data={data} />
