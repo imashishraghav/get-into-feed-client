@@ -1,25 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // ==========================================================================
-  // 1. CORE PERFORMANCE & CLEANLINESS
-  // ==========================================================================
+  // 🚀 1. HATA DIYA: output: 'export' (Ab real server chalega, static HTML nahi!)
+  
   reactStrictMode: true,
-  poweredByHeader: false, // Security: Removes "X-Powered-By: Next.js" header
-  compress: true, // Enables gzip/brotli compression for faster loads
-
-  // ==========================================================================
-  // 2. ADVANCED IMAGE OPTIMIZATION
-  // ==========================================================================
+  
+  // 🛡️ 2. Security: Hides Next.js signature from hackers
+  poweredByHeader: false,
+  
+  // 🖼️ 3. PRO IMAGE OPTIMIZATION (unoptimized: true hata diya!)
+  // Ab VPS khud images ko compress karke WebP/AVIF mein badlega
   images: {
-    formats: ['image/avif', 'image/webp'], // Serves ultra-light formats first
-    minimumCacheTTL: 2592000, // 30 Days cache - Saves Sanity API bandwidth
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 2592000, // 30 days cache for blazing fast load times
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'cdn.sanity.io',
         pathname: '/**',
       },
-      // Optional: Agar aap Unsplash se placeholder images use karte hain
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
@@ -28,33 +26,26 @@ const nextConfig = {
     ],
   },
 
-  // ==========================================================================
-  // 3. COMPILER OPTIMIZATIONS (Production Only)
-  // ==========================================================================
+  // 🧹 4. CLEAN PRODUCTION
+  // Production mein console.log hata dega, par errors dikhayega
   compiler: {
-    // Jab site live hogi, toh saare console.log automatically remove ho jayenge.
-    // (Lekin errors aur warnings rahenge taaki debugging ho sake)
     removeConsole: process.env.NODE_ENV === 'production' 
       ? { exclude: ['error', 'warn'] } 
       : false,
   },
 
-  // ==========================================================================
-  // 4. BLEEDING-EDGE EXPERIMENTAL FEATURES
-  // ==========================================================================
+  // ⚡ 5. PERFORMANCE
+  // Heavy libraries ko optimize karke load time kam karega
   experimental: {
-    // Yeh Framer Motion aur Lucide Icons ki loading speed 10x fast kar dega
-    // kyunki yeh sirf wahi code load karega jo actually use hua hai.
-    optimizePackageImports: ['lucide-react', 'framer-motion'], 
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
   },
 
-  // ==========================================================================
-  // 5. ENTERPRISE-GRADE SECURITY HEADERS
-  // ==========================================================================
+  // 🛡️ 6. ADVANCED: CUSTOM SECURITY HEADERS
+  // Ye aapki agency site ko Clickjacking aur XSS attacks se bachayega
   async headers() {
     return [
       {
-        // Apply these headers to all routes in your application
+        // Ye headers website ke har page par apply honge
         source: '/(.*)',
         headers: [
           {
@@ -63,19 +54,15 @@ const nextConfig = {
           },
           {
             key: 'X-Frame-Options',
-            value: 'DENY', // Prevents clickjacking (koi aapki site iframe me nahi daal payega)
+            value: 'DENY', // Koi aur aapki site ko apne iframe mein nahi chala payega
           },
           {
             key: 'X-XSS-Protection',
-            value: '1; mode=block',
+            value: '1; mode=block', // Cross-Site Scripting protection
           },
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
-          },
-          {
-            key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()', // Blocks unwanted browser features
           },
         ],
       },

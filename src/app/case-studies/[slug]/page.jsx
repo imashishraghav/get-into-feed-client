@@ -1,51 +1,81 @@
-import React from "react";
-import { client } from "@/sanity/lib/client";
+import { notFound } from 'next/navigation';
+import { client } from '@/sanity/lib/client';
+import CaseStudyClient from '@/components/Case Studies/CaseStudyClient';
 
-// 🟢 Import the Client Wrapper
-import CaseStudyClient from "@/components/Case Studies/CaseStudyClient";
+export const revalidate = 60;
 
-// 🟢 Dynamic SEO Metadata based on the specific case study
-export async function generateMetadata({ params }) {
-  const query = `*[_type == "caseStudy" && slug.current == $slug][0]{ title, shortDescription }`;
-  const caseStudy = await client.fetch(query, { slug: params.slug }).catch(() => null);
+export async function generateStaticParams() {
+  const query = `*[_type == "caseStudy" && defined(slug.current)]{ "slug": slug.current }`;
+  const slugs = await client.fetch(query);
   
+  return slugs.map((study) => ({ slug: study.slug }));
+}
+
+export async function generateMetadata({ params }) {
+  const query = `*[_type == "caseStudy" && slug.current == $slug][0]{
+    seoTitle,
+    seoDescription,
+    title,
+    overview,
+    "image": image.asset->url
+  }`;
+  
+  const study = await client.fetch(query, { slug: params.slug });
+
+  if (!study) return {};
+
   return {
-    title: `${caseStudy?.title || 'Case Study'} | Get Into Feed`,
-    description: caseStudy?.shortDescription || 'Discover how we drive predictable growth.',
+    title: study.seoTitle || `${study.title} | Case Study`,
+    description: study.seoDescription || study.overview,
+    openGraph: {
+      title: study.seoTitle || study.title,
+      description: study.seoDescription || study.overview,
+      images: study.image ? [{ url: study.image }] : [],
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: study.seoTitle || study.title,
+      description: study.seoDescription || study.overview,
+      images: study.image ? [study.image] : [],
+    },
   };
 }
 
-export default async function SingleCaseStudyPage({ params }) {
-  // 🔌 Fetch the full detailed data for the specific case study
+export default async function CaseStudyPage({ params }) {
+  // 🎯 CRITICAL: SANITY GROQ QUERY
   const query = `*[_type == "caseStudy" && slug.current == $slug][0]{
     title,
-    industry,
     clientName,
+    industry,
     overview,
     problem,
     strategy,
     execution,
-    results,
-    testimonial,
-    images,
-    conclusion
+    conclusion,
+    result,
+    results[],
+    testimonial{
+      quote,
+      name,
+      role,
+      company,
+      "image": image.asset->url
+    },
+    "image": image.asset->url,
+    "images": images[].asset->url,
+    seoTitle,
+    seoDescription,
+    publishedAt
   }`;
-  
-  const caseStudyData = await client.fetch(query, { slug: params.slug }).catch(() => null);
 
-  // 404 Fallback if the URL slug doesn't match any project in Sanity
-  if (!caseStudyData) {
-    return (
-      <div className="min-h-[80vh] flex items-center justify-center bg-[#F8F9FB] text-[#0F172A] font-bold text-2xl">
-        Case Study not found.
-      </div>
-    );
+  const data = await client.fetch(query, { slug: params.slug });
+
+  if (!data) {
+    notFound();
   }
 
-  // Yahan hum data fetch karke <CaseStudyClient /> component ko de rahe hain
   return (
-    <main className="flex flex-col w-full min-h-screen bg-white">
-      <CaseStudyClient data={caseStudyData} />
-    </main>
+    <CaseStudyClient data={data} />
   );
 }

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import SearchFilter from "@/components/blog/SearchFilter";
-import FeaturedBlog from "@/components/blog/FeaturedBlog";
 import BlogGrid from "@/components/blog/BlogGrid";
 
 export default function BlogClient({ initialPosts }) {
@@ -15,7 +14,6 @@ export default function BlogClient({ initialPosts }) {
   return (
     <>
       <SearchFilter posts={initialPosts} onFilterChange={setFilteredPosts} />
-      {featuredPost && <FeaturedBlog post={featuredPost} />}
       
       {gridPosts.length > 0 ? (
         <BlogGrid posts={gridPosts} />

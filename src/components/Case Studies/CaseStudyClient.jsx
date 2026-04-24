@@ -6,7 +6,7 @@ import { motion, useScroll, useSpring } from "framer-motion";
 import Image from "next/image";
 import { Target, Activity, TrendingUp, Zap } from "lucide-react";
 
-// 🟢 Modular Premium Components (Inhi ke karan website high-end lagti hai)
+// 🟢 Modular Premium Components
 import ResultsSection from "./ResultsSection";
 import CaseStudyTestimonial from "./CaseStudyTestimonial";
 import CaseStudyCTA from "./CaseStudyCTA";
@@ -15,40 +15,7 @@ import CaseStudyCTA from "./CaseStudyCTA";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { staggerContainer, fadeUp, blurFadeUp } from "@/utils/animations";
 
-// ----------------------------------------------------------------------
-// Fallback Data for UI Testing
-// ----------------------------------------------------------------------
-const mockData = {
-  title: "Scaling Luxury Real Estate with High-Intent Lead Architecture",
-  industry: "Real Estate",
-  clientName: "Eldeco 7 Peaks",
-  overview: "Eldeco 7 Peaks required a massive, predictable influx of qualified buyers for their new luxury project launch.",
-  problem: [
-    "High cost per acquisition (CPA) on existing generic campaigns.",
-    "Low lead quality and high junk-lead ratio wasting the sales team's time."
-  ],
-  strategy: "We engineered a full-funnel performance marketing system.",
-  execution: [
-    "Overhauled SEO meta tags and deployed hyper-targeted Google Search campaigns.",
-    "Designed and launched a luxury-themed landing page with zero friction points."
-  ],
-  results: [
-    { label: "Surge in Qualified Inquiries", value: "+120%" },
-    { label: "Drop in Cost Per Acquisition", value: "-40%" }
-  ],
-  testimonial: {
-    quote: "The marketing systems built by the team completely transformed our lead pipeline.",
-    name: "Rahul Verma",
-    role: "Marketing Head",
-  },
-  images: [], 
-  conclusion: [
-    "Data-driven media buying outperforms massive budgets with poor targeting.",
-    "A unified system (Ads + Landing Page) is the only way to scale predictably."
-  ]
-};
-
-export default function CaseStudyClient({ data = mockData }) {
+export default function CaseStudyClient({ data }) {
   const containerRef = useRef(null);
   
   // 🟢 Smooth Scroll Hook
@@ -56,6 +23,9 @@ export default function CaseStudyClient({ data = mockData }) {
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
   const progressHeight = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+
+  // Safety check: Agar data load nahi hua toh kuch mat dikhao
+  if (!data) return null;
 
   return (
     <article ref={containerRef} className="relative w-full bg-white selection:bg-primary/20 selection:text-secondary transform-gpu">
@@ -75,19 +45,19 @@ export default function CaseStudyClient({ data = mockData }) {
             
             <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3 mb-8">
               <span className="font-sans text-[11px] font-bold tracking-[0.2em] text-secondary uppercase bg-white px-3 py-1.5 rounded-md border border-navy/10 shadow-sm">
-                {data?.industry || 'Digital Marketing'}
+                {data.industry || 'Digital Marketing'}
               </span>
               <span className="font-sans text-sm font-semibold text-navy/70">
-                Client: <span className="text-navy">{data?.clientName || 'Partner'}</span>
+                Client: <span className="text-navy">{data.clientName || 'Partner'}</span>
               </span>
             </motion.div>
 
             <motion.h1 variants={blurFadeUp} className="font-heading text-4xl md:text-5xl lg:text-[4rem] font-extrabold text-navy tracking-tighter leading-[1.1] mb-8 text-balance">
-              {data?.title || 'Case Study'}
+              {data.title || 'Case Study'}
             </motion.h1>
 
             {/* Hero Key Result Highlight */}
-            {data?.results && data.results.length > 0 && (
+            {data.results && data.results.length > 0 && (
               <motion.div variants={fadeUp} className="inline-flex items-center gap-4 bg-white border border-navy/10 rounded-full p-2 pr-6 shadow-sm">
                 <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-navy shrink-0">
                   <TrendingUp className="w-5 h-5" strokeWidth={2.5} />
@@ -107,7 +77,7 @@ export default function CaseStudyClient({ data = mockData }) {
       <div className="max-w-4xl mx-auto px-6 md:px-12 mt-16 md:mt-24 flex flex-col gap-20 md:gap-32 mb-20 md:mb-32">
         
         {/* OVERVIEW */}
-        {data?.overview && (
+        {data.overview && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="transform-gpu">
             <h2 className="font-heading text-sm font-bold tracking-[0.2em] text-secondary uppercase mb-6 flex items-center gap-2">
               <Target className="w-4 h-4" /> Overview
@@ -118,8 +88,8 @@ export default function CaseStudyClient({ data = mockData }) {
           </motion.section>
         )}
 
-        {/* THE PROBLEM (Safely Mapped) */}
-        {data?.problem && data.problem.length > 0 && (
+        {/* THE PROBLEM */}
+        {data.problem && data.problem.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="transform-gpu">
             <h2 className="font-heading text-3xl font-extrabold text-navy mb-8 tracking-tight">The Challenge</h2>
             <div className="bg-background border border-navy/10 rounded-3xl p-8 md:p-12">
@@ -137,18 +107,18 @@ export default function CaseStudyClient({ data = mockData }) {
           </motion.section>
         )}
 
-        {/* STRATEGY & EXECUTION (Safely Mapped) */}
-        {(data?.strategy || (data?.execution && data.execution.length > 0)) && (
+        {/* STRATEGY & EXECUTION */}
+        {(data.strategy || (data.execution && data.execution.length > 0)) && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="transform-gpu">
             <h2 className="font-heading text-3xl font-extrabold text-navy mb-8 tracking-tight">Our Approach</h2>
             
-            {data?.strategy && (
+            {data.strategy && (
               <div className="prose prose-lg prose-slate max-w-none mb-12">
                 <p className="font-sans text-navy/70 leading-relaxed">{data.strategy}</p>
               </div>
             )}
             
-            {data?.execution && data.execution.length > 0 && (
+            {data.execution && data.execution.length > 0 && (
               <div className="relative border-l-2 border-navy/10 ml-4 pl-8 flex flex-col gap-10">
                 {data.execution.map((step, index) => (
                   <div key={index} className="relative">
@@ -163,7 +133,7 @@ export default function CaseStudyClient({ data = mockData }) {
         )}
 
         {/* VISUAL PROOF */}
-        {data?.images && data.images.length > 0 && (
+        {data.images && data.images.length > 0 && (
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="transform-gpu">
             <h2 className="font-heading text-3xl font-extrabold text-navy mb-8 tracking-tight">Behind the Scenes</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -179,18 +149,18 @@ export default function CaseStudyClient({ data = mockData }) {
 
       {/* ================= 3. MODULAR INJECTED SECTIONS ================= */}
       
-      {/* 🚀 RESULTS SECTION (Using your custom component) */}
-      {data?.results && data.results.length > 0 && (
+      {/* 🚀 RESULTS SECTION */}
+      {data.results && data.results.length > 0 && (
         <ResultsSection results={data.results} />
       )}
 
-      {/* 🗣 TESTIMONIAL SECTION (Using your custom component) */}
-      {data?.testimonial && data.testimonial.quote && (
+      {/* 🗣 TESTIMONIAL SECTION */}
+      {data.testimonial && data.testimonial.quote && (
         <CaseStudyTestimonial testimonial={data.testimonial} />
       )}
 
-      {/* 💡 KEY TAKEAWAYS (Safely Mapped) */}
-      {data?.conclusion && data.conclusion.length > 0 && (
+      {/* 💡 KEY TAKEAWAYS */}
+      {data.conclusion && data.conclusion.length > 0 && (
         <div className="max-w-4xl mx-auto px-6 md:px-12 my-20 md:my-32">
           <motion.section variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="transform-gpu">
             <h2 className="font-heading text-3xl font-extrabold text-navy mb-8 tracking-tight">Key Takeaways</h2>
@@ -206,7 +176,7 @@ export default function CaseStudyClient({ data = mockData }) {
         </div>
       )}
 
-      {/* 🔥 FINAL CTA (Using your custom component) */}
+      {/* 🔥 FINAL CTA */}
       <CaseStudyCTA />
 
     </article>

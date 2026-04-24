@@ -113,23 +113,26 @@ export default function RootLayout({ children }) {
           <CookieBanner />
         </Suspense>
         
-        <ScrollToTop />
+        {/* ✅ FIXED: ScrollToTop is now inside Suspense */}
+        <Suspense fallback={null}>
+          <ScrollToTop />
+        </Suspense>
 
-        {/* 🚀 Smooth Scroll Wrapper (GLOBAL) */}
-        <SmoothScroll>
-          
-          <Navbar />
-          
-          {/* flex-grow ensures the main content pushes the footer down if the page is short */}
-          <main className="relative z-10 flex-grow will-change-transform">
-            <Suspense fallback={<PageLoader />}>
+        {/* ✅ FIXED: The entire SmoothScroll and its contents are wrapped in one Master Suspense */}
+        <Suspense fallback={<PageLoader />}>
+          <SmoothScroll>
+            
+            <Navbar />
+            
+            {/* flex-grow ensures the main content pushes the footer down if the page is short */}
+            <main className="relative z-10 flex-grow will-change-transform">
               {children}
-            </Suspense>
-          </main>
-          
-          <Footer />
+            </main>
+            
+            <Footer />
 
-        </SmoothScroll>
+          </SmoothScroll>
+        </Suspense>
       </body>
     </html>
   );

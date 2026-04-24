@@ -1,11 +1,18 @@
 {
   "name": "get-into-feed-client",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:prod": "cross-env NODE_ENV=production pm2 start npm --name \"getintofeed-frontend\" -- start",
+    "clean": "rm -rf .next node_modules package-lock.json && npm install",
+    "analyze": "cross-env ANALYZE=true next build",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css}\"",
@@ -35,8 +42,10 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^14.2.3",
     "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "^10.4.19",
+    "cross-env": "^7.0.3",
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",

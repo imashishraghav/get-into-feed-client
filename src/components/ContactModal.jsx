@@ -8,6 +8,7 @@ import { X, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 export default function ContactModal({ isOpen, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   // 🟢 1. Handle Scroll Lock & ESC Key to Close
   const handleKeyDown = useCallback((e) => {
@@ -21,6 +22,7 @@ export default function ContactModal({ isOpen, onClose }) {
       // Reset states when opened
       setIsSuccess(false);
       setIsSubmitting(false);
+      setErrorMessage('');
     } else {
       document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
@@ -31,16 +33,46 @@ export default function ContactModal({ isOpen, onClose }) {
     };
   }, [isOpen, handleKeyDown]);
 
-  // 🟢 2. Simulated Submit Handler (Replace with actual API call)
+  // 🟢 2. Real API Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setErrorMessage('');
     
-    // Simulate network request (e.g., fetch to /api/contact)
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    // Combine names and gather all data required by backend
+    const formData = {
+      name: `${e.target.firstName.value} ${e.target.lastName.value}`,
+      email: e.target.email.value,
+      phone: e.target.phone.value,
+      company: e.target.company.value,
+      budget: e.target.budget.value,
+      // Combining service choice and message for better context
+      message: `Service Interest: ${e.target.service.value}\n\nAdditional Message: ${e.target.message.value}`
+    };
+
+    try {
+      const response = await fetch('https://api.getintofeed.com/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setIsSuccess(true); // Show success animation!
+      } else {
+        // Backend sent an error (like Rate limit or Validation)
+        setErrorMessage(data.error || "Something went wrong. Please try again.");
+      }
+    } catch (error) {
+      console.error("Form Submit Error:", error);
+      setErrorMessage("Failed to connect to the server. Please check your internet connection.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -66,7 +98,7 @@ export default function ContactModal({ isOpen, onClose }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="relative w-full max-w-lg bg-navy border border-white/10 rounded-3xl shadow-2xl overflow-hidden gpu-accelerated"
+            className="relative w-full max-w-2xl bg-navy border border-white/10 rounded-3xl shadow-2xl overflow-hidden gpu-accelerated max-h-[90vh] overflow-y-auto"
           >
             {/* Top Accent Line */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-secondary" />
@@ -117,9 +149,16 @@ export default function ContactModal({ isOpen, onClose }) {
                     <h3 id="modal-title" className="font-heading text-2xl md:text-3xl font-extrabold text-white mb-2 tracking-tight">
                       Let's scale your brand.
                     </h3>
-                    <p className="font-sans text-slate-400 text-sm mb-8">
+                    <p className="font-sans text-slate-400 text-sm mb-6">
                       Fill out the form below and our experts will get back to you within 24 hours.
                     </p>
+
+                    {/* Error Message Display */}
+                    {errorMessage && (
+                      <div className="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-xl text-red-400 text-sm font-medium">
+                        {errorMessage}
+                      </div>
+                    )}
 
                     <form className="space-y-5" onSubmit={handleSubmit}>
                       
@@ -130,7 +169,7 @@ export default function ContactModal({ isOpen, onClose }) {
                           <input 
                             id="firstName"
                             type="text" 
-                            placeholder="John" 
+                            placeholder="Ashish" 
                             className="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-600 font-sans" 
                             required 
                           />
@@ -140,23 +179,68 @@ export default function ContactModal({ isOpen, onClose }) {
                           <input 
                             id="lastName"
                             type="text" 
-                            placeholder="Doe" 
+                            placeholder="Raghav" 
                             className="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-600 font-sans" 
                             required 
                           />
                         </div>
                       </div>
 
-                      {/* Email Field */}
-                      <div className="space-y-1.5">
-                        <label htmlFor="email" className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Work Email</label>
-                        <input 
-                          id="email"
-                          type="email" 
-                          placeholder="john@company.com" 
-                          className="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-600 font-sans" 
-                          required 
-                        />
+                      {/* Email & Phone Fields */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div className="space-y-1.5">
+                          <label htmlFor="email" className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Work Email</label>
+                          <input 
+                            id="email"
+                            type="email" 
+                            placeholder="john@company.com" 
+                            className="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-600 font-sans" 
+                            required 
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label htmlFor="phone" className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Phone Number</label>
+                          <input 
+                            id="phone"
+                            type="tel" 
+                            placeholder="+91 98765 43210" 
+                            className="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-600 font-sans" 
+                            required 
+                          />
+                        </div>
+                      </div>
+
+                      {/* Company & Budget Fields */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div className="space-y-1.5">
+                          <label htmlFor="company" className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Company Name</label>
+                          <input 
+                            id="company"
+                            type="text" 
+                            placeholder="MarketFlue" 
+                            className="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-600 font-sans" 
+                            required 
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label htmlFor="budget" className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Estimated Budget</label>
+                          <div className="relative">
+                            <select 
+                              id="budget"
+                              className="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all appearance-none cursor-pointer font-sans"
+                              required
+                            >
+                              <option value="" disabled selected className="bg-navy text-slate-500">Select Budget</option>
+                              <option value="Under $1,000" className="bg-navy">$1,000 - $5,000</option>
+                              <option value="$1,000 - $5,000" className="bg-navy">$5,000 - $10,000</option>
+                              <option value="$5,000 - $10,000" className="bg-navy">$10,000 - $25,000</option>
+                              <option value="$25,000+" className="bg-navy">$25,000+</option>
+                            </select>
+                            <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+                              <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                          </div>
+                        </div>
                       </div>
 
                       {/* Service Dropdown */}
@@ -172,11 +256,22 @@ export default function ContactModal({ isOpen, onClose }) {
                             <option value="content" className="bg-navy">Content Production</option>
                             <option value="influencer" className="bg-navy">Influencer Campaigns</option>
                           </select>
-                          {/* Custom Dropdown Arrow */}
                           <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
                             <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                           </div>
                         </div>
+                      </div>
+
+                      {/* Message Field */}
+                      <div className="space-y-1.5">
+                        <label htmlFor="message" className="font-sans text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1">Project Details</label>
+                        <textarea 
+                          id="message"
+                          rows="3"
+                          placeholder="Tell us about your goals..." 
+                          className="w-full bg-white/5 border border-white/10 rounded-xl p-3.5 text-white focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all placeholder:text-slate-600 font-sans resize-none" 
+                          required 
+                        ></textarea>
                       </div>
 
                       {/* Submit Button */}

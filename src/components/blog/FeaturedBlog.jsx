@@ -1,127 +1,135 @@
-// @ts-nocheck
-"use client";
+import { notFound } from 'next/navigation';
+import Image from 'next/image';
+import { client } from '@/sanity/lib/client';
+import { PortableText } from '@portabletext/react';
+import { portableTextComponents } from '@/components/portable-text-config';
+import ReadingProgress from '@/components/reading-progress';
+import BlogSidebar from '@/components/blog-sidebar';
 
-import React from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { ArrowRight, Clock } from "lucide-react";
+// 🚀 ISR: Auto-update page every 60 seconds when new content is published
+export const revalidate = 60;
 
-/* // ============================================================================
-// 🔌 SANITY CMS FETCH EXAMPLE (In your app/blog/page.jsx):
-// ============================================================================
-// const query = `*[_type == "post"] | order(_createdAt desc)[0]{
-//   title,
-//   "slug": slug.current,
-//   excerpt,
-//   "category": categories[0]->title,
-//   "imageUrl": mainImage.asset->url,
-//   readTime
-// }`;
-// const featuredPost = await client.fetch(query);
-// ============================================================================ */
+// ==========================================
+// 1. DYNAMIC SEO METADATA
+// ==========================================
+export async function generateMetadata({ params }) {
+  const query = `*[_type == "post" && slug.current == $slug][0]{ title, excerpt, "image": mainImage.asset->url }`;
+  const post = await client.fetch(query, { slug: params.slug });
 
-// ----------------------------------------------------------------------
-// Fallback Data (If Sanity fetch is delayed or empty)
-// ----------------------------------------------------------------------
-const fallbackPost = {
-  title: "How We Scaled a Real Estate Brand to ₹5Cr+ Using Full-Funnel Systems",
-  slug: "scaled-real-estate-brand-full-funnel",
-  excerpt: "Stop relying on disjointed campaigns. Discover the exact step-by-step blueprint we use to connect high-converting landing pages with data-driven Meta ads for premium market domination.",
-  category: "Performance Marketing",
-  imageUrl: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop", 
-  readTime: "8 min read"
-};
+  if (!post) return {};
 
-// ----------------------------------------------------------------------
-// Framer Motion Variants
-// ----------------------------------------------------------------------
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { 
-    opacity: 1, 
-    y: 0, 
-    transition: { type: "spring", stiffness: 300, damping: 25 } 
-  },
-};
+  return {
+    title: `${post.title} | Get Into Feed`,
+    description: post.excerpt,
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      images: [{ url: post.image }],
+      type: 'article',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.excerpt,
+      images: [post.image],
+    },
+  };
+}
 
-export default function FeaturedBlog({ post }) {
-  const displayPost = post || fallbackPost;
+// ==========================================
+// 2. HELPER: CALCULATE READ TIME
+// ==========================================
+function calculateReadTime(blocks) {
+  if (!blocks) return '1 min';
+  const text = blocks.map(block => block.children?.map(child => child.text).join('')).join(' ');
+  const wpm = 225;
+  const words = text.trim().split(/\s+/).length;
+  const time = Math.ceil(words / wpm);
+  return `${time} min read`;
+}
+
+// ==========================================
+// 3. MAIN SERVER COMPONENT
+// ==========================================
+export default async function BlogPost({ params }) {
+  const query = `*[_type == "post" && slug.current == $slug][0]{
+    title,
+    excerpt,
+    "image": mainImage.asset->url,
+    publishedAt,
+    "category": categories[0]->title,
+    "author": author->name,
+    body,
+    relatedPosts[]->{ title, "slug": slug.current }
+  }`;
+  
+  const post = await client.fetch(query, { slug: params.slug });
+
+  if (!post) notFound();
+
+  const readTime = calculateReadTime(post.body);
 
   return (
-    <section className="relative w-full bg-background pb-20 md:pb-28 selection:bg-primary/20 selection:text-secondary transform-gpu">
-      <div className="max-w-6xl mx-auto px-6 md:px-12">
+    <main className="bg-[#0F172A] min-h-screen relative font-sans text-white selection:bg-[#2ED1B2]/30 selection:text-white">
+      {/* 🟢 ADVANCED: Top Reading Progress Bar */}
+      <ReadingProgress />
+
+      {/* --- HERO SECTION --- */}
+      <header className="max-w-4xl mx-auto pt-32 px-6 text-center mb-16 relative z-10">
+        <div className="flex items-center justify-center gap-3 mb-6">
+          <span className="text-[#2ED1B2] font-semibold tracking-widest uppercase text-xs border border-[#2ED1B2]/30 bg-[#2ED1B2]/10 px-4 py-1.5 rounded-full">
+            {post.category || 'Performance Marketing'}
+          </span>
+          <span className="text-[#94A3B8] text-sm">•</span>
+          <span className="text-[#94A3B8] text-sm font-medium flex items-center gap-1.5">
+             ⏱️ {readTime}
+          </span>
+        </div>
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-8">
+          {post.title}
+        </h1>
+        <p className="text-xl text-[#94A3B8] max-w-2xl mx-auto leading-relaxed">
+          {post.excerpt}
+        </p>
+      </header>
+
+      {/* --- FEATURED IMAGE --- */}
+      {post.image && (
+        <div className="max-w-6xl mx-auto px-6 mb-20">
+          <div className="relative aspect-[21/9] w-full rounded-2xl overflow-hidden shadow-[0_0_40px_-10px_rgba(46,209,178,0.15)] ring-1 ring-white/10">
+            <Image
+              src={post.image}
+              alt={post.title}
+              fill
+              priority
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 1200px"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* --- HUBSPOT STYLE LAYOUT (Sidebar + Content) --- */}
+      <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-[250px_minmax(0,1fr)_150px] gap-12 pb-32">
         
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={fadeUp}
-          className="transform-gpu"
-        >
-          {/* Featured Card Container 
-            Uses group for nested hover effects (zoom and color shifts)
-          */}
-          <Link href={`/blog/${displayPost.slug}`} className="block group outline-none">
-            <motion.article 
-              whileHover={{ y: -5 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-              className="flex flex-col lg:flex-row bg-white rounded-3xl border border-navy/10 shadow-sm hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] hover:border-navy/20 overflow-hidden transition-all duration-500 ease-out transform-gpu"
-            >
-              
-              {/* ================= LEFT SIDE: IMAGE ================= */}
-              <div className="relative w-full lg:w-1/2 aspect-[4/3] lg:aspect-[4/3.5] overflow-hidden bg-slate-100">
-                <img 
-                  src={displayPost.imageUrl} 
-                  alt={displayPost.title}
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-[800ms] ease-[0.16,1,0.3,1] transform-gpu"
-                />
-                {/* Subtle dark overlay for premium contrast */}
-                <div className="absolute inset-0 bg-navy/5 group-hover:bg-transparent transition-colors duration-500" />
-              </div>
+        {/* LEFT: STICKY SIDEBAR (TOC + SHARE) */}
+        <aside className="hidden lg:block relative">
+          <div className="sticky top-32">
+            <BlogSidebar title={post.title} slug={params.slug} body={post.body} />
+          </div>
+        </aside>
 
-              {/* ================= RIGHT SIDE: CONTENT ================= */}
-              <div className="w-full lg:w-1/2 p-8 md:p-10 lg:p-14 flex flex-col justify-center">
-                
-                {/* Meta Row: Category & Read Time */}
-                <div className="flex items-center gap-4 mb-6">
-                  <span className="font-heading text-xs md:text-sm font-bold text-navy uppercase tracking-widest bg-slate-100 border border-slate-200 px-3.5 py-1.5 rounded-full">
-                    {displayPost.category}
-                  </span>
-                  {displayPost.readTime && (
-                    <div className="flex items-center gap-1.5 text-navy/50 font-sans text-sm font-medium">
-                      <Clock className="w-4 h-4" />
-                      <span>{displayPost.readTime}</span>
-                    </div>
-                  )}
-                </div>
+        {/* CENTER: MAIN CONTENT (PORTABLE TEXT) */}
+        <article className="prose prose-lg prose-invert max-w-none 
+          prose-headings:text-white prose-p:text-[#94A3B8] prose-p:leading-loose 
+          prose-a:text-[#2ED1B2] hover:prose-a:text-white prose-a:transition-colors
+          prose-strong:text-white prose-li:text-[#94A3B8] prose-li:marker:text-[#2ED1B2]">
+          <PortableText value={post.body} components={portableTextComponents} />
+        </article>
 
-                {/* Title */}
-                <h2 className="font-heading text-3xl md:text-4xl lg:text-[2.5rem] font-extrabold text-navy leading-tight md:leading-[1.15] mb-5 transition-colors duration-300">
-                  {displayPost.title}
-                </h2>
-
-                {/* Excerpt */}
-                <p className="font-sans text-[17px] text-navy/70 font-medium leading-relaxed mb-10 line-clamp-3">
-                  {displayPost.excerpt}
-                </p>
-
-                {/* Black Professional Branding CTA */}
-                <div className="mt-auto flex items-center gap-3">
-                  <span className="font-heading font-bold text-lg text-navy">
-                    Read Article
-                  </span>
-                  <div className="w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center shadow-md group-hover:bg-primary group-hover:text-navy group-hover:shadow-lg transition-all duration-300 transform-gpu">
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform duration-300" />
-                  </div>
-                </div>
-
-              </div>
-
-            </motion.article>
-          </Link>
-        </motion.div>
-
+        {/* RIGHT: EMPTY/ADS SPACE (HubSpot keeps right side empty for focus) */}
+        <div className="hidden lg:block"></div>
       </div>
-    </section>
+    </main>
   );
 }

@@ -1,7 +1,6 @@
 import React from "react";
 import { client } from "@/sanity/lib/client";
 
-// 🟢 Components Import (Make sure these are saved in your components/services folder)
 import ServicesHero from "@/components/services/ServicesHero";
 import ServicesOverview from "@/components/services/ServicesOverview";
 import SystemSection from "@/components/services/SystemSection";
@@ -12,9 +11,7 @@ import TestimonialsSection from "@/components/services/TestimonialsSection";
 import WhoItsFor from "@/components/services/WhoItsFor";
 import FinalCTA from "@/components/services/FinalCTA";
 
-// ----------------------------------------------------------------------
-// 🔌 Sanity Data Fetching Logic (Server-Side)
-// ----------------------------------------------------------------------
+
 async function getServicesPageData() {
   const testimonialsQuery = `*[_type == "testimonial"] | order(order asc) {
     _id, name, role, company, testimonial, 

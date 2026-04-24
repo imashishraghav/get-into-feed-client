@@ -15,6 +15,16 @@ export const dynamic = 'force-static'
 
 export { metadata, viewport } from 'next-sanity/studio'
 
+// ============================================================================
+// 🟢 GENERATE STATIC PARAMS (✅ ADDED TO FIX CATCH-ALL BUILD ERROR)
+// ============================================================================
+export function generateStaticParams() {
+  // Ye Next.js ko batata hai ki base /studio route ko render kar de
+  return [
+    { tool: [''] }
+  ];
+}
+
 export default function StudioPage() {
   return <NextStudio config={config} />
 }
