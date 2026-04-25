@@ -17,7 +17,7 @@ import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { staggerContainer, fadeUp } from "@/utils/animations";
 
 // ----------------------------------------------------------------------
-// 1. Stats Data
+// 1. Stats Data (Keeping this static as it's usually global agency stats)
 // ----------------------------------------------------------------------
 const statsData = [
   { id: 1, prefix: "₹", value: 2, suffix: "Cr+", label: "Ad Spend Managed", icon: PieChart },
@@ -26,34 +26,8 @@ const statsData = [
   { id: 4, prefix: "", value: 150, suffix: "+", label: "Campaigns Launched", icon: BarChart3 },
 ];
 
-// ----------------------------------------------------------------------
-// 2. Case Snippets Data (Mini Case Studies)
-// ----------------------------------------------------------------------
-const caseSnippets = [
-  {
-    id: "eldeco",
-    client: "Eldeco 7 Peaks",
-    category: "Real Estate Lead Gen",
-    title: "120% Surge in Qualified Inquiries",
-    description: "Orchestrated comprehensive lead generation campaigns for the project launch, optimizing landing page architecture and meta tags to capture high-intent buyers.",
-  },
-  {
-    id: "sobha",
-    client: "Sobha Sector 1",
-    category: "Performance Marketing",
-    title: "Maintained 3.5x ROAS at Scale",
-    description: "Managed aggressive digital marketing updates and seamless RERA-compliant performance scaling, securing maximum visibility in a highly competitive market.",
-  },
-  {
-    id: "laxmi-pg",
-    client: "Laxmi Boys PG",
-    category: "Search Strategy",
-    title: "Reduced CPA by 40% in 30 Days",
-    description: "Deployed highly targeted search campaigns highlighting unique USPs like home-style food and zero time restrictions, dramatically lowering acquisition costs.",
-  },
-];
-
-export default function ProofSection() {
+// 🟢 FIX: Added caseSnippets as a prop to receive dynamic Sanity data
+export default function ProofSection({ caseSnippets = [] }) {
   const containerRef = useRef(null);
 
   // 🟢 Global Background Parallax
@@ -129,19 +103,21 @@ export default function ProofSection() {
           ))}
         </motion.div>
 
-        {/* ================= CASE SNIPPETS ================= */}
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          style={{ y: sectionLift }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-6 transform-gpu"
-        >
-          {caseSnippets.map((snippet) => (
-            <SnippetCard key={snippet.id} snippet={snippet} />
-          ))}
-        </motion.div>
+        {/* ================= DYNAMIC CASE SNIPPETS ================= */}
+        {caseSnippets && caseSnippets.length > 0 && (
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            style={{ y: sectionLift }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 transform-gpu"
+          >
+            {caseSnippets.map((snippet) => (
+              <SnippetCard key={snippet.slug} snippet={snippet} />
+            ))}
+          </motion.div>
+        )}
 
       </div>
     </section>
@@ -181,7 +157,7 @@ function StatCard({ stat }) {
 }
 
 // ----------------------------------------------------------------------
-// 🟢 Individual Mini Case Snippet Card
+// 🟢 Individual Mini Case Snippet Card (Now linked to dynamic slug)
 // ----------------------------------------------------------------------
 function SnippetCard({ snippet }) {
   return (
@@ -191,31 +167,34 @@ function SnippetCard({ snippet }) {
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className="group relative bg-white border border-navy/10 rounded-[2rem] p-8 md:p-10 transition-all duration-300 ease-out hover:border-primary/40 hover:shadow-xl hover:shadow-primary/15 flex flex-col h-full transform-gpu"
     >
-      {/* Category Tag */}
-      <div className="mb-6 flex justify-between items-start">
-        <span className="font-sans text-xs font-bold text-secondary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-md border border-primary/20">
-          {snippet.category}
-        </span>
-      </div>
+      <Link href={`/case-studies/${snippet.slug}`} className="flex flex-col h-full focus:outline-none">
+        
+        {/* Category Tag */}
+        <div className="mb-6 flex justify-between items-start">
+          <span className="font-sans text-xs font-bold text-secondary uppercase tracking-widest bg-primary/10 px-3 py-1.5 rounded-md border border-primary/20">
+            {snippet.category || 'Case Study'}
+          </span>
+        </div>
 
-      {/* Content */}
-      <div className="flex-1">
-        <h4 className="font-heading text-[13px] font-bold text-navy/50 uppercase tracking-wider mb-2">
-          {snippet.client}
-        </h4>
-        <h3 className="font-heading text-2xl font-extrabold text-navy leading-snug mb-4 group-hover:text-secondary transition-colors duration-300">
-          {snippet.title}
-        </h3>
-        <p className="font-sans text-navy/70 text-[15px] leading-relaxed font-medium">
-          {snippet.description}
-        </p>
-      </div>
+        {/* Content */}
+        <div className="flex-1">
+          <h4 className="font-heading text-[13px] font-bold text-navy/50 uppercase tracking-wider mb-2">
+            {snippet.client}
+          </h4>
+          <h3 className="font-heading text-2xl font-extrabold text-navy leading-snug mb-4 group-hover:text-secondary transition-colors duration-300">
+            {snippet.title}
+          </h3>
+          <p className="font-sans text-navy/70 text-[15px] leading-relaxed font-medium line-clamp-3">
+            {snippet.description}
+          </p>
+        </div>
 
-      {/* Decorative Interactive Bottom */}
-      <div className="mt-8 pt-6 border-t border-navy/10 flex items-center text-sm font-bold font-heading text-navy group-hover:text-primary transition-colors duration-300 cursor-pointer">
-        <span>View Full Strategy</span>
-        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1.5 transition-transform duration-300 ease-out transform-gpu" />
-      </div>
+        {/* Decorative Interactive Bottom */}
+        <div className="mt-8 pt-6 border-t border-navy/10 flex items-center text-sm font-bold font-heading text-navy group-hover:text-primary transition-colors duration-300 cursor-pointer">
+          <span>View Full Strategy</span>
+          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1.5 transition-transform duration-300 ease-out transform-gpu" />
+        </div>
+      </Link>
     </motion.div>
   );
 }

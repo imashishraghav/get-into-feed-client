@@ -4,68 +4,18 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { 
-  Target, 
-  PenTool, 
-  Lightbulb, 
-  Megaphone, 
-  Share2, 
-  Monitor, 
-  ArrowRight 
-} from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Target } from "lucide-react"; // Target is used as a safety fallback
 
 // 🟢 Import your custom animation variants
 import { staggerContainer, fadeUp } from "@/utils/animations";
 
-// ----------------------------------------------------------------------
-// Services Data
-// ----------------------------------------------------------------------
-const services = [
-  {
-    id: "performance-marketing",
-    title: "Performance Marketing",
-    description: "Data-driven media buying across Meta and Google to acquire high-value customers at the lowest CPA.",
-    icon: Target,
-    href: "/services/performance-marketing",
-  },
-  {
-    id: "creative-strategy",
-    title: "Creative Strategy & Design",
-    description: "High-converting ad creatives, landing pages, and visual assets engineered specifically for maximum ROI.",
-    icon: PenTool,
-    href: "/services/creative-strategy",
-  },
-  {
-    id: "digital-strategy",
-    title: "Digital Strategy & Planning",
-    description: "Comprehensive growth roadmaps, audience architecture, and full-funnel strategy mapping for long-term scale.",
-    icon: Lightbulb,
-    href: "/services/digital-strategy",
-  },
-  {
-    id: "influencer-marketing",
-    title: "Influencer Marketing",
-    description: "Strategic creator partnerships and UGC campaigns that build authentic trust and drive direct conversions.",
-    icon: Megaphone,
-    href: "/services/influencer-marketing",
-  },
-  {
-    id: "social-media",
-    title: "Social Media Marketing",
-    description: "Community building, brand positioning, and viral organic content strategies that dominate the feed.",
-    icon: Share2,
-    href: "/services/social-media-marketing",
-  },
-  {
-    id: "web-development",
-    title: "Website Design & Dev",
-    description: "Lightning-fast, SEO-optimized marketing websites built on modern stacks to maximize conversion rates.",
-    icon: Monitor,
-    href: "/services/web-development",
-  },
-];
+// 🟢 FIX: Added { services } prop to receive dynamic data from Sanity Server Wrapper
+export default function ServicesOverview({ services }) {
+  
+  // Safety check: Agar data load na ho toh kuch mat render karo
+  if (!services || services.length === 0) return null;
 
-export default function ServicesOverview() {
   return (
     <section className="relative w-full bg-background py-16 md:py-24 overflow-hidden selection:bg-primary/20 selection:text-secondary transform-gpu">
       
@@ -109,7 +59,7 @@ export default function ServicesOverview() {
           </motion.p>
         </motion.div>
 
-        {/* ================= SERVICES GRID ================= */}
+        {/* ================= DYNAMIC SERVICES GRID ================= */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -117,8 +67,9 @@ export default function ServicesOverview() {
           viewport={{ once: true, margin: "-50px" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 transform-gpu"
         >
-          {services.map((service) => (
-            <ServiceCard key={service.id} service={service} />
+          {/* 🟢 FIX: Mapping over the dynamic Sanity 'services' data */}
+          {services.map((service, index) => (
+            <ServiceCard key={service.slug || index} service={service} />
           ))}
         </motion.div>
 
@@ -128,11 +79,9 @@ export default function ServicesOverview() {
 }
 
 // ----------------------------------------------------------------------
-// 🟢 Individual Service Card Component
+// 🟢 Individual Service Card Component (Updated for Sanity Data)
 // ----------------------------------------------------------------------
 function ServiceCard({ service }) {
-  const Icon = service.icon;
-
   return (
     <motion.div
       variants={fadeUp}
@@ -140,15 +89,25 @@ function ServiceCard({ service }) {
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className="h-full transform-gpu"
     >
-      <Link href={service.href} className="block h-full group focus:outline-none">
+      {/* 🟢 FIX: Dynamic URL generation based on Sanity slug */}
+      <Link href={`/services/${service.slug}`} className="block h-full group focus:outline-none">
         <div className="relative h-full bg-white border border-navy/10 rounded-2xl p-8 md:p-10 transition-all duration-300 ease-out hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 flex flex-col overflow-hidden">
           
           {/* Subtle Corner Glow on Hover */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/10 to-transparent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none transform-gpu" />
 
-          {/* Icon Area */}
+          {/* Icon Area (Dynamic Image from Sanity) */}
           <div className="w-14 h-14 rounded-2xl bg-background border border-navy/10 flex items-center justify-center mb-8 transition-colors duration-300 group-hover:bg-primary/10 group-hover:border-primary/30 shrink-0">
-            <Icon className="w-6 h-6 text-navy/70 transition-colors duration-300 group-hover:text-secondary" strokeWidth={1.5} />
+            {service.icon ? (
+              <img 
+                src={service.icon} 
+                alt={service.title} 
+                className="w-6 h-6 object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300" 
+              />
+            ) : (
+              // Safety Fallback just in case icon is missing in Sanity
+              <Target className="w-6 h-6 text-navy/70 transition-colors duration-300 group-hover:text-secondary" strokeWidth={1.5} />
+            )}
           </div>
 
           {/* Content Area */}
@@ -158,7 +117,8 @@ function ServiceCard({ service }) {
             </h3>
             
             <p className="font-sans text-[15px] md:text-base text-navy/70 leading-relaxed font-medium mb-8">
-              {service.description}
+              {/* 🟢 FIX: Prioritize shortDescription, fallback to tagline */}
+              {service.shortDescription || service.tagline}
             </p>
             
             {/* Clickable Indicator (Pushes to bottom) */}

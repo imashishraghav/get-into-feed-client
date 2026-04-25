@@ -35,7 +35,7 @@ const testimonialsQuery = `*[_type == "testimonial"] | order(_createdAt desc) {
   featured
 }`;
 
-// Enterprise Pricing Query matching your advanced schema
+// Enterprise Pricing Query
 const pricingQuery = `*[_type == "pricing"] | order(order asc) {
   _id,
   planName,
@@ -58,6 +58,21 @@ const pricingQuery = `*[_type == "pricing"] | order(order asc) {
   fallbackLink
 }`;
 
+// 🟢 NEW: Top 2 Case Studies Query (Latest wale)
+const caseStudiesQuery = `*[_type == "caseStudy"] | order(_createdAt desc)[0...2] {
+  _id,
+  "client": title,
+  "slug": slug.current,
+  industry,
+  "description": shortDescription,
+  metrics[] {
+    prefix,
+    value,
+    suffix,
+    label
+  }
+}`;
+
 // ----------------------------------------------------------------------
 // Next.js Cache Control
 // Forces Next.js to check Sanity for fresh data every 10 seconds.
@@ -65,11 +80,12 @@ const pricingQuery = `*[_type == "pricing"] | order(order asc) {
 export const revalidate = 10;
 
 export default async function Home() {
-  // Fetch the data on the server in parallel for optimal performance
-  const [services, testimonials, pricingPlans] = await Promise.all([
-    client.fetch(servicesQuery),
-    client.fetch(testimonialsQuery),
-    client.fetch(pricingQuery)
+  // 🟢 Fetch all the data on the server in parallel for optimal performance
+  const [services, testimonials, pricingPlans, caseStudiesData] = await Promise.all([
+    client.fetch(servicesQuery).catch(() => []),
+    client.fetch(testimonialsQuery).catch(() => []),
+    client.fetch(pricingQuery).catch(() => []),
+    client.fetch(caseStudiesQuery).catch(() => []) // 🟢 Fetched Case Studies
   ]);
 
   return (
@@ -79,7 +95,10 @@ export default async function Home() {
       <PainSection />
       <Capabilities services={services} />
       <UniqueSystem />      
-      <CaseStudies />
+      
+      {/* 🟢 Inject Sanity Data into CaseStudies */}
+      <CaseStudies caseStudiesData={caseStudiesData} />
+      
       <Testimonials testimonials={testimonials} />      
       <Comparison />
       <Pricing plans={pricingPlans} />

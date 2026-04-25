@@ -1,6 +1,10 @@
 // ============================================================================
+// 🟢 SANITY CLIENT IMPORT
+// ============================================================================
+import { client } from "@/sanity/lib/client";
+
+// ============================================================================
 // 🟢 PREMIUM COMPONENTS IMPORTS
-// Make sure these paths match where you saved your components
 // ============================================================================
 import LetsTalkHero from "@/components/contact/LetsTalkHero";
 import Trust from "@/components/contact/Trust";
@@ -9,6 +13,11 @@ import Qualification from "@/components/contact/Qualification";
 import ContactForm from "@/components/contact/ContactForm";
 import Testimonial from "@/components/contact/Testimonial";
 import FinalCTA from "@/components/contact/FinalCTA"; 
+
+// ==========================================
+// ⚡ ISR: AUTO-UPDATE EVERY 60 SECONDS
+// ==========================================
+export const revalidate = 60;
 
 // ============================================================================
 // 🟢 SEO METADATA (Crucial for Agency Credibility)
@@ -24,9 +33,35 @@ export const metadata = {
 };
 
 // ============================================================================
-// 🟢 MAIN PAGE COMPONENT (Server Component)
+// 🟢 MAIN PAGE COMPONENT (Async Server Component)
 // ============================================================================
-export default function ContactPage() {
+export default async function ContactPage() {
+  
+  // 🎯 GROQ Query 1: Fetch CTA Settings (if available)
+  const ctaQuery = `*[_type == "ctaSettings"][0] {
+    heading,
+    highlight,
+    subheading,
+    buttonText,
+    buttonLink,
+    trustBadge
+  }`;
+
+  // 🎯 GROQ Query 2: Fetch one FEATURED Testimonial to show below the form
+  const testimonialQuery = `*[_type == "testimonial" && featured == true][0] {
+    name, 
+    role, 
+    company, 
+    "testimonial": coalesce(quote, pt::text(testimonial), testimonial), 
+    "imageUrl": image.asset->url
+  }`;
+
+  // 🔌 Fetch both datasets parallelly for maximum speed
+  const [ctaData, testimonialData] = await Promise.all([
+    client.fetch(ctaQuery).catch(() => null),
+    client.fetch(testimonialQuery).catch(() => null)
+  ]);
+
   return (
     <main className="flex flex-col min-h-screen w-full bg-[#F8F9FB] overflow-hidden scroll-smooth">
       
@@ -45,11 +80,12 @@ export default function ContactPage() {
       {/* 5. The Core Conversion Engine */}
       <ContactForm />
       
-      {/* 6. The Final Micro-Proof */}
-      <Testimonial />
+      {/* 6. The Final Micro-Proof (Now passing Sanity Data) */}
+      {/* Make sure your Testimonial component accepts a 'data' prop like FinalCTA does */}
+      <Testimonial data={testimonialData} />
       
-      {/* 7. The Last Push (Scrolls back to form) */}
-      <FinalCTA />
+      {/* 7. The Last Push (Scrolls back to form, now dynamic) */}
+      <FinalCTA data={ctaData} />
 
     </main>
   );

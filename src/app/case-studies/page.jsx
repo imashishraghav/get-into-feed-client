@@ -1,12 +1,14 @@
 import React from "react";
 import { client } from "@/sanity/lib/client";
 
-// 🟢 Update these 3 lines at the top of your page.jsx
+// 🟢 Components Imports (Ensure folder names match exactly)
 import CaseStudiesHero from "@/components/Case Studies/CaseStudiesHero";
 import QuickProof from "@/components/Case Studies/QuickProof";
 import CaseStudiesGrid from "@/components/Case Studies/CaseStudiesGrid";
 
+// ============================================================================
 // 🟢 Next.js SEO Metadata
+// ============================================================================
 export const metadata = {
   title: "Our Work & Case Studies | Get Into Feed",
   description: "See how we help brands generate high-intent leads, scale revenue, and build predictable growth systems.",
@@ -17,8 +19,12 @@ export const metadata = {
   },
 };
 
+// ============================================================================
+// 🟢 MAIN SERVER COMPONENT
+// ============================================================================
 export default async function CaseStudiesPage() {
-  // 🔌 Fetch all case studies from Sanity CMS
+  
+  // 🔌 1. Fetch all case studies from Sanity CMS
   const query = `*[_type == "caseStudy"] | order(_createdAt desc) {
     _id,
     title,
@@ -31,9 +37,10 @@ export default async function CaseStudiesPage() {
     icon
   }`;
 
-  // Fetch with fallback empty array to prevent build crashes if Sanity is empty
-  const caseStudies = await client.fetch(query).catch(() => []);
+  // 🔌 2. Fetch with fallback empty array to prevent build crashes
+  const caseStudiesData = await client.fetch(query).catch(() => []);
 
+  // 🚀 3. Render the Page Flow
   return (
     <main className="flex flex-col w-full min-h-screen bg-white">
       
@@ -44,7 +51,8 @@ export default async function CaseStudiesPage() {
       <QuickProof />
       
       {/* 3. The Evidence: Dynamic Sanity Case Studies Grid */}
-      <CaseStudiesGrid caseStudies={caseStudies} />
+      {/* 🟢 Passing the fetched Sanity data directly to the Grid component */}
+      <CaseStudiesGrid caseStudies={caseStudiesData} />
 
     </main>
   );

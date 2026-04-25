@@ -1,4 +1,4 @@
-import createImageUrlBuilder from '@sanity/image-url'
+import { createImageUrlBuilder } from '@sanity/image-url' // ✅ Sahi Tarika
 
 import { dataset, projectId } from '../env'
 

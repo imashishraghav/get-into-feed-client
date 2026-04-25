@@ -10,38 +10,6 @@ import Link from "next/link";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 
 // ----------------------------------------------------------------------
-// Mock Data (Optimized for Scannability)
-// ----------------------------------------------------------------------
-const caseStudies = [
-  {
-    id: "01",
-    client: "Luxury Real Estate Group",
-    industry: "High-Ticket Real Estate",
-    description:
-      "Burning ad spend in a saturated market. We deployed a high-converting social funnel to bypass traditional search and target premium buyers directly.",
-    metrics: [
-      { value: "5", suffix: "X", label: "Lead Volume" },
-      { prefix: "-", value: "65", suffix: "%", label: "Cost Per Acquisition" },
-      { prefix: "$", value: "12", suffix: "M+", label: "Pipeline Generated" },
-    ],
-    link: "#",
-  },
-  {
-    id: "02",
-    client: "Aura Skincare",
-    industry: "D2C E-Commerce",
-    description:
-      "Stuck at a revenue plateau. We overhauled their creative strategy, isolated winning signals, and scaled top-performing assets to dominate the feed.",
-    metrics: [
-      { prefix: "+", value: "340", suffix: "%", label: "Return on Ad Spend" },
-      { prefix: "+", value: "2.1", suffix: "M", label: "New Revenue" },
-      { prefix: "-", value: "40", suffix: "%", label: "Customer Acq. Cost" },
-    ],
-    link: "#",
-  },
-];
-
-// ----------------------------------------------------------------------
 // Animation Variants for Header
 // ----------------------------------------------------------------------
 const fadeUpVariants = {
@@ -53,11 +21,15 @@ const fadeUpVariants = {
   },
 };
 
-export default function CaseStudies() {
-  // 🟢 Extract velocity from global smooth scroll
+// 🟢 FIX: Strictly accepting caseStudiesData from Sanity. No fallbacks.
+export default function CaseStudies({ caseStudiesData }) {
   const { velocity } = useSmoothScroll();
-  // Spring the velocity so the number-pop effect is bouncy and smooth
   const smoothVelocity = useSpring(velocity, { damping: 30, stiffness: 200 });
+
+  // 🟢 Safety Check: Hide section completely if no Sanity data is provided
+  if (!caseStudiesData || caseStudiesData.length === 0) {
+    return null; 
+  }
 
   return (
     <section className="relative w-full bg-white pt-12 md:pt-16 pb-24 md:pb-32 overflow-hidden selection:bg-primary/20 selection:text-secondary">
@@ -91,12 +63,12 @@ export default function CaseStudies() {
 
         {/* Case Studies Container */}
         <div className="flex flex-col gap-8 md:gap-10">
-          {caseStudies.map((study, index) => (
+          {caseStudiesData.map((study, index) => (
             <CaseStudyCard 
-              key={study.id} 
+              key={study._id || index} 
               study={study} 
               index={index} 
-              smoothVelocity={smoothVelocity} // Pass velocity down to cards
+              smoothVelocity={smoothVelocity} 
             />
           ))}
         </div>
@@ -127,8 +99,10 @@ function CaseStudyCard({ study, index, smoothVelocity }) {
   const opacity = useSpring(rawOpacity, { stiffness: 80, damping: 20 });
   const scale = useSpring(rawScale, { stiffness: 80, damping: 20 });
 
-  // 🟢 Velocity Scale for Metrics: Fast scroll = slightly bigger numbers
   const metricScale = useTransform(smoothVelocity, [-800, 0, 800], [1.08, 1, 1.08]);
+
+  // Handle Sanity Slug Path securely
+  const hrefLink = study.link || `/casestudies/${study.slug?.current || study.slug || '#'}`;
 
   return (
     <motion.div
@@ -136,29 +110,25 @@ function CaseStudyCard({ study, index, smoothVelocity }) {
       style={{ y, opacity, scale }}
       className="w-full gpu-accelerated"
     >
-      <Link href={study.link} className="group block focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 rounded-3xl">
-        {/* Refined Card UI */}
+      <Link href={hrefLink} className="group block focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 rounded-3xl">
         <div className="relative flex flex-col lg:flex-row bg-background rounded-3xl p-8 md:p-10 lg:p-14 border border-border transition-all duration-500 ease-out hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 hover:border-primary/30 hover:bg-white overflow-hidden">
           
           {/* LEFT: The Narrative (Story) */}
           <div className="flex-1 lg:pr-16 mb-12 lg:mb-0 flex flex-col justify-between">
             <div>
-              {/* Upgraded Premium Tag */}
               <span className="font-sans inline-block px-3 py-1 rounded-md bg-primary/5 border border-primary/20 text-xs font-bold text-secondary uppercase tracking-wider mb-5 transition-colors duration-300 group-hover:bg-primary/10">
                 {study.industry}
               </span>
               
               <h3 className="font-heading text-3xl md:text-4xl font-extrabold text-navy mb-4 tracking-tight transition-colors duration-300">
-                {study.client}
+                {study.client || study.title}
               </h3>
               
-              {/* Shortened, scannable description */}
-              <p className="font-sans text-base md:text-lg text-slate-500 leading-relaxed max-w-lg text-balance">
-                {study.description}
+              <p className="font-sans text-base md:text-lg text-slate-500 leading-relaxed max-w-lg text-balance line-clamp-3">
+                {study.description || study.shortDescription}
               </p>
             </div>
 
-            {/* Optimized Actionable CTA */}
             <div className="font-sans mt-8 flex items-center gap-2 text-secondary font-bold group-hover:text-primary transition-colors duration-300">
               <span className="text-[15px] tracking-wide">View Case Study</span>
               <ArrowRight 
@@ -171,10 +141,11 @@ function CaseStudyCard({ study, index, smoothVelocity }) {
 
           {/* RIGHT: The Metrics (Proof) with 🟢 Velocity Animation */}
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 gap-8 relative z-10 lg:border-l lg:border-border lg:pl-16 transition-colors duration-500 group-hover:border-primary/20">
-            {study.metrics.map((metric, i) => (
+            {/* Safety check: Ensure metrics array exists before mapping */}
+            {study.metrics && study.metrics.map((metric, i) => (
               <div key={i} className="flex flex-col justify-center origin-left">
                 <motion.div 
-                  style={{ scale: metricScale }} // 🟢 Applies velocity bounce here
+                  style={{ scale: metricScale }}
                   className="flex items-baseline mb-1 origin-left"
                 >
                   {metric.prefix && (
@@ -182,7 +153,6 @@ function CaseStudyCard({ study, index, smoothVelocity }) {
                       {metric.prefix}
                     </span>
                   )}
-                  {/* Dominant Metric Values */}
                   <span className="font-heading text-5xl md:text-6xl font-black text-navy tracking-tighter">
                     {metric.value}
                   </span>

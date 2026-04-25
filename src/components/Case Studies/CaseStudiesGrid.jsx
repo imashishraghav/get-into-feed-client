@@ -11,35 +11,8 @@ import { ArrowRight, Flame, TrendingUp, Target } from "lucide-react";
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 import { staggerContainer, fadeUp } from "@/utils/animations";
 
-// ----------------------------------------------------------------------
-// Fallback Contextual Data (Runs only if Sanity is empty or loading)
-// ----------------------------------------------------------------------
-const fallbackCaseStudies = [
-  {
-    _id: "1",
-    title: "Eldeco 7 Peaks",
-    slug: "eldeco-7-peaks",
-    industry: "Real Estate",
-    problem: "Needed a massive influx of high-intent buyers for a new luxury project launch.",
-    result: "+120% Qualified Leads",
-    shortDescription: "Orchestrated comprehensive lead generation campaigns optimizing meta tags and landing pages.",
-    imageUrl: null, 
-    icon: TrendingUp
-  },
-  {
-    _id: "2",
-    title: "Sobha Sector 1",
-    slug: "sobha-sector-1",
-    industry: "Luxury Real Estate",
-    problem: "Struggling to maintain profitability while scaling digital ad spend.",
-    result: "3.5x Average ROAS",
-    shortDescription: "Managed aggressive digital marketing updates and seamless performance scaling.",
-    imageUrl: null,
-    icon: Target
-  }
-];
-
-export default function CaseStudiesGrid({ caseStudies = fallbackCaseStudies }) {
+// 🟢 FIX: Removed all temporary fallback data. Now directly accepting Sanity props.
+export default function CaseStudiesGrid({ caseStudies }) {
   const containerRef = useRef(null);
 
   // 🟢 Subtle Scroll Parallax for the entire grid
@@ -51,8 +24,10 @@ export default function CaseStudiesGrid({ caseStudies = fallbackCaseStudies }) {
   const rawY = useTransform(scrollYProgress, [0, 1], [40, -40]);
   const gridLift = useSpring(rawY, { stiffness: 90, damping: 25 });
 
-  // 🟢 Connection Logic: Agar Sanity se data aaya hai, toh use karo, warna fallback dikhao
-  const displayData = caseStudies?.length > 0 ? caseStudies : fallbackCaseStudies;
+  // 🟢 Safety Check: Hide the section entirely if there's no data from Sanity
+  if (!caseStudies || caseStudies.length === 0) {
+    return null;
+  }
 
   return (
     <section 
@@ -61,7 +36,7 @@ export default function CaseStudiesGrid({ caseStudies = fallbackCaseStudies }) {
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 lg:px-16 relative z-10">
 
-        {/* ================= GRID LAYOUT ================= */}
+        {/* ================= DYNAMIC GRID LAYOUT ================= */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -70,7 +45,7 @@ export default function CaseStudiesGrid({ caseStudies = fallbackCaseStudies }) {
           style={{ y: gridLift }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10 transform-gpu"
         >
-          {displayData.map((data, index) => (
+          {caseStudies.map((data, index) => (
             <CaseStudyCard key={data._id || index} data={data} index={index} />
           ))}
         </motion.div>
@@ -85,7 +60,10 @@ export default function CaseStudiesGrid({ caseStudies = fallbackCaseStudies }) {
 // ----------------------------------------------------------------------
 function CaseStudyCard({ data }) {
   const hoverTransition = { type: "spring", stiffness: 300, damping: 25 };
-  const ResultIcon = data.icon || Flame; // Fallback icon if none provided
+  
+  // Note: Sanity doesn't natively return Lucide components. 
+  // If you don't map icons from Sanity, Flame will act as a cool default.
+  const ResultIcon = data.icon || Flame; 
   
   // 🟢 Sanity URL Fix: Handles both string and object slug formats
   const slugPath = data.slug?.current || data.slug;

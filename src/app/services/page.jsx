@@ -11,27 +11,44 @@ import TestimonialsSection from "@/components/services/TestimonialsSection";
 import WhoItsFor from "@/components/services/WhoItsFor";
 import FinalCTA from "@/components/services/FinalCTA";
 
-
+// ----------------------------------------------------------------------
+// 🔌 Sanity Data Fetching Logic (Parallel Fetching for Max Speed)
+// ----------------------------------------------------------------------
 async function getServicesPageData() {
-  const testimonialsQuery = `*[_type == "testimonial"] | order(order asc) {
-    _id, name, role, company, testimonial, 
+  
+  // 🟢 MAIN FIX: Schema ke hisaab se exact 'feedback' field mangwayi hai
+  // Aur usko 'testimonial' naam de diya taaki frontend component crash na kare.
+  const testimonialsQuery = `*[_type == "testimonial"] | order(_createdAt desc) {
+    _id, 
+    name, 
+    role, 
+    company, 
+    "testimonial": feedback, 
     "imageUrl": image.asset->url,
     isFeatured
   }`;
 
-  // Fetching data with a catch block to prevent build errors if schema is empty
-  const [testimonials] = await Promise.all([
+  const servicesQuery = `*[_type == "service"] | order(order asc){ 
+    title, 
+    "slug": slug.current, 
+    shortDescription, 
+    tagline, 
+    "icon": icon.asset->url 
+  }`;
+
+  const [testimonials, servicesData] = await Promise.all([
     client.fetch(testimonialsQuery).catch(() => []),
+    client.fetch(servicesQuery).catch(() => []), 
   ]);
 
-  return { testimonials };
+  return { testimonials, servicesData };
 }
 
 // ----------------------------------------------------------------------
 // 🟢 Next.js SEO Metadata
 // ----------------------------------------------------------------------
 export const metadata = {
-  title: "Our Services | Get Into Feed - Elite Marketing Systems",
+  title: "Our Services | Get Into Feed - Elite Marketing Systems", 
   description: "We combine performance marketing, creative strategy, and data-driven execution to build complete growth systems that scale your revenue predictably.",
   openGraph: {
     title: "Growth Services Built to Scale Your Revenue",
@@ -42,39 +59,19 @@ export const metadata = {
 };
 
 export default async function ServicesPage() {
-  // Fetch dynamic data from Sanity
-  const { testimonials } = await getServicesPageData();
+  const { testimonials, servicesData } = await getServicesPageData();
 
   return (
     <main className="flex flex-col w-full min-h-screen bg-white">
-      
-      {/* 1. The Opening: Premium Parallax Hero */}
       <ServicesHero />
-
-      {/* 2. The Overview: Scannable Grid of all services */}
-      <ServicesOverview />
-
-      {/* 3. The Process: 4-Step Vertical/Horizontal Timeline */}
+      <ServicesOverview services={servicesData} />
       <SystemSection />
-
-      {/* 4. The Details: Deep dive into each service (Alternating Layout) */}
       <ServiceBreakdown />
-
-      {/* 5. The Value: What results the client actually gets */}
       <OutcomesSection />
-
-      {/* 6. The Hard Proof: Numbers and Case Snippets */}
       <ProofSection />
-
-      {/* 7. The Human Proof: Client Quotes & Carousel */}
       <TestimonialsSection testimonials={testimonials} />
-
-      {/* 8. The Filter: Qualifying the right clients */}
       <WhoItsFor />
-
-      {/* 9. The Conversion: High-Impact Magnetic CTA */}
       <FinalCTA />
-
     </main>
   );
 }

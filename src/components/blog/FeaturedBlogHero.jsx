@@ -52,7 +52,7 @@ export default function FeaturedBlogHero({ post }) {
 
             {/* 🟢 THE FIX: 'leading-[1.3]' ko '!leading-[1.4]' kar diya hai. 
                 '!' lagane se yeh force karega ki lines ke beech minimum 1.4x ka gap rahe hi rahe! */}
-            <h1 className="text-3xl md:text-4xl lg:text-[3.25rem] font-extrabold text-white !leading-[1.1] tracking-tight max-w-4xl drop-shadow-md">
+            <h1 className="text-3xl md:text-4xl lg:text-[3.25rem] font-extrabold text-white !leading-[1.2] tracking-tight max-w-4xl drop-shadow-md">
               {post.title}
             </h1>
 
