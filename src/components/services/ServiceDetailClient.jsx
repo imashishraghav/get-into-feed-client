@@ -10,15 +10,16 @@ import { ChevronRight, CheckCircle2, ArrowRight, MessageSquare, Sparkles, Plus, 
 import slugify from "slugify";
 
 // --- 🎯 PREMIUM PORTABLE TEXT COMPONENTS ---
+// --- 🎯 PREMIUM PORTABLE TEXT COMPONENTS (Ultra-Tight Spacing) ---
 const CustomPortableTextComponents = {
   block: {
     h2: (props) => {
       const text = props.value?.children?.[0]?.text || "";
       const id = slugify(text).toLowerCase();
       return (
-        <div className="relative mt-20 mb-8 scroll-mt-32" id={id}>
-          <div className="absolute -left-6 lg:-left-10 top-1 w-1.5 h-10 bg-gradient-to-b from-[#2ED1B2] to-blue-500 rounded-full" />
-          <h2 className="text-3xl md:text-4xl font-black text-[#0F172A] tracking-tight">
+        <div className="relative mt-10 mb-3 scroll-mt-32" id={id}>
+          <div className="absolute -left-6 lg:-left-10 top-1 w-1.5 h-8 bg-gradient-to-b from-[#2ED1B2] to-blue-500 rounded-full" />
+          <h2 className="text-3xl font-black text-[#0F172A] tracking-tight">
             {props.children}
           </h2>
         </div>
@@ -28,38 +29,40 @@ const CustomPortableTextComponents = {
       const text = props.value?.children?.[0]?.text || "";
       const id = slugify(text).toLowerCase();
       return (
-        <h3 id={id} className="text-2xl font-bold text-[#0F172A] mt-12 mb-6 scroll-mt-32 flex items-center gap-3">
-          <Sparkles className="w-5 h-5 text-[#2ED1B2]" />
+        <h3 id={id} className="text-xl font-bold text-[#0F172A] mt-6 mb-2 scroll-mt-32 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-[#2ED1B2]" />
           {props.children}
         </h3>
       );
     },
     normal: (props) => (
-      <p className="text-[#475569] text-[1.1rem] leading-[1.8] mb-6 font-medium">
+      <p className="text-[#475569] text-[1.05rem] leading-relaxed mb-3 font-medium">
         {props.children}
       </p>
     ),
     blockquote: (props) => (
-      <blockquote className="relative overflow-hidden bg-gradient-to-br from-white to-[#F8F9FB] border border-[#E5E7EB] p-8 rounded-3xl shadow-sm my-12 group">
-        <div className="absolute top-0 right-0 w-40 h-40 bg-[#2ED1B2]/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform duration-500" />
-        <div className="absolute left-0 top-0 w-2 h-full bg-[#2ED1B2]" />
-        <p className="relative z-10 text-xl font-semibold text-[#0F172A] leading-relaxed">
+      <blockquote className="relative overflow-hidden bg-gradient-to-br from-white to-[#F8F9FB] border border-[#E5E7EB] p-5 rounded-2xl shadow-sm my-6 group">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-[#2ED1B2]/10 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform duration-500" />
+        <div className="absolute left-0 top-0 w-1.5 h-full bg-[#2ED1B2]" />
+        <p className="relative z-10 text-lg font-semibold text-[#0F172A] leading-relaxed">
           "{props.children}"
         </p>
       </blockquote>
     ),
   },
   list: {
-    bullet: (props) => <ul className="grid grid-cols-1 gap-4 my-10">{props.children}</ul>,
-    number: (props) => <ol className="list-decimal pl-6 space-y-4 my-8 text-lg text-[#475569]">{props.children}</ol>,
+    // Gap aur Margin dono ko drastically kam kar diya
+    bullet: (props) => <ul className="flex flex-col gap-2.5 my-3">{props.children}</ul>,
+    number: (props) => <ol className="list-decimal pl-6 space-y-2 my-3 text-lg text-[#475569]">{props.children}</ol>,
   },
   listItem: {
     bullet: (props) => (
-      <li className="flex items-start gap-4 p-5 rounded-2xl bg-white border border-[#E5E7EB] shadow-[0_2px_10px_rgb(0,0,0,0.02)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-[#2ED1B2]/30 transition-all duration-300">
-        <div className="w-10 h-10 rounded-full bg-[#2ED1B2]/10 flex items-center justify-center shrink-0">
-          <CheckCircle2 className="w-6 h-6 text-[#2ED1B2]" />
+      // Padding (p-4 se p-3) aur Icon size ko chhota kiya taaki cards sleek lagein
+      <li className="flex items-start gap-3 p-3 rounded-xl bg-white border border-[#E5E7EB] shadow-[0_1px_5px_rgb(0,0,0,0.02)] hover:shadow-md hover:border-[#2ED1B2]/40 transition-all duration-300">
+        <div className="w-7 h-7 rounded-full bg-[#2ED1B2]/10 flex items-center justify-center shrink-0 mt-0.5">
+          <CheckCircle2 className="w-4 h-4 text-[#2ED1B2]" />
         </div>
-        <span className="text-lg text-[#0F172A] font-medium leading-relaxed pt-1.5">{props.children}</span>
+        <span className="text-[1.05rem] text-[#0F172A] font-medium leading-relaxed">{props.children}</span>
       </li>
     ),
   },
