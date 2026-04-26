@@ -92,10 +92,6 @@ export default function TestimonialsSection({ testimonials }) {
         </motion.div>
 
         {/* ================= ADVANCED INFINITE SLIDER ================= */}
-        {/* 1. Overflows screen on both sides.
-          2. We use Framer Motion's 'animate' to move it continuously to the left.
-          3. We use interaction tags (hover/drag) to give user control.
-        */}
         <div className="relative w-full overflow-hidden flex items-center py-4">
           
           {/* Fade edges to blend into background */}
@@ -103,24 +99,20 @@ export default function TestimonialsSection({ testimonials }) {
           <div className="absolute top-0 right-0 w-24 md:w-64 h-full bg-gradient-to-l from-background to-transparent z-20 pointer-events-none" />
 
           <motion.div
-            // Animate infinitely from 0 to -33.33% (1 full set of the duplicated array)
             animate={{ x: ["0%", "-33.33%"] }}
             transition={{
               ease: "linear",
-              duration: 25, // Control speed here (higher is slower)
+              duration: 25,
               repeat: Infinity,
             }}
-            // Hover pauses the animation
             whileHover={{ animationPlayState: "paused" }}
             className="flex gap-6 md:gap-8 px-6 md:px-8 w-max cursor-grab active:cursor-grabbing"
             style={{ 
-               /* Add explicit width to ensure animation calculates correctly */
                width: "fit-content" 
             }}
           >
             {duplicatedTestimonials.map((testimonial, index) => (
               <TestimonialCard 
-                // Using a combination of id and index for unique keys in duplicated lists
                 key={`${testimonial._id}-${index}`} 
                 data={testimonial} 
               />
@@ -155,7 +147,7 @@ function TestimonialCard({ data }) {
           "{data.testimonial || data.feedback}"
         </blockquote>
         
-        {/* Client Details Section (Sticks to bottom) */}
+        {/* Client Details Section */}
         <div className="flex items-center gap-4 pt-6 border-t border-navy/10 mt-auto">
           <div className="shrink-0 w-12 h-12 relative rounded-full overflow-hidden border border-navy/10 shadow-sm group-hover:border-primary/30 transition-colors">
             {data.imageUrl ? (
@@ -172,8 +164,8 @@ function TestimonialCard({ data }) {
               {data.role} <span className="text-primary mx-1">•</span> {data.company}
             </p>
           </div>
-        </div>
+       </div>
       </div>
     </div>
   );
-}
+} // 🟢 BAS YEH BRACKET ADD KARNA HAI
