@@ -1,71 +1,88 @@
 import { notFound } from 'next/navigation';
 import { client } from '@/sanity/lib/client';
 
-// 🟢 Sahi Import Path
-import ServiceClient from '@/app/services/ServiceClient'; 
+// 🟢 Import our Premium UI Component
+import ServiceDetailClient from '@/components/services/ServiceDetailClient';
 
+// ==========================================
+// ⚡ ISR: REAL-TIME UPDATE SYSTEM (60s)
+// ==========================================
 export const revalidate = 60;
 
+// ==========================================
+// 1. STATIC GENERATION (SSG)
+// ==========================================
 export async function generateStaticParams() {
   const query = `*[_type == "service" && defined(slug.current)]{ "slug": slug.current }`;
-  const slugs = await client.fetch(query);
+  const slugs = await client.fetch(query).catch(() => []); 
   return slugs.map((service) => ({ slug: service.slug }));
 }
 
 // ==========================================
-// 🟢 FIX 1: generateMetadata mein params ko await kiya
+// 2. DYNAMIC SEO METADATA (Next.js 16)
 // ==========================================
 export async function generateMetadata({ params }) {
-  const resolvedParams = await params; // <--- NEXT.JS 16 FIX
+  const resolvedParams = await params; // Next.js 16 Requirement
 
   const query = `*[_type == "service" && slug.current == $slug][0]{
     seoTitle,
     seoDescription,
     title,
     tagline,
-    "image": coverImage.asset->url
+    shortDescription,
+    "image": mainImage.asset->url
   }`;
   
-  const service = await client.fetch(query, { slug: resolvedParams.slug });
+  const service = await client.fetch(query, { slug: resolvedParams.slug }).catch(() => null);
 
   if (!service) return {};
 
   return {
     title: service.seoTitle || `${service.title} | Get Into Feed`,
-    description: service.seoDescription || service.tagline,
+    description: service.seoDescription || service.shortDescription || service.tagline,
     openGraph: {
       title: service.seoTitle || service.title,
-      description: service.seoDescription || service.tagline,
+      description: service.seoDescription || service.shortDescription || service.tagline,
       images: service.image ? [{ url: service.image }] : [],
       type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: service.seoTitle || service.title,
+      description: service.seoDescription || service.shortDescription || service.tagline,
+      images: service.image ? [service.image] : [],
     },
   };
 }
 
 // ==========================================
-// 🟢 FIX 2: Main Component mein params ko await kiya
+// 3. MAIN SERVER COMPONENT
 // ==========================================
-export default async function ServicePage({ params }) {
-  const resolvedParams = await params; // <--- NEXT.JS 16 FIX
+export default async function ServiceDetailPage({ params }) {
+  const resolvedParams = await params; // Next.js 16 Requirement
 
+// 🎯 SANITY GROQ QUERY (Updated for your exact schema)
   const query = `*[_type == "service" && slug.current == $slug][0]{
     title,
+    "slug": slug.current,
+    shortDescription,
     tagline,
     content,
-    deliverables[],
-    faqs[],
-    "image": coverImage.asset->url,
+    "mainImage": coverImage.asset->url, // 🟢 FIX: coverImage ko mainImage me map kar diya
+    deliverables, // 🟢 Naya Add kiya
+    faqs, // 🟢 Naya Add kiya
     seoTitle,
     seoDescription
   }`;
+  
+  const service = await client.fetch(query, { slug: resolvedParams.slug }).catch(() => null);
 
-  const data = await client.fetch(query, { slug: resolvedParams.slug });
+  // Agar user ne galat URL daala ya service exist nahi karti toh Next.js ka default 404 page dikhao
+  if (!service) {
+    notFound();
+  }
 
-  if (!data) notFound();
-
-  return (
-    <main className="bg-[#F8F9FB] min-h-screen relative selection:bg-[#2ED1B2]/20 selection:text-[#0EA5A4]">
-      <ServiceClient data={data} />
-    </main>
-  );
+  // 🚀 PASS DATA TO YOUR PREMIUM UI COMPONENT
+  // 'service' prop pass kar rahe hain kyunki humne Client component mein yahi naam rakha tha
+  return <ServiceDetailClient service={service} />;
 }

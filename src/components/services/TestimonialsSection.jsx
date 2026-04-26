@@ -176,4 +176,4 @@ function TestimonialCard({ data }) {
       </div>
     </div>
   );
-}s
+}
