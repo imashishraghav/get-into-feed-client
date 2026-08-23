@@ -1,0 +1,62 @@
+[
+  {
+    "id": "bbe0df94-6c31-41c4-8463-aa9b4df14ea0",
+    "name": "Audit Candidate",
+    "email": "candidate.tester@growth.com",
+    "role": "Senior Enterprise SEO Lead & Architect",
+    "portfolio": "https://linkedin.com/in/audittester",
+    "note": "Automated career ingestion audit test",
+    "source": "website",
+    "createdAt": "2026-08-23T11:31:30.323Z"
+  },
+  {
+    "id": "ac921f8d-900f-4160-86fd-ec58f38c059f",
+    "name": "Audit Candidate",
+    "email": "candidate.tester@growth.com",
+    "role": "Senior Enterprise SEO Lead & Architect",
+    "portfolio": "https://linkedin.com/in/audittester",
+    "note": "Automated career ingestion audit test",
+    "source": "website",
+    "createdAt": "2026-08-23T11:18:53.940Z"
+  },
+  {
+    "id": "56d2f722-4501-496b-8311-5f2023d730a0",
+    "name": "Audit Candidate",
+    "email": "candidate.tester@growth.com",
+    "role": "Senior Enterprise SEO Lead & Architect",
+    "portfolio": "https://linkedin.com/in/audittester",
+    "note": "Automated career ingestion audit test",
+    "source": "website",
+    "createdAt": "2026-08-23T11:18:41.484Z"
+  },
+  {
+    "id": "6d0cdb99-5e0a-446d-8ea0-d43f4191e6b2",
+    "name": "Audit Candidate",
+    "email": "candidate.tester@growth.com",
+    "role": "Senior Enterprise SEO Lead & Architect",
+    "portfolio": "https://linkedin.com/in/audittester",
+    "note": "Automated career ingestion audit test",
+    "source": "website",
+    "createdAt": "2026-08-23T11:15:26.022Z"
+  },
+  {
+    "id": "6c982914-f69b-4327-b32c-06d1603f685b",
+    "name": "Ankit Tiwari",
+    "email": "ankit.tiwari@growth.com",
+    "role": "Senior Enterprise SEO Lead & Architect",
+    "portfolio": "https://linkedin.com/in/ankittiwari-seo",
+    "note": "Scaled programmatic organic search hubs for FinTech & D2C.",
+    "source": "website",
+    "createdAt": "2026-08-23T10:48:19.385Z"
+  },
+  {
+    "id": "c01987c2-af08-4a8e-870f-3fbea7f1a123",
+    "name": "Aakash Verma",
+    "email": "aakash@test.com",
+    "role": "Senior Enterprise SEO Lead",
+    "portfolio": "https://linkedin.com/in/test",
+    "note": "10+ years experience in technical SEO and GEO architecture.",
+    "source": "website",
+    "createdAt": "2026-08-22T11:48:49.521Z"
+  }
+]
