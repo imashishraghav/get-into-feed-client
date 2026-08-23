@@ -1,0 +1,275 @@
+{
+  "stats": [
+    {
+      "value": "4.8x",
+      "label": "Average Client ROAS"
+    },
+    {
+      "value": "₹250Cr+",
+      "label": "Tracked Client Revenue"
+    },
+    {
+      "value": "500+",
+      "label": "Growth Sprints Delivered"
+    },
+    {
+      "value": "+273%",
+      "label": "AI Search Visibility"
+    }
+  ],
+  "services": [
+    {
+      "id": "service-seo-growth",
+      "title": "Enterprise SEO & AI Search (GEO)",
+      "description": "Capture high-intent search demand across Google, ChatGPT, and Gemini with technical architecture, programmatic keyword clusters, and authority link moats.",
+      "icon": "Search",
+      "points": [
+        "AI Search & Generative Engine Optimization (GEO)",
+        "Technical SEO & Core Web Vitals Optimization",
+        "Programmatic Commercial Keyword Clusters",
+        "Local Map Pack & Multi-Location Dominance"
+      ],
+      "coverImage": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80",
+      "metaTitle": "Enterprise SEO & AI Search Agency in India | Get Into Feed",
+      "metaDescription": "Scale organic traffic and dominate Google & AI Search with Get Into Feed - India's leading enterprise SEO & GEO agency.",
+      "keywords": "SEO company India, enterprise SEO agency, AI search optimization, GEO marketing"
+    },
+    {
+      "id": "service-performance-ads",
+      "title": "Paid Media & Performance Marketing (PPC)",
+      "description": "Profit-focused Google Search, Performance Max, and Meta Ads engineered to maximize ROAS, control customer acquisition costs (CAC), and scale qualified sales pipeline.",
+      "icon": "MousePointerClick",
+      "points": [
+        "Google Search, Shopping & Performance Max",
+        "Meta & Instagram UGC Creator Ad Sprints",
+        "LinkedIn B2B Account-Based Marketing (ABM)",
+        "Multi-Touch Server-Side Attribution Modeling"
+      ],
+      "coverImage": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+      "metaTitle": "Performance Marketing & Google Ads Agency | Get Into Feed",
+      "metaDescription": "Revenue-tied performance marketing, Google Ads, Meta Ads and paid media scaling for Indian enterprises and D2C brands.",
+      "keywords": "PPC agency India, Google Ads management, performance marketing Mumbai Bangalore Delhi"
+    },
+    {
+      "id": "service-website-design",
+      "title": "High-Converting Web Experiences & CRO",
+      "description": "Ultra-fast, mobile-first React web experiences, custom landing pages, and automated WhatsApp funnels designed to turn clicks into paying customers.",
+      "icon": "Globe2",
+      "points": [
+        "Sub-Second React & Next.js Core Speed",
+        "Conversion Rate Optimization (CRO) Audits",
+        "Interactive Calculators & Lead Funnels",
+        "Official WhatsApp Business API Automation"
+      ],
+      "coverImage": "/agency-hero.png",
+      "metaTitle": "Web Design & Conversion Rate Optimization (CRO) | Get Into Feed",
+      "metaDescription": "High-converting web design, sub-second speed development and CRO engineering for ambitious growth brands.",
+      "keywords": "website design agency India, CRO agency, landing page design, React development"
+    },
+    {
+      "id": "service-content-marketing",
+      "title": "Content Marketing & Digital PR",
+      "description": "Thought leadership articles, SEO content hubs, and tier-1 media placements that establish industry authority and compound organic search rankings.",
+      "icon": "PenTool",
+      "points": [
+        "High-Intent SEO Copywriting & Content Hubs",
+        "High-Tier Digital PR & Tier-1 Media Outreach",
+        "Authority Link Moat Engineering",
+        "Thought Leadership & Executive Positioning"
+      ],
+      "coverImage": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80",
+      "metaTitle": "Content Marketing & Digital PR Agency India | Get Into Feed",
+      "metaDescription": "Authority content marketing, digital PR, and link acquisition strategies that compound organic search moats.",
+      "keywords": "content marketing agency India, digital PR, SEO copywriting, link building"
+    },
+    {
+      "id": "service-app-marketing",
+      "title": "App Store Optimization (ASO) & Mobile Growth",
+      "description": "Drive organic app discovery and profitable user acquisition across iOS App Store and Google Play with keyword targeting and in-app conversion optimization.",
+      "icon": "Sparkles",
+      "points": [
+        "iOS App Store & Google Play ASO",
+        "High-Volume User Acquisition Campaigns",
+        "In-App Funnel & Retention Optimization",
+        "App Rating & Review Reputation Velocity"
+      ],
+      "coverImage": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=1200&q=80",
+      "metaTitle": "App Store Optimization (ASO) Agency India | Get Into Feed",
+      "metaDescription": "Rank #1 on App Store & Google Play. User acquisition and ASO strategies delivering +65% more app installs.",
+      "keywords": "ASO agency India, App Store Optimization, mobile app marketing"
+    },
+    {
+      "id": "service-analytics-martech",
+      "title": "BI Analytics, GA4 & MarTech Engineering",
+      "description": "Server-side tracking, custom Looker Studio dashboards, and multi-touch attribution models that reveal the exact revenue generated by every marketing rupee.",
+      "icon": "BarChart3",
+      "points": [
+        "Server-Side GTM & Meta Conversions API (CAPI)",
+        "Executive Looker Studio Real-Time BI",
+        "Cohort CAC-to-LTV Attribution Modeling",
+        "Weekly Growth Engineering Telemetry"
+      ],
+      "coverImage": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+      "metaTitle": "Marketing Analytics & GA4 MarTech Agency | Get Into Feed",
+      "metaDescription": "Advanced web analytics, server-side tracking, and multi-touch attribution dashboards for enterprise visibility.",
+      "keywords": "GA4 agency India, marketing analytics, server side tracking, Looker Studio dashboards"
+    }
+  ],
+  "caseStudies": [
+    {
+      "id": "case-veloura-1",
+      "brand": "Veloura Organics (D2C Skincare)",
+      "result": "Scaled Monthly Revenue to ₹1.8 Cr with 4.8x ROAS",
+      "metric": "4.8x ROAS",
+      "channel": "Meta Ads + UGC Video Sprints + Retention",
+      "detail": "Restructured ad account with creator-led UGC reels, deployed sub-second React landing pages, and automated WhatsApp cart recovery, scaling monthly revenue from ₹32L to ₹1.8 Cr in 120 days.",
+      "coverImage": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "case-finscale-2",
+      "brand": "FinScale Lending (BFSI & Fintech)",
+      "result": "+340% Inbound Loan Applications & -46% CAC",
+      "metric": "+340% Leads",
+      "channel": "Enterprise SEO + Core Web Vitals + Programmatic Hubs",
+      "detail": "Built 450+ programmatic high-intent keyword hubs around loan calculators, achieving #1 Google rankings and reducing customer acquisition cost by 46%.",
+      "coverImage": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "case-edvance-3",
+      "brand": "EdVance Academy (EdTech Platform)",
+      "result": "18,400+ Paid Student Enrollments at 3.9x ROI",
+      "metric": "18.4K Admissions",
+      "channel": "Google Search + Performance Max + WhatsApp Funnels",
+      "detail": "Overhauled paid search structure targeting career switchers, paired with localized student video testimonials and 1-click WhatsApp counseling funnels.",
+      "coverImage": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "id": "case-medihealth-4",
+      "brand": "MediHealth Super Specialty (Healthcare)",
+      "result": "+280% Verified Doctor Appointments Booked",
+      "metric": "+280% Bookings",
+      "channel": "Local Map Pack SEO + Hyperlocal Google Ads",
+      "detail": "Dominated Google 3-Pack rankings across 14 hospital centers in Delhi-NCR and Bengaluru, resulting in a 2.8x increase in verified patient OPD bookings.",
+      "coverImage": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80"
+    }
+  ],
+  "testimonials": [
+    {
+      "id": "test-1",
+      "quote": "Get Into Feed transformed our digital customer acquisition. In 4 months, our organic traffic tripled, and our Meta ad spend scaled profitably to ₹50L/month with a 4.8x ROAS. They operate like true growth partners.",
+      "name": "Ananya Sharma",
+      "role": "Co-Founder & CMO, Veloura Organics",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80"
+    },
+    {
+      "id": "test-2",
+      "quote": "Unlike traditional agencies that send vanity metric reports, Get Into Feed speaks revenue and unit economics. Their enterprise SEO architecture unlocked 340% growth in qualified inbound loan applications.",
+      "name": "Vikramaditya Mehta",
+      "role": "Head of Growth, FinScale Lending",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80"
+    },
+    {
+      "id": "test-3",
+      "quote": "Their speed of execution is unmatched in India. From sub-second React landing pages to weekly creative testing sprints, our CAC dropped by 38% in 60 days. Highest recommendation.",
+      "name": "Rohan Deshmukh",
+      "role": "VP Marketing, EdVance Group",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80"
+    }
+  ],
+  "blogPosts": [
+    {
+      "title": "Generative Engine Optimization (GEO): The 2026 Enterprise Playbook",
+      "slug": "generative-engine-optimization-geo-2026-playbook",
+      "category": "Generative AI & GEO",
+      "author": "Sarvesh Bagla",
+      "authorRole": "Founder & CEO, Get Into Feed",
+      "authorAvatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
+      "tags": [
+        "GEO",
+        "ChatGPT Search",
+        "AI Overviews",
+        "Enterprise SEO"
+      ],
+      "readTime": "6 min read",
+      "status": "published",
+      "excerpt": "Learn how to optimize your brand entity graph and structured data to dominate ChatGPT Search, Google Gemini, and Perplexity answer citations.",
+      "content": "## The Generative Search Revolution\n\nTraditional keyword-matching algorithms are transitioning to multi-modal generative reasoning models.\n\n> 💡 **Key Strategic Takeaway:** Brands cited in LLM syntheses capture over 72% of high-intent enterprise pipeline.\n\n### 01. Semantic Entity Graphs\nEntity nodes connect your brand with authoritative industry citations.\n\n| Channel | AI Engine | Impact |\n|---|---|---|\n| **ChatGPT** | GPT-4o Search | #1 Solution Recommendation |\n| **Google** | Gemini 1.5 Pro | AI Overview Citation |\n\n> 📈 **Audited Growth Impact:** +273% surge in AI Answer engine visibility.\n\n---\n### Ready to Scale?\n[Claim Your Free 360° Audit →](/contact)\n---",
+      "coverImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80",
+      "metaTitle": "Generative Engine Optimization (GEO) 2026 Playbook | Get Into Feed",
+      "metaDescription": "Scale your AI answer visibility across ChatGPT and Gemini with Get Into Feed's proprietary GEO entity architecture.",
+      "keywords": "GEO marketing, generative engine optimization, ChatGPT SEO, Gemini AI search",
+      "canonicalUrl": "",
+      "schemaType": "BlogPosting",
+      "publishedAt": "2026-08-23",
+      "id": "blogPosts-generative-engine-optimization-geo-the-2026-enterprise-playbook-mt5nr2ch"
+    },
+    {
+      "id": "post-1",
+      "title": "Generative Engine Optimization (GEO): How to Rank in ChatGPT, Gemini & Google AI Overviews",
+      "slug": "generative-engine-optimization-geo-ai-search-guide",
+      "category": "AI Search & SEO",
+      "readTime": "6 min read",
+      "publishedAt": "2026-08-15",
+      "excerpt": "Traditional SEO is evolving into AI Discovery. Learn the exact technical markup, entity authority, and brand citation strategies required to get cited in ChatGPT and Google AI Overviews.",
+      "content": "## The Shift from 10 Blue Links to AI Answer Engines\nSearch is experiencing its biggest paradigm shift in 25 years. Large Language Models (LLMs) like ChatGPT, Google Gemini, and Perplexity are directly synthesizing answers for millions of commercial queries.\n\n### 01. What is Generative Engine Optimization (GEO)?\nGEO is the discipline of optimizing brand entities, content structure, and technical citation graphs so that AI models choose your brand when users ask questions like 'What is the best digital marketing agency for fintech in India?'.\n\n### 02. The 3 Core Pillars of GEO\n- **Entity Clarity & Knowledge Graph Nodes**: Structured Schema.org Organization markup with verified sameAs profiles.\n- **Direct Fact & Data Citations**: Including proprietary statistics and original research that LLMs ingest.\n- **High-Authority Brand Co-Occurrences**: Mentions across reputable trade publications and digital PR outlets.\n\n> 💡 **Key Takeaway:** Brands that build authority citations today will capture 80% of AI-driven commercial search volume over the next 3 years.",
+      "coverImage": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80",
+      "metaTitle": "Generative Engine Optimization (GEO) Guide 2026 | Get Into Feed",
+      "metaDescription": "Learn how to optimize for ChatGPT, Gemini, and Google AI Overviews with Get Into Feed's Generative Engine Optimization playbook.",
+      "keywords": "GEO marketing, AI search optimization, ChatGPT SEO, Google AI Overviews ranking"
+    },
+    {
+      "id": "post-2",
+      "title": "Scaling Paid Media from ₹10L to ₹1Cr/Month: The Unit Economics & Creative Sprint Framework",
+      "slug": "scaling-paid-media-meta-google-ads-playbook",
+      "category": "Paid Media & PPC",
+      "readTime": "5 min read",
+      "publishedAt": "2026-08-10",
+      "excerpt": "Why most ad accounts hit a performance ceiling at ₹20L/month, and the creative testing sprint methodology that unlocks profitable scaling to ₹1 Crore+ monthly spend.",
+      "content": "## Why Ad Accounts Plateau at Scale\nWhen ad budgets scale, audience saturation and ad fatigue cause customer acquisition costs (CAC) to spike. Winning at scale requires moving away from minor bid tweaks to high-volume creative iteration.\n\n### 01. The Weekly Creative Sprint Engine\n- **4 Hook Angles Weekly**: Testing Problem-Agitation, Direct Demo, Social Proof, and Contrarian viewpoints.\n- **Dynamic Landing Page Routing**: Sending traffic to tailored sub-second landing pages rather than a generic homepage.\n- **Server-Side Conversion API (CAPI)**: Ensuring Meta and Google algorithms receive 100% accurate purchase signals.\n\n> 💡 **Key Takeaway:** In modern paid advertising, creative *is* targeting. The brand that tests 15 creative angles weekly will consistently beat the competitor testing only 2.",
+      "coverImage": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+      "metaTitle": "Paid Media Scaling Framework: Meta & Google Ads | Get Into Feed",
+      "metaDescription": "Practical guide on scaling Meta and Google ad budgets profitably with creative sprints and server-side tracking.",
+      "keywords": "paid media scaling, Meta Ads playbook, Google Ads ROAS, performance marketing agency"
+    },
+    {
+      "id": "post-3",
+      "title": "Core Web Vitals & Sub-Second Page Speed: The Unfair SEO & CRO Advantage",
+      "slug": "core-web-vitals-sub-second-speed-seo-cro-advantage",
+      "category": "Web & CRO",
+      "readTime": "4 min read",
+      "publishedAt": "2026-08-01",
+      "excerpt": "A 1-second delay in page load drops mobile conversions by 26%. Discover how sub-second React architecture compounds organic rankings and doubles landing page conversion rates.",
+      "content": "## Mobile Speed is Commercial Revenue\nIn India, over 82% of commercial traffic originates on mobile networks. If your website takes 3.5 seconds to load, over a third of your paid clicks bounce before seeing your value proposition.\n\n### 01. The Three Critical Metrics\n- **LCP (Largest Contentful Paint)**: Under 1.2 seconds for optimal user retention.\n- **INP (Interaction to Next Paint)**: Ensuring instant tactile feedback on buttons.\n- **CLS (Cumulative Layout Shift)**: Zero visual jumping during font and image loading.\n\n> 💡 **Key Takeaway:** Upgrading to a modern, headless React architecture pays for itself within 60 days through higher organic rankings and reduced cost-per-lead.",
+      "coverImage": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80",
+      "metaTitle": "Core Web Vitals & Speed Optimization Guide | Get Into Feed",
+      "metaDescription": "How sub-second mobile page speed unlocks higher Google rankings and doubles conversion rates.",
+      "keywords": "Core Web Vitals optimization, React website speed, CRO audit India, landing page speed"
+    }
+  ],
+  "careers": [
+    {
+      "id": "career-1",
+      "title": "Senior Enterprise SEO Lead",
+      "team": "Organic Search",
+      "type": "Full-time",
+      "location": "Bengaluru / Remote",
+      "summary": "Lead enterprise SEO strategy and AI search optimization (GEO) for India's top BFSI, Healthcare, and E-commerce brands."
+    },
+    {
+      "id": "career-2",
+      "title": "Performance Marketing Manager (Meta & Google Ads)",
+      "team": "Growth Media",
+      "type": "Full-time",
+      "location": "Mumbai / Remote",
+      "summary": "Manage and scale multi-crore paid media budgets across Google Search, Performance Max, and Meta Ads with strict ROAS targets."
+    },
+    {
+      "id": "career-3",
+      "title": "Creative Producer & Video Ads Specialist",
+      "team": "Creative Studio",
+      "type": "Full-time",
+      "location": "Delhi-NCR / Remote",
+      "summary": "Direct and edit high-CTR UGC video reels, hook-driven motion graphics, and high-converting visual ads."
+    }
+  ]
+}
