@@ -4,15 +4,18 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node -e \"const fs=require('fs'),cp=require('child_process'); if(fs.existsSync('frontend')){cp.execSync('cd frontend && npm install && npm run build',{stdio:'inherit'});}else{cp.execSync('npx vite build',{stdio:'inherit'});}\"",
-    "dev": "node -e \"const fs=require('fs'),cp=require('child_process'); if(fs.existsSync('frontend')){cp.execSync('cd frontend && npm run dev',{stdio:'inherit'});}else{cp.execSync('npx vite',{stdio:'inherit'});}\"",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "start": "node backend/start.js"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^5.4.11",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "lucide-react": "^0.468.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
   }
 }
