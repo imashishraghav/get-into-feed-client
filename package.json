@@ -2,14 +2,9 @@
   "name": "get-into-feed",
   "version": "1.0.0",
   "private": true,
-  "description": "Full-stack React and Node website for India's #1 digital marketing agency with MCP integration.",
   "scripts": {
-    "dev": "pnpm -r --parallel dev",
-    "dev:frontend": "pnpm --dir frontend dev",
-    "dev:backend": "pnpm --dir backend dev",
-    "build": "pnpm --dir frontend build",
-    "start": "node backend/start.js",
-    "mcp": "node backend/mcp-server.js"
-  },
-  "packageManager": "pnpm@11.7.0"
+    "build": "cd frontend && npm install && npm run build",
+    "dev": "cd frontend && npm run dev",
+    "start": "node backend/start.js"
+  }
 }
