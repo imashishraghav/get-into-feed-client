@@ -1,0 +1,16 @@
+{
+  "name": "Get Into Feed",
+  "short_name": "Get Into Feed",
+  "description": "Digital marketing agency for SEO, ads, content and lead generation.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7faf8",
+  "theme_color": "#12211f",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    }
+  ]
+}
