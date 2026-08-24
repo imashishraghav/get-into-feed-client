@@ -1,0 +1,47 @@
+# ==============================================================================
+# GET INTO FEED - BLUEHOST CPANEL APACHE CONFIGURATION (.htaccess)
+# ==============================================================================
+
+# 1. ENABLE REWRITE ENGINE
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # FORCE HTTPS (SSL REDIRECTION)
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # REACT ROUTER SPA FALLBACK (PREVENT 404 ON REFRESH FOR /services, /about, etc.)
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /index.html [L]
+</IfModule>
+
+# 2. ENABLE GZIP COMPRESSION FOR SPEED & CORE WEB VITALS
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+  AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# 3. LEVERAGE BROWSER CACHING FOR STATIC ASSETS
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+# 4. SECURITY HEADERS
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-XSS-Protection "1; mode=block"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
