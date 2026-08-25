@@ -245,6 +245,11 @@ function AnnouncementBar({ onOpenAudit }) {
 function Header({ route, onOpenAudit }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [expandedMobileCategory, setExpandedMobileCategory] = useState("company");
+
+  const toggleMobileCategory = (cat) => {
+    setExpandedMobileCategory(expandedMobileCategory === cat ? null : cat);
+  };
 
   const navItems = [
     { id: "company", label: "Company", hasDropdown: true, to: "/about" },
@@ -317,7 +322,7 @@ function Header({ route, onOpenAudit }) {
 
                     {/* RIGHT REPORT CARD FEATURE */}
                     <div className="dropdown-report-card-badge">
-                      <span className="dr-card-kicker">FOUNDED 2026 • NOIDA HQ</span>
+                      <span className="dr-card-kicker">FOUNDED 2026 • GROWTH STUDIO</span>
                       <div className="dr-card-giant-stat">4.8x</div>
                       <p className="dr-card-bold-line">average client ROAS across search & media</p>
                       <p className="dr-card-sub-line">AI-First Growth Studio.</p>
@@ -352,50 +357,137 @@ function Header({ route, onOpenAudit }) {
         </div>
       </div>
 
-      {/* MOBILE DRAWER */}
+      {/* MOBILE DRAWER WITH RICH EXPANDABLE ACCORDION SUBMENUS */}
       {mobileOpen && (
         <div className="techmagnate-mobile-drawer">
-          <nav className="mobile-nav-list">
-            <Link to="/about" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
-              <span>About Us</span>
-              <ChevronRight size={16} />
-            </Link>
-            <Link to="/services" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
-              <span>Our Services</span>
-              <ChevronRight size={16} />
-            </Link>
-            <Link to="/work" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
-              <span>Our Work</span>
-              <ChevronRight size={16} />
-            </Link>
-            <Link to="/awards" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
-              <span>Awards & Recognition</span>
-              <ChevronRight size={16} />
-            </Link>
-            <Link to="/careers" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
-              <span>Careers</span>
-              <ChevronRight size={16} />
-            </Link>
-            <Link to="/faqs" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
-              <span>FAQs</span>
-              <ChevronRight size={16} />
-            </Link>
-            <Link to="/blog" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
-              <span>Blog & Playbooks</span>
-              <ChevronRight size={16} />
-            </Link>
-            <Link to="/contact" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
-              <span>Contact</span>
-              <ChevronRight size={16} />
-            </Link>
-            <div className="mobile-drawer-cta">
+          <nav className="mobile-nav-list" aria-label="Mobile Navigation">
+            {/* 1. COMPANY (EXPANDABLE SUBMENU) */}
+            <div className="mobile-accordion-group">
               <button
                 type="button"
-                onClick={() => { setMobileOpen(false); onOpenAudit(); }}
-                className="button button-coral full"
+                className={`mobile-menu-row accordion-trigger ${expandedMobileCategory === "company" ? "expanded" : ""}`}
+                onClick={() => toggleMobileCategory("company")}
+                aria-expanded={expandedMobileCategory === "company"}
               >
-                Claim Free Audit →
+                <span className="menu-label-bold">🏢 Company</span>
+                <ChevronDown size={18} className={`accordion-chevron ${expandedMobileCategory === "company" ? "open" : ""}`} />
               </button>
+              {expandedMobileCategory === "company" && (
+                <div className="mobile-submenu-box">
+                  <Link to="/about" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> About Get Into Feed
+                  </Link>
+                  <Link to="/awards" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Awards & Recognition
+                  </Link>
+                  <Link to="/careers" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Careers & Culture
+                  </Link>
+                  <Link to="/faqs" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Frequently Asked Questions
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* 2. OUR SERVICES (EXPANDABLE SUBMENU) */}
+            <div className="mobile-accordion-group">
+              <button
+                type="button"
+                className={`mobile-menu-row accordion-trigger ${expandedMobileCategory === "services" ? "expanded" : ""}`}
+                onClick={() => toggleMobileCategory("services")}
+                aria-expanded={expandedMobileCategory === "services"}
+              >
+                <span className="menu-label-bold">⚡ Our Services</span>
+                <ChevronDown size={18} className={`accordion-chevron ${expandedMobileCategory === "services" ? "open" : ""}`} />
+              </button>
+              {expandedMobileCategory === "services" && (
+                <div className="mobile-submenu-box">
+                  <Link to="/services/enterprise-seo" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Enterprise SEO Services
+                  </Link>
+                  <Link to="/services/generative-engine-optimization" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Generative AI Search (GEO)
+                  </Link>
+                  <Link to="/services/google-ads-management" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> PPC & Google Ads Management
+                  </Link>
+                  <Link to="/services/ecommerce-seo" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Ecommerce SEO
+                  </Link>
+                  <Link to="/services/local-seo" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Local SEO & Google 3-Pack
+                  </Link>
+                  <Link to="/services/content-marketing-pr" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Content Marketing & PR
+                  </Link>
+                  <Link to="/services/web-design-cro" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Sub-Second React & CRO Web
+                  </Link>
+                  <Link to="/services/app-store-optimization" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Mobile App Marketing (ASO)
+                  </Link>
+                  <Link to="/services" onClick={() => setMobileOpen(false)} className="mobile-sub-item highlight">
+                    <span>View All 18 Capabilities →</span>
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* 3. OUR WORK (EXPANDABLE SUBMENU) */}
+            <div className="mobile-accordion-group">
+              <button
+                type="button"
+                className={`mobile-menu-row accordion-trigger ${expandedMobileCategory === "work" ? "expanded" : ""}`}
+                onClick={() => toggleMobileCategory("work")}
+                aria-expanded={expandedMobileCategory === "work"}
+              >
+                <span className="menu-label-bold">💼 Our Work</span>
+                <ChevronDown size={18} className={`accordion-chevron ${expandedMobileCategory === "work" ? "open" : ""}`} />
+              </button>
+              {expandedMobileCategory === "work" && (
+                <div className="mobile-submenu-box">
+                  <Link to="/work" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> All Case Studies
+                  </Link>
+                  <Link to="/work" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> BFSI & FinTech Scale
+                  </Link>
+                  <Link to="/work" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> D2C & Ecommerce Growth
+                  </Link>
+                  <Link to="/work" onClick={() => setMobileOpen(false)} className="mobile-sub-item">
+                    <span className="sub-bullet">›</span> Healthcare & Hospitals
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* 4. BLOG */}
+            <Link to="/blog" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
+              <span className="menu-label-bold">📰 Blog & Growth Playbooks</span>
+              <ChevronRight size={16} />
+            </Link>
+
+            {/* 5. CONTACT */}
+            <Link to="/contact" onClick={() => setMobileOpen(false)} className="mobile-menu-row">
+              <span className="menu-label-bold">📞 Contact Consultation</span>
+              <ChevronRight size={16} />
+            </Link>
+
+            {/* DIRECT ACTION BUTTONS IN DRAWER */}
+            <div className="mobile-drawer-direct-actions">
+              <a
+                href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%20team%2C%20I%20would%20like%20to%20discuss%20growth%20services."
+                target="_blank"
+                rel="noreferrer"
+                className="mobile-drawer-whatsapp-btn"
+              >
+                💬 Chat on WhatsApp
+              </a>
+              <a href="tel:+918810356950" className="mobile-drawer-call-btn">
+                📞 Call: +91-8810356950
+              </a>
             </div>
           </nav>
         </div>
