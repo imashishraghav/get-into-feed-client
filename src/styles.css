@@ -12221,20 +12221,36 @@ p { margin-top: 0; line-height: 1.65; }
 
 .st-brand-header {
   margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.st-brand-logo-img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+}
+
+.st-brand-text-wrap {
+  display: flex;
+  flex-direction: column;
 }
 
 .st-brand-name {
   font-family: "Plus Jakarta Sans", sans-serif;
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 900;
   letter-spacing: -0.02em;
-  color: #2e7d32;
+  color: #0f172a;
   display: block;
+  line-height: 1.15;
 }
 
 .st-brand-tagline {
   font-size: 0.72rem;
-  color: #475569;
+  color: #ea580c;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-weight: 700;
