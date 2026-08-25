@@ -4121,16 +4121,17 @@ function EnterpriseFooter({ onOpenAudit }) {
 
             {/* DMCA BADGE */}
             <a
-              href="//www.dmca.com/Protection/Status.aspx?ID=d7bfaa8b-113f-40c7-b0b8-9da53cf5cba7"
-              title="DMCA.com Protection Status"
-              className="dmca-badge"
+              href="https://www.dmca.com/Protection/Status.aspx?ID=d7bfaa8b-113f-40c7-b0b8-9da53cf5cba7"
+              title="DMCA.com Protection Status - Get Into Feed"
+              className="dmca-badge-official"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="DMCA Protected Badge"
             >
               <img
-                src="https://images.dmca.com/Badges/DMCA_logo-green150w.png?ID=d7bfaa8b-113f-40c7-b0b8-9da53cf5cba7"
+                src="/dmca-badge.svg"
                 alt="DMCA.com Protection Status"
-                style={{ height: "24px", width: "auto", display: "block" }}
+                className="dmca-badge-img"
               />
             </a>
           </div>
