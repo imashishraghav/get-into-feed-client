@@ -18849,3 +18849,327 @@ p { margin-top: 0; line-height: 1.65; }
   background: #d94818;
   transform: translateY(-2px);
 }
+
+
+/* ==========================================================================
+   SECTION 31: MASTER 2026 MOBILE & USER-FRIENDLY RESPONSIVENESS SUITE
+   ========================================================================== */
+
+/* 1. Global Viewport & Touch Ergonomics */
+html, body {
+  overflow-x: hidden !important;
+  width: 100% !important;
+  max-width: 100vw !important;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  scroll-behavior: smooth;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 2. Prevent iOS Safari auto-zoom on form inputs */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="password"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* 3. Sticky Mobile Quick Action Conversion Bar */
+.mobile-bottom-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-bar {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9998;
+    background: rgba(1, 34, 56, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 8px 12px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    gap: 8px;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .mobile-bar-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 7px 4px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #ffffff;
+    min-height: 46px;
+  }
+
+  .mobile-bar-btn.whatsapp {
+    background: #25d366;
+    color: #0b2413;
+  }
+
+  .mobile-bar-btn.audit {
+    background: #f15b29;
+    color: #ffffff;
+    flex: 1.3;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(241, 91, 41, 0.4);
+  }
+
+  .mobile-bar-btn.call {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+  }
+
+  .mobile-bar-btn:active {
+    transform: scale(0.96);
+  }
+
+  .site-shell {
+    padding-bottom: 64px !important;
+  }
+}
+
+/* 4. Mobile Header & Navigation Drawer */
+@media (max-width: 960px) {
+  .techmagnate-site-header {
+    padding: 10px 16px !important;
+  }
+
+  .techmagnate-nav-container {
+    padding: 0 !important;
+  }
+
+  .techmagnate-brand-logo .brand-logo-icon-img {
+    height: 34px !important;
+  }
+
+  .techmagnate-brand-logo .logo-main-tech {
+    font-size: 1.05rem !important;
+  }
+
+  .techmagnate-mobile-drawer {
+    width: 88vw !important;
+    max-width: 380px !important;
+    padding: 24px 20px !important;
+  }
+
+  .techmagnate-mobile-nav-link {
+    font-size: 1.05rem !important;
+    padding: 14px 0 !important;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+  }
+}
+
+/* 5. Hero Banner Fluid Responsiveness */
+@media (max-width: 768px) {
+  .techmagnate-hero-banner {
+    padding: 40px 16px 48px 16px !important;
+    text-align: center !important;
+  }
+
+  .hero-main-h1 {
+    font-size: clamp(1.85rem, 7vw, 2.4rem) !important;
+    line-height: 1.25 !important;
+    letter-spacing: -0.02em !important;
+    margin-bottom: 16px !important;
+  }
+
+  .hero-subheadline-p {
+    font-size: 0.95rem !important;
+    line-height: 1.55 !important;
+    margin: 0 auto 24px auto !important;
+  }
+
+  .hero-action-buttons-wrap {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 12px !important;
+  }
+
+  .hero-orange-cta-btn,
+  .hero-outline-white-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 14px 20px !important;
+    font-size: 0.95rem !important;
+    min-height: 48px !important;
+  }
+
+  .hero-stats-ribbon-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    margin-top: 32px !important;
+  }
+
+  .hero-stat-card {
+    padding: 14px 10px !important;
+  }
+
+  .hero-stat-number {
+    font-size: 1.5rem !important;
+  }
+
+  .hero-stat-label {
+    font-size: 0.75rem !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .hero-stats-ribbon-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 6. Mobile Popups & Modals Optimization */
+@media (max-width: 768px) {
+  /* Search Trends Modal */
+  .st-modal-container {
+    width: 95% !important;
+    max-height: 92vh !important;
+    margin: 12px auto !important;
+    border-radius: 20px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .st-modal-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .st-modal-left {
+    padding: 24px 20px !important;
+  }
+
+  .st-modal-right {
+    padding: 24px 20px !important;
+  }
+
+  .st-modal-headline {
+    font-size: 1.25rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .st-brand-header {
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  .st-brands-strip-row {
+    justify-content: center !important;
+  }
+
+  /* Interactive Free Audit Modal */
+  .audit-modal-container {
+    width: 95% !important;
+    max-height: 92vh !important;
+    border-radius: 20px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .audit-modal-header {
+    padding: 20px 18px !important;
+  }
+
+  .audit-modal-body {
+    padding: 20px 18px !important;
+  }
+
+  .audit-scorecard-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .audit-action-row {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .audit-action-row button,
+  .audit-action-row a {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 48px !important;
+  }
+}
+
+/* 7. Services, Case Studies & Awards Grids on Mobile */
+@media (max-width: 768px) {
+  .services-catalog-grid,
+  .work-case-studies-grid,
+  .awards-certified-grid,
+  .testimonials-slider-grid {
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+  }
+
+  .service-pillar-card,
+  .case-study-showcase-card,
+  .award-juror-card {
+    padding: 20px 18px !important;
+    border-radius: 18px !important;
+  }
+
+  .awards-filter-tabs-row {
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    padding-bottom: 8px !important;
+    justify-content: flex-start !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .awards-tab-btn {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* 8. Enterprise Footer on Mobile */
+@media (max-width: 768px) {
+  .techmagnate-footer-container {
+    padding: 40px 16px 24px 16px !important;
+  }
+
+  .footer-links-multi-column-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  .footer-bottom-bar-row {
+    flex-direction: column !important;
+    gap: 14px !important;
+    text-align: center !important;
+  }
+}
