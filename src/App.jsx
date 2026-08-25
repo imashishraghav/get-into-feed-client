@@ -4379,8 +4379,11 @@ function SearchTrendsReportModal({ isOpen, onClose }) {
         <div className="st-modal-left">
           {/* BRAND LOGO BADGE */}
           <div className="st-brand-header">
-            <span className="st-brand-name">TECHMAGNATE<sup>®</sup></span>
-            <small className="st-brand-tagline">Digital Excellence</small>
+            <img src="/logo-navbar.png" alt="Get Into Feed Logo" className="st-brand-logo-img" />
+            <div className="st-brand-text-wrap">
+              <span className="st-brand-name">GET INTO FEED<sup>®</sup></span>
+              <small className="st-brand-tagline">Digital Excellence</small>
+            </div>
           </div>
 
           <h2 id="search-trends-modal-title" className="st-modal-headline">
