@@ -1002,7 +1002,7 @@ export function ServiceDetail({ service, onNavigate }) {
                   </p>
                   <p>Our team will prepare a custom growth audit and contact you within 2 hours.</p>
                   <a
-                    href="https://wa.me/919910308266"
+                    href="https://wa.me/918810356950"
                     target="_blank"
                     rel="noreferrer"
                     className="whatsapp-instant-btn"
@@ -1044,7 +1044,7 @@ export function ServiceDetail({ service, onNavigate }) {
                     <label>Mobile No *</label>
                     <input
                       required
-                      placeholder="+91-9910308266"
+                      placeholder="+91-8810356950"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     />
@@ -1606,7 +1606,7 @@ export function WorkDetail({ study, onNavigate }) {
                     <p>Reference: <strong>#{leadId.slice(0, 8).toUpperCase()}</strong></p>
                     <p className="success-desc">A senior growth strategist will contact you within 24 hours with custom unit economics benchmarks.</p>
                     <a
-                      href={`https://wa.me/919910308266?text=Hi%20Get%20Into%20Feed%2C%20I%20reviewed%20the%20${encodeURIComponent(currentStudy.brand)}%20case%20study`}
+                      href={`https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20reviewed%20the%20${encodeURIComponent(currentStudy.brand)}%20case%20study`}
                       target="_blank"
                       rel="noreferrer"
                       className="sidebar-whatsapp-btn"
@@ -1648,7 +1648,7 @@ export function WorkDetail({ study, onNavigate }) {
                       <label>Phone / WhatsApp *</label>
                       <input
                         required
-                        placeholder="+91-9910308266"
+                        placeholder="+91-8810356950"
                         value={form.phone}
                         onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       />
