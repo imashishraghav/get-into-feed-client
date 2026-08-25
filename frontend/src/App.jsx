@@ -218,8 +218,8 @@ function AnnouncementBar({ onOpenAudit }) {
       <div className="top-utility-contact-bar">
         <div className="utility-bar-inner">
           <div className="utility-contact-links">
-            <a href="tel:+919910308266" className="utility-contact-item">
-              <Phone size={14} /> <span>+91-9910308266</span>
+            <a href="tel:+918810356950" className="utility-contact-item">
+              <Phone size={14} /> <span>+91-8810356950</span>
             </a>
             <a href="mailto:growth@getintofeed.com" className="utility-contact-item">
               <Mail size={14} /> <span>growth@getintofeed.com</span>
@@ -338,9 +338,9 @@ function Header({ route, onOpenAudit }) {
 
         {/* RIGHT ACTION CTA & MOBILE TOGGLE */}
         <div className="header-right-action-wrap">
-          <button type="button" onClick={onOpenAudit} className="nav-primary-cta-pill">
-            Claim Free Audit →
-          </button>
+          <a href="mailto:growth@getintofeed.com" className="nav-primary-cta-pill">
+            <Mail size={14} style={{ marginRight: '6px' }} /> Email Us
+          </a>
           <button
             type="button"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -673,13 +673,15 @@ function DataBackedServicesSection() {
 
   const tabKeys = tabs.map((t) => t.key);
 
-  const handlePrev = () => {
+  const handlePrev = (e) => {
+    if (e) e.preventDefault();
     const idx = tabKeys.indexOf(activeTab);
     const prevIdx = (idx - 1 + tabKeys.length) % tabKeys.length;
     setActiveTab(tabKeys[prevIdx]);
   };
 
-  const handleNext = () => {
+  const handleNext = (e) => {
+    if (e) e.preventDefault();
     const idx = tabKeys.indexOf(activeTab);
     const nextIdx = (idx + 1) % tabKeys.length;
     setActiveTab(tabKeys[nextIdx]);
@@ -773,29 +775,28 @@ function DataBackedServicesSection() {
 
   return (
     <section className="data-backed-services-section">
-      {/* SECTION HEADER BLOCK WITH FULL ORIGINAL COPY */}
+      {/* SECTION HEADER BLOCK */}
       <div className="section-header-block">
         <h2>Data Backed Services to Grow Your Revenue</h2>
         <p className="data-backed-sub-lead">
           Your next phase of growth is here.
         </p>
         <p className="data-backed-body-text">
-          Get found in AI answers. Smarter campaigns. Stronger visibility. Better conversions. Achieving all of it requires an integrated strategy powered by next-generation AI intelligence, advanced search technology, seasoned growth engineers, and our autonomous agent ecosystem.
-        </p>
-        <p className="data-backed-body-text">
-          Established in 2026, Get Into Feed is engineered from the ground up to help ambitious businesses dominate search engines, AI answer engines (GEO), and high-ROAS paid media channels. We focus on measurable growth that impacts revenue, market share, and long-term valuation.
-        </p>
-        <p className="data-backed-body-text">
-          Our goal is clear: empower 300+ businesses by 2030 with digital strategies that create lasting competitive advantage.
+          Get found in AI answers. Smarter campaigns. Stronger visibility. Better conversions. Achieving all of it requires an integrated strategy powered by next-generation AI intelligence, advanced search technology, and our autonomous agent ecosystem.
         </p>
         <p className="data-backed-body-text highlight-bold">
           Ready to grow with confidence? Partner with Get Into Feed and make every digital investment count.
         </p>
       </div>
 
-      {/* CLEAN CAROUSEL TABS BAR (1-TO-1 MATCHING SCREENSHOT) */}
+      {/* CLEAN CAROUSEL TABS BAR WITH ARROWS */}
       <div className="simple-services-tab-bar">
-        <button type="button" onClick={handlePrev} className="simple-tab-nav-arrow" aria-label="Previous service tab">
+        <button
+          type="button"
+          onClick={handlePrev}
+          className="simple-tab-nav-arrow prev-arrow"
+          aria-label="Previous service"
+        >
           ‹
         </button>
 
@@ -812,13 +813,22 @@ function DataBackedServicesSection() {
           ))}
         </div>
 
-        <button type="button" onClick={handleNext} className="simple-tab-nav-arrow" aria-label="Next service tab">
+        <button
+          type="button"
+          onClick={handleNext}
+          className="simple-tab-nav-arrow next-arrow"
+          aria-label="Next service"
+        >
           ›
         </button>
       </div>
 
-      {/* SIMPLE PASTEL BLUE HERO BANNER CARD (CLEAN SERVICE VISUAL) */}
-      <div className="simple-service-banner-card">
+      {/* SERVICE BANNER CARD (DYNAMIC ACTIVE CARD) */}
+      <div className="simple-service-banner-card key-fade" key={activeTab}>
+        {/* CARD PREV/NEXT QUICK ARROWS */}
+        <button type="button" onClick={handlePrev} className="card-floating-nav-arrow left" aria-label="Previous service card">‹</button>
+        <button type="button" onClick={handleNext} className="card-floating-nav-arrow right" aria-label="Next service card">›</button>
+
         {/* LEFT COLUMN: TITLE, SUBTITLE & ORANGE PILL CTA */}
         <div className="simple-banner-left">
           <h3 className="simple-banner-title">{current.title}</h3>
@@ -859,6 +869,7 @@ function DataBackedServicesSection() {
             {current.pills.map((pill, idx) => (
               <Link key={idx} to={pill.to} className="simple-floating-service-pill">
                 <span>{pill.label}</span>
+                <ArrowRight size={14} className="pill-arrow-icon" />
               </Link>
             ))}
           </div>
@@ -878,20 +889,13 @@ function WatchOurVideoSection() {
     <section className="watch-our-video-section">
       <div className="watch-video-container">
         <div className="video-section-header">
-          <span className="video-kicker-badge">INSIDE GET INTO FEED</span>
-          <h2>Watch Our Video</h2>
+          <span className="video-kicker-badge">AGENCY SHOWCASE</span>
+          <h2>Inside Get Into Feed</h2>
         </div>
 
-        {/* CINEMATIC VIDEO SHOWCASE CARD */}
-        <div className="video-feature-hero-card" onClick={() => setIsPlaying(true)}>
+        {/* CLEAN CINEMATIC VIDEO HERO CARD */}
+        <div className="video-feature-hero-card clean-video-card" onClick={() => setIsPlaying(true)}>
           <div className="video-office-bg">
-            <div className="video-top-meta-bar">
-              <span className="video-duration-pill">
-                <Clock size={13} /> 2:15 MIN
-              </span>
-              <span className="video-quality-pill">4K ULTRA HD</span>
-            </div>
-
             <div className="video-center-content">
               <button
                 type="button"
@@ -902,17 +906,8 @@ function WatchOurVideoSection() {
                   setIsPlaying(true);
                 }}
               >
-                <Play size={28} fill="#ffffff" color="#ffffff" className="play-triangle-icon" />
+                <Play size={32} fill="#ffffff" color="#ffffff" className="play-triangle-icon" />
               </button>
-              <div className="video-wall-brand">
-                <span className="wall-brand-title">GET INTO FEED</span>
-                <span className="wall-brand-subtitle">Agency Showreel • Engineering Category Leaders</span>
-              </div>
-            </div>
-
-            <div className="video-bottom-meta-bar">
-              <span className="video-founded-badge">Established in 2026 • Next-Gen Growth Studio</span>
-              <span className="video-awards-tag">🏆 India's Leading Growth Agency</span>
             </div>
           </div>
         </div>
@@ -940,18 +935,6 @@ function WatchOurVideoSection() {
             </div>
           </div>
         )}
-
-        {/* BOTTOM CONTENT BLOCK & CTA */}
-        <div className="watch-video-content-block">
-          <p>
-            Established in 2026, Get Into Feed is India's next-generation digital marketing and AI search powerhouse. Built for the new era of generative engines and algorithmic performance media, our vision is to fuel transformational growth for 300+ clients by 2030. Ready to unlock your brand's complete digital potential?
-          </p>
-          <div className="watch-video-action-row">
-            <Link to="/contact" className="watch-video-orange-btn">
-              Speak to an Expert →
-            </Link>
-          </div>
-        </div>
       </div>
     </section>
   );
@@ -1956,7 +1939,7 @@ function ContactAuditSection() {
 
             <div className="office-detail-row">
               <strong>Sales Enquiry:</strong>
-              <a href="tel:+919910308266">+91-9910308266</a>
+              <a href="tel:+918810356950">+91-8810356950</a>
             </div>
 
             <div className="office-detail-row">
@@ -1994,7 +1977,7 @@ function ContactAuditSection() {
                 </p>
                 <div className="lead-success-actions">
                   <a
-                    href="https://wa.me/919910308266?text=Hi%20Get%20Into%20Feed%2C%20I%20just%20submitted%20a%20growth%20audit%20inquiry."
+                    href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20just%20submitted%20a%20growth%20audit%20inquiry."
                     target="_blank"
                     rel="noreferrer"
                     className="whatsapp-instant-btn"
@@ -2042,7 +2025,7 @@ function ContactAuditSection() {
                     <label>Mobile No *</label>
                     <input
                       required
-                      placeholder="+91-9910308266"
+                      placeholder="+91-8810356950"
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                     />
@@ -3198,7 +3181,7 @@ function AboutPresenceSection() {
       type: "Corporate Office",
       address: "A-24/8, 1st Floor, Rathi Tower, NH-19, Mohan Cooperative Industrial Estate, Mathura Road, New Delhi, Delhi 110044",
       email: "growth@getintofeed.com",
-      phone: "+91-9910308266",
+      phone: "+91-8810356950",
       mapUrl: "https://maps.google.com/?q=Mohan+Cooperative+Industrial+Estate+New+Delhi"
     },
     mumbai: {
@@ -3870,7 +3853,7 @@ function CareersPage({ jobs = [], onNavigate }) {
                     <label>Phone / WhatsApp *</label>
                     <input
                       required
-                      placeholder="+91-9876543210"
+                      placeholder="+91-8810356950"
                       value={candidateForm.phone}
                       onChange={(e) => setCandidateForm({ ...candidateForm, phone: e.target.value })}
                     />
@@ -3972,24 +3955,6 @@ function EnterpriseFooter({ onOpenAudit }) {
   return (
     <footer className="enterprise-mega-footer">
       <div className="footer-inner-wrapper">
-        {/* 1. NOIDA HEADQUARTERS & NATIONWIDE DELIVERY STRIP */}
-        <div className="footer-noida-hq-strip">
-          <div className="noida-hq-card">
-            <div className="hq-badge-pill">
-              <span>📍 CORPORATE HEADQUARTERS</span>
-            </div>
-            <h3>Noida Corporate HQ • Serving Brands Nationwide</h3>
-            <p className="hq-address-line">
-              Sector 62, Electronic City, Noida, Gautam Buddha Nagar, Uttar Pradesh 201301 (Delhi-NCR, India)
-            </p>
-            <div className="hq-direct-contacts-row">
-              <a href="tel:+919910308266" className="hq-contact-pill">📞 +91-9910308266</a>
-              <a href="mailto:growth@getintofeed.com" className="hq-contact-pill">✉️ growth@getintofeed.com</a>
-              <a href="https://maps.google.com/?q=Sector+62+Noida+Uttar+Pradesh" target="_blank" rel="noreferrer" className="hq-contact-pill highlight">🗺️ Get HQ Directions →</a>
-            </div>
-          </div>
-        </div>
-
         {/* 2. NEWSLETTER / GROWTH DISPATCH BAR */}
         <div className="footer-newsletter-banner-strip">
           <div className="footer-newsletter-card">
@@ -4040,7 +4005,7 @@ function EnterpriseFooter({ onOpenAudit }) {
             </Link>
 
             <p className="footer-brand-bio">
-              Founded in 2026, Get Into Feed is India's premier AI-first digital marketing and enterprise SEO growth studio headquartered in Noida. We engineer scalable organic search moats, sub-second React web experiences, and high-ROAS paid media for category leaders.
+              Founded in 2026, Get Into Feed is India's premier AI-first digital marketing and enterprise SEO growth studio We engineer scalable organic search moats, sub-second React web experiences, and high-ROAS paid media for category leaders.
             </p>
 
             <div className="partner-badges-row">
@@ -4051,8 +4016,8 @@ function EnterpriseFooter({ onOpenAudit }) {
             </div>
 
             <div className="footer-contact-quick-info">
-              <div>📍 <strong>Corporate HQ:</strong> Sector 62, Noida, UP 201301</div>
-              <div>📞 <strong>Growth Hotline:</strong> <a href="tel:+919910308266">+91-9910308266</a></div>
+              <div>📍 <strong>Delivery:</strong> Pan-India & Global Enterprise Support</div>
+              <div>📞 <strong>Growth Hotline:</strong> <a href="tel:+918810356950">+91-8810356950</a></div>
               <div>✉️ <strong>Official Email:</strong> <a href="mailto:growth@getintofeed.com">growth@getintofeed.com</a></div>
             </div>
           </div>
@@ -4080,7 +4045,7 @@ function EnterpriseFooter({ onOpenAudit }) {
             <Link to="/careers">Careers <span className="hiring-badge">We're Hiring</span></Link>
             <Link to="/faqs">Frequently Asked Questions</Link>
             <Link to="/blog">Growth Playbooks & Blog</Link>
-            <Link to="/about#our-presence">Noida HQ Presence</Link>
+            
             <button type="button" onClick={onOpenAudit} className="footer-highlight-link btn-link-reset">Claim Free 360° Audit →</button>
           </div>
 
@@ -4130,7 +4095,7 @@ function EnterpriseFooter({ onOpenAudit }) {
               <span>f</span>
             </a>
             <a
-              href="https://wa.me/919910308266?text=Hi%20Get%20Into%20Feed%20Noida%2C%20I%20would%20like%20to%20discuss%20our%20growth%20strategy"
+              href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%20Noida%2C%20I%20would%20like%20to%20discuss%20our%20growth%20strategy"
               target="_blank"
               rel="noreferrer"
               className="social-icon-link whatsapp-social"
@@ -4173,7 +4138,7 @@ function EnterpriseFooter({ onOpenAudit }) {
 
         {/* 5. COPYRIGHT & ALL 7 LEGAL COMPLIANCE LINKS */}
         <div className="footer-bottom-bar">
-          <span>Copyright © 2026 Get Into Feed®. All rights reserved. Headquartered in Noida, Uttar Pradesh. Recognized under DPDP Act 2023 & ISO 9001:2015.</span>
+          <span>Copyright © 2026 Get Into Feed®. All rights reserved. Recognized under DPDP Act 2023 & ISO 9001:2015.</span>
           <div className="footer-bottom-links">
             <Link to="/privacy-policy">Privacy Policy</Link>
             <Link to="/terms-and-conditions">Terms & Conditions</Link>
@@ -4455,7 +4420,7 @@ function SearchTrendsReportModal({ isOpen, onClose }) {
 
               <div className="st-success-actions">
                 <a
-                  href={`https://wa.me/919910308266?text=Hi%20Get%20Into%20Feed%2C%20I%20just%20requested%20the%20${encodeURIComponent(form.reportType)}`}
+                  href={`https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20just%20requested%20the%20${encodeURIComponent(form.reportType)}`}
                   target="_blank"
                   rel="noreferrer"
                   className="whatsapp-instant-btn"
@@ -5460,7 +5425,7 @@ function FaqsPage({ onNavigate }) {
                 Schedule Strategy Call →
               </button>
               <a
-                href="https://wa.me/919910308266?text=Hi%20Get%20Into%20Feed%2C%20I%20have%20a%20question%20about%20your%20services"
+                href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20have%20a%20question%20about%20your%20services"
                 target="_blank"
                 rel="noreferrer"
                 className="faqs-support-whatsapp-btn"
@@ -5576,8 +5541,8 @@ function LegalDocumentPage({ docType = "privacy-policy", onNavigate }) {
                 <div className="officer-details">
                   <strong>Get Into Feed Legal Cell</strong>
                   <a href="mailto:compliance@getintofeed.com">compliance@getintofeed.com</a>
-                  <a href="tel:+919910308266">+91-9910308266</a>
-                  <small>Sector 62, Electronic City, Noida, Uttar Pradesh 201301</small>
+                  <a href="tel:+918810356950">+91-8810356950</a>
+                  <small>Pan-India & Global Digital Marketing Delivery</small>
                 </div>
               </div>
             </div>
@@ -5911,7 +5876,7 @@ RECOMMENDED 4-STAGE SPRINT ROADMAP:
 - Sprint 3 (Days 61-90): Sub-Second Headless React Funnels & Creator UGC Hooks
 - Sprint 4 (Ongoing):    Continuous GA4 Looker Studio Telemetry & Conversion Pacing
 
-Contact Senior Growth Strategist: +91-9910308266 | growth@getintofeed.com
+Contact Senior Growth Strategist: +91-8810356950 | growth@getintofeed.com
 Visit: https://getintofeed.com
 =============================================================`;
 
@@ -6016,7 +5981,7 @@ Visit: https://getintofeed.com
                   <input
                     required
                     type="tel"
-                    placeholder="+91-9910308266"
+                    placeholder="+91-8810356950"
                     value={form.phone}
                     onChange={(e) => setForm({ ...form, phone: e.target.value })}
                   />
@@ -6165,7 +6130,7 @@ Visit: https://getintofeed.com
               </button>
 
               <a
-                href={`https://wa.me/919910308266?text=Hi%20Get%20Into%20Feed%2C%20I%20just%20ran%20an%20audit%20for%20${encodeURIComponent(form.website)}%20(Ref%3A%20%23${leadId})%20and%20would%20like%20to%20discuss%20the%20strategy.`}
+                href={`https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20just%20ran%20an%20audit%20for%20${encodeURIComponent(form.website)}%20(Ref%3A%20%23${leadId})%20and%20would%20like%20to%20discuss%20the%20strategy.`}
                 target="_blank"
                 rel="noreferrer"
                 className="audit-whatsapp-btn"
@@ -6413,7 +6378,7 @@ function MobileBottomStickyBar({ onOpenAudit }) {
   return (
     <aside className="mobile-bottom-bar" aria-label="Quick mobile actions">
       <a
-        href="https://wa.me/919999999999?text=Hi%20Get%20Into%20Feed%20team%2C%20I%20would%20like%20to%20discuss%20SEO%20and%20digital%20marketing%20growth."
+        href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%20team%2C%20I%20would%20like%20to%20discuss%20SEO%20and%20digital%20marketing%20growth."
         target="_blank"
         rel="noopener noreferrer"
         className="mobile-bar-btn whatsapp"
@@ -6432,7 +6397,7 @@ function MobileBottomStickyBar({ onOpenAudit }) {
         <span className="btn-label">Free Audit</span>
       </button>
       <a
-        href="tel:+919999999999"
+        href="tel:+918810356950"
         className="mobile-bar-btn call"
         aria-label="Call Get Into Feed"
       >
