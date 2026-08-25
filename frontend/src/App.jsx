@@ -6408,6 +6408,41 @@ function AwardsPage({ onNavigate }) {
   );
 }
 
+/* MOBILE BOTTOM STICKY ACTION BAR */
+function MobileBottomStickyBar({ onOpenAudit }) {
+  return (
+    <aside className="mobile-bottom-bar" aria-label="Quick mobile actions">
+      <a
+        href="https://wa.me/919999999999?text=Hi%20Get%20Into%20Feed%20team%2C%20I%20would%20like%20to%20discuss%20SEO%20and%20digital%20marketing%20growth."
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mobile-bar-btn whatsapp"
+        aria-label="Chat with Get Into Feed on WhatsApp"
+      >
+        <span className="btn-icon">💬</span>
+        <span className="btn-label">WhatsApp</span>
+      </a>
+      <button
+        type="button"
+        onClick={onOpenAudit}
+        className="mobile-bar-btn audit"
+        aria-label="Claim Free 360° Website Audit"
+      >
+        <span className="btn-icon">⚡</span>
+        <span className="btn-label">Free Audit</span>
+      </button>
+      <a
+        href="tel:+919999999999"
+        className="mobile-bar-btn call"
+        aria-label="Call Get Into Feed"
+      >
+        <span className="btn-icon">📞</span>
+        <span className="btn-label">Call Us</span>
+      </a>
+    </aside>
+  );
+}
+
 export default function App() {
   const [route, setRoute] = useState(() => window.location.pathname || "/");
   const [content, setContent] = useState(fallback);
@@ -6560,6 +6595,9 @@ export default function App() {
       <Header route={route} onOpenAudit={() => setAuditModalOpen(true)} />
       <main>{pageView}</main>
       <EnterpriseFooter onOpenAudit={() => setAuditModalOpen(true)} />
+
+      {/* MOBILE STICKY BOTTOM ACTION BAR */}
+      <MobileBottomStickyBar onOpenAudit={() => setAuditModalOpen(true)} />
 
       {/* INTERACTIVE FREE 360° AUDIT MODAL */}
       <InteractiveFreeAuditModal
