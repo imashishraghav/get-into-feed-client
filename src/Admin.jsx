@@ -566,6 +566,36 @@ export default function AdminDashboard({ onNavigate }) {
   // ---------------------------------------------------------------------------
   return (
     <div className="admin-dashboard-container">
+      {/* MOBILE APP TOP BAR */}
+      <header className="admin-mobile-top-bar" aria-label="Mobile Admin Header">
+        <div className="admin-mobile-brand-title">
+          <img src="/logo-navbar.png" alt="Get Into Feed" style={{ width: "30px", height: "30px", borderRadius: "6px" }} />
+          <span>Agency OS</span>
+        </div>
+        <div className="admin-mobile-top-actions">
+          <button
+            type="button"
+            onClick={() => {
+              setEditingItem(emptyItem(tab));
+              setEditorType(tab);
+            }}
+            className="hero-orange-cta-btn"
+            style={{ padding: "6px 12px", minHeight: "36px", fontSize: "0.78rem" }}
+          >
+            <Plus size={14} style={{ marginRight: '4px' }} /> Create
+          </button>
+          <button
+            type="button"
+            onClick={handleLogout}
+            style={{ background: "rgba(255,255,255,0.12)", border: "none", color: "#ffffff", padding: "7px 10px", borderRadius: "8px", cursor: "pointer" }}
+            aria-label="Logout"
+            title="Logout"
+          >
+            <LogOut size={16} />
+          </button>
+        </div>
+      </header>
+
       {/* 1. LEFT SIDEBAR NAVIGATION */}
       <aside className="admin-sidebar-nav">
         <div className="admin-sidebar-brand">
@@ -1588,6 +1618,54 @@ export default function AdminDashboard({ onNavigate }) {
           </div>
         </div>
       )}
+      {/* MOBILE FIXED BOTTOM TOUCH NAVIGATION */}
+      <nav className="admin-mobile-bottom-nav" aria-label="Admin Mobile Bottom Navigation">
+        <button
+          type="button"
+          onClick={() => { setTab("overview"); setEditingItem(null); }}
+          className={`admin-mobile-nav-tab ${tab === "overview" ? "active" : ""}`}
+        >
+          <LayoutDashboard size={18} />
+          <span>Dashboard</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => { setTab("leads"); setEditingItem(null); }}
+          className={`admin-mobile-nav-tab ${tab === "leads" ? "active" : ""}`}
+        >
+          <MessageSquare size={18} />
+          <span>Leads CRM</span>
+          {leads.length > 0 && <span className="admin-mobile-tab-badge">{leads.length}</span>}
+        </button>
+
+        <button
+          type="button"
+          onClick={() => { setTab("blogPosts"); setEditingItem(null); }}
+          className={`admin-mobile-nav-tab ${tab === "blogPosts" ? "active" : ""}`}
+        >
+          <FileText size={18} />
+          <span>Articles</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => { setTab("caseStudies"); setEditingItem(null); }}
+          className={`admin-mobile-nav-tab ${tab === "caseStudies" ? "active" : ""}`}
+        >
+          <Sparkles size={18} />
+          <span>Portfolio</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => { setTab("services"); setEditingItem(null); }}
+          className={`admin-mobile-nav-tab ${tab === "services" || tab === "applications" ? "active" : ""}`}
+        >
+          <Sliders size={18} />
+          <span>More</span>
+        </button>
+      </nav>
     </div>
   );
 }
