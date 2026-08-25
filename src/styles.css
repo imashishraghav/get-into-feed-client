@@ -20045,3 +20045,324 @@ img, svg, video, canvas {
   text-decoration: none;
   border: 1px solid rgba(0, 245, 184, 0.4);
 }
+
+
+/* ==========================================================================
+   SECTION 36: ULTIMATE MOBILE-FRIENDLY & USER-FRIENDLY AGENCY OS ADMIN
+   ========================================================================== */
+
+/* 1. Mobile Bottom Touch App Bar for Admin */
+.admin-mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .admin-dashboard-container {
+    flex-direction: column !important;
+    padding-bottom: 74px !important;
+  }
+
+  .admin-sidebar-nav {
+    display: none !important;
+  }
+
+  .admin-mobile-top-bar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 16px !important;
+    background: #011422 !important;
+    color: #ffffff !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 9999 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .admin-mobile-brand-title {
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .admin-mobile-top-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .admin-mobile-bottom-nav {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
+    background: #011422 !important;
+    border-top: 1px solid rgba(0, 208, 148, 0.25) !important;
+    padding: 6px 8px max(6px, env(safe-area-inset-bottom)) 8px !important;
+    justify-content: space-around !important;
+    box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .admin-mobile-nav-tab {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 3px !important;
+    padding: 6px 2px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #94a3b8 !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    font-family: "Plus Jakarta Sans", sans-serif !important;
+    cursor: pointer !important;
+    position: relative !important;
+    border-radius: 8px !important;
+  }
+
+  .admin-mobile-nav-tab.active {
+    color: #00F5B8 !important;
+    background: rgba(0, 245, 184, 0.1) !important;
+  }
+
+  .admin-mobile-tab-badge {
+    position: absolute !important;
+    top: 2px !important;
+    right: 18% !important;
+    background: #ef4444 !important;
+    color: #ffffff !important;
+    font-size: 0.62rem !important;
+    font-weight: 900 !important;
+    padding: 1px 5px !important;
+    border-radius: 9999px !important;
+  }
+
+  /* Main Content Column on Mobile */
+  .admin-main-stage {
+    padding: 14px 12px !important;
+  }
+
+  .admin-header-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .admin-top-actions-group {
+    width: 100% !important;
+    display: flex !important;
+    gap: 8px !important;
+  }
+
+  .admin-top-actions-group button,
+  .admin-top-actions-group a {
+    flex: 1 !important;
+    justify-content: center !important;
+  }
+
+  /* Stat Cards Grid on Mobile */
+  .admin-metrics-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .admin-metric-card {
+    padding: 14px 12px !important;
+  }
+
+  .admin-metric-number {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* 2. Leads CRM Mobile Cards & 1-Tap Touch Actions */
+.lead-card-mobile-shell {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.2s ease;
+}
+
+.lead-card-mobile-shell:hover {
+  border-color: #00D094;
+  box-shadow: 0 6px 18px rgba(0, 208, 148, 0.15);
+}
+
+.lead-card-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.lead-client-name {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 2px 0;
+}
+
+.lead-source-tag {
+  font-size: 0.72rem;
+  font-weight: 800;
+  background: #f0fdf9;
+  color: #00875a;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 208, 148, 0.25);
+  white-space: nowrap;
+}
+
+.lead-detail-item {
+  font-size: 0.84rem;
+  color: #475569;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lead-action-buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+.lead-touch-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 6px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 42px;
+}
+
+.lead-touch-btn.whatsapp {
+  background: #25d366;
+  color: #082414;
+}
+
+.lead-touch-btn.call {
+  background: #011422;
+  color: #00F5B8;
+  border: 1px solid rgba(0, 245, 184, 0.35);
+}
+
+.lead-touch-btn.email {
+  background: #f1f5f9;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+}
+
+.lead-touch-btn:active {
+  transform: scale(0.96);
+}
+
+/* 3. Mobile Visual Content Editor Screen */
+@media (max-width: 1024px) {
+  .studio-editor-modal-container {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #ffffff !important;
+  }
+
+  .studio-editor-top-nav {
+    padding: 12px 14px !important;
+    background: #011422 !important;
+    color: #ffffff !important;
+    flex-shrink: 0 !important;
+  }
+
+  .editor-mobile-tab-switch {
+    display: flex !important;
+    width: 100% !important;
+    background: #f1f5f9 !important;
+    padding: 4px !important;
+    border-radius: 10px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .editor-mobile-tab-btn {
+    flex: 1 !important;
+    padding: 8px !important;
+    font-size: 0.8rem !important;
+    font-weight: 800 !important;
+    border: none !important;
+    background: transparent !important;
+    color: #64748b !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+  }
+
+  .editor-mobile-tab-btn.active {
+    background: #ffffff !important;
+    color: #00875a !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08) !important;
+  }
+
+  .studio-split-screen {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+    flex: 1 !important;
+    padding: 14px !important;
+  }
+
+  .studio-editor-pane,
+  .studio-preview-pane {
+    width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .studio-toolbar-scroll-wrap {
+    overflow-x: auto !important;
+    padding-bottom: 6px !important;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .studio-bottom-fixed-actions {
+    position: sticky !important;
+    bottom: 0 !important;
+    background: #ffffff !important;
+    border-top: 1px solid #e2e8f0 !important;
+    padding: 10px 14px max(10px, env(safe-area-inset-bottom)) 14px !important;
+    display: flex !important;
+    gap: 10px !important;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.08) !important;
+    z-index: 100 !important;
+  }
+
+  .studio-bottom-fixed-actions button {
+    flex: 1 !important;
+    min-height: 48px !important;
+  }
+}
