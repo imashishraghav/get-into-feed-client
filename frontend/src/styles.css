@@ -19505,3 +19505,36 @@ img, svg, video, canvas {
     justify-content: center !important;
   }
 }
+
+
+/* DMCA Official Badge Visible Styling */
+.dmca-badge-official {
+  display: inline-flex !important;
+  align-items: center !important;
+  text-decoration: none !important;
+  transition: transform 0.2s ease, opacity 0.2s ease !important;
+  cursor: pointer !important;
+}
+
+.dmca-badge-official:hover {
+  transform: translateY(-2px) !important;
+  opacity: 0.95 !important;
+}
+
+.dmca-badge-img {
+  height: 30px !important;
+  width: auto !important;
+  display: block !important;
+  filter: drop-shadow(0 2px 6px rgba(0, 166, 81, 0.25)) !important;
+}
+
+@media (max-width: 768px) {
+  .footer-ratings-dmca-row {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    gap: 12px !important;
+  }
+  .dmca-badge-img {
+    height: 28px !important;
+  }
+}
