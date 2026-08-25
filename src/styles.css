@@ -19674,3 +19674,235 @@ img, svg, video, canvas {
 .ticker-separator {
   color: #00F5B8 !important;
 }
+
+
+/* ==========================================================================
+   SECTION 34: 2-COLUMN & 2-ROW BALANCED MODERN MOBILE & TABLET LAYOUTS
+   ========================================================================== */
+
+/* 1. Client Logos in Balanced 2-Row / 2-Column Grid */
+@media (max-width: 768px) {
+  .exact-clients-logo-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    padding: 10px 0 16px 0 !important;
+    overflow-x: visible !important;
+  }
+
+  .exact-clients-logo-grid .brand-logo-cell {
+    flex: unset !important;
+    width: 100% !important;
+    min-width: unset !important;
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 208, 148, 0.15) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+  }
+}
+
+/* 2. 103 Brands Digital Report Card in 2-Column x 2-Row Grid */
+@media (max-width: 768px) {
+  .report-stat-numbers-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .report-stat-card {
+    padding: 18px 12px !important;
+    border-radius: 16px !important;
+    text-align: center !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .report-giant-num {
+    font-size: 1.9rem !important;
+    line-height: 1.1 !important;
+  }
+
+  .report-stat-title {
+    font-size: 0.88rem !important;
+    margin: 4px 0 !important;
+  }
+
+  .report-stat-desc {
+    font-size: 0.72rem !important;
+    line-height: 1.35 !important;
+  }
+}
+
+/* 3. Hero Stats Ribbon in 2-Column x 2-Row Grid */
+@media (max-width: 768px) {
+  .hero-stats-ribbon-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin-top: 24px !important;
+  }
+
+  .hero-stat-card {
+    padding: 14px 10px !important;
+    border-radius: 14px !important;
+  }
+
+  .hero-stat-number {
+    font-size: 1.55rem !important;
+  }
+
+  .hero-stat-label {
+    font-size: 0.75rem !important;
+  }
+}
+
+/* 4. Traffic Growth Pillars in 2-Column Grid */
+@media (max-width: 768px) {
+  .traffic-growth-pillars-grid,
+  .growth-pillars-cards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .growth-pillar-card {
+    padding: 16px 12px !important;
+    border-radius: 16px !important;
+  }
+
+  .pillar-giant-stat {
+    font-size: 1.6rem !important;
+  }
+}
+
+/* 5. Awards & Accolades Cards in 2-Column Grid */
+@media (max-width: 768px) {
+  .awards-interactive-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    overflow-x: visible !important;
+  }
+
+  .award-interactive-card {
+    flex: unset !important;
+    width: 100% !important;
+    padding: 16px 12px !important;
+    border-radius: 16px !important;
+  }
+
+  .award-interactive-card:nth-child(3) {
+    grid-column: span 2 !important;
+  }
+
+  .award-main-title {
+    font-size: 0.95rem !important;
+    line-height: 1.35 !important;
+  }
+}
+
+/* 6. Search Trends Reports in 2-Column Grid */
+@media (max-width: 768px) {
+  .reports-cards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    overflow-x: visible !important;
+  }
+
+  .report-download-card {
+    flex: unset !important;
+    width: 100% !important;
+    border-radius: 16px !important;
+  }
+
+  .report-download-card:nth-child(3) {
+    grid-column: span 2 !important;
+  }
+
+  .report-cover-visual {
+    padding: 16px 12px !important;
+  }
+
+  .report-card-body {
+    padding: 14px 12px !important;
+  }
+
+  .report-card-body h4 {
+    font-size: 0.88rem !important;
+  }
+}
+
+/* 7. Latest Blogs in 2-Column Grid */
+@media (max-width: 768px) {
+  .blogs-cards-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+    overflow-x: visible !important;
+  }
+
+  .blog-item-card {
+    flex: unset !important;
+    width: 100% !important;
+    border-radius: 16px !important;
+  }
+
+  .blog-card-body {
+    padding: 12px 10px !important;
+  }
+
+  .blog-card-body h3 {
+    font-size: 0.88rem !important;
+    line-height: 1.3 !important;
+  }
+}
+
+/* 8. Footer Columns in Balanced 2-Column Grid on Mobile */
+@media (max-width: 768px) {
+  .footer-columns-container,
+  .footer-links-multi-column-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 24px 14px !important;
+  }
+
+  .footer-col.brand-col {
+    grid-column: span 2 !important;
+    margin-bottom: 10px !important;
+  }
+
+  .footer-col strong {
+    font-size: 0.95rem !important;
+    margin-bottom: 12px !important;
+    color: #00F5B8 !important;
+  }
+
+  .footer-col a {
+    font-size: 0.85rem !important;
+    padding: 4px 0 !important;
+    display: block !important;
+  }
+}
+
+/* 9. Partner & Credential Badges in 2-Row / 2-Column Grid */
+@media (max-width: 768px) {
+  .partner-badges-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .partner-tag {
+    text-align: center !important;
+    justify-content: center !important;
+    padding: 7px 6px !important;
+    font-size: 0.72rem !important;
+    border-radius: 8px !important;
+  }
+}
