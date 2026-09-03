@@ -395,7 +395,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             onClick={(e) => { e.preventDefault(); onNavigate("/"); }}
             style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none", color: "#09090B", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "24px" }}
           >
-            <img src="/logo-navbar.png" alt="Get Into Feed Logo" style={{ height: "26px", width: "auto" }} />
+            
             <span>getintofeed.</span>
           </a>
 
@@ -525,7 +525,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
         <div style={{ maxWidth: "1600px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "40px", marginBottom: "48px" }}>
           <div>
             <a href="/" onClick={(e) => { e.preventDefault(); onNavigate("/"); }} style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none", color: "#09090B", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "28px", marginBottom: "12px" }}>
-              <img src="/logo-navbar.png" alt="Get Into Feed" style={{ width: "28px", height: "28px" }} />
+              
               <span>getintofeed.</span>
             </a>
             <p style={{ fontSize: "14px", color: "#52525B", maxWidth: "340px", lineHeight: 1.6 }}>
