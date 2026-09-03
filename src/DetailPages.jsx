@@ -382,7 +382,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             getintofeed<span style={{ color: "#0033FF" }}>.</span>
           </a>
 
-          <div style={{ display: "none", alignItems: "center", gap: "32px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", textTransform: "uppercase", letterSpacing: "0.05em" }} className="lg:flex">
+          <div className="subpage-nav-links">
             <div
               style={{ position: "relative" }}
               onMouseEnter={() => setServicesDropdownOpen(true)}
@@ -438,13 +438,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             >
               Start a project <ArrowRight size={14} />
             </button>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{ background: "transparent", border: "none", cursor: "pointer", display: "block" }}
-              className="lg:hidden"
-              aria-label="Toggle menu"
-            >
+            <button type="button" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="subpage-mobile-toggle" aria-label="Toggle menu">
               {mobileMenuOpen ? <X size={26} color="#09090B" /> : <Menu size={26} color="#09090B" />}
             </button>
           </div>
