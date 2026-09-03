@@ -67,7 +67,7 @@ import {
   Zap
 } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 export function slugify(text) {
   return String(text || "")
