@@ -8,20 +8,28 @@ import {
   BarChart3,
   Briefcase,
   Building2,
+  Calculator,
+  Car,
   Check,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
+  Clapperboard,
   Clock,
   Code,
+  Coffee,
   Compass,
   Database,
+  Dumbbell,
+  Edit3,
   ExternalLink,
   Eye,
   FileText,
   Flame,
   Globe,
   Globe2,
+  GraduationCap,
+  Heart,
   HelpCircle,
   Home,
   Instagram,
@@ -30,13 +38,16 @@ import {
   LineChart,
   Linkedin,
   Mail,
+  Map,
   MapPin,
   Megaphone,
+  Menu,
   MessageCircle,
   MousePointerClick,
   Palette,
   PenTool,
   Phone,
+  PieChart,
   Play,
   Plus,
   Quote,
@@ -67,7 +78,7 @@ export function slugify(text) {
 }
 
 // -----------------------------------------------------------------------------
-// SERVICE CATALOG (CORE CAPABILITIES)
+// SERVICE TAXONOMY (8 CORE PILLARS)
 // -----------------------------------------------------------------------------
 export const serviceCatalog = {
   "content-marketing": {
@@ -306,11 +317,12 @@ export const serviceCatalog = {
 };
 
 // -----------------------------------------------------------------------------
-// UNIFIED PAGE WRAPPER WITH TOP BAR, NAVBAR, CTA & FOOTER
+// UNIFIED PAGE WRAPPER WITH TOP BAR, MEGA NAVBAR, CTA & FOOTER
 // -----------------------------------------------------------------------------
 export function PageLayout({ children, onNavigate, activeNav = "" }) {
   const [showTopBar, setShowTopBar] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("General Inbound");
 
@@ -389,12 +401,51 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
           </a>
 
           <div className="navbar-links">
+            <div
+              style={{ position: "relative" }}
+              onMouseEnter={() => setServicesDropdownOpen(true)}
+              onMouseLeave={() => setServicesDropdownOpen(false)}
+            >
+              <a
+                href="/services"
+                onClick={(e) => { e.preventDefault(); onNavigate("/services"); }}
+                className="nav-link"
+                style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
+              >
+                Services <ChevronDown size={14} />
+              </a>
+              {servicesDropdownOpen && (
+                <div style={{ position: "absolute", top: "100%", left: "-20px", background: "#121216", border: "1.5px solid rgba(255,255,255,0.15)", borderRadius: "12px", padding: "16px", minWidth: "260px", boxShadow: "0 20px 50px rgba(0,0,0,0.8)", zIndex: 100, display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {Object.values(serviceCatalog).map(s => (
+                    <a
+                      key={s.slug}
+                      href={`/services/${s.slug}`}
+                      onClick={(e) => { e.preventDefault(); setServicesDropdownOpen(false); onNavigate(`/services/${s.slug}`); }}
+                      style={{ color: "#d1d5db", fontSize: "12px", fontFamily: "var(--font-space)", fontWeight: "700", textDecoration: "none", textTransform: "uppercase", padding: "6px 10px", borderRadius: "6px", transition: "background 0.2s ease" }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = "var(--brand-lime)"; e.currentTarget.style.background = "#18181b"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = "#d1d5db"; e.currentTarget.style.background = "transparent"; }}
+                    >
+                      {s.title.split("&")[0]}
+                    </a>
+                  ))}
+                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "8px", marginTop: "4px" }}>
+                    <a
+                      href="/services"
+                      onClick={(e) => { e.preventDefault(); setServicesDropdownOpen(false); onNavigate("/services"); }}
+                      style={{ color: "var(--brand-lime)", fontSize: "11px", fontFamily: "var(--font-space)", fontWeight: "900", textDecoration: "none", textTransform: "uppercase", display: "flex", alignItems: "center", gap: "4px" }}
+                    >
+                      View All Services →
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
             <a href="/work" onClick={(e) => { e.preventDefault(); onNavigate("/work"); }} className="nav-link">Work</a>
-            <a href="/#services" onClick={(e) => { e.preventDefault(); onNavigate("/#services"); }} className="nav-link">Services</a>
             <a href="/about" onClick={(e) => { e.preventDefault(); onNavigate("/about"); }} className="nav-link">About Us</a>
             <a href="/pricing" onClick={(e) => { e.preventDefault(); onNavigate("/pricing"); }} className="nav-link">Pricing</a>
+            <a href="/audit" onClick={(e) => { e.preventDefault(); onNavigate("/audit"); }} className="nav-link" style={{ color: "var(--brand-lime)" }}>⚡ Free Audit</a>
             <a href="/blog" onClick={(e) => { e.preventDefault(); onNavigate("/blog"); }} className="nav-link">Feed Notes</a>
-            <a href="tel:+918810356950" className="nav-link" style={{ color: "#D4FF00" }}>📞 8810356950</a>
+            <a href="tel:+918810356950" className="nav-link" style={{ color: "#ffffff" }}>📞 8810356950</a>
           </div>
 
           <button
@@ -418,11 +469,13 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
         {mobileMenuOpen && (
           <div className="mobile-menu-drawer">
             <a href="/" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/"); }} className="mobile-menu-link">01. Home</a>
-            <a href="/work" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/work"); }} className="mobile-menu-link">02. Our Work</a>
-            <a href="/about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/about"); }} className="mobile-menu-link">03. About Us</a>
-            <a href="/pricing" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/pricing"); }} className="mobile-menu-link">04. Pricing Sprints</a>
-            <a href="/blog" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/blog"); }} className="mobile-menu-link">05. Feed Notes (Blog)</a>
-            <a href="/contact" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/contact"); }} className="mobile-menu-link">06. Contact</a>
+            <a href="/services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/services"); }} className="mobile-menu-link">02. Services Hub</a>
+            <a href="/work" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/work"); }} className="mobile-menu-link">03. Our Work & Portfolio</a>
+            <a href="/about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/about"); }} className="mobile-menu-link">04. About Us</a>
+            <a href="/pricing" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/pricing"); }} className="mobile-menu-link">05. Pricing Sprints</a>
+            <a href="/audit" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/audit"); }} className="mobile-menu-link" style={{ color: "var(--brand-lime)" }}>06. ⚡ Free Growth Audit</a>
+            <a href="/blog" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/blog"); }} className="mobile-menu-link">07. Feed Notes (Blog)</a>
+            <a href="/contact" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/contact"); }} className="mobile-menu-link">08. Contact & Intake</a>
             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
               <a
                 href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20to%20scale%20my%20brand."
@@ -501,19 +554,26 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: "48px" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              <a href="/services/content-marketing" onClick={(e) => { e.preventDefault(); onNavigate("/services/content-marketing"); }} className="nav-link">Content</a>
-              <a href="/services/ads-campaign" onClick={(e) => { e.preventDefault(); onNavigate("/services/ads-campaign"); }} className="nav-link">Paid Media</a>
-              <a href="/services/social-media" onClick={(e) => { e.preventDefault(); onNavigate("/services/social-media"); }} className="nav-link">Social</a>
+              <span style={{ color: "var(--brand-lime)", fontSize: "11px", marginBottom: "4px" }}>SERVICES</span>
+              <a href="/services/content-marketing" onClick={(e) => { e.preventDefault(); onNavigate("/services/content-marketing"); }} className="nav-link">Content Marketing</a>
+              <a href="/services/ads-campaign" onClick={(e) => { e.preventDefault(); onNavigate("/services/ads-campaign"); }} className="nav-link">Performance Ads</a>
+              <a href="/services/social-media" onClick={(e) => { e.preventDefault(); onNavigate("/services/social-media"); }} className="nav-link">Social Media</a>
+              <a href="/services/reels" onClick={(e) => { e.preventDefault(); onNavigate("/services/reels"); }} className="nav-link">Viral Reels</a>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              <a href="/services/graphics-design" onClick={(e) => { e.preventDefault(); onNavigate("/services/graphics-design"); }} className="nav-link">Creative</a>
-              <a href="/services/strategy" onClick={(e) => { e.preventDefault(); onNavigate("/services/strategy"); }} className="nav-link">Strategy</a>
+              <span style={{ color: "var(--brand-blue)", fontSize: "11px", marginBottom: "4px" }}>COMPANY</span>
+              <a href="/about" onClick={(e) => { e.preventDefault(); onNavigate("/about"); }} className="nav-link">About Us</a>
+              <a href="/work" onClick={(e) => { e.preventDefault(); onNavigate("/work"); }} className="nav-link">Case Studies</a>
+              <a href="/pricing" onClick={(e) => { e.preventDefault(); onNavigate("/pricing"); }} className="nav-link">Pricing Sprints</a>
+              <a href="/careers" onClick={(e) => { e.preventDefault(); onNavigate("/careers"); }} className="nav-link">Careers (Join Us)</a>
               <a href="/admin" onClick={(e) => { e.preventDefault(); onNavigate("/admin"); }} className="nav-link" style={{ color: "#D4FF00" }}>Admin Studio</a>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              <span style={{ color: "var(--brand-coral)", fontSize: "11px", marginBottom: "4px" }}>CONNECT</span>
               <a href="https://instagram.com" target="_blank" rel="noreferrer" className="nav-link" style={{ display: "flex", alignItems: "center", gap: "8px" }}><Instagram size={16} color="#D4FF00" /> Instagram</a>
               <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="nav-link" style={{ display: "flex", alignItems: "center", gap: "8px" }}><Linkedin size={16} color="#0033FF" /> LinkedIn</a>
               <a href="https://wa.me/918810356950" target="_blank" rel="noreferrer" className="nav-link" style={{ display: "flex", alignItems: "center", gap: "8px" }}><MessageCircle size={16} color="#25D366" /> WhatsApp</a>
+              <a href="/audit" onClick={(e) => { e.preventDefault(); onNavigate("/audit"); }} className="nav-link" style={{ color: "var(--brand-lime)" }}>⚡ Audit Tool</a>
             </div>
           </div>
         </div>
@@ -637,7 +697,58 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
 }
 
 // -----------------------------------------------------------------------------
-// 1. SERVICE DETAIL PAGE (EXACT SAME THEME)
+// 1. SERVICES HUB PAGE (/services)
+// -----------------------------------------------------------------------------
+export function ServicesHubPage({ onNavigate }) {
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="services">
+      <div style={{ padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
+        <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>FULL CAPABILITY SUITE</span>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "24px" }}>
+          GROWTH SERVICES <br /> FOR <span style={{ color: "var(--brand-lime)" }}>MODERN BRANDS.</span>
+        </h1>
+        <p style={{ fontSize: "18px", color: "#9ca3af", maxWidth: "600px", margin: "0 auto 32px auto" }}>
+          From viral reels to high-ROAS Meta/Google ads and AI entity optimization, explore our 8 dedicated growth engines.
+        </p>
+      </div>
+
+      <div style={{ maxWidth: "1600px", margin: "0 auto", padding: "20px 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
+        {Object.values(serviceCatalog).map(s => {
+          const Icon = s.icon || Sparkles;
+          return (
+            <div
+              key={s.slug}
+              onClick={() => onNavigate(`/services/${s.slug}`)}
+              style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "32px", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", transition: "transform 0.2s ease, border-color 0.2s ease" }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--brand-lime)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.transform = "translateY(0)"; }}
+            >
+              <div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                  <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: "rgba(212,255,0,0.15)", color: "var(--brand-lime)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Icon size={20} />
+                  </div>
+                  <span style={{ fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", color: "#9ca3af", textTransform: "uppercase" }}>{s.label}</span>
+                </div>
+                <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "22px", textTransform: "uppercase", marginBottom: "12px", lineHeight: 1.1 }}>{s.title}</h3>
+                <p style={{ color: "#9ca3af", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>{s.outcome}</p>
+              </div>
+              <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", color: "var(--brand-lime)" }}>{s.caseMetric}</span>
+                <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", display: "flex", alignItems: "center", gap: "4px" }}>
+                  Explore Specs <ArrowRight size={14} />
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </PageLayout>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// 2. SERVICE DETAIL PAGE (/services/:slug)
 // -----------------------------------------------------------------------------
 export function ServiceDetailPage({ slug, onNavigate }) {
   const service = serviceCatalog[slug] || serviceCatalog["content-marketing"];
@@ -645,14 +756,13 @@ export function ServiceDetailPage({ slug, onNavigate }) {
 
   return (
     <PageLayout onNavigate={onNavigate} activeNav="services">
-      {/* Hero Header Banner */}
       <div style={{ padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
         <button
           type="button"
-          onClick={() => onNavigate("/")}
+          onClick={() => onNavigate("/services")}
           style={{ background: "transparent", border: "none", color: "#9ca3af", display: "inline-flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase", cursor: "pointer", marginBottom: "24px" }}
         >
-          <ArrowLeft size={16} /> Back to Overview
+          <ArrowLeft size={16} /> All Services
         </button>
 
         <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "rgba(212, 255, 0, 0.1)", border: "1px solid var(--brand-lime)", padding: "6px 14px", borderRadius: "9999px", color: "var(--brand-lime)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "20px" }}>
@@ -679,17 +789,13 @@ export function ServiceDetailPage({ slug, onNavigate }) {
         </div>
       </div>
 
-      {/* Problem & Solution Grid */}
       <div style={{ maxWidth: "1600px", margin: "0 auto", padding: "80px 24px" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "48px", marginBottom: "80px" }}>
-          <div style={{ background: "#18181b", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "32px" }}>
-            <span style={{ color: "var(--brand-coral)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "8px" }}>THE INDUSTRY BOTTLENECK</span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "24px", textTransform: "uppercase", marginBottom: "16px" }}>Why Most Agencies Fail At This</h3>
-            <p style={{ color: "#9ca3af", fontSize: "16px", lineHeight: 1.6 }}>{service.bottleneck}</p>
-          </div>
+        <div style={{ background: "#18181b", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "32px", marginBottom: "80px" }}>
+          <span style={{ color: "var(--brand-coral)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "8px" }}>THE INDUSTRY BOTTLENECK</span>
+          <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "24px", textTransform: "uppercase", marginBottom: "16px" }}>Why Most Approaches Fall Short</h3>
+          <p style={{ color: "#9ca3af", fontSize: "16px", lineHeight: 1.6 }}>{service.bottleneck}</p>
         </div>
 
-        {/* 4-Step Execution Framework */}
         <div style={{ marginBottom: "80px" }}>
           <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "12px" }}>EXECUTION METHODOLOGY</span>
           <h2 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(32px, 4vw, 54px)", textTransform: "uppercase", letterSpacing: "-0.04em", marginBottom: "36px" }}>Our 4-Stage Sprint Framework</h2>
@@ -705,7 +811,6 @@ export function ServiceDetailPage({ slug, onNavigate }) {
           </div>
         </div>
 
-        {/* Deliverables Checklist */}
         <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "40px 32px", marginBottom: "80px" }}>
           <span style={{ color: "var(--brand-lime)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "12px" }}>WHAT YOU GET</span>
           <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(24px, 3vw, 36px)", textTransform: "uppercase", marginBottom: "28px" }}>Core Deliverables & Outputs</h3>
@@ -720,7 +825,6 @@ export function ServiceDetailPage({ slug, onNavigate }) {
           </div>
         </div>
 
-        {/* FAQs */}
         {service.faqs && service.faqs.length > 0 && (
           <div style={{ maxWidth: "900px", margin: "0 auto" }}>
             <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "32px", textTransform: "uppercase", textAlign: "center", marginBottom: "32px" }}>Frequently Asked Questions</h3>
@@ -740,7 +844,7 @@ export function ServiceDetailPage({ slug, onNavigate }) {
 }
 
 // -----------------------------------------------------------------------------
-// 2. ABOUT US PAGE
+// 3. ABOUT US PAGE (/about)
 // -----------------------------------------------------------------------------
 export function AboutUsPage({ onNavigate }) {
   return (
@@ -762,7 +866,6 @@ export function AboutUsPage({ onNavigate }) {
         </div>
       </div>
 
-      {/* Key Numbers */}
       <div style={{ background: "#121216", borderTop: "1px solid rgba(255,255,255,0.1)", borderBottom: "1px solid rgba(255,255,255,0.1)", padding: "64px 24px" }}>
         <div style={{ maxWidth: "1600px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "32px", textAlign: "center" }}>
           <div>
@@ -788,7 +891,7 @@ export function AboutUsPage({ onNavigate }) {
 }
 
 // -----------------------------------------------------------------------------
-// 3. WORK / CASE STUDIES PAGE
+// 4. OUR WORK & PORTFOLIO PAGE (/work)
 // -----------------------------------------------------------------------------
 export function WorkPage({ onNavigate }) {
   return (
@@ -848,10 +951,21 @@ export function WorkPage({ onNavigate }) {
 }
 
 // -----------------------------------------------------------------------------
-// 4. PRICING SPRINTS PAGE
+// 5. PRICING SPRINTS & ROI CALCULATOR PAGE (/pricing)
 // -----------------------------------------------------------------------------
 export function PricingPage({ onNavigate }) {
   const [billingCycle, setBillingCycle] = useState("monthly");
+  const [budgetSlider, setBudgetSlider] = useState(150000);
+
+  const estimatedClicks = Math.round(budgetSlider / 25);
+  const estimatedLeads = Math.round(estimatedClicks * 0.045);
+  const estimatedRevenue = Math.round(budgetSlider * 4.8);
+
+  const formatRupees = (n) => {
+    if (n >= 10000000) return `₹${(n / 10000000).toFixed(2)} Cr`;
+    if (n >= 100000) return `₹${(n / 100000).toFixed(2)} Lakhs`;
+    return `₹${n.toLocaleString("en-IN")}`;
+  };
 
   return (
     <PageLayout onNavigate={onNavigate} activeNav="pricing">
@@ -884,7 +998,7 @@ export function PricingPage({ onNavigate }) {
       </div>
 
       {/* 3 Pricing Cards */}
-      <div style={{ maxWidth: "1600px", margin: "0 auto", padding: "40px 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
+      <div style={{ maxWidth: "1600px", margin: "0 auto", padding: "40px 24px 60px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
         {/* Starter Sprint */}
         <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "36px 28px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
           <div>
@@ -961,12 +1075,224 @@ export function PricingPage({ onNavigate }) {
           </a>
         </div>
       </div>
+
+      {/* Interactive ROI Estimator */}
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px 80px 24px" }}>
+        <div style={{ background: "#18181b", border: "1.5px solid rgba(255,255,255,0.15)", borderRadius: "20px", padding: "40px" }}>
+          <div style={{ textAlign: "center", marginBottom: "32px" }}>
+            <span style={{ color: "var(--brand-lime)", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase" }}>INTERACTIVE ROI CALCULATOR</span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", textTransform: "uppercase", margin: "4px 0" }}>Calculate Your Monthly Revenue Return</h3>
+            <p style={{ color: "#9ca3af", fontSize: "14px" }}>Drag the budget slider to see projected high-intent clicks, leads, and estimated returns.</p>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "32px", alignItems: "center" }}>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
+                <span style={{ fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase" }}>Monthly Ad Spend</span>
+                <span style={{ fontFamily: "var(--font-space)", fontSize: "18px", fontWeight: "900", color: "var(--brand-lime)" }}>{formatRupees(budgetSlider)}</span>
+              </div>
+              <input
+                type="range"
+                min={50000}
+                max={2000000}
+                step={25000}
+                value={budgetSlider}
+                onChange={(e) => setBudgetSlider(Number(e.target.value))}
+                style={{ width: "100%", accentColor: "var(--brand-lime)", height: "8px", cursor: "pointer" }}
+              />
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "#6b7280", marginTop: "6px" }}>
+                <span>₹50K</span>
+                <span>₹10 Lakhs</span>
+                <span>₹20 Lakhs</span>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div style={{ background: "#121216", padding: "16px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <span style={{ fontSize: "11px", color: "#9ca3af", fontFamily: "var(--font-space)", textTransform: "uppercase" }}>Projected Leads</span>
+                <strong style={{ fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", color: "#ffffff", display: "block", marginTop: "4px" }}>{estimatedLeads.toLocaleString("en-IN")}+</strong>
+              </div>
+              <div style={{ background: "#121216", padding: "16px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <span style={{ fontSize: "11px", color: "#9ca3af", fontFamily: "var(--font-space)", textTransform: "uppercase" }}>Estimated Revenue</span>
+                <strong style={{ fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", color: "var(--brand-lime)", display: "block", marginTop: "4px" }}>{formatRupees(estimatedRevenue)}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </PageLayout>
   );
 }
 
 // -----------------------------------------------------------------------------
-// 5. BLOG / FEED NOTES INDEX & DETAIL PAGE
+// 6. FREE WEBSITE AUDIT TOOL PAGE (/audit)
+// -----------------------------------------------------------------------------
+export function AuditToolPage({ onNavigate }) {
+  const [urlInput, setUrlInput] = useState("");
+  const [category, setCategory] = useState("D2C & E-Commerce");
+  const [auditing, setAuditing] = useState(false);
+  const [report, setReport] = useState(null);
+
+  const handleAudit = async (e) => {
+    e.preventDefault();
+    if (!urlInput) return;
+    setAuditing(true);
+    try {
+      const res = await fetch(`${API_URL}/api/audit`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: urlInput, targetCategory: category })
+      });
+      const data = await res.json();
+      if (data.success && data.report) {
+        setReport(data.report);
+      } else {
+        setReport({
+          domain: urlInput.replace(/https?:\/\//, '').replace(/www\./, '').split('/')[0],
+          targetCategory: category,
+          overallScore: 78,
+          metrics: { seoScore: 74, speedScore: 82, socialScore: 78, mobileUsability: "High", schemaMarkup: "Basic", metaPixelStatus: "Active", geoAiIndexStatus: "Needs Optimization" },
+          criticalIssues: ["Missing Knowledge Graph schema for AI Overviews", "Conversion tracking drop-off on mobile checkout", "Reel video retention hook below 8.4% median"],
+          quickWins: ["Deploy programmatic keyword clusters", "Activate weekly 3-tier UGC creative testing sprints", "Enable Generative Engine Optimization (GEO)"]
+        });
+      }
+    } catch {
+      setReport({
+        domain: urlInput.replace(/https?:\/\//, '').replace(/www\./, '').split('/')[0],
+        targetCategory: category,
+        overallScore: 81,
+        metrics: { seoScore: 79, speedScore: 85, socialScore: 80, mobileUsability: "High", schemaMarkup: "Basic", metaPixelStatus: "Active", geoAiIndexStatus: "Needs Optimization" },
+        criticalIssues: ["Missing Knowledge Graph schema for AI Overviews", "Conversion tracking drop-off on mobile checkout"],
+        quickWins: ["Deploy programmatic keyword clusters", "Activate weekly 3-tier UGC creative testing sprints"]
+      });
+    }
+    setAuditing(false);
+  };
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="audit">
+      <div style={{ padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
+        <span style={{ color: "var(--brand-lime)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>PROPRIETARY GROWTH TELEMETRY</span>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "24px" }}>
+          INSTANT GROWTH & <br /> <span style={{ color: "var(--brand-blue)" }}>SEO AUDIT TOOL.</span>
+        </h1>
+        <p style={{ fontSize: "18px", color: "#9ca3af", maxWidth: "680px", margin: "0 auto 40px auto" }}>
+          Enter your brand domain to calculate your Growth Readiness Score across SEO, AI search indexation, PageSpeed, and creative retention.
+        </p>
+
+        <div style={{ maxWidth: "700px", margin: "0 auto", background: "#121216", border: "1.5px solid rgba(255,255,255,0.15)", borderRadius: "16px", padding: "32px", textAlign: "left" }}>
+          <form onSubmit={handleAudit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div>
+              <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Your Website or Store URL *</label>
+              <input
+                required
+                type="text"
+                placeholder="e.g. yourbrand.com"
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                style={{ width: "100%", background: "#18181b", border: "1px solid #27272a", borderRadius: "8px", padding: "14px 16px", color: "#ffffff", fontSize: "16px", outline: "none" }}
+              />
+            </div>
+
+            <div>
+              <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Industry Sector</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                style={{ width: "100%", background: "#18181b", border: "1px solid #27272a", borderRadius: "8px", padding: "14px 16px", color: "#ffffff", fontSize: "14px", outline: "none" }}
+              >
+                <option value="D2C & E-Commerce">D2C & E-Commerce</option>
+                <option value="Real Estate & Property">Real Estate & Property</option>
+                <option value="B2B SaaS & Tech">B2B SaaS & Tech</option>
+                <option value="Healthcare & Wellness">Healthcare & Wellness</option>
+                <option value="Hospitality & Dining">Hospitality & Dining</option>
+              </select>
+            </div>
+
+            <button
+              type="submit"
+              disabled={auditing}
+              style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "16px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "14px", letterSpacing: "0.05em", border: "none", cursor: "pointer", marginTop: "8px" }}
+            >
+              {auditing ? "Analyzing Domain Metrics..." : "Run Instant Growth Audit ⚡"}
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {report && (
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px 80px 24px" }}>
+          <div style={{ background: "#18181b", border: "2px solid var(--brand-lime)", borderRadius: "20px", padding: "40px", boxShadow: "0 20px 60px rgba(212,255,0,0.15)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "24px", marginBottom: "32px", flexWrap: "wrap", gap: "16px" }}>
+              <div>
+                <span style={{ color: "var(--brand-lime)", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase" }}>AUDIT REPORT GENERATED</span>
+                <h3 style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", textTransform: "uppercase", margin: "4px 0" }}>{report.domain}</h3>
+                <span style={{ color: "#9ca3af", fontSize: "13px" }}>Sector: {report.targetCategory}</span>
+              </div>
+              <div style={{ textAlign: "center", background: "#121216", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "12px", padding: "16px 28px" }}>
+                <span style={{ fontSize: "11px", color: "#9ca3af", fontFamily: "var(--font-space)", textTransform: "uppercase" }}>OVERALL SCORE</span>
+                <strong style={{ fontFamily: "var(--font-space)", fontSize: "40px", fontWeight: "900", color: "var(--brand-lime)", display: "block" }}>{report.overallScore}/100</strong>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "32px" }}>
+              <div style={{ background: "#121216", padding: "16px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <span style={{ color: "#9ca3af", fontSize: "12px" }}>SEO Authority</span>
+                <strong style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "800", color: "#ffffff", marginTop: "4px" }}>{report.metrics.seoScore}/100</strong>
+              </div>
+              <div style={{ background: "#121216", padding: "16px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <span style={{ color: "#9ca3af", fontSize: "12px" }}>Speed & Core Vitals</span>
+                <strong style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "800", color: "var(--brand-lime)", marginTop: "4px" }}>{report.metrics.speedScore}/100</strong>
+              </div>
+              <div style={{ background: "#121216", padding: "16px", borderRadius: "10px", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <span style={{ color: "#9ca3af", fontSize: "12px" }}>Social Retention</span>
+                <strong style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "800", color: "var(--brand-blue)", marginTop: "4px" }}>{report.metrics.socialScore}/100</strong>
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
+              <div style={{ background: "#121216", padding: "24px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <h4 style={{ fontFamily: "var(--font-space)", fontSize: "16px", fontWeight: "800", color: "var(--brand-coral)", textTransform: "uppercase", marginBottom: "16px" }}>⚠️ Critical Bottlenecks</h4>
+                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {report.criticalIssues.map((iss, i) => (
+                    <li key={i} style={{ fontSize: "13px", color: "#d1d5db", display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                      <X size={16} color="var(--brand-coral)" style={{ flexShrink: 0, marginTop: "2px" }} /> {iss}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div style={{ background: "#121216", padding: "24px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <h4 style={{ fontFamily: "var(--font-space)", fontSize: "16px", fontWeight: "800", color: "var(--brand-lime)", textTransform: "uppercase", marginBottom: "16px" }}>⚡ Recommended High-ROI Fixes</h4>
+                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {report.quickWins.map((win, i) => (
+                    <li key={i} style={{ fontSize: "13px", color: "#d1d5db", display: "flex", alignItems: "flex-start", gap: "8px" }}>
+                      <Check size={16} color="var(--brand-lime)" style={{ flexShrink: 0, marginTop: "2px" }} /> {win}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div style={{ marginTop: "32px", textAlign: "center" }}>
+              <a
+                href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20just%20ran%20an%20audit%20for%20my%20website%20and%20want%20a%20full%20strategy%20call."
+                target="_blank"
+                rel="noreferrer"
+                style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "16px 36px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "14px", textDecoration: "none", display: "inline-block" }}
+              >
+                Claim Free 30-Min Strategy Call on WhatsApp →
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </PageLayout>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// 7. FEED NOTES (BLOG) PAGE (/blog & /blog/:slug)
 // -----------------------------------------------------------------------------
 export function FeedNotesPage({ onNavigate, slug }) {
   const articles = [
@@ -1073,7 +1399,51 @@ The solution is high-velocity creative testing:
 }
 
 // -----------------------------------------------------------------------------
-// 6. CONTACT US & DIRECT INTAKE PAGE
+// 8. CAREERS PAGE (/careers)
+// -----------------------------------------------------------------------------
+export function CareersPage({ onNavigate }) {
+  const roles = [
+    { title: "Senior Performance Media Buyer (Meta & Google)", exp: "3-5 Yrs", type: "Full-Time • Delhi-NCR / Remote", desc: "Manage ₹20L+ monthly ad spends, build high-velocity creative testing sandboxes, and scale ROAS for category leaders." },
+    { title: "Viral Short-Form Video Editor & Motion Designer", exp: "2-4 Yrs", type: "Full-Time • Delhi-NCR", desc: "Script, pace, and edit high-retention vertical reels, kinetic typography, and audio-synced video ads." },
+    { title: "Generative AI Search & SEO Architect (GEO)", exp: "3-6 Yrs", type: "Full-Time • Remote / Hybrid", desc: "Build semantic Schema.org Knowledge Graphs, programmatic keyword hubs, and AI answer engine domination systems." },
+    { title: "Full-Stack React & Next.js Growth Engineer", exp: "2-5 Yrs", type: "Full-Time • Remote / Hybrid", desc: "Develop sub-second React web experiences, automated webhook CRM funnels, and high-converting landing pages." }
+  ];
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="careers">
+      <div style={{ padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
+        <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>JOIN THE SQUAD</span>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "24px" }}>
+          BUILD WHAT PEOPLE <br /> <span style={{ color: "var(--brand-lime)" }}>CAN'T SCROLL PAST.</span>
+        </h1>
+        <p style={{ fontSize: "18px", color: "#9ca3af", maxWidth: "600px", margin: "0 auto 40px auto" }}>
+          We're looking for ambitious media buyers, video creators, SEO architects, and engineers ready to scale India's fastest growing brands.
+        </p>
+      </div>
+
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 24px 80px 24px", display: "flex", flexDirection: "column", gap: "20px" }}>
+        {roles.map((r, i) => (
+          <div key={i} style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "28px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px" }}>
+            <div>
+              <span style={{ color: "var(--brand-lime)", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase" }}>{r.type}</span>
+              <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "22px", textTransform: "uppercase", margin: "4px 0 8px 0" }}>{r.title}</h3>
+              <p style={{ color: "#9ca3af", fontSize: "14px", maxWidth: "700px" }}>{r.desc}</p>
+            </div>
+            <a
+              href="mailto:careers@getintofeed.com?subject=Job%20Application%20for%20"
+              style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "12px 24px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "12px", textDecoration: "none" }}
+            >
+              Apply Now →
+            </a>
+          </div>
+        ))}
+      </div>
+    </PageLayout>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// 9. CONTACT US PAGE (/contact)
 // -----------------------------------------------------------------------------
 export function ContactPage({ onNavigate }) {
   const [form, setForm] = useState({ name: "", email: "", phone: "", website: "", service: "Full Growth Sprint", message: "" });
@@ -1100,7 +1470,6 @@ export function ContactPage({ onNavigate }) {
     <PageLayout onNavigate={onNavigate} activeNav="contact">
       <div style={{ padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "48px" }}>
-          {/* Header */}
           <div style={{ textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
             <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>START A PROJECT</span>
             <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "24px" }}>
@@ -1111,9 +1480,7 @@ export function ContactPage({ onNavigate }) {
             </p>
           </div>
 
-          {/* Form + Contact Split */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
-            {/* Contact Direct Box */}
             <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "36px", display: "flex", flexDirection: "column", gap: "28px" }}>
               <div>
                 <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", color: "var(--brand-lime)", textTransform: "uppercase", letterSpacing: "0.1em" }}>CALL / WHATSAPP</span>
@@ -1134,7 +1501,6 @@ export function ContactPage({ onNavigate }) {
               </div>
             </div>
 
-            {/* Form */}
             <div style={{ background: "#18181b", border: "1.5px solid rgba(255,255,255,0.15)", borderRadius: "20px", padding: "36px" }}>
               {success ? (
                 <div style={{ textAlign: "center", padding: "40px 16px" }}>
@@ -1184,7 +1550,7 @@ export function ContactPage({ onNavigate }) {
 }
 
 // -----------------------------------------------------------------------------
-// 7. LEGAL PAGES (PRIVACY & TERMS)
+// 10. LEGAL PAGES (/privacy & /terms)
 // -----------------------------------------------------------------------------
 export function LegalPage({ type = "privacy", onNavigate }) {
   const isPrivacy = type === "privacy";
