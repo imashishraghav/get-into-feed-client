@@ -1022,3 +1022,143 @@ h1, h2, h3, h4, h5, h6, .font-space {
   max-height: 90vh;
   overflow-y: auto;
 }
+
+
+/* ==========================================================================
+   PERFECT RESPONSIVE NAVBAR SYSTEM FOR HOMEPAGE & SUB-PAGES
+   ========================================================================== */
+.subpage-nav-links {
+  display: flex !important;
+  align-items: center;
+  gap: 28px;
+  font-family: var(--font-space);
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.subpage-nav-link {
+  color: #09090B;
+  text-decoration: none;
+  transition: color 0.15s ease;
+  font-weight: 800;
+}
+
+.subpage-nav-link:hover {
+  color: #0033FF;
+}
+
+.subpage-mobile-toggle {
+  display: none !important;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 960px) {
+  .subpage-nav-links {
+    display: none !important;
+  }
+  .subpage-mobile-toggle {
+    display: flex !important;
+  }
+}
+
+.homepage-nav-links {
+  display: flex !important;
+  align-items: center;
+  gap: 28px;
+  font-family: var(--font-space);
+  font-weight: 800;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.homepage-mobile-toggle {
+  display: none !important;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 960px) {
+  .homepage-nav-links {
+    display: none !important;
+  }
+  .homepage-mobile-toggle {
+    display: flex !important;
+  }
+}
+
+
+/* ==========================================================================
+   GLOBAL BULLETPROOF RESPONSIVE NAVBAR SYSTEM
+   ========================================================================== */
+.subpage-nav-links {
+  display: flex !important;
+  align-items: center !important;
+  gap: 24px !important;
+  font-family: var(--font-space) !important;
+  font-weight: 800 !important;
+  font-size: 13px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.subpage-mobile-toggle {
+  display: none !important;
+  background: transparent !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 6px !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+@media (max-width: 900px) {
+  .subpage-nav-links {
+    display: none !important;
+  }
+  .subpage-mobile-toggle {
+    display: flex !important;
+  }
+}
+
+.navbar-links {
+  display: flex !important;
+  align-items: center !important;
+  gap: 28px !important;
+  font-weight: 700 !important;
+  font-family: var(--font-space) !important;
+  font-size: 12px !important;
+  letter-spacing: 0.1em !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+}
+
+.nav-mobile-toggle {
+  display: none !important;
+  background: transparent !important;
+  border: none !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+@media (max-width: 900px) {
+  .navbar-links {
+    display: none !important;
+  }
+  .nav-mobile-toggle {
+    display: flex !important;
+  }
+}
