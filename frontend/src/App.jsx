@@ -76,7 +76,20 @@ export default function App() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   useEffect(() => {
-    const handlePopState = () => setRoute(window.location.pathname);
+    if (route === "/" || route === "") {
+      document.body.style.backgroundColor = "#09090B";
+    } else {
+      document.body.style.backgroundColor = "#FFFFFF";
+    }
+    const handlePopState = () => {
+      const p = window.location.pathname;
+      setRoute(p);
+      if (p === "/" || p === "") {
+        document.body.style.backgroundColor = "#09090B";
+      } else {
+        document.body.style.backgroundColor = "#FFFFFF";
+      }
+    };
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
