@@ -38,6 +38,15 @@ import {
 } from "lucide-react";
 import WhatsAppWidget from "./components/WhatsAppWidget";
 import AdminDashboard from "./Admin";
+import {
+  ServiceDetailPage,
+  AboutUsPage,
+  WorkPage,
+  PricingPage,
+  FeedNotesPage,
+  ContactPage,
+  LegalPage
+} from "./DetailPages";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
 
@@ -107,10 +116,39 @@ export default function App() {
     setSubmitting(false);
   };
 
+  // ROUTING LOGIC
   if (route.startsWith("/admin")) {
     return <AdminDashboard onNavigate={navigate} />;
   }
+  if (route.startsWith("/about")) {
+    return <AboutUsPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/work") || route.startsWith("/case-studies")) {
+    return <WorkPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/pricing")) {
+    return <PricingPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/blog") || route.startsWith("/feed-notes")) {
+    const parts = route.split("/").filter(Boolean);
+    const slug = parts[1] || "";
+    return <FeedNotesPage onNavigate={navigate} slug={slug} />;
+  }
+  if (route.startsWith("/contact")) {
+    return <ContactPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/privacy")) {
+    return <LegalPage type="privacy" onNavigate={navigate} />;
+  }
+  if (route.startsWith("/terms")) {
+    return <LegalPage type="terms" onNavigate={navigate} />;
+  }
+  if (route.startsWith("/services/")) {
+    const slug = route.replace("/services/", "").replace(/\/.*$/, "");
+    return <ServiceDetailPage slug={slug} onNavigate={navigate} />;
+  }
 
+  // HOMEPAGE
   return (
     <div className="min-h-screen bg-[#09090B] text-white selection:bg-[#D4FF00] selection:text-[#09090B]">
       {/* 1. TOP BAR */}
@@ -139,15 +177,22 @@ export default function App() {
       {/* 2. NAVBAR */}
       <nav className="site-navbar" id="navbar">
         <div className="navbar-container">
-          <a href="#" className="navbar-brand" aria-label="Get Into Feed Home">
+          <a
+            href="/"
+            onClick={(e) => { e.preventDefault(); navigate("/"); }}
+            className="navbar-brand"
+            aria-label="Get Into Feed Home"
+          >
             <img src="/logo-navbar.png" alt="Get Into Feed Logo" className="navbar-logo-img" />
             <span>getintofeed.</span>
           </a>
 
           <div className="navbar-links">
-            <a href="#work" className="nav-link">Work</a>
+            <a href="/work" onClick={(e) => { e.preventDefault(); navigate("/work"); }} className="nav-link">Work</a>
             <a href="#services" className="nav-link">Services</a>
-            <a href="#about" className="nav-link">About Us</a>
+            <a href="/about" onClick={(e) => { e.preventDefault(); navigate("/about"); }} className="nav-link">About Us</a>
+            <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="nav-link">Pricing</a>
+            <a href="/blog" onClick={(e) => { e.preventDefault(); navigate("/blog"); }} className="nav-link">Feed Notes</a>
             <a href="tel:+918810356950" className="nav-link" style={{ color: "#D4FF00" }}>📞 8810356950</a>
           </div>
 
@@ -171,10 +216,12 @@ export default function App() {
 
         {mobileMenuOpen && (
           <div className="mobile-menu-drawer">
-            <a href="#work" onClick={() => setMobileMenuOpen(false)} className="mobile-menu-link">01. Work</a>
+            <a href="/work" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/work"); }} className="mobile-menu-link">01. Our Work</a>
             <a href="#services" onClick={() => setMobileMenuOpen(false)} className="mobile-menu-link">02. Services</a>
-            <a href="#about" onClick={() => setMobileMenuOpen(false)} className="mobile-menu-link">03. About Us</a>
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="mobile-menu-link">04. Contact</a>
+            <a href="/about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/about"); }} className="mobile-menu-link">03. About Us</a>
+            <a href="/pricing" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/pricing"); }} className="mobile-menu-link">04. Pricing Sprints</a>
+            <a href="/blog" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/blog"); }} className="mobile-menu-link">05. Feed Notes (Blog)</a>
+            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="mobile-menu-link">06. Contact</a>
             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
               <a
                 href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20to%20scale%20my%20brand."
@@ -229,9 +276,14 @@ export default function App() {
               >
                 Let's Talk <ArrowRight size={16} />
               </button>
-              <a href="#work" className="hero-btn-work">
+              <button
+                type="button"
+                onClick={() => navigate("/work")}
+                className="hero-btn-work"
+                style={{ background: "transparent", cursor: "pointer" }}
+              >
                 See Our Work <ArrowRight size={16} />
-              </a>
+              </button>
             </div>
 
             <div className="hero-scroll-indicator">
@@ -248,12 +300,10 @@ export default function App() {
             <div className="phone-mockup-frame animate-float-phone">
               <div className="phone-notch" />
 
-              {/* App Header */}
+              {/* App Header (Clean official Get Into Feed branding - No gf/g. placeholder) */}
               <div className="phone-app-header">
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <div className="phone-avatar-dot">
-                    <span style={{ color: "#09090B", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px" }}>g.</span>
-                  </div>
+                  <img src="/logo-navbar.png" alt="Get Into Feed" style={{ width: "22px", height: "22px", objectFit: "contain" }} />
                   <span style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "14px" }}>getintofeed.</span>
                 </div>
                 <MoreHorizontal size={20} color="#9ca3af" />
@@ -350,17 +400,21 @@ export default function App() {
 
             <button
               type="button"
-              onClick={() => { setSelectedService("All Services Consultation"); setLeadModalOpen(true); }}
+              onClick={() => navigate("/pricing")}
               style={{ background: "var(--brand-dark)", color: "#ffffff", padding: "12px 24px", borderRadius: "4px", fontWeight: "800", fontFamily: "var(--font-space)", textTransform: "uppercase", fontSize: "12px", letterSpacing: "0.05em", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px" }}
             >
-              Explore all services <ArrowRight size={14} />
+              Explore all services & pricing <ArrowRight size={14} />
             </button>
           </div>
 
           {/* Right Grid of Cards (Compact: 2 cols mobile, 4 cols desktop = 2 rows) */}
           <div className="services-cards-grid">
             {/* Card 1 */}
-            <div className="service-card reveal">
+            <div
+              className="service-card reveal"
+              onClick={() => navigate("/services/content-marketing")}
+              style={{ cursor: "pointer" }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#dbeafe", color: "var(--brand-blue)" }}>
                   <Edit3 size={18} />
@@ -372,7 +426,11 @@ export default function App() {
             </div>
 
             {/* Card 2 */}
-            <div className="service-card reveal">
+            <div
+              className="service-card reveal"
+              onClick={() => navigate("/services/ads-campaign")}
+              style={{ cursor: "pointer" }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#FAFFCC", color: "#9ACC00" }}>
                   <Megaphone size={18} />
@@ -384,7 +442,11 @@ export default function App() {
             </div>
 
             {/* Card 3 */}
-            <div className="service-card reveal">
+            <div
+              className="service-card reveal"
+              onClick={() => navigate("/services/social-media")}
+              style={{ cursor: "pointer" }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#dbeafe", color: "var(--brand-blue)" }}>
                   <Users size={18} />
@@ -396,7 +458,11 @@ export default function App() {
             </div>
 
             {/* Card 4 */}
-            <div className="service-card reveal">
+            <div
+              className="service-card reveal"
+              onClick={() => navigate("/services/graphics-design")}
+              style={{ cursor: "pointer" }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#FAFFCC", color: "#9ACC00" }}>
                   <PenTool size={18} />
@@ -408,7 +474,11 @@ export default function App() {
             </div>
 
             {/* Card 5 */}
-            <div className="service-card reveal">
+            <div
+              className="service-card reveal"
+              onClick={() => navigate("/services/reels")}
+              style={{ cursor: "pointer" }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#fee2e2", color: "#ef4444" }}>
                   <Clapperboard size={18} />
@@ -421,7 +491,11 @@ export default function App() {
             </div>
 
             {/* Card 6 */}
-            <div className="service-card reveal">
+            <div
+              className="service-card reveal"
+              onClick={() => navigate("/services/videos")}
+              style={{ cursor: "pointer" }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#dbeafe", color: "var(--brand-blue)" }}>
                   <Video size={18} />
@@ -434,7 +508,11 @@ export default function App() {
             </div>
 
             {/* Card 7 */}
-            <div className="service-card reveal">
+            <div
+              className="service-card reveal"
+              onClick={() => navigate("/services/strategy")}
+              style={{ cursor: "pointer" }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#FAFFCC", color: "#9ACC00" }}>
                   <Compass size={18} />
@@ -447,7 +525,11 @@ export default function App() {
             </div>
 
             {/* Card 8 */}
-            <div className="service-card reveal">
+            <div
+              className="service-card reveal"
+              onClick={() => navigate("/services/growth")}
+              style={{ cursor: "pointer" }}
+            >
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#ffedd5", color: "#f97316" }}>
                   <BarChart2 size={18} />
@@ -475,7 +557,7 @@ export default function App() {
               <span>PERFORMANCE</span> <Zap size={20} fill="#09090B" />
               <span>GROWTH</span> <Zap size={20} fill="#09090B" />
             </span>
-            {/* Set 2 (for seamless loop) */}
+            {/* Set 2 */}
             <span className="ticker-item-span" style={{ marginLeft: "24px" }}>
               <span>CONTENT MARKETING</span> <Zap size={20} fill="#09090B" />
               <span>PAID MEDIA</span> <Zap size={20} fill="#09090B" />
@@ -503,7 +585,7 @@ export default function App() {
           {/* Compact Grid: 2 cols mobile, 6 cols extra-large desktop (Max 2 rows) */}
           <div className="industries-grid">
             {/* 01 Real Estate */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--brand-lime)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand-dark)" }}>
                   <Home size={16} />
@@ -518,7 +600,7 @@ export default function App() {
             </div>
 
             {/* 02 D2C & E-Comm */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--brand-blue)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}>
                   <ShoppingBag size={16} />
@@ -533,7 +615,7 @@ export default function App() {
             </div>
 
             {/* 03 Hospitality */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--brand-coral)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}>
                   <Coffee size={16} />
@@ -548,7 +630,7 @@ export default function App() {
             </div>
 
             {/* 04 Healthcare */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#FAFFCC", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ACC00" }}>
                   <Heart size={16} />
@@ -563,7 +645,7 @@ export default function App() {
             </div>
 
             {/* 05 Education */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--brand-blue)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}>
                   <GraduationCap size={16} />
@@ -578,7 +660,7 @@ export default function App() {
             </div>
 
             {/* 06 Automotive */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--brand-lime)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand-dark)" }}>
                   <Car size={16} />
@@ -593,7 +675,7 @@ export default function App() {
             </div>
 
             {/* 07 Fashion & Beauty */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#FAFFCC", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ACC00" }}>
                   <Sparkles size={16} />
@@ -608,7 +690,7 @@ export default function App() {
             </div>
 
             {/* 08 Pro Services */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--brand-coral)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}>
                   <Briefcase size={16} />
@@ -623,7 +705,7 @@ export default function App() {
             </div>
 
             {/* 09 Startups & Tech */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--brand-coral)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}>
                   <Rocket size={16} />
@@ -638,7 +720,7 @@ export default function App() {
             </div>
 
             {/* 10 Fitness & Sports */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "#FAFFCC", display: "flex", alignItems: "center", justifyContent: "center", color: "#9ACC00" }}>
                   <Dumbbell size={16} />
@@ -653,7 +735,7 @@ export default function App() {
             </div>
 
             {/* 11 Travel & Exp */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--brand-lime)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand-dark)" }}>
                   <Map size={16} />
@@ -668,7 +750,7 @@ export default function App() {
             </div>
 
             {/* 12 Finance */}
-            <div className="industry-card reveal">
+            <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
                 <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--brand-blue)", display: "flex", alignItems: "center", justifyContent: "center", color: "#ffffff" }}>
                   <PieChart size={16} />
@@ -686,7 +768,7 @@ export default function App() {
           <div style={{ marginTop: "48px", textAlign: "center" }} className="reveal">
             <button
               type="button"
-              onClick={() => { setSelectedService("Industry Scaling Consultation"); setLeadModalOpen(true); }}
+              onClick={() => navigate("/work")}
               style={{ background: "transparent", border: "2px solid var(--brand-dark)", color: "var(--brand-dark)", padding: "12px 32px", borderRadius: "4px", fontWeight: "800", fontFamily: "var(--font-space)", textTransform: "uppercase", fontSize: "12px", letterSpacing: "0.05em", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "12px" }}
             >
               Let's scale your brand <ArrowRight size={14} />
@@ -836,7 +918,7 @@ export default function App() {
       <footer className="site-footer">
         <div className="footer-inner-flex">
           <div>
-            <a href="#" className="navbar-brand" style={{ marginBottom: "16px", fontSize: "32px" }}>
+            <a href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }} className="navbar-brand" style={{ marginBottom: "16px", fontSize: "32px" }}>
               <img src="/logo-navbar.png" alt="Get Into Feed" className="navbar-logo-img" style={{ width: "32px", height: "32px" }} />
               <span>getintofeed.</span>
             </a>
@@ -847,13 +929,13 @@ export default function App() {
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: "48px" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              <a href="#services" className="nav-link">Content</a>
-              <a href="#services" className="nav-link">Paid Media</a>
-              <a href="#services" className="nav-link">Social</a>
+              <a href="/services/content-marketing" onClick={(e) => { e.preventDefault(); navigate("/services/content-marketing"); }} className="nav-link">Content</a>
+              <a href="/services/ads-campaign" onClick={(e) => { e.preventDefault(); navigate("/services/ads-campaign"); }} className="nav-link">Paid Media</a>
+              <a href="/services/social-media" onClick={(e) => { e.preventDefault(); navigate("/services/social-media"); }} className="nav-link">Social</a>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
-              <a href="#services" className="nav-link">Creative</a>
-              <a href="#services" className="nav-link">Strategy</a>
+              <a href="/services/graphics-design" onClick={(e) => { e.preventDefault(); navigate("/services/graphics-design"); }} className="nav-link">Creative</a>
+              <a href="/services/strategy" onClick={(e) => { e.preventDefault(); navigate("/services/strategy"); }} className="nav-link">Strategy</a>
               <a href="/admin" onClick={(e) => { e.preventDefault(); navigate("/admin"); }} className="nav-link" style={{ color: "#D4FF00" }}>Admin Studio</a>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
@@ -874,8 +956,8 @@ export default function App() {
             >
               <img src="/dmca-badge.svg" alt="DMCA Protected" style={{ height: "24px", width: "auto" }} />
             </a>
-            <a href="#privacy" className="nav-link">Privacy Policy</a>
-            <a href="#terms" className="nav-link">Terms of Service</a>
+            <a href="/privacy" onClick={(e) => { e.preventDefault(); navigate("/privacy"); }} className="nav-link">Privacy Policy</a>
+            <a href="/terms" onClick={(e) => { e.preventDefault(); navigate("/terms"); }} className="nav-link">Terms of Service</a>
           </div>
         </div>
       </footer>
