@@ -29,7 +29,7 @@ const AUTHOR_PRESETS = [
   { name: "Ajaz Mirza", role: "VP, Digital Operations", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" },
   { name: "Ananya Sharma", role: "VP, Client Growth & MarTech", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80" },
   { name: "Rohan Malhotra", role: "Head of Paid Performance Media", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" },
-  { name: "Editorial Research Team", role: "Get Into Feed Growth Lab", avatar: "/logo-navbar.png" }
+  { name: "Editorial Research Team", role: "Get Into Feed Growth Lab", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80" }
 ];
 
 function emptyItem(type) {
@@ -499,7 +499,7 @@ export default function AdminDashboard({ onNavigate }) {
           publisher: {
             "@type": "Organization",
             name: "Get Into Feed",
-            logo: { "@type": "ImageObject", url: "https://getintofeed.com/logo-navbar.png" }
+            logo: { "@type": "ImageObject", url: "https://getintofeed.com/avatar-team.png" }
           },
           datePublished: editingItem.publishedAt || new Date().toISOString().slice(0, 10),
           url: `https://getintofeed.com/blog/${editingItem.slug || "growth"}`
