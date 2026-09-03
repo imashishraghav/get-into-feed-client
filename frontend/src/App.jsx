@@ -53,7 +53,7 @@ import {
   serviceCatalog
 } from "./DetailPages";
 
-const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 export default function App() {
   const [route, setRoute] = useState(window.location.pathname || "/");
