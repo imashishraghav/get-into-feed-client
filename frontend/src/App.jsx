@@ -10,6 +10,7 @@ import {
   Compass,
   Clapperboard,
   Coffee,
+  ChevronDown,
   Dumbbell,
   Edit3,
   GraduationCap,
@@ -39,13 +40,17 @@ import {
 import WhatsAppWidget from "./components/WhatsAppWidget";
 import AdminDashboard from "./Admin";
 import {
+  ServicesHubPage,
   ServiceDetailPage,
   AboutUsPage,
   WorkPage,
   PricingPage,
+  AuditToolPage,
   FeedNotesPage,
+  CareersPage,
   ContactPage,
-  LegalPage
+  LegalPage,
+  serviceCatalog
 } from "./DetailPages";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
@@ -54,6 +59,7 @@ export default function App() {
   const [route, setRoute] = useState(window.location.pathname || "/");
   const [showTopBar, setShowTopBar] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("General Inbound");
 
@@ -116,9 +122,16 @@ export default function App() {
     setSubmitting(false);
   };
 
-  // ROUTING LOGIC
+  // FULL-STACK ROUTING LOGIC
   if (route.startsWith("/admin")) {
     return <AdminDashboard onNavigate={navigate} />;
+  }
+  if (route === "/services" || route === "/services/") {
+    return <ServicesHubPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/services/")) {
+    const slug = route.replace("/services/", "").replace(/\/.*$/, "");
+    return <ServiceDetailPage slug={slug} onNavigate={navigate} />;
   }
   if (route.startsWith("/about")) {
     return <AboutUsPage onNavigate={navigate} />;
@@ -128,6 +141,12 @@ export default function App() {
   }
   if (route.startsWith("/pricing")) {
     return <PricingPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/audit")) {
+    return <AuditToolPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/careers")) {
+    return <CareersPage onNavigate={navigate} />;
   }
   if (route.startsWith("/blog") || route.startsWith("/feed-notes")) {
     const parts = route.split("/").filter(Boolean);
@@ -142,10 +161,6 @@ export default function App() {
   }
   if (route.startsWith("/terms")) {
     return <LegalPage type="terms" onNavigate={navigate} />;
-  }
-  if (route.startsWith("/services/")) {
-    const slug = route.replace("/services/", "").replace(/\/.*$/, "");
-    return <ServiceDetailPage slug={slug} onNavigate={navigate} />;
   }
 
   // HOMEPAGE
@@ -188,12 +203,52 @@ export default function App() {
           </a>
 
           <div className="navbar-links">
+            {/* Services Dropdown */}
+            <div
+              style={{ position: "relative" }}
+              onMouseEnter={() => setServicesDropdownOpen(true)}
+              onMouseLeave={() => setServicesDropdownOpen(false)}
+            >
+              <a
+                href="/services"
+                onClick={(e) => { e.preventDefault(); navigate("/services"); }}
+                className="nav-link"
+                style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}
+              >
+                Services <ChevronDown size={14} />
+              </a>
+              {servicesDropdownOpen && (
+                <div style={{ position: "absolute", top: "100%", left: "-20px", background: "#121216", border: "1.5px solid rgba(255,255,255,0.15)", borderRadius: "12px", padding: "16px", minWidth: "260px", boxShadow: "0 20px 50px rgba(0,0,0,0.8)", zIndex: 100, display: "flex", flexDirection: "column", gap: "8px" }}>
+                  {Object.values(serviceCatalog).map(s => (
+                    <a
+                      key={s.slug}
+                      href={`/services/${s.slug}`}
+                      onClick={(e) => { e.preventDefault(); setServicesDropdownOpen(false); navigate(`/services/${s.slug}`); }}
+                      style={{ color: "#d1d5db", fontSize: "12px", fontFamily: "var(--font-space)", fontWeight: "700", textDecoration: "none", textTransform: "uppercase", padding: "6px 10px", borderRadius: "6px", transition: "background 0.2s ease" }}
+                      onMouseEnter={(e) => { e.currentTarget.style.color = "var(--brand-lime)"; e.currentTarget.style.background = "#18181b"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.color = "#d1d5db"; e.currentTarget.style.background = "transparent"; }}
+                    >
+                      {s.title.split("&")[0]}
+                    </a>
+                  ))}
+                  <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "8px", marginTop: "4px" }}>
+                    <a
+                      href="/services"
+                      onClick={(e) => { e.preventDefault(); setServicesDropdownOpen(false); navigate("/services"); }}
+                      style={{ color: "var(--brand-lime)", fontSize: "11px", fontFamily: "var(--font-space)", fontWeight: "900", textDecoration: "none", textTransform: "uppercase", display: "flex", alignItems: "center", gap: "4px" }}
+                    >
+                      View All Services →
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
             <a href="/work" onClick={(e) => { e.preventDefault(); navigate("/work"); }} className="nav-link">Work</a>
-            <a href="#services" className="nav-link">Services</a>
             <a href="/about" onClick={(e) => { e.preventDefault(); navigate("/about"); }} className="nav-link">About Us</a>
             <a href="/pricing" onClick={(e) => { e.preventDefault(); navigate("/pricing"); }} className="nav-link">Pricing</a>
+            <a href="/audit" onClick={(e) => { e.preventDefault(); navigate("/audit"); }} className="nav-link" style={{ color: "var(--brand-lime)" }}>⚡ Free Audit</a>
             <a href="/blog" onClick={(e) => { e.preventDefault(); navigate("/blog"); }} className="nav-link">Feed Notes</a>
-            <a href="tel:+918810356950" className="nav-link" style={{ color: "#D4FF00" }}>📞 8810356950</a>
+            <a href="tel:+918810356950" className="nav-link" style={{ color: "#ffffff" }}>📞 8810356950</a>
           </div>
 
           <button
@@ -216,12 +271,14 @@ export default function App() {
 
         {mobileMenuOpen && (
           <div className="mobile-menu-drawer">
-            <a href="/work" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/work"); }} className="mobile-menu-link">01. Our Work</a>
-            <a href="#services" onClick={() => setMobileMenuOpen(false)} className="mobile-menu-link">02. Services</a>
-            <a href="/about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/about"); }} className="mobile-menu-link">03. About Us</a>
-            <a href="/pricing" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/pricing"); }} className="mobile-menu-link">04. Pricing Sprints</a>
-            <a href="/blog" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/blog"); }} className="mobile-menu-link">05. Feed Notes (Blog)</a>
-            <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="mobile-menu-link">06. Contact</a>
+            <a href="/" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/"); }} className="mobile-menu-link">01. Home</a>
+            <a href="/services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/services"); }} className="mobile-menu-link">02. Services Hub</a>
+            <a href="/work" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/work"); }} className="mobile-menu-link">03. Our Work & Portfolio</a>
+            <a href="/about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/about"); }} className="mobile-menu-link">04. About Us</a>
+            <a href="/pricing" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/pricing"); }} className="mobile-menu-link">05. Pricing Sprints</a>
+            <a href="/audit" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/audit"); }} className="mobile-menu-link" style={{ color: "var(--brand-lime)" }}>06. ⚡ Free Growth Audit</a>
+            <a href="/blog" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/blog"); }} className="mobile-menu-link">07. Feed Notes (Blog)</a>
+            <a href="/contact" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); navigate("/contact"); }} className="mobile-menu-link">08. Contact & Intake</a>
             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
               <a
                 href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20to%20scale%20my%20brand."
@@ -245,7 +302,6 @@ export default function App() {
 
       {/* 3. HERO SECTION */}
       <section className="hero-section">
-        {/* Background Decorative SVG Accents */}
         <div className="absolute inset-0 max-w-[1600px] mx-auto pointer-events-none" style={{ position: "absolute" }}>
           <svg className="absolute right-[45%] top-[25%] w-12 h-12 text-[#D4FF00] hidden lg:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ position: "absolute", right: "45%", top: "25%" }}>
             <path d="M10 22C10 22 7 14 2 12C7 10 10 2 10 2C10 2 13 10 18 12C13 14 10 22 10 22Z" fill="#D4FF00" />
@@ -388,7 +444,6 @@ export default function App() {
             <h2 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 4.5vw, 60px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "8px" }}>
               WE TURN SCROLLS <br /> INTO RESULTS.
             </h2>
-            {/* SVG Scribble */}
             <svg style={{ width: "240px", height: "32px", marginBottom: "32px" }} viewBox="0 0 250 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 15C45.5 5 110 -2 248 8" stroke="#D4FF00" strokeWidth="4" strokeLinecap="round" />
               <path d="M15 18C60 12 120 8 230 15" stroke="#D4FF00" strokeWidth="4" strokeLinecap="round" />
@@ -400,21 +455,17 @@ export default function App() {
 
             <button
               type="button"
-              onClick={() => navigate("/pricing")}
+              onClick={() => navigate("/services")}
               style={{ background: "var(--brand-dark)", color: "#ffffff", padding: "12px 24px", borderRadius: "4px", fontWeight: "800", fontFamily: "var(--font-space)", textTransform: "uppercase", fontSize: "12px", letterSpacing: "0.05em", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px" }}
             >
-              Explore all services & pricing <ArrowRight size={14} />
+              Explore all 8 services & specs <ArrowRight size={14} />
             </button>
           </div>
 
-          {/* Right Grid of Cards (Compact: 2 cols mobile, 4 cols desktop = 2 rows) */}
+          {/* Right Grid of Cards */}
           <div className="services-cards-grid">
             {/* Card 1 */}
-            <div
-              className="service-card reveal"
-              onClick={() => navigate("/services/content-marketing")}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="service-card reveal" onClick={() => navigate("/services/content-marketing")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#dbeafe", color: "var(--brand-blue)" }}>
                   <Edit3 size={18} />
@@ -426,11 +477,7 @@ export default function App() {
             </div>
 
             {/* Card 2 */}
-            <div
-              className="service-card reveal"
-              onClick={() => navigate("/services/ads-campaign")}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="service-card reveal" onClick={() => navigate("/services/ads-campaign")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#FAFFCC", color: "#9ACC00" }}>
                   <Megaphone size={18} />
@@ -442,11 +489,7 @@ export default function App() {
             </div>
 
             {/* Card 3 */}
-            <div
-              className="service-card reveal"
-              onClick={() => navigate("/services/social-media")}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="service-card reveal" onClick={() => navigate("/services/social-media")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#dbeafe", color: "var(--brand-blue)" }}>
                   <Users size={18} />
@@ -458,11 +501,7 @@ export default function App() {
             </div>
 
             {/* Card 4 */}
-            <div
-              className="service-card reveal"
-              onClick={() => navigate("/services/graphics-design")}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="service-card reveal" onClick={() => navigate("/services/graphics-design")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#FAFFCC", color: "#9ACC00" }}>
                   <PenTool size={18} />
@@ -474,11 +513,7 @@ export default function App() {
             </div>
 
             {/* Card 5 */}
-            <div
-              className="service-card reveal"
-              onClick={() => navigate("/services/reels")}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="service-card reveal" onClick={() => navigate("/services/reels")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#fee2e2", color: "#ef4444" }}>
                   <Clapperboard size={18} />
@@ -491,11 +526,7 @@ export default function App() {
             </div>
 
             {/* Card 6 */}
-            <div
-              className="service-card reveal"
-              onClick={() => navigate("/services/videos")}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="service-card reveal" onClick={() => navigate("/services/videos")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#dbeafe", color: "var(--brand-blue)" }}>
                   <Video size={18} />
@@ -508,11 +539,7 @@ export default function App() {
             </div>
 
             {/* Card 7 */}
-            <div
-              className="service-card reveal"
-              onClick={() => navigate("/services/strategy")}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="service-card reveal" onClick={() => navigate("/services/strategy")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#FAFFCC", color: "#9ACC00" }}>
                   <Compass size={18} />
@@ -525,11 +552,7 @@ export default function App() {
             </div>
 
             {/* Card 8 */}
-            <div
-              className="service-card reveal"
-              onClick={() => navigate("/services/growth")}
-              style={{ cursor: "pointer" }}
-            >
+            <div className="service-card reveal" onClick={() => navigate("/services/growth")} style={{ cursor: "pointer" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "24px" }}>
                 <div className="service-icon-circle" style={{ background: "#ffedd5", color: "#f97316" }}>
                   <BarChart2 size={18} />
@@ -548,7 +571,6 @@ export default function App() {
       <section className="ticker-section">
         <div style={{ display: "flex", width: "100%" }}>
           <div className="animate-marquee">
-            {/* Set 1 */}
             <span className="ticker-item-span">
               <span>CONTENT MARKETING</span> <Zap size={20} fill="#09090B" />
               <span>PAID MEDIA</span> <Zap size={20} fill="#09090B" />
@@ -557,7 +579,6 @@ export default function App() {
               <span>PERFORMANCE</span> <Zap size={20} fill="#09090B" />
               <span>GROWTH</span> <Zap size={20} fill="#09090B" />
             </span>
-            {/* Set 2 */}
             <span className="ticker-item-span" style={{ marginLeft: "24px" }}>
               <span>CONTENT MARKETING</span> <Zap size={20} fill="#09090B" />
               <span>PAID MEDIA</span> <Zap size={20} fill="#09090B" />
@@ -582,7 +603,6 @@ export default function App() {
             </p>
           </div>
 
-          {/* Compact Grid: 2 cols mobile, 6 cols extra-large desktop (Max 2 rows) */}
           <div className="industries-grid">
             {/* 01 Real Estate */}
             <div className="industry-card reveal" onClick={() => navigate("/work")} style={{ cursor: "pointer" }}>
@@ -790,28 +810,24 @@ export default function App() {
           <div className="process-steps-grid">
             <div className="process-connecting-line" />
 
-            {/* Step 1 */}
             <div className="reveal" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
               <div className="process-step-circle" style={{ background: "#ffffff", border: "1px solid #e5e7eb", color: "var(--brand-dark)" }}>01</div>
               <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "18px", marginBottom: "12px", textTransform: "uppercase", color: "var(--brand-dark)" }}>Discover</h3>
               <p style={{ color: "#4b5563", fontSize: "13px", fontWeight: "500", lineHeight: 1.6, maxWidth: "260px" }}>We dig deep into your business, audience, and goals. No assumptions.</p>
             </div>
 
-            {/* Step 2 */}
             <div className="reveal" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
               <div className="process-step-circle" style={{ background: "var(--brand-blue)", color: "#ffffff", ring: "8px solid #F4F4F5" }}>02</div>
               <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "18px", marginBottom: "12px", textTransform: "uppercase", color: "var(--brand-dark)" }}>Build</h3>
               <p style={{ color: "#4b5563", fontSize: "13px", fontWeight: "500", lineHeight: 1.6, maxWidth: "260px" }}>Strategy, content creation, visual design, and campaign architecture.</p>
             </div>
 
-            {/* Step 3 */}
             <div className="reveal" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
               <div className="process-step-circle" style={{ background: "var(--brand-dark)", color: "#ffffff", ring: "8px solid #F4F4F5" }}>03</div>
               <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "18px", marginBottom: "12px", textTransform: "uppercase", color: "var(--brand-dark)" }}>Launch</h3>
               <p style={{ color: "#4b5563", fontSize: "13px", fontWeight: "500", lineHeight: 1.6, maxWidth: "260px" }}>We push the button. Your brand enters the feed where the audience lives.</p>
             </div>
 
-            {/* Step 4 */}
             <div className="reveal" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
               <div className="process-step-circle" style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", ring: "8px solid #F4F4F5" }}>04</div>
               <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "18px", marginBottom: "12px", textTransform: "uppercase", color: "var(--brand-dark)" }}>Optimize</h3>
