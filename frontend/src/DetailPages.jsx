@@ -320,6 +320,11 @@ export const serviceCatalog = {
 // CLEAN WHITE + #D4FF00 LIME SUBPAGE WRAPPER
 // -----------------------------------------------------------------------------
 export function PageLayout({ children, onNavigate, activeNav = "" }) {
+  React.useEffect(() => {
+    document.body.style.backgroundColor = "#FFFFFF";
+    document.body.style.color = "#09090B";
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
   const [showTopBar, setShowTopBar] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
