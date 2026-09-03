@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm --dir frontend dev",
-    "build": "pnpm --dir frontend build",
-    "preview": "pnpm --dir frontend preview",
+    "dev": "pnpm --dir frontend run dev",
+    "build": "pnpm --dir frontend run build",
+    "preview": "pnpm --dir frontend run preview",
     "start": "node backend/start.js"
   },
   "dependencies": {
