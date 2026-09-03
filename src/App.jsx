@@ -198,7 +198,7 @@ export default function App() {
             className="navbar-brand"
             aria-label="Get Into Feed Home"
           >
-            <img src="/logo-navbar.png" alt="Get Into Feed Logo" className="navbar-logo-img" />
+            
             <span>getintofeed.</span>
           </a>
 
@@ -359,7 +359,7 @@ export default function App() {
               {/* App Header (Clean official Get Into Feed branding - No gf/g. placeholder) */}
               <div className="phone-app-header">
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <img src="/logo-navbar.png" alt="Get Into Feed" style={{ width: "22px", height: "22px", objectFit: "contain" }} />
+                  
                   <span style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "14px" }}>getintofeed.</span>
                 </div>
                 <MoreHorizontal size={20} color="#9ca3af" />
@@ -935,7 +935,7 @@ export default function App() {
         <div className="footer-inner-flex">
           <div>
             <a href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }} className="navbar-brand" style={{ marginBottom: "16px", fontSize: "32px" }}>
-              <img src="/logo-navbar.png" alt="Get Into Feed" className="navbar-logo-img" style={{ width: "32px", height: "32px" }} />
+              
               <span>getintofeed.</span>
             </a>
             <p style={{ fontSize: "13px", color: "#6b7280", fontWeight: "500", maxWidth: "320px" }}>
