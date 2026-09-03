@@ -1,9 +1,62 @@
 import React, { useState } from "react";
 import {
-  AlertCircle, ArrowLeft, ArrowRight, Award, BarChart3, Building2, Check, CheckCircle2, ChevronDown, ChevronRight, Clock, Code, Database, Eye, FileText, Globe2, HelpCircle, Layers, Layout, LineChart, Mail, MapPin, Megaphone, MessageCircle, MousePointerClick, Palette, PenTool, Phone, Plus, Quote, RotateCw, Search, Send, ShieldCheck, ShoppingBag, Smartphone, Sparkles, Star, Target, TrendingUp, UsersRound, Zap
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  Award,
+  BarChart2,
+  BarChart3,
+  Briefcase,
+  Building2,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  Code,
+  Compass,
+  Database,
+  ExternalLink,
+  Eye,
+  FileText,
+  Flame,
+  Globe,
+  Globe2,
+  HelpCircle,
+  Home,
+  Instagram,
+  Layers,
+  Layout,
+  LineChart,
+  Linkedin,
+  Mail,
+  MapPin,
+  Megaphone,
+  MessageCircle,
+  MousePointerClick,
+  Palette,
+  PenTool,
+  Phone,
+  Play,
+  Plus,
+  Quote,
+  Rocket,
+  Search,
+  Send,
+  ShieldCheck,
+  ShoppingBag,
+  Smartphone,
+  Sparkles,
+  Star,
+  Target,
+  TrendingUp,
+  Users,
+  Video,
+  X,
+  Zap
 } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
 
 export function slugify(text) {
   return String(text || "")
@@ -14,1795 +67,1147 @@ export function slugify(text) {
 }
 
 // -----------------------------------------------------------------------------
-// COMPLETE GET INTO FEED SERVICE TAXONOMY (20+ SPECIALIZED CAPABILITIES)
+// SERVICE CATALOG (CORE CAPABILITIES)
 // -----------------------------------------------------------------------------
 export const serviceCatalog = {
-  // 1. ENTERPRISE SEO
-  "enterprise-seo": {
-    title: "Enterprise SEO Services",
-    icon: Search,
-    label: "Enterprise Search",
-    outcome: "Scale organic search moats, capture category leadership, and compound inbound pipeline for large enterprises.",
-    description: "Enterprise websites require sophisticated crawl topology, Core Web Vitals engineering, and programmatic keyword hubs. We help Fortune 500s and Indian conglomerates capture dominant search real estate.",
-    bottleneck: "Enterprise websites with 100K+ pages suffer from severe crawl budget waste, orphaned subdomains, and slow indexing velocity.",
+  "content-marketing": {
+    slug: "content-marketing",
+    title: "Content Marketing & Editorial Authority",
+    icon: PenTool,
+    label: "Content Engine",
+    outcome: "High-intent articles, authority playbooks, and viral social hooks that rank #1 on Google and turn readers into paying clients.",
+    description: "In 2026, generic content gets ignored. We craft editorial-grade SEO content hubs, customer research playbooks, and thought leadership that captures category dominance.",
+    bottleneck: "Brands waste thousands on generic keyword articles that fail to rank in AI search and fail to convert readers.",
     framework: [
-      { step: "01. Log File & Crawl Analysis", detail: "Inspecting Googlebot server crawl behavior to eliminate orphan pages and maximize crawl efficiency." },
-      { step: "02. Programmatic Page Clusters", detail: "Deploying thousands of high-intent programmatic landing pages targeting long-tail commercial queries." },
-      { step: "03. Internal Link Graph Engineering", detail: "Optimizing PageRank flow and category internal linking to lift commercial product pages." },
-      { step: "04. Authority Moat Building", detail: "Securing tier-1 editorial digital PR links to solidify #1 Google rankings across competitive verticals." }
+      { step: "01. Commercial Intent Mapping", detail: "Targeting bottom-funnel buyer queries with immediate purchasing motivation." },
+      { step: "02. Authority Playbook Production", detail: "Publishing original benchmark data and comprehensive frameworks." },
+      { step: "03. Social Hook Repurposing", detail: "Translating long-form articles into swipeable carousels and viral reels." },
+      { step: "04. Generative AI Entity Indexing", detail: "Structuring entity schema so ChatGPT and Gemini cite your brand as the primary authority." }
     ],
     points: [
-      "Enterprise Log File & Crawl Budget Optimization",
-      "Programmatic Commercial Keyword Clustering",
-      "Technical Core Web Vitals & Sub-Second LCP Fixes",
-      "Multi-Subdomain & International Hreflang Architecture",
-      "Tier-1 Digital PR & High-Authority Backlink Acquisition",
-      "Custom Looker Studio Enterprise SEO Telemetry"
+      "Entity-Rich SEO Content Hubs & Topic Clusters",
+      "High-Converting Viral Social Media Carousels",
+      "Executive Thought Leadership & Ghostwriting",
+      "Generative Engine Optimization (GEO / AI SEO)",
+      "Digital PR & Tier-1 Media Placement Citations",
+      "Conversion-Focused Copywriting with Clear CTAs"
     ],
-    tools: ["Ahrefs Enterprise", "SEMrush", "Screaming Frog", "BigQuery", "Google Search Console", "Schema.org"],
-    caseMetric: "+340% Organic Leads",
+    tools: ["Ahrefs Enterprise", "Google Search Console", "Schema.org", "SEMrush", "Grammarly Business"],
+    caseMetric: "+340% Inbound Organic Pipeline",
     caseBrand: "FinScale Lending (BFSI)",
     faqs: [
-      { q: "How do you handle SEO for websites with over 100,000 pages?", a: "We utilize automated programmatic templates, server log file analysis, and dynamic internal link graphs to ensure Googlebot crawls and indexes high-priority commercial URLs first." },
-      { q: "How long until enterprise SEO moves the needle on revenue?", a: "Technical and indexation improvements deliver noticeable ranking surges in 30 to 45 days, with full commercial pipeline compounding at 90+ days." }
+      { q: "How do you ensure content actually converts?", a: "Every piece of content includes clear commercial hooks, comparison tables, customer proof points, and frictionless lead capture triggers." },
+      { q: "How long until content ranks on Google and AI Overviews?", a: "High-authority articles typically index and rank within 14 to 30 days, compounding traffic exponentially month over month." }
     ]
   },
-
-  // 2. GENERATIVE ENGINE OPTIMIZATION (GEO / AI SEO)
-  "geo-ai-search": {
-    title: "Generative Engine Optimization (GEO / AI SEO)",
-    icon: Sparkles,
-    label: "AI Search Discovery",
-    outcome: "Get cited and recommended by ChatGPT, Google Gemini, and Perplexity when buyers search for category solutions.",
-    description: "Search is shifting from 10 blue links to AI answer engines. We optimize your brand entity, schema graphs, and citation footprint so LLMs recommend your brand first.",
-    bottleneck: "LLMs ignore unverified brand entities and surface competitors who have structured Knowledge Graph markup and authoritative citations.",
-    framework: [
-      { step: "01. Knowledge Graph Entity Mapping", detail: "Building comprehensive Schema.org Organization, Brand, and sameAs nodes across WikiData and Crunchbase." },
-      { step: "02. Direct Data & Fact Ingestion", detail: "Publishing original benchmark statistics and proprietary research that LLM crawlers ingest into training weights." },
-      { step: "03. High-Authority Brand Co-occurrence", detail: "Securing brand mentions alongside industry keywords in verified trade journals and digital PR." },
-      { step: "04. AI Overview Prompt Testing", detail: "Simulating hundreds of conversational prompts across ChatGPT and Gemini to verify citation share." }
-    ],
-    points: [
-      "ChatGPT, Gemini & Perplexity Brand Citation Optimization",
-      "Schema.org Semantic Knowledge Graph Structuring",
-      "Proprietary Benchmark Research & Data Ingestion",
-      "Digital PR Entity Co-occurrence Engineering",
-      "Google AI Overviews (AEO) Answer Engine Domination",
-      "Conversational Search Query Cluster Mapping"
-    ],
-    tools: ["Schema.org", "Wikidata", "Perplexity Pro", "ChatGPT Enterprise", "Ahrefs", "Google Gemini API"],
-    caseMetric: "+273% AI Visibility",
-    caseBrand: "Veloura & FinScale Growth Portfolio",
-    faqs: [
-      { q: "What is the difference between SEO and GEO?", a: "SEO targets Google keyword rank positions, while GEO (Generative Engine Optimization) ensures AI models cite and recommend your brand when synthesizing complex answers." }
-    ]
-  },
-
-  // 3. LOCAL SEO
-  "local-seo": {
-    title: "Local SEO & Google Map Pack Dominance",
-    icon: MapPin,
-    label: "Local Search",
-    outcome: "Dominate Google 3-Pack and local map searches across Bengaluru, Mumbai, Delhi-NCR, Pune, and regional hubs.",
-    description: "Capture nearby buyers and multi-location foot traffic with hyper-localized landing pages, Google Business Profile (GBP) velocity, and geo-targeted review systems.",
-    bottleneck: "Multi-location brands lose 70% of high-intent local footfall due to inconsistent NAP citations and unoptimized local profiles.",
-    framework: [
-      { step: "01. Google Business Profile Audit", detail: "Optimizing primary and secondary categories, service menus, and geo-tagged images." },
-      { step: "02. Hyperlocal Landing Pages", detail: "Building dedicated landing pages for every city branch with localized schema markup." },
-      { step: "03. Citation & NAP Consistency", detail: "Syncing Business Name, Address, and Phone across 60+ local Indian directories." },
-      { step: "04. Review Generation Velocity", detail: "Automating customer feedback workflows to maintain 4.8★ ratings with local keywords." }
-    ],
-    points: [
-      "Google 3-Pack Map Ranking Optimization",
-      "Multi-Location Google Business Profile (GBP) Management",
-      "Hyperlocal Branch Pages with LocalBusiness Schema",
-      "Local Citation & Directory Cleanup (JustDial, IndiaMart, Sulekha)",
-      "Automated WhatsApp Review Collection Funnels",
-      "Hyperlocal Google Search Ads Integration"
-    ],
-    tools: ["Google Business Profile", "BrightLocal", "Whitespark", "Google Maps API", "WhatsApp API"],
-    caseMetric: "+280% OPD Bookings",
-    caseBrand: "MediHealth Super Specialty Hospitals",
-    faqs: [
-      { q: "Can you rank multiple branches in different cities?", a: "Yes! We build location-specific landing page architectures that achieve #1 Google Map Pack rankings for each branch independently." }
-    ]
-  },
-
-  // 4. ECOMMERCE SEO
-  "ecommerce-seo": {
-    title: "Ecommerce SEO & D2C Growth",
-    icon: Globe2,
-    label: "Ecommerce SEO",
-    outcome: "Drive compounding organic revenue and reduce paid ad reliance for Shopify, WooCommerce, and Magento stores.",
-    description: "Rank product categories and high-converting product pages at the top of Google. We combine faceted navigation optimization, product schema, and buyer intent clusters.",
-    bottleneck: "Faceted navigation generates duplicate content bloat and canonical errors that dilute domain authority.",
-    framework: [
-      { step: "01. Faceted Navigation Architecture", detail: "Cleaning up duplicate filter URLs and indexing only high-demand commercial attribute combinations." },
-      { step: "02. Rich Product Schema", detail: "Adding Product, AggregateRating, and Offer schemas for prominent Google Shopping rich snippets." },
-      { step: "03. Category Hub Optimization", detail: "Transforming thin category pages into authoritative buying guides that rank for top-of-funnel searches." },
-      { step: "04. Commercial Link Acquisition", detail: "Securing product placements in lifestyle publications and buyer guides." }
-    ],
-    points: [
-      "Shopify & Headless Ecommerce SEO Optimization",
-      "Product & AggregateRating Schema Markup",
-      "Faceted Navigation & Canonical URL Engineering",
-      "Commercial Category Buying Guide Hubs",
-      "Zero-Click Product Snippet Optimization",
-      "Out-of-Stock & Seasonal Product Redirect Management"
-    ],
-    tools: ["Shopify Plus", "Ahrefs", "Google Search Console", "Screaming Frog", "Schema App"],
-    caseMetric: "4.8x ROAS / ₹1.8 Cr",
-    caseBrand: "Veloura Organics (D2C Skincare)",
-    faqs: [
-      { q: "How do you handle out-of-stock products in SEO?", a: "We implement dynamic related-product modules and 301/302 redirects to preserve page authority and avoid high bounce rates." }
-    ]
-  },
-
-  // 5. PAID ADS / GOOGLE SEARCH & PMAX
-  "google-ads-ppc": {
-    title: "Google Ads & Performance Max Management",
-    icon: MousePointerClick,
-    label: "Paid Search PPC",
-    outcome: "Capture bottom-funnel commercial searches with tight CAC controls and maximum Return on Ad Spend (ROAS).",
-    description: "We architect high-precision Google Search, Performance Max, and Shopping campaigns. With strict negative keyword filtering and server-side tracking, no rupee is wasted.",
-    bottleneck: "Unoptimized broad match keywords and automated Smart Bidding drain ad budgets on low-intent search terms.",
-    framework: [
-      { step: "01. Account & Tracking Audit", detail: "Deploying Google Tag Manager server-side tracking and cleaning up wasted search query spend." },
-      { step: "02. High-Intent Single-Theme Groups", detail: "Structuring ad groups by exact buyer intent with dynamic keyword insertion." },
-      { step: "03. High-Converting Landing Pages", detail: "Routing traffic to sub-second custom React landing pages designed for instant lead capture." },
-      { step: "04. Value-Based Bidding", detail: "Training Google AI bidding algorithms on qualified CRM lead value rather than vanity clicks." }
-    ],
-    points: [
-      "Google Search, Shopping & Performance Max Campaigns",
-      "Value-Based Smart Bidding Strategy & Optimization",
-      "Daily Negative Keyword Scrubbing & Waste Elimination",
-      "Sub-Second Custom React Conversion Landing Pages",
-      "Server-Side Google Tag Manager (sGTM) Setup",
-      "Multi-Touch CRM Revenue Attribution Modeling"
-    ],
-    tools: ["Google Ads", "Google Tag Manager", "Looker Studio", "BigQuery", "Hotjar"],
-    caseMetric: "3.9x ROI / 18.4K Admissions",
-    caseBrand: "EdVance Academy (EdTech)",
-    faqs: [
-      { q: "How do you ensure leads from Google Ads are qualified?", a: "We integrate your CRM webhook with Google Offline Conversion Tracking so algorithms optimize for deals closed rather than initial clicks." }
-    ]
-  },
-
-  // 6. META ADS & UGC VIDEO SPRINTS
-  "meta-ads": {
-    title: "Meta Ads & Creator-Led UGC Scaling",
+  "ads-campaign": {
+    slug: "ads-campaign",
+    title: "Performance Ads & Paid Acquisition (ROAS)",
     icon: Megaphone,
-    label: "Social Paid Ads",
-    outcome: "Scale customer acquisition profitably on Instagram and Facebook with high-velocity creative testing sprints.",
-    description: "Creative is modern targeting. We direct, produce, and test 8 to 12 creator-led video hooks and UGC reels weekly to scale multi-crore ad budgets with high ROAS.",
-    bottleneck: "Ad accounts suffer from creative fatigue and rising CAC when running the same 3 video ads for months.",
+    label: "Paid Performance",
+    outcome: "High-ROAS Meta, Google Search, YouTube and TikTok ad campaigns built on scientific creative testing and server-side tracking.",
+    description: "Stop burning ad spend on low-intent clicks. We build high-velocity creative testing funnels and conversion telemetry that maximize pipeline and profit.",
+    bottleneck: "Most agencies rely on basic boost buttons without audience structuring, creative testing, or server-side attribution.",
     framework: [
-      { step: "01. Weekly Creative Sprint", detail: "Producing 8+ creator hooks weekly testing Problem-Agitation, Demo, and Social Proof." },
-      { step: "02. Advantage+ Campaign Scaling", detail: "Structuring broad audience campaigns powered by high-converting creative variations." },
-      { step: "03. Conversions API (CAPI)", detail: "Deploying server-side tracking to restore 100% signal accuracy after iOS privacy updates." },
-      { step: "04. Retention & WhatsApp Funnels", detail: "Retargeting engaged viewers with automated WhatsApp cart recovery offers." }
+      { step: "01. Creative Testing Sandbox", detail: "Deploying 10+ new hook and angle variations weekly to discover breakthrough winners." },
+      { step: "02. Server-Side Telemetry (CAPI)", detail: "Eliminating iOS tracking loss with full Meta Conversions API and GA4 integration." },
+      { step: "03. Budget Scaling Protocol", detail: "Aggressively scaling budget on high-performing ad sets while killing fatigue early." },
+      { step: "04. Full-Funnel Retargeting", detail: "Sequencing dynamic product ads and objection-handling video testimonials." }
     ],
     points: [
-      "High-Volume Creator-Led UGC Video Production",
-      "Meta Advantage+ Shopping & Lead Campaigns",
-      "Server-Side Meta Conversions API (CAPI) Integration",
-      "Sub-Second React Product Landing Pages",
-      "Automated WhatsApp Follow-up & Cart Recovery",
-      "Weekly Creative Performance Scorecards"
+      "Meta Ads (Instagram & Facebook) High-ROAS Scaling",
+      "Google Search, Performance Max & YouTube Video Ads",
+      "Server-Side Meta CAPI & Google Offline Conversion Tracking",
+      "Weekly Creative Sprints (UGC, Motion Graphics, Statics)",
+      "Automated Bid Strategy Tuning (Target CPA & Target ROAS)",
+      "Landing Page A/B Testing & Conversion Rate Optimization"
     ],
-    tools: ["Meta Ads Manager", "Meta CAPI", "CapCut Pro", "Figma", "WhatsApp API"],
-    caseMetric: "₹1.8 Cr/mo Revenue",
-    caseBrand: "Veloura Organics",
+    tools: ["Meta Ads Manager", "Google Ads", "Triple Whale", "Looker Studio", "Meta CAPI"],
+    caseMetric: "4.8x Average Client ROAS",
+    caseBrand: "Veloura Organics & UrbanEdge Realty",
     faqs: [
-      { q: "How many ad creatives do you test weekly?", a: "We produce and test 8 to 12 new video hooks and static iterations every single week to eliminate ad fatigue." }
+      { q: "What is the minimum ad budget needed to see results?", a: "We work with brands investing ₹50,000 to ₹50L+ per month in paid media, ensuring every rupee is tracked to verified revenue." }
     ]
   },
-
-  // 7. B2B LINKEDIN ADS & ABM
-  "linkedin-b2b-ads": {
-    title: "LinkedIn B2B Advertising & Account-Based Marketing",
-    icon: Target,
-    label: "B2B Demand Gen",
-    outcome: "Target CXOs, VP of Marketing, and decision-makers at tier-1 enterprise accounts to build qualified sales pipeline.",
-    description: "We combine LinkedIn Account-Based Marketing (ABM) lists, thought leadership ads, and high-value research playbooks to generate enterprise pipeline.",
-    bottleneck: "B2B brands waste ad budget on generic lead generation forms that attract unqualified consultants.",
+  "social-media": {
+    slug: "social-media",
+    title: "Social Media Management & Brand Community",
+    icon: Users,
+    label: "Social Growth",
+    outcome: "Full-stack channel management, daily community building, consistent posting calendar and algorithmic growth engineering.",
+    description: "We turn your social media profiles into active revenue engines with trend-hijacking reels, daily community engagement, and cult-like follower loyalty.",
+    bottleneck: "Irregular posting and boring corporate graphics lead to dead follower engagement and zero pipeline.",
     framework: [
-      { step: "01. ICP & Account List Matching", detail: "Uploading target company accounts and matched decision-maker job titles." },
-      { step: "02. Thought Leadership Ads", detail: "Promoting executive insights and original industry benchmark reports." },
-      { step: "03. High-Intent Lead Routing", detail: "Connecting lead forms directly to your sales team's Slack and CRM." },
-      { step: "04. Multi-Channel Nurturing", detail: "Retargeting website visitors with personalized case study snippets." }
+      { step: "01. Visual Brand Style Guide", detail: "Establishing high-energy typography, color palettes, and motion design rules." },
+      { step: "02. Content Calendar Execution", detail: "Delivering 20-30 scroll-stopping posts, carousels, and stories every single month." },
+      { step: "03. Community & DM Growth", detail: "Proactively engaging with industry creators and turning DM inquiries into leads." },
+      { step: "04. Monthly Growth Analytics", detail: "Tracking net follower surge, engagement rates, and referral web traffic." }
     ],
     points: [
-      "LinkedIn Account-Based Marketing (ABM) Lists",
-      "Executive Thought Leadership Ad Campaigns",
-      "High-Converting B2B Lead Gen Forms & Webhooks",
-      "Matchedd Audience Retargeting & Pipeline Nurturing",
-      "B2B CRM Pipeline Attribution (HubSpot / Salesforce)",
-      "High-CTR Single Image & Carousel Creatives"
+      "End-to-End Instagram & LinkedIn Channel Management",
+      "Daily Story Engagement & Interactive Polls",
+      "Community Comment Moderation & Direct Lead Routing",
+      "Trend Hijacking, Audio Sync & Viral Meme Formats",
+      "Monthly Creative Batching Sessions",
+      "Cross-Platform Distribution & Repurposing"
     ],
-    tools: ["LinkedIn Campaign Manager", "HubSpot", "Salesforce", "Apollo.io", "Looker Studio"],
-    caseMetric: "4.5x Pipeline",
-    caseBrand: "Fintech & Enterprise Tech Portfolio",
+    tools: ["Figma", "Canva Pro", "Adobe Premiere Pro", "Later", "Meta Creator Studio"],
+    caseMetric: "+420% Organic Engagement Surge",
+    caseBrand: "Serene Living & D2C Brands",
     faqs: [
-      { q: "Is LinkedIn advertising too expensive for mid-size brands?", a: "When targeted tightly to exact decision-makers with high-value research assets, LinkedIn delivers the lowest cost per qualified enterprise sales opportunity." }
+      { q: "Do you handle shooting and production as well?", a: "Yes, we handle the full production lifecycle: scripting, shooting frameworks, editing, sound design, and scheduling." }
     ]
   },
-
-  // 8. APP STORE OPTIMIZATION (ASO)
-  "app-store-optimization": {
-    title: "App Store Optimization (ASO) & Mobile Growth",
-    icon: Smartphone,
-    label: "ASO & App Marketing",
-    outcome: "Rank #1 for high-volume commercial keywords on iOS App Store & Google Play and drive profitable user acquisition.",
-    description: "We scale organic app installs with keyword indexing, benefit-driven screenshots, and Apple Search Ads campaigns that deliver high retention.",
-    bottleneck: "Over 65% of app downloads come from search, yet most apps leave title and subtitle keyword fields unoptimized.",
+  "graphics-design": {
+    slug: "graphics-design",
+    title: "Graphics Design & Creative Direction",
+    icon: Palette,
+    label: "Design Systems",
+    outcome: "Scroll-stopping designs, ad creatives, carousel graphics, brand guidelines and sub-second landing page assets.",
+    description: "Visuals that stop the thumb within 0.5 seconds. We design brand identities, ad creatives, and sales decks that demand immediate respect.",
+    bottleneck: "Design that looks pretty but fails to convey the core value proposition burns ad budget without conversions.",
     framework: [
-      { step: "01. Keyword & Metadata Mapping", detail: "Optimizing app title, subtitle, and hidden keyword fields for maximum search indexation." },
-      { step: "02. Visual Screenshot CRO", detail: "Designing benefit-first screenshots and video previews that double install conversion rate." },
-      { step: "03. Apple Search Ads (ASA)", detail: "Capturing top-of-search downloads while organically lifting category ranking." },
-      { step: "04. Rating Velocity", detail: "Deploying in-app rating triggers to sustain 4.6+ star ratings." }
+      { step: "01. Visual Proposition Audit", detail: "Analyzing competitors to identify visual white-space and bold contrast opportunities." },
+      { step: "02. High-CTR Ad Creative Sprint", detail: "Creating benefit-first banners, split-screen comparisons, and proof graphics." },
+      { step: "03. Carousel Architecture", detail: "Designing swipeable 10-slide narratives optimized for high save and share rates." },
+      { step: "04. Complete Brand Asset Kit", detail: "Packaging vector logos, color palettes, custom icons, and typography guidelines." }
     ],
     points: [
-      "iOS App Store & Google Play ASO Strategy",
-      "App Title, Subtitle & Hidden Keyword Optimization",
-      "High-Converting Screenshot & Preview Video Design",
-      "Apple Search Ads & Google App Campaigns",
-      "In-App Funnel & User Retention Optimization",
-      "App Rating & Review Reputation Velocity"
+      "High-Converting Paid Ad Banner Creatives",
+      "Swipe-Friendly 10-Slide Educational Carousels",
+      "Complete Brand Identity Systems & Logo Suites",
+      "High-Impact Sales Pitch Decks & Client Proposals",
+      "Landing Page Visual Assets & Motion Graphics",
+      "Fast 24-48 Hour Turnaround Sprints"
     ],
-    tools: ["AppTweak", "SensorTower", "Apple Search Ads", "Google Play Console", "AppsFlyer"],
-    caseMetric: "+65% App Downloads",
-    caseBrand: "Fintech & D2C Mobile Apps",
+    tools: ["Figma", "Adobe Illustrator", "Photoshop", "After Effects"],
+    caseMetric: "+42% Higher Click-Through Rates",
+    caseBrand: "D2C & Tech Brand Portfolio",
     faqs: [
-      { q: "How long do ASO keyword updates take to rank?", a: "Google Play updates reflect in 3 to 7 days, while iOS App Store updates index upon publishing a new app build." }
+      { q: "What format do you provide final deliverables in?", a: "All assets are delivered in editable Figma files, high-res PNG/JPG, WebP, and vector SVG formats ready for instant ad deployment." }
     ]
   },
-
-  // 9. WEBSITE DESIGN & CRO
-  "website-design": {
-    title: "High-Converting Web Experiences & CRO",
-    icon: Globe2,
-    label: "Web & CRO",
-    outcome: "Sub-second React web applications, custom landing pages, and automated funnels built to turn visitors into paying clients.",
-    description: "Speed is revenue. We engineer mobile-first React and Next.js web applications with 95+ Core Web Vitals scores that eliminate bounce rates and maximize conversions.",
-    bottleneck: "A 1-second delay in page load drops mobile conversions by 26%. Slow WordPress templates bleed expensive marketing traffic.",
+  "reels": {
+    slug: "reels",
+    title: "Viral Reels & Short-Form Video Engine",
+    icon: Flame,
+    label: "Short-Form Video",
+    outcome: "Fast-paced vertical videos, audio trend sync, dynamic captions and storytelling engineered specifically for Instagram & TikTok feeds.",
+    description: "Short-form video is the single fastest way to reach millions of new customers organically. We script, edit, and optimize viral reels that capture massive attention.",
+    bottleneck: "Videos that drop viewer retention in the first 3 seconds get suppressed by the algorithm.",
     framework: [
-      { step: "01. Conversion UX Wireframing", detail: "Mapping user objections, trust triggers, and frictionless conversion pathways." },
-      { step: "02. Sub-Second React Development", detail: "Engineering high-performance frontends with 95+ PageSpeed scores." },
-      { step: "03. Automated CRM & WhatsApp Funnels", detail: "Routing form submissions instantly to WhatsApp API and sales CRM." },
-      { step: "04. A/B Testing Sprints", detail: "Iterative testing of headlines, offers, and CTA moments." }
+      { step: "01. 3-Second Visual & Audio Hooks", detail: "Engineering thumb-stopping visual pattern interrupts and compelling questions." },
+      { step: "02. High-Retention Fast Pacing", detail: "Dynamic zoom cuts, sound effects, B-roll overlays, and kinetic typography." },
+      { step: "03. Trending Audio Hijacking", detail: "Identifying breakout viral sounds in the first 48 hours of momentum." },
+      { step: "04. Seamless Loop Optimization", detail: "Crafting end-to-beginning audio loops to maximize re-watch metrics." }
     ],
     points: [
-      "Sub-Second React & Next.js Frontend Architecture",
-      "Conversion Rate Optimization (CRO) UX Design",
-      "Mobile-First Responsive Layouts Tested on all Metros",
-      "Direct CRM, WhatsApp API & Webhook Automations",
-      "Google Core Web Vitals Optimization (95+ PageSpeed)",
-      "Interactive ROI Calculators & Multi-Step Lead Funnels"
+      "Viral Hook Scripting & Storyboard Concepting",
+      "Kinetic Subtitles & Emoji Pop Animation",
+      "Sound Design, Audio Sync & Dynamic SFX",
+      "Weekly Content Batching & Fast Turnaround",
+      "Direct Call-To-Action (CTA) Lead Funnels",
+      "Cross-Posting on Instagram Reels, Shorts & TikTok"
     ],
-    tools: ["React", "Next.js", "Vite", "TailwindCSS", "Node.js", "WhatsApp API", "Hotjar"],
-    caseMetric: "+212% Enquiries",
-    caseBrand: "EdVance Academy",
+    tools: ["CapCut Pro", "Adobe Premiere Pro", "After Effects", "Epidemic Sound"],
+    caseMetric: "3.2M+ Viral Reel Impressions",
+    caseBrand: "Hospitality & Fitness Clients",
     faqs: [
-      { q: "Why choose custom React over WordPress?", a: "React websites load in under 500ms, have zero plugin security vulnerabilities, achieve 95+ PageSpeed scores, and deliver double the conversion rates on mobile networks." }
+      { q: "How many reels do we get per month?", a: "Our packages range from 12 to 30 custom-edited reels per month with complete hooks, scripts, and captions." }
     ]
   },
-
-  // 10. CONTENT MARKETING & PR
-  "content-marketing": {
-    title: "Content Marketing & Digital PR",
-    icon: PenTool,
-    label: "Content & PR",
-    outcome: "Thought leadership articles, SEO content hubs, and tier-1 media placements that establish industry authority.",
-    description: "We produce editorial-grade SEO copywriting and original research reports that earn media coverage and compound permanent top-3 Google rankings.",
-    bottleneck: "Generic AI content fails to rank or build trust. Winning requires original data and authoritative digital PR citations.",
+  "videos": {
+    slug: "videos",
+    title: "High-Production Video & YouTube Authority",
+    icon: Video,
+    label: "Long-Form Video",
+    outcome: "High-production YouTube video editing, brand documentaries, podcast mastering and long-form authority assets.",
+    description: "Build deep trust and authority with long-form video content. We produce YouTube episodes, client success documentaries, and podcast series that turn viewers into lifelong advocates.",
+    bottleneck: "Long videos with low production quality and boring pacing suffer from 80% audience drop-off.",
     framework: [
-      { step: "01. Commercial Topic Mapping", detail: "Targeting bottom-funnel buyer queries that indicate imminent purchase intent." },
-      { step: "02. Practitioner Copywriting", detail: "Crafting in-depth guides and playbooks that demonstrate real subject authority." },
-      { step: "03. Digital PR Outreach", detail: "Distributing research benchmarks to tier-1 business and trade publications." },
-      { step: "04. Search Moat Maintenance", detail: "Internal linking and updating content to defend #1 positions." }
+      { step: "01. Title & High-CTR Thumbnail Strategy", detail: "A/B testing thumbnail designs and curiosity titles before filming." },
+      { step: "02. Story Arc & Retention Scripting", detail: "Structuring chapters, cliffhangers, and visual demonstrations." },
+      { step: "03. Multi-Cam & Color Grading", detail: "Cinema-grade color correction, audio mastering, and motion infographics." },
+      { step: "04. Omnichannel Micro-Repurposing", detail: "Chopping every 20-minute episode into 8 short-form reels and quote carousels." }
     ],
     points: [
-      "High-Intent Commercial SEO Copywriting",
-      "Original Research Reports & Industry Benchmarks",
-      "Tier-1 Digital PR & National Media Placements",
-      "Executive Ghostwriting & LinkedIn Thought Leadership",
-      "Competitor Content Theft & Refresh Sprints",
-      "Authoritative Whitepapers & Ebooks"
+      "YouTube Long-Form Video Editing & Channel Growth",
+      "High-CTR Custom Thumbnail Design & A/B Testing",
+      "Brand Documentary & Customer Case Study Films",
+      "Video Podcast Production & Multi-Camera Sync",
+      "Cinema Color Grading & Professional Audio Mastering",
+      "Full YouTube SEO (Tags, Chapters, End Screens, Cards)"
     ],
-    tools: ["Ahrefs", "Clearscope", "Google Trends", "Hunter.io", "PR Newswire"],
-    caseMetric: "41M+ Article Views",
-    caseBrand: "Enterprise Portfolio",
+    tools: ["DaVinci Resolve", "Adobe Premiere Pro", "Logic Pro", "TubeBuddy"],
+    caseMetric: "+280% Watch-Time Retention",
+    caseBrand: "EdTech & Founder Podcast Series",
     faqs: [
-      { q: "Which media publications do you secure coverage in?", a: "We secure editorial coverage in leading Indian business outlets including The Economic Times, Mint, YourStory, Inc42, and specialized industry journals." }
+      { q: "How do you handle footage delivery?", a: "We provide dedicated cloud storage links (Dropbox / Google Drive) for effortless raw footage uploads." }
     ]
   },
-
-  // 11. ONLINE REPUTATION MANAGEMENT (ORM)
-  "online-reputation-management": {
-    title: "Online Reputation Management (ORM)",
-    icon: ShieldCheck,
-    label: "ORM & Brand Protection",
-    outcome: "Protect brand search results, suppress negative content, and build positive reviews across Google, Glassdoor, and Trustpilot.",
-    description: "We safeguard corporate reputation on Google page 1. Through positive asset creation and review acceleration, we ensure prospective buyers see credibility.",
-    bottleneck: "Negative search results or review brigade attacks destroy buyer trust at the final consideration stage.",
+  "strategy": {
+    slug: "strategy",
+    title: "Full-Funnel Growth Strategy & Positioning",
+    icon: Compass,
+    label: "Strategic Roadmap",
+    outcome: "Comprehensive market positioning, competitor vulnerability audit, pricing psychology and acquisition channel roadmaps.",
+    description: "Marketing without strategy is just noise. We build end-to-end commercial growth architecture that aligns your product offer, ad channels, and revenue targets.",
+    bottleneck: "Businesses jump between disjointed marketing tactics without a unified customer acquisition playbook.",
     framework: [
-      { step: "01. Search Page 1 Sentiment Audit", detail: "Cataloging all brand search results and identifying negative listings." },
-      { step: "02. Positive Asset Domination", detail: "Building high-authority brand assets to displace negative third-party links." },
-      { step: "03. Review Generation Sprints", detail: "Automating positive customer review workflows on Google and Trustpilot." },
-      { step: "04. 24/7 Brand Monitoring", detail: "Real-time alerts on brand mentions across social media and forums." }
+      { step: "01. Full-Stack Diagnostic Audit", detail: "Analyzing historical CAC, conversion bottlenecks, and competitor ad strategies." },
+      { step: "02. Value Proposition & Offer Tuning", detail: "Refining pricing psychology and irresistible core offers." },
+      { step: "03. 90-Day Omnichannel Roadmap", detail: "Prioritizing high-leverage marketing sprints with clear KPIs." },
+      { step: "04. Executive Review & Weekly Tuning", detail: "Weekly strategic sprint syncs with our senior leadership." }
     ],
     points: [
-      "Google Page 1 Negative Link Suppression",
-      "Google Business Profile Review Reputation Elevation",
-      "Glassdoor & Employee Sentiment Optimization",
-      "Wikipedia & Knowledge Panel Entity Management",
-      "Crisis Communications & Digital PR Response",
-      "24/7 Brand Mention Sentiment Telemetry"
+      "Comprehensive Competitor & Market Positioning Audit",
+      "Unit Economics, LTV/CAC & Margin Calibration",
+      "90-Day Omnichannel Marketing Sprint Roadmap",
+      "High-Converting Offer Architecture & Pricing Psychology",
+      "Full Attribution Setup (GA4, CAPI & Looker Studio)",
+      "Weekly Strategic Syncs with Senior Growth Leads"
     ],
-    tools: ["Google Alerts", "Brand24", "Ahrefs", "Trustpilot", "Glassdoor"],
-    caseMetric: "4.9★ Average Rating",
-    caseBrand: "Healthcare & Fintech Enterprises",
+    tools: ["Looker Studio", "Miro", "Notion Growth OS", "SimilarWeb", "GA4"],
+    caseMetric: "3.9x Blended Business Growth",
+    caseBrand: "B2B SaaS & Real Estate Portfolios",
     faqs: [
-      { q: "Can you remove negative links from Google?", a: "We utilize legal takedown protocols for defamatory content while aggressively ranking positive, owned brand assets on Page 1 to displace negative links." }
+      { q: "What deliverables are included in a growth strategy sprint?", a: "You receive a comprehensive 90-day execution roadmap, competitor breakdown, creative angles document, and weekly milestone tracking." }
     ]
   },
-
-  // 12. GA4 & MARTECH
-  "ga4-server-side-tracking": {
-    title: "BI Analytics, GA4 & Server-Side Tracking",
-    icon: BarChart3,
-    label: "MarTech & Attribution",
-    outcome: "Server-side tracking, GA4 setups, and real-time Looker Studio dashboards revealing the exact revenue generated per rupee spent.",
-    description: "We eliminate tracking blind spots with server-side Google Tag Manager, Meta CAPI, and executive Looker Studio dashboards.",
-    bottleneck: "Browser privacy changes and ad blockers cause 30%+ of conversions to be lost in standard tracking setups.",
+  "growth": {
+    slug: "growth",
+    title: "Growth Personalized & AI Acceleration",
+    icon: Rocket,
+    label: "Bespoke Scale",
+    outcome: "Generative AI Search (GEO), ChatGPT and Gemini entity indexing, automated lead nurturing and bespoke scaling pods.",
+    description: "A tailored growth pod built around your brand. We combine cutting-edge AI search optimization, custom CRM routing, and dedicated talent to scale your revenue exponentially.",
+    bottleneck: "One-size-fits-all agency models fail to adapt to complex product requirements and modern AI discovery.",
     framework: [
-      { step: "01. Data Layer & Pixel Audit", detail: "Auditing tag health, duplicate events, and attribution discrepancies." },
-      { step: "02. Server-Side GTM & CAPI", detail: "Deploying server-side tracking on cloud infrastructure for 100% data fidelity." },
-      { step: "03. Multi-Touch Attribution", detail: "Connecting first-click to last-click sales data in custom BigQuery pipelines." },
-      { step: "04. Real-Time Looker Dashboards", detail: "Building automated executive dashboards for daily marketing reviews." }
+      { step: "01. Dedicated Growth Squad", detail: "Assigning dedicated strategists, media buyers, video editors, and engineers." },
+      { step: "02. AI Search & Entity Domination", detail: "Optimizing your brand for ChatGPT, Gemini, and Google AI Overviews." },
+      { step: "03. Real-Time WhatsApp & CRM Ingestion", detail: "Connecting inbound inquiries instantly to your sales team with automated alerts." },
+      { step: "04. Continuous Scale Protocol", detail: "Aggressively expanding winning angles into new markets and channels." }
     ],
     points: [
-      "Server-Side Google Tag Manager (sGTM) Deployment",
-      "Meta Conversions API (CAPI) & GA4 Integration",
-      "Custom Looker Studio Real-Time BI Dashboards",
-      "Multi-Touch Attribution Modeling",
-      "Cohort CAC-to-LTV Lifetime Value Analysis",
-      "BigQuery & PostgreSQL Marketing Data Warehousing"
+      "Dedicated Full-Stack Growth Pod (Lead, Dev, Creative, Media Buyer)",
+      "Generative Engine Optimization (GEO) for ChatGPT & Gemini",
+      "Sub-Second React Web Applications & Automated Webhooks",
+      "Instant WhatsApp & Phone Lead Ingestion Telemetry",
+      "Executive Slack/WhatsApp Direct Channel with 1-Hour SLA",
+      "Unlimited Creative Iterations & Real-Time Performance Tuning"
     ],
-    tools: ["Google Tag Manager", "GA4", "Meta CAPI", "Looker Studio", "BigQuery", "PostgreSQL"],
-    caseMetric: "100% Signal Fidelity",
-    caseBrand: "Multi-Location Enterprise Group",
+    tools: ["OpenAI API", "Google Gemini", "React", "Node.js", "WhatsApp API", "Zapier"],
+    caseMetric: "+273% Commercial Revenue Surge",
+    caseBrand: "Enterprise Conglomerates & D2C Market Leaders",
     faqs: [
-      { q: "Why is Server-Side tracking necessary in 2026?", a: "Server-side tracking bypasses browser ad blockers, avoids cookie expiration limits, and provides Meta and Google algorithms with 100% accurate conversion data." }
+      { q: "How is Growth Personalized different from standard services?", a: "You get a dedicated multidisciplinary squad working exclusively on your brand with custom engineering, AI integrations, and direct founder-level access." }
     ]
   }
 };
 
-// Aliases
-serviceCatalog["seo-growth"] = serviceCatalog["enterprise-seo"];
-serviceCatalog["paid-media"] = serviceCatalog["google-ads-ppc"];
-serviceCatalog["analytics"] = serviceCatalog["ga4-server-side-tracking"];
-serviceCatalog["app-marketing"] = serviceCatalog["app-store-optimization"];
-serviceCatalog["cro-conversion-optimization"] = serviceCatalog["website-design"];
-serviceCatalog["digital-pr-outreach"] = serviceCatalog["content-marketing"];
-
 // -----------------------------------------------------------------------------
-// CASE STUDIES CATALOG
+// UNIFIED PAGE WRAPPER WITH TOP BAR, NAVBAR, CTA & FOOTER
 // -----------------------------------------------------------------------------
-export const caseStudyCatalog = {
-  "veloura-organics-d2c-skincare": {
-    brand: "Veloura Organics (D2C Skincare)",
-    metric: "4.8x ROAS",
-    result: "Scaled Monthly Revenue to ₹1.8 Cr with 4.8x ROAS",
-    channel: "Meta Ads + UGC Video Sprints + WhatsApp Retention",
-    detail: "Veloura Organics had hit a performance plateau at ₹32L/month with a 1.9x ROAS. We overhauled their creative engine with 8 weekly creator-led UGC reels, deployed sub-second React landing pages, and implemented automated WhatsApp cart abandonment sequences. Within 120 days, monthly revenue scaled to ₹1.8 Crore while ROAS surged to 4.8x.",
-    challenge: "High customer acquisition costs on Meta Ads and low mobile conversion rates on an unoptimized Shopify theme.",
-    execution: "Produced 32 creator video ad hooks, built sub-second product bundle pages, and deployed server-side Meta CAPI for precise attribution.",
-    results: [
-      { metric: "₹1.8 Cr", label: "Monthly Revenue (up from ₹32L)" },
-      { metric: "4.8x", label: "Blended Return on Ad Spend (ROAS)" },
-      { metric: "-42%", label: "Reduction in Customer Acquisition Cost" },
-      { metric: "28%", label: "Repeat Purchase Rate via WhatsApp API" }
-    ],
-    quote: "Get Into Feed transformed our digital customer acquisition. In 4 months, our organic traffic tripled, and our Meta ad spend scaled profitably to ₹50L/month with a 4.8x ROAS. They operate like true growth partners.",
-    quoteAuthor: "Ananya Sharma, Co-Founder & CMO"
-  },
-  "finscale-bfsi-loans": {
-    brand: "FinScale Lending (BFSI & Fintech)",
-    metric: "+340% Leads",
-    result: "+340% Inbound Loan Applications & -46% CAC",
-    channel: "Enterprise SEO + Core Web Vitals + Programmatic Hubs",
-    detail: "FinScale was spending over ₹2,400 per loan enquiry on Google Ads. We engineered 450+ programmatic high-intent keyword hubs centered on loan calculators and eligibility tools, earning #1 rankings for high-volume commercial terms across India. Inbound organic applications grew by 340%, reducing blended CAC by 46%.",
-    challenge: "Intense paid search competition driving commercial loan CPCs above ₹180 per click.",
-    execution: "Developed interactive loan comparison calculators with programmatic Schema markup, optimized Core Web Vitals, and earned tier-1 fintech PR backlinks.",
-    results: [
-      { metric: "+340%", label: "Increase in Organic Loan Enquiries" },
-      { metric: "-46%", label: "Reduction in Blended Customer Acquisition Cost" },
-      { metric: "#1 to #3", label: "Google Rankings for 220+ High-Intent Keywords" },
-      { metric: "₹45L/mo", label: "Saved in Paid Search Bidding Costs" }
-    ],
-    quote: "Unlike traditional agencies that send vanity metric reports, Get Into Feed speaks revenue and unit economics. Their enterprise SEO architecture unlocked 340% growth in qualified inbound loan applications.",
-    quoteAuthor: "Vikramaditya Mehta, Head of Growth"
-  },
-  "edvance-academy-edtech": {
-    brand: "EdVance Academy (EdTech Platform)",
-    metric: "18.4K Admissions",
-    result: "18,400+ Paid Student Enrollments at 3.9x ROI",
-    channel: "Google Search + Performance Max + WhatsApp Funnels",
-    detail: "EdVance needed to scale student enrollments across 12 certification courses without inflating lead costs. We structured targeted Google Search and Performance Max campaigns for high-intent career switchers, paired with localized student video testimonials and 1-click WhatsApp counseling funnels.",
-    challenge: "High lead drop-off rates on long application forms and unorganized search keyword structures.",
-    execution: "Restructured Google Ads by career intent, deployed sub-second React landing pages, and implemented automated WhatsApp counseling follow-ups.",
-    results: [
-      { metric: "18,400+", label: "Paid Student Enrollments Completed" },
-      { metric: "3.9x", label: "Overall Marketing Return on Investment (ROI)" },
-      { metric: "+212%", label: "Increase in Admission Enquiries" },
-      { metric: "68%", label: "Counseling Show-Up Rate via WhatsApp" }
-    ],
-    quote: "Their speed of execution is unmatched in India. From sub-second React landing pages to weekly creative testing sprints, our CAC dropped by 38% in 60 days. Highest recommendation.",
-    quoteAuthor: "Rohan Deshmukh, VP Marketing"
-  },
-  "medihealth-super-specialty": {
-    brand: "MediHealth Super Specialty (Healthcare)",
-    metric: "+280% Bookings",
-    result: "+280% Verified Doctor Appointments Booked",
-    channel: "Local Map Pack SEO + Hyperlocal Google Ads",
-    detail: "MediHealth operated 14 hospital centers across Delhi-NCR and Bengaluru but struggled with local search visibility. We optimized local Google Business Profiles, built localized doctor specialty pages with appointment booking schemas, and ran hyperlocal search campaigns, surging OPD appointments by 280%.",
-    challenge: "Low local search visibility across competing private healthcare hospital networks.",
-    execution: "Dominated Google 3-Pack rankings for 40+ medical specialties, verified reviews velocity, and deployed localized click-to-call Google Ads.",
-    results: [
-      { metric: "+280%", label: "Increase in Verified Doctor Appointments" },
-      { metric: "#1 Rank", label: "In Google Map Pack across 14 Locations" },
-      { metric: "12,500+", label: "Monthly Patient Inbound Calls Generated" },
-      { metric: "4.8★", label: "Average Patient Review Rating on Google" }
-    ],
-    quote: "Get Into Feed's local search domination strategy filled our hospital OPD schedules across 14 branches. Truly remarkable execution.",
-    quoteAuthor: "Dr. Arvind Rao, Medical Director"
-  }
-};
+export function PageLayout({ children, onNavigate, activeNav = "" }) {
+  const [showTopBar, setShowTopBar] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState("General Inbound");
 
-// -----------------------------------------------------------------------------
-// LOCATION HUBS CATALOG (GET INTO FEED REGIONAL HUBS)
-// -----------------------------------------------------------------------------
-export const locationCatalog = {
-  "bengaluru": {
-    city: "Bengaluru (HQ)",
-    title: "Best SEO & Digital Marketing Agency in Bengaluru",
-    address: "Indiranagar 100ft Road & HSR Layout Sector 4, Bengaluru, Karnataka 560038",
-    phone: "+91-98765-43210",
-    email: "bengaluru@getintofeed.com",
-    overview: "Powering enterprise SEO, AI search discovery (GEO), and performance marketing for Bengaluru's top tech startups, D2C unicorns, and enterprises.",
-    clients: ["Veloura Organics", "EdVance Academy", "FinScale Lending"],
-    kpi: "+273% Organic Traffic Growth in South India"
-  },
-  "mumbai": {
-    city: "Mumbai Hub",
-    title: "Best SEO & Digital Marketing Agency in Mumbai",
-    address: "Bandra Kurla Complex (BKC) & Lower Parel, Mumbai, Maharashtra 400051",
-    phone: "+91-98765-43210",
-    email: "mumbai@getintofeed.com",
-    overview: "Delivering profit-tied paid media, enterprise SEO, and digital PR for Mumbai's leading BFSI, Fintech, and Bollywood entertainment brands.",
-    clients: ["FinScale Loans", "Apollo Hospitals Group", "Veloura"],
-    kpi: "₹120+ Cr Revenue Driven in Mumbai Metro"
-  },
-  "delhi-ncr": {
-    city: "Delhi-NCR Hub",
-    title: "Best SEO & Digital Marketing Agency in Delhi-NCR (Gurugram)",
-    address: "DLF Cyber City, Building 10, Tower B, Gurugram, Haryana 122002",
-    phone: "+91-98765-43210",
-    email: "delhi@getintofeed.com",
-    overview: "Engineering search dominance, local Google Map Pack rankings, and Performance Max campaigns for Delhi-NCR's top healthcare and retail brands.",
-    clients: ["MediHealth Super Specialty", "Airtel Enterprise", "Hero Fincorp"],
-    kpi: "+280% Inbound Consultations in North India"
-  },
-  "pune": {
-    city: "Pune Hub",
-    title: "Best SEO & Digital Marketing Agency in Pune",
-    address: "Kalyani Nagar & Viman Nagar Tech Center, Pune, Maharashtra 411006",
-    phone: "+91-98765-43210",
-    email: "pune@getintofeed.com",
-    overview: "Scaling B2B SaaS demand generation and sub-second React web development for Pune's fastest growing tech companies.",
-    clients: ["EdVance Group", "B2B SaaS Clients"],
-    kpi: "4.8x Average Client ROAS in Pune"
-  }
-};
-
-export function resolveService(slug, fallbackServices = []) {
-  const clean = slugify(slug);
-  if (serviceCatalog[clean]) return serviceCatalog[clean];
-
-  for (const [key, val] of Object.entries(serviceCatalog)) {
-    if (clean.includes(key) || key.includes(clean)) return val;
-  }
-
-  const match = fallbackServices.find((s) => slugify(s.title) === clean);
-  if (match) {
-    return {
-      title: match.title,
-      icon: Search,
-      label: match.title,
-      outcome: match.description,
-      description: match.description,
-      bottleneck: "Overcoming digital fragmentation to build predictable customer acquisition.",
-      framework: [
-        { step: "01. Diagnostic Audit", detail: "Comprehensive audit of your current channels, competitors, and conversion funnel." },
-        { step: "02. Strategic Execution", detail: "Deploying high-impact campaigns and modern technical architecture." },
-        { step: "03. Velocity & Scaling", detail: "Iterative weekly testing to eliminate waste and compound winning assets." },
-        { step: "04. Revenue Attribution", detail: "Real-time tracking of leads and revenue tied to commercial growth." }
-      ],
-      points: Array.isArray(match.points) ? match.points : (match.points || "").split(","),
-      tools: ["Google Search Console", "Ahrefs", "GA4", "Meta Ads", "React"],
-      caseMetric: "+273% Growth",
-      caseBrand: "Enterprise Client Portfolio",
-      faqs: [
-        { q: "How quickly does this service start delivering results?", a: "Initial performance improvements are observed within 14 to 30 days, with compounding growth scaling significantly in 60 to 90 days." }
-      ]
-    };
-  }
-
-  return serviceCatalog["enterprise-seo"];
-}
-
-export function resolveCaseStudy(slug, fallbackStudies = []) {
-  const clean = slugify(slug);
-  if (caseStudyCatalog[clean]) return caseStudyCatalog[clean];
-
-  for (const [key, val] of Object.entries(caseStudyCatalog)) {
-    if (clean.includes(key) || key.includes(clean)) return val;
-  }
-
-  const match = fallbackStudies.find((s) => slugify(s.brand) === clean);
-  if (match) {
-    return {
-      brand: match.brand,
-      metric: match.metric || "+212%",
-      result: match.result,
-      channel: match.channel,
-      detail: match.detail,
-      challenge: "Scaling customer acquisition while maintaining tight unit economics and ROAS controls.",
-      execution: "Full-funnel digital marketing strategy combining high-intent search, creative ad sprints, and sub-second web experiences.",
-      results: [
-        { metric: match.metric || "+212%", label: "Primary Growth Multiplier" },
-        { metric: "4.8x", label: "Blended Return on Investment" },
-        { metric: "-38%", label: "Customer Acquisition Cost Reduction" }
-      ],
-      quote: "Get Into Feed delivered measurable revenue growth that exceeded our commercial milestones.",
-      quoteAuthor: "Leadership Team"
-    };
-  }
-
-  return caseStudyCatalog["veloura-organics-d2c-skincare"];
-}
-
-// -----------------------------------------------------------------------------
-// SERVICE DETAIL PAGE TEMPLATE
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
-// SERVICE DETAIL PAGE TEMPLATE (MATCHING 7-PAGE PDF 1-TO-1 & BACKEND CONNECTED)
-// -----------------------------------------------------------------------------
-export function ServiceDetail({ service, onNavigate }) {
-  const currentService = service || {
-    title: "PPC & Performance Paid Marketing",
-    icon: MousePointerClick,
-    kpi: "3.9x ROI / 18.4K Leads",
-    description: "Partner with us, the leading digital marketing & PPC agency in India, for campaigns that deliver measurable results, qualified leads, and higher ROI."
-  };
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    service: currentService.title,
-    message: "",
-    whatsapp: true,
-    agreeTerms: true
-  });
-  const [recaptchaVerified, setRecaptchaVerified] = useState(false);
+  // Modal Form State
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", website: "", service: "Content & Paid Growth", message: "" });
   const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [leadResult, setLeadResult] = useState(null);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [activeFaq, setActiveFaq] = useState(0);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Dynamic Sub-Services matching the active service domain
-  const getSubServices = (svc) => {
-    const title = (svc.title || "").toLowerCase();
-    if (title.includes("seo") || title.includes("search engine")) {
-      return [
-        {
-          title: "Technical SEO & Crawl Topology",
-          desc: "Eliminate crawl budget waste, fix Core Web Vitals, and ensure Googlebot instantly indexes commercial landing pages.",
-          icon: Search
-        },
-        {
-          title: "Programmatic Keyword Hubs",
-          desc: "Deploy thousands of high-intent programmatic landing pages targeting long-tail commercial queries and buyer keywords.",
-          icon: Layers
-        },
-        {
-          title: "Generative Engine Optimization (GEO)",
-          desc: "Optimize brand entity graphs and schema markup to capture #1 recommendations on ChatGPT, Gemini, and Perplexity.",
-          icon: Sparkles
-        },
-        {
-          title: "Local & Google Map Pack SEO",
-          desc: "Dominate Google 3-Pack and nearby voice searches across Bengaluru, Mumbai, Delhi-NCR, Pune, and regional hubs.",
-          icon: MapPin
-        },
-        {
-          title: "Ecommerce & Product Schema",
-          desc: "Rich snippet schemas, product category hubs, and facet navigation designed to drive high-converting ecommerce sales.",
-          icon: ShoppingBag
-        },
-        {
-          title: "Tier-1 Digital PR & Authority Links",
-          desc: "Build unassailable domain authority with verified editorial mentions in top Indian business publications and media.",
-          icon: Megaphone
-        }
-      ];
-    }
-
-    if (title.includes("web") || title.includes("design") || title.includes("development") || title.includes("cro")) {
-      return [
-        {
-          title: "Sub-Second React & Next.js Web",
-          desc: "Modern ultra-fast headless web architectures optimized for 95+ Google PageSpeed and sub-second Largest Contentful Paint (LCP).",
-          icon: Code
-        },
-        {
-          title: "High-Converting CRO Funnels",
-          desc: "Data-driven UI/UX conversion rate optimization, micro-interactions, and A/B tested checkout flows that increase lead velocity.",
-          icon: LineChart
-        },
-        {
-          title: "Enterprise Brand UI/UX Design",
-          desc: "Clean, elegant, responsive interfaces crafted to establish enterprise authority and deliver frictionless customer experiences.",
-          icon: Palette
-        },
-        {
-          title: "Server-Side Telemetry & CAPI",
-          desc: "Full-funnel attribution tracking with Meta Conversions API, Google Tag Manager Server Container, and GA4 custom events.",
-          icon: BarChart3
-        },
-        {
-          title: "Headless CMS & Dynamic Stores",
-          desc: "Scalable content management systems tailored for fast editorial publishing and seamless e-commerce transactions.",
-          icon: Layers
-        },
-        {
-          title: "Enterprise Web Security & SLA",
-          desc: "Bank-grade SSL/TLS encryption, automated daily cloud backups, and 99.99% uptime guarantee with Cloudflare Edge CDN.",
-          icon: ShieldCheck
-        }
-      ];
-    }
-
-    // Default Performance / PPC & Digital Marketing
-    return [
-      {
-        title: "Search Advertising & Google Ads",
-        desc: "High-intent Google Search and Performance Max campaigns optimized with smart bidding to capture active buyers at the lowest CAC.",
-        icon: Search
-      },
-      {
-        title: "Display & GDN Advertising",
-        desc: "Reach millions of qualified prospects across top web publishers and Google Display Network with high-impact visual banners.",
-        icon: Layout
-      },
-      {
-        title: "Paid Social Media Advertising",
-        desc: "Scale customer acquisition across Instagram, Facebook, LinkedIn, YouTube, and Twitter with hyper-targeted audience funnels.",
-        icon: Megaphone
-      },
-      {
-        title: "Dynamic Retargeting & Remarketing",
-        desc: "Recover abandoned carts and re-engage warm visitors with personalized multi-channel ads that maximize conversion rates.",
-        icon: RotateCw
-      },
-      {
-        title: "Google Shopping & Product Feeds",
-        desc: "AI-driven product feed optimization and shopping bid management designed to maximize ROAS for direct-to-consumer ecommerce.",
-        icon: ShoppingBag
-      },
-      {
-        title: "Generative AI (GEO) Search",
-        desc: "Get cited and recommended directly inside ChatGPT, Google Gemini, and Perplexity when buyers research your category.",
-        icon: Sparkles
-      }
-    ];
-  };
-
-  const subServices = getSubServices(currentService);
-
-  const industries = [
-    { name: "BFSI & FinTech", desc: "Our search architects drive customer trust and high-ticket lead generation for India's leading banks, lending platforms, and wealth managers.", icon: "🏦" },
-    { name: "Higher Education & EdTech", desc: "Attract the highest intent students and drive qualified course enrollments with precision search campaigns and localized campus funnels.", icon: "🎓" },
-    { name: "Healthcare & Hospitals", desc: "Connect patients with super-specialty doctors at their moment of need. Proven record of +279% increase in verified doctor appointments.", icon: "🏥" },
-    { name: "B2B SaaS & Enterprise", desc: "Generate enterprise pipeline and shorten B2B sales cycles with account-based marketing, programmatic search, and executive thought leadership.", icon: "🏢" },
-    { name: "D2C Brands & Ecommerce", desc: "Scale store revenue and first-time customer acquisition with high-ROAS performance ads, product schema, and sub-second React landing pages.", icon: "🛒" },
-    { name: "Insurance & Wealth", desc: "Build digital authority, boost policy inquiries, and lower customer acquisition costs through high-intent multi-channel search marketing.", icon: "🛡️" }
-  ];
-
-  const challenges = [
-    { title: "Acquiring popular ad spaces without exhausting the budget", desc: "Our advanced algorithmic bidding strategies secure prime search real estate while cutting cost per acquisition by up to 38%." },
-    { title: "Publishing relevant ads without incurring ad fatigue", desc: "We deploy weekly creative sprints with dynamic hooks and format rotation to keep campaigns consistently fresh and high-converting." },
-    { title: "Driving targeted traffic and getting meaningful clicks", desc: "Through first-party audience modeling and AI-driven intent mining, we attract high-ticket decision-makers who actually buy." },
-    { title: "Optimizing landing pages for minimal bounce rate and maximum conversions", desc: "We engineer sub-second page load speeds, clear visual hierarchy, and frictionless inquiry forms that increase conversion rates." },
-    { title: "Creating impactful, high-converting copy in limited ad real estate", desc: "Our specialized direct-response copywriters craft magnetic value propositions that trigger immediate action from target prospects." },
-    { title: "Continuously adapting campaigns with latest algorithm updates", desc: "Our team conducts real-time weekly telemetry audits to ensure your campaigns stay ahead of Google, Meta, and AI algorithm shifts." }
-  ];
-
-  const competitiveFeatures = [
-    { title: "Genuine Enterprise Capabilities", desc: "Get Into Feed is the premier choice for enterprise brands requiring complex, multi-million dollar campaign architectures managed with military precision." },
-    { title: "Complete Search Landscape Domination", desc: "From Google Universal Search, Map Pack, and YouTube Video to ChatGPT, Gemini, and Perplexity AI citations, we ensure total category visibility." },
-    { title: "Portfolio of Marquee Enterprise Brands", desc: "Trusted by India's top leaders in BFSI, Healthcare, Education, and eCommerce—delivering audited compounding growth year after year." },
-    { title: "Obsessed with Measurable Revenue Numbers", desc: "We partner on Annual Operating Plans (AOPs) and deliver verified commercial milestones with full revenue and pipeline attribution." },
-    { title: "Vertical-Specific Strategic Depth", desc: "Tailored compliance-ready playbooks for BFSI, healthcare NABH guidelines, EdTech admission cycles, and high-velocity D2C sales." },
-    { title: "Dedicated Senior Strategic Growth Pods", desc: "Direct access to senior search engineers, performance media buyers, and creative strategists with zero middle-management bureaucracy." }
-  ];
-
-  const serviceFaqs = currentService.faqs && currentService.faqs.length > 0 ? [
-    ...currentService.faqs,
-    { q: `Is ${currentService.title} suitable for my business size?`, a: "Yes, our tailored frameworks scale from high-growth mid-market ventures to large enterprises with complex multi-location and multi-brand requirements." },
-    { q: "How quickly do we start seeing measurable growth in pipeline?", a: "Paid campaigns generate qualified inbound inquiries within the first 7 to 14 days. Organic SEO and Generative Engine Optimization (GEO) compound over 60 to 90 days, delivering sustained long-term organic dominance." },
-    { q: "What analytics and attribution reports will I receive?", a: "You receive access to a 24/7 custom Looker Studio telemetry dashboard tracking qualified leads, cost per acquisition (CPA), return on ad spend (ROAS), and keyword ranking velocity in real time." }
-  ] : [
-    { q: `Is ${currentService.title} suitable for my business?`, a: "Yes, our strategic frameworks are tailored to your specific industry economics, target customer profile, and commercial revenue objectives." },
-    { q: "Why should I invest in paid & organic search marketing together?", a: "Combining paid and organic search allows your brand to capture over 65% of the total search engine results page (SERP) real estate, multiplying trust and lowering overall blended customer acquisition costs." },
-    { q: "What are the most common pitfalls you prevent?", a: "We eliminate wasted ad spend on broad untargeted keywords, prevent attribution blindness with server-side CAPI tracking, and fix slow landing pages that bleed conversion revenue." },
-    { q: "How long does it take to see results?", a: "Paid performance ads produce qualified leads within 7-14 days. Organic search moats and Generative AI optimization compound exponentially across 60-90 days." },
-    { q: "Where will my campaigns and brand assets be displayed?", a: "Your brand is positioned across Google Search, Google Display Network (GDN), YouTube, Meta (Instagram & Facebook), LinkedIn B2B feeds, and AI Search Overviews (ChatGPT & Gemini)." }
-  ];
-
-  const handleSubmit = async (e) => {
+  const handleLeadSubmit = async (e) => {
     e.preventDefault();
-    setErrorMsg("");
-
-    if (!form.agreeTerms) {
-      setErrorMsg("Please accept the Terms of Service & Privacy Policy.");
+    if (!formData.name || !formData.email || !formData.phone) {
+      alert("Please enter your name, email, and phone number.");
       return;
     }
-
     setSubmitting(true);
     try {
       const res = await fetch(`${API_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          service: currentService.title,
-          source: `service_detail_${currentService.title}`
-        })
+        body: JSON.stringify({ ...formData, service: selectedService || formData.service, source: "Sub-page Inquiry Modal" })
       });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setLeadResult(data);
-        setSubmitted(true);
+      if (res.ok) {
+        setSubmitSuccess(true);
+        setTimeout(() => {
+          setSubmitSuccess(false);
+          setLeadModalOpen(false);
+          setFormData({ name: "", email: "", phone: "", website: "", service: "Content & Paid Growth", message: "" });
+        }, 2000);
       } else {
-        setErrorMsg(data.message || "Failed to submit request.");
+        alert("Thanks! Your message has been received. Our team will contact you on WhatsApp/Phone (+91-8810356950) shortly.");
+        setLeadModalOpen(false);
       }
     } catch {
-      setErrorMsg("Unable to connect to the backend server. Please try again.");
-    } finally {
-      setSubmitting(false);
+      alert("Thanks! Your message has been received. Our team will contact you on WhatsApp/Phone (+91-8810356950) shortly.");
+      setLeadModalOpen(false);
     }
+    setSubmitting(false);
   };
 
   return (
-    <div className="service-detail-full-page-view">
-      {/* 1. HERO BANNER */}
-      <section className="sd-hero-banner-section">
-        <div className="sd-hero-container">
-          <div className="sd-hero-left">
-            <div className="sd-hero-top-badge">
-              <Sparkles size={14} color="#f59e0b" />
-              <span>🏆 #1 Rated Digital Marketing & Performance Agency in India</span>
-            </div>
-            <h1>Increase ROI with India's Leading {currentService.title} Agency</h1>
-            <p>
-              Partner with us, the leading performance & AI-first marketing company in India, for {currentService.title.toLowerCase()} that deliver measurable results, qualified leads, and higher ROI. Backed by data-driven insights and years of expertise, we help brands grow through transparent, ROI-focused campaigns that build long-term trust and performance.
-            </p>
-            <div className="sd-hero-btn-row">
-              <button type="button" onClick={() => onNavigate("/contact")} className="sd-hero-orange-btn">
-                Speak to an Expert →
-              </button>
-              <button type="button" onClick={() => onNavigate("/services")} className="sd-hero-outline-btn">
-                Our Services →
+    <div className="min-h-screen bg-[#09090B] text-white selection:bg-[#D4FF00] selection:text-[#09090B]">
+      {/* 1. TOP NOTICE RIBBON */}
+      {showTopBar && (
+        <div className="top-bar-lime">
+          <Zap size={14} fill="#09090B" />
+          <p>NOW TAKING ON 3 NEW BRANDS THIS MONTH — LET'S BUILD SOMETHING PEOPLE CAN'T SCROLL PAST.</p>
+          <button
+            type="button"
+            onClick={() => { setSelectedService("High-Growth Retainer"); setLeadModalOpen(true); }}
+            className="top-bar-talk-btn"
+          >
+            LET'S TALK <ArrowRight size={12} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowTopBar(false)}
+            className="top-bar-close-btn"
+            aria-label="Close announcement"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* 2. NAVBAR */}
+      <nav className="site-navbar" id="navbar">
+        <div className="navbar-container">
+          <a
+            href="/"
+            onClick={(e) => { e.preventDefault(); onNavigate("/"); }}
+            className="navbar-brand"
+            aria-label="Get Into Feed Home"
+          >
+            <img src="/logo-navbar.png" alt="Get Into Feed Logo" className="navbar-logo-img" />
+            <span>getintofeed.</span>
+          </a>
+
+          <div className="navbar-links">
+            <a href="/work" onClick={(e) => { e.preventDefault(); onNavigate("/work"); }} className="nav-link">Work</a>
+            <a href="/#services" onClick={(e) => { e.preventDefault(); onNavigate("/#services"); }} className="nav-link">Services</a>
+            <a href="/about" onClick={(e) => { e.preventDefault(); onNavigate("/about"); }} className="nav-link">About Us</a>
+            <a href="/pricing" onClick={(e) => { e.preventDefault(); onNavigate("/pricing"); }} className="nav-link">Pricing</a>
+            <a href="/blog" onClick={(e) => { e.preventDefault(); onNavigate("/blog"); }} className="nav-link">Feed Notes</a>
+            <a href="tel:+918810356950" className="nav-link" style={{ color: "#D4FF00" }}>📞 8810356950</a>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => { setSelectedService("Start a Project"); setLeadModalOpen(true); }}
+            className="nav-start-btn"
+          >
+            Start a project <ArrowRight size={16} />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="nav-mobile-toggle"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X size={26} color="#D4FF00" /> : <Menu size={26} color="#ffffff" />}
+          </button>
+        </div>
+
+        {mobileMenuOpen && (
+          <div className="mobile-menu-drawer">
+            <a href="/" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/"); }} className="mobile-menu-link">01. Home</a>
+            <a href="/work" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/work"); }} className="mobile-menu-link">02. Our Work</a>
+            <a href="/about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/about"); }} className="mobile-menu-link">03. About Us</a>
+            <a href="/pricing" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/pricing"); }} className="mobile-menu-link">04. Pricing Sprints</a>
+            <a href="/blog" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/blog"); }} className="mobile-menu-link">05. Feed Notes (Blog)</a>
+            <a href="/contact" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/contact"); }} className="mobile-menu-link">06. Contact</a>
+            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+              <a
+                href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20to%20scale%20my%20brand."
+                target="_blank"
+                rel="noreferrer"
+                style={{ flex: 1, background: "#25D366", color: "#082414", textAlign: "center", padding: "12px", borderRadius: "6px", fontWeight: "800", textDecoration: "none", fontFamily: "var(--font-space)" }}
+              >
+                💬 WhatsApp
+              </a>
+              <button
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); setLeadModalOpen(true); }}
+                style={{ flex: 1, background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "12px", borderRadius: "6px", fontWeight: "900", border: "none", cursor: "pointer", fontFamily: "var(--font-space)" }}
+              >
+                Start a Project →
               </button>
             </div>
           </div>
+        )}
+      </nav>
 
-          <div className="sd-hero-right-visual">
-            <div className="sd-hero-nodes-card">
-              <div className="sd-nodes-card-title">
-                <span className="live-pulse-dot" />
-                <strong>Growth Execution Engine</strong>
-              </div>
-              <div className="sd-node-badge node-1">
-                <span className="node-icon">⚡</span>
-                <div>
-                  <strong>AI Automated Bidding</strong>
-                  <small>Real-time ROAS optimization</small>
-                </div>
-              </div>
-              <div className="sd-node-badge node-2">
-                <span className="node-icon">🎨</span>
-                <div>
-                  <strong>Sharp Creatives</strong>
-                  <small>Dynamic ad fatigue defense</small>
-                </div>
-              </div>
-              <div className="sd-node-badge node-3">
-                <span className="node-icon">🎯</span>
-                <div>
-                  <strong>Audience Insights</strong>
-                  <small>First-party intent telemetry</small>
-                </div>
-              </div>
-              <div className="sd-node-stat-pill">
-                <strong>{currentService.kpi || "+273% Verified Growth"}</strong>
-                <span>• 500+ Active Campaigns Managed</span>
+      {/* PAGE BODY */}
+      <main>{children}</main>
+
+      {/* CTA SECTION */}
+      <section id="contact" className="cta-section">
+        <div className="cta-blue-card reveal">
+          <svg className="absolute left-[5%] top-[20%] w-20 h-20 text-white/10 rotate-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ position: "absolute", left: "5%", top: "20%", opacity: 0.15 }}>
+            <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93" />
+          </svg>
+
+          <div style={{ position: "relative", zIndex: 10, maxWidth: "768px", margin: "0 auto" }}>
+            <h2 className="cta-heading">
+              READY TO <br />
+              GET INTO <br />
+              <span className="text-brand-lime">THE FEED?</span>
+            </h2>
+
+            <p style={{ fontSize: "18px", color: "#dbeafe", fontWeight: "500", marginBottom: "48px", maxWidth: "560px", margin: "0 auto 48px auto" }}>
+              Tell us what you're building. We'll figure out how to get it noticed and scaled.
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "center", justifyContent: "center" }}>
+              <button
+                type="button"
+                onClick={() => { setSelectedService("Full Growth Sprint"); setLeadModalOpen(true); }}
+                style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "16px 40px", borderRadius: "4px", fontWeight: "800", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.1em", fontSize: "14px", border: "none", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "12px", boxShadow: "0 10px 30px rgba(0,0,0,0.2)" }}
+              >
+                Start a project <ArrowRight size={16} />
+              </button>
+              <div style={{ display: "flex", gap: "24px", flexWrap: "wrap", justifyContent: "center" }}>
+                <a href="mailto:growth@getintofeed.com" className="link-underline" style={{ color: "#ffffff", fontFamily: "var(--font-space)", fontWeight: "800", textTransform: "uppercase", fontSize: "14px", textDecoration: "none" }}>
+                  ✉️ growth@getintofeed.com
+                </a>
+                <a href="tel:+918810356950" className="link-underline" style={{ color: "#ffffff", fontFamily: "var(--font-space)", fontWeight: "800", textTransform: "uppercase", fontSize: "14px", textDecoration: "none" }}>
+                  📞 +91-8810356950
+                </a>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. BREADCRUMB */}
-      <div className="sd-breadcrumb-strip">
-        <div className="sd-container">
-          <button type="button" onClick={() => onNavigate("/")} className="as-link">Home</button>
-          <span>›</span>
-          <button type="button" onClick={() => onNavigate("/services")} className="as-link">Services</button>
-          <span>›</span>
-          <span className="active-crumb">{currentService.title}</span>
-        </div>
-      </div>
-
-      {/* 3. MAIN TWO-COLUMN LAYOUT */}
-      <section className="sd-main-body-section">
-        <div className="sd-container sd-two-col-grid">
-          {/* LEFT 65% COLUMN */}
-          <div className="sd-left-content-col">
-            {/* KEY ACHIEVEMENTS BOX */}
-            <div className="sd-achievements-checklist-box">
-              <div className="achieve-item">
-                <CheckCircle2 size={20} className="achieve-check" />
-                <span>Delivered +58% average growth in conversions across clients' campaigns in FY25</span>
-              </div>
-              <div className="achieve-item">
-                <CheckCircle2 size={20} className="achieve-check" />
-                <span>MCube Award - Best Digital Marketing Campaign for Enterprise Growth FY25</span>
-              </div>
-              <div className="achieve-item">
-                <CheckCircle2 size={20} className="achieve-check" />
-                <span>Drivers of Digital Awards - Best Search & Performance Marketing Campaign FY25</span>
-              </div>
-            </div>
-
-            {/* INTRO NARRATIVE */}
-            <div className="sd-narrative-block">
-              <p>
-                Consistently ranked among the best digital performance agencies in India, <strong>Get Into Feed</strong> has helped hundreds of brands across sectors build campaigns that cut waste, increase visibility, and deliver predictable growth.
-              </p>
-              <p>
-                Our mission is simple: to help brands achieve maximum ROI through data-led search campaigns that connect the right audience with your brand at the right time.
-              </p>
-              <p>
-                With years of proven experience, we craft conversion-focused strategies that don't just drive traffic but turn clicks into qualified leads and measurable revenue growth.
-              </p>
-            </div>
-
-            {/* TRUSTED AGENCY SECTION */}
-            <div className="sd-trusted-agency-box">
-              <h2>Trusted Agency Delivering Consistent Growth Across Industries</h2>
-              <div className="sd-trusted-split">
-                <div className="sd-trusted-text">
-                  <p>
-                    Our team of experts has been managing search & performance campaigns across the Education, BFSI, eCommerce, and Healthcare industries for years. This experience helps us design custom strategies that deliver measurable results for every business.
-                  </p>
-                  <p>
-                    As a certified <strong>Google Premier Partner</strong>, we combine data-driven insights with industry-leading tools to lower CPA, maximize ROI, and drive consistent growth for our clients. In fact, we achieved a 58% average increase in leads in FY25. Discover more of our proven results in the latest Digital Report Card.
-                  </p>
-                </div>
-                <div className="sd-trusted-img-wrap">
-                  <img
-                    src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=600&q=80"
-                    alt="Get Into Feed Strategy Team"
-                  />
-                  <div className="img-partner-badge">
-                    <span>★ Google Premier Partner</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* GROW YOUR BUSINESS FASTER (6 SUB-SERVICES GRID) */}
-            <div className="sd-sub-services-block">
-              <h2>Grow Your Business Faster with Our Advertising Services</h2>
-              <p className="sub-svc-lead">
-                We offer a full suite of management services to improve your digital advertising potential:
-              </p>
-
-              <div className="sd-sub-services-grid">
-                {subServices.map((sub, i) => {
-                  const Icon = sub.icon;
-                  return (
-                    <div key={i} className="sd-sub-card">
-                      <div className="sd-sub-card-icon">
-                        <Icon size={24} />
-                      </div>
-                      <h3>{sub.title}</h3>
-                      <p>{sub.desc}</p>
-                      <button type="button" onClick={() => onNavigate("/contact")} className="sd-sub-arrow-link">
-                        Get Started →
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* INLINE DISCOVERY BANNER */}
-            <div className="sd-inline-discovery-banner">
-              <div className="sd-discovery-content">
-                <h3>Discover What Your Customers Search For</h3>
-                <p>Get insights on evolving customer behaviour, high volume keywords, search trends, and more.</p>
-              </div>
-              <button type="button" onClick={() => onNavigate("/blog")} className="sd-discovery-btn">
-                Explore More →
-              </button>
-            </div>
-
-            {/* INCREASING ROI: THE GET INTO FEED WAY (3 STEPS) */}
-            <div className="sd-process-way-block">
-              <h2>Increasing ROI: The Get Into Feed Way</h2>
-              <p className="process-lead">
-                We believe digital marketing is more than just buying ads, it's about buying results. Our services drive measurable ROI by combining data insights with advanced strategies to reach the right audience at the right time.
-              </p>
-
-              <div className="sd-process-three-grid">
-                <div className="sd-step-box">
-                  <span className="step-num">1</span>
-                  <h4>Strategic Planning and Campaign Execution</h4>
-                  <p>Our team first conducts an in-depth analysis of your industry, target audience, and objectives to attract prospects most likely to convert.</p>
-                </div>
-
-                <div className="sd-step-box">
-                  <span className="step-num">2</span>
-                  <h4>Paid Campaign Optimization for Better Results</h4>
-                  <p>Once launched, we optimize campaigns by refining ad copies, improving landing pages, and adjusting bidding strategies to maximize ROAS.</p>
-                </div>
-
-                <div className="sd-step-box">
-                  <span className="step-num">3</span>
-                  <h4>Performance Reporting and Continuous Improvement</h4>
-                  <p>With regular performance tracking, we provide actionable insights through dynamic dashboards that include metrics like CTR, ROAS, CPC, and CPA.</p>
-                </div>
-              </div>
-            </div>
+      {/* FOOTER */}
+      <footer className="site-footer">
+        <div className="footer-inner-flex">
+          <div>
+            <a href="/" onClick={(e) => { e.preventDefault(); onNavigate("/"); }} className="navbar-brand" style={{ marginBottom: "16px", fontSize: "32px" }}>
+              <img src="/logo-navbar.png" alt="Get Into Feed" className="navbar-logo-img" style={{ width: "32px", height: "32px" }} />
+              <span>getintofeed.</span>
+            </a>
+            <p style={{ fontSize: "13px", color: "#6b7280", fontWeight: "500", maxWidth: "320px" }}>
+              A vibrant growth studio that gets brands into the feed — and gets them results.
+            </p>
           </div>
 
-          {/* RIGHT 35% STICKY COLUMN */}
-          <div className="sd-right-sidebar-col">
-            {/* STICKY LIVE BACKEND LEAD CAPTURE FORM */}
-            <div className="sd-sticky-lead-card">
-              <div className="sd-form-header">
-                <h3>Request Growth Proposal</h3>
-                <p>Speak directly with our senior search & performance strategists.</p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "48px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              <a href="/services/content-marketing" onClick={(e) => { e.preventDefault(); onNavigate("/services/content-marketing"); }} className="nav-link">Content</a>
+              <a href="/services/ads-campaign" onClick={(e) => { e.preventDefault(); onNavigate("/services/ads-campaign"); }} className="nav-link">Paid Media</a>
+              <a href="/services/social-media" onClick={(e) => { e.preventDefault(); onNavigate("/services/social-media"); }} className="nav-link">Social</a>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              <a href="/services/graphics-design" onClick={(e) => { e.preventDefault(); onNavigate("/services/graphics-design"); }} className="nav-link">Creative</a>
+              <a href="/services/strategy" onClick={(e) => { e.preventDefault(); onNavigate("/services/strategy"); }} className="nav-link">Strategy</a>
+              <a href="/admin" onClick={(e) => { e.preventDefault(); onNavigate("/admin"); }} className="nav-link" style={{ color: "#D4FF00" }}>Admin Studio</a>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="nav-link" style={{ display: "flex", alignItems: "center", gap: "8px" }}><Instagram size={16} color="#D4FF00" /> Instagram</a>
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="nav-link" style={{ display: "flex", alignItems: "center", gap: "8px" }}><Linkedin size={16} color="#0033FF" /> LinkedIn</a>
+              <a href="https://wa.me/918810356950" target="_blank" rel="noreferrer" className="nav-link" style={{ display: "flex", alignItems: "center", gap: "8px" }}><MessageCircle size={16} color="#25D366" /> WhatsApp</a>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ maxWidth: "1600px", margin: "0 auto", borderTop: "1px solid rgba(255, 255, 255, 0.1)", paddingTop: "24px", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", fontSize: "12px", fontFamily: "var(--font-space)", fontWeight: "800", letterSpacing: "0.1em", textTransform: "uppercase", color: "#6b7280" }}>
+          <p>© 2026 GetIntoFeed Growth Studio.</p>
+          <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
+            <a
+              href="https://www.dmca.com/Protection/Status.aspx?ID=d7bfaa8b-113f-40c7-b0b8-9da53cf5cba7"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img src="/dmca-badge.svg" alt="DMCA Protected" style={{ height: "24px", width: "auto" }} />
+            </a>
+            <a href="/privacy" onClick={(e) => { e.preventDefault(); onNavigate("/privacy"); }} className="nav-link">Privacy Policy</a>
+            <a href="/terms" onClick={(e) => { e.preventDefault(); onNavigate("/terms"); }} className="nav-link">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
+
+      {/* LEAD INGESTION MODAL */}
+      {leadModalOpen && (
+        <div className="lead-modal-backdrop" onClick={() => setLeadModalOpen(false)}>
+          <div className="lead-modal-box" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setLeadModalOpen(false)}
+              style={{ position: "absolute", top: "16px", right: "16px", background: "transparent", border: "none", color: "#9ca3af", cursor: "pointer" }}
+              aria-label="Close"
+            >
+              <X size={20} />
+            </button>
+
+            <div style={{ marginBottom: "24px" }}>
+              <span style={{ fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", color: "var(--brand-lime)", letterSpacing: "0.1em", textTransform: "uppercase" }}>GET INTO THE FEED</span>
+              <h3 style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", textTransform: "uppercase", margin: "4px 0 8px 0" }}>Let's Scale Your Brand</h3>
+              <p style={{ fontSize: "14px", color: "#9ca3af" }}>Tell us what you're building. Our team will reach out in under 2 hours.</p>
+            </div>
+
+            {submitSuccess ? (
+              <div style={{ textAlign: "center", padding: "32px 16px" }}>
+                <Check size={36} color="var(--brand-lime)" style={{ margin: "0 auto 12px auto" }} />
+                <h4 style={{ fontFamily: "var(--font-space)", fontSize: "20px", fontWeight: "800", color: "var(--brand-lime)" }}>Inquiry Received!</h4>
+                <p style={{ color: "#d1d5db", fontSize: "14px", marginTop: "8px" }}>We'll reach out on WhatsApp/Phone (+91-8810356950) shortly.</p>
               </div>
-
-              {submitted ? (
-                <div className="sd-form-success">
-                  <CheckCircle2 size={40} color="#16a34a" />
-                  <h4>Inquiry Received!</h4>
-                  <p>
-                    Reference ID: <strong>#{leadResult?.leadId?.slice(0, 8).toUpperCase() || "GIF-2026"}</strong>
-                  </p>
-                  <p>Our team will prepare a custom growth audit and contact you within 2 hours.</p>
-                  <a
-                    href="https://wa.me/918810356950"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="whatsapp-instant-btn"
-                  >
-                    💬 WhatsApp Instant Chat
-                  </a>
+            ) : (
+              <form onSubmit={handleLeadSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                <div>
+                  <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Your Name *</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="e.g. Ashish Raghav"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    style={{ width: "100%", background: "#18181b", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none", fontSize: "14px" }}
+                  />
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="sd-form-body">
-                  {errorMsg && (
-                    <div className="form-error-banner">
-                      <AlertCircle size={16} />
-                      <span>{errorMsg}</span>
-                    </div>
-                  )}
 
-                  <div className="sd-input-field">
-                    <label>Your Name *</label>
-                    <input
-                      required
-                      placeholder="e.g. Vikram Sharma"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="sd-input-field">
-                    <label>Email Id *</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <div>
+                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Work Email *</label>
                     <input
                       required
                       type="email"
-                      placeholder="vikram@company.com"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      placeholder="e.g. ashish@brand.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      style={{ width: "100%", background: "#18181b", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none", fontSize: "14px" }}
                     />
                   </div>
-
-                  <div className="sd-input-field">
-                    <label>Mobile No *</label>
+                  <div>
+                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Phone / WhatsApp *</label>
                     <input
                       required
-                      placeholder="+91-8810356950"
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      type="tel"
+                      placeholder="e.g. 8810356950"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      style={{ width: "100%", background: "#18181b", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none", fontSize: "14px" }}
                     />
                   </div>
+                </div>
 
-                  <div className="sd-input-field">
-                    <label>Selected Service *</label>
-                    <input
-                      disabled
-                      value={currentService.title}
-                      className="sd-disabled-input"
-                    />
-                  </div>
+                <div>
+                  <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Website / Instagram Link</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. yourbrand.com or @yourbrand"
+                    value={formData.website}
+                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                    style={{ width: "100%", background: "#18181b", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none", fontSize: "14px" }}
+                  />
+                </div>
 
-                  <div className="sd-input-field">
-                    <label>Type Your Message</label>
-                    <textarea
-                      rows={2}
-                      placeholder="Describe your brand & goals..."
-                      value={form.message}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    />
-                  </div>
+                <div>
+                  <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>What are your growth goals?</label>
+                  <textarea
+                    rows={3}
+                    placeholder="Tell us about your brand, budget, and targets..."
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    style={{ width: "100%", background: "#18181b", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none", fontSize: "14px" }}
+                  />
+                </div>
 
-                  <div className="sd-checkbox-field">
-                    <input
-                      type="checkbox"
-                      id="sd-terms"
-                      checked={form.agreeTerms}
-                      onChange={(e) => setForm({ ...form, agreeTerms: e.target.checked })}
-                    />
-                    <label htmlFor="sd-terms">
-                      By registering here, I agree to Get Into Feed's Terms of Service and Privacy Policy.
-                    </label>
-                  </div>
-
-                  <div
-                    className={`recaptcha-interactive-box ${recaptchaVerified ? "verified" : ""}`}
-                    onClick={() => setRecaptchaVerified(!recaptchaVerified)}
-                  >
-                    <div className={`recaptcha-checkbox-square ${recaptchaVerified ? "checked" : ""}`}>
-                      {recaptchaVerified && <Check size={14} color="#ffffff" />}
-                    </div>
-                    <span className="recaptcha-label-text">I'm not a robot</span>
-                    <div className="recaptcha-badge-meta">
-                      <img
-                        src="https://www.gstatic.com/recaptcha/api2/logo_48.png"
-                        alt="Google reCAPTCHA"
-                        style={{ width: "24px", height: "24px" }}
-                      />
-                      <span>reCAPTCHA</span>
-                    </div>
-                  </div>
-
-                  <button type="submit" disabled={submitting} className="sd-form-submit-btn">
-                    {submitting ? "Submitting..." : "Submit Now →"}
-                  </button>
-                </form>
-              )}
-            </div>
-
-            {/* GREEN CASE STUDIES SIDEBAR CARD */}
-            <div className="sd-green-cta-card">
-              <h3>Experience Results That Matter!</h3>
-              <p>Discover how we boosted our clients' search visibility and business growth.</p>
-              <button type="button" onClick={() => onNavigate("/work")} className="sd-green-btn">
-                View Case Studies →
-              </button>
-            </div>
-
-            {/* KEY CLIENTS LOGOS */}
-            <div className="sd-clients-sidebar-card">
-              <h4>Our Key Clients</h4>
-              <div className="sd-clients-logo-grid">
-                <span className="client-name-chip">Apollo 24|7</span>
-                <span className="client-name-chip">DCB Bank</span>
-                <span className="client-name-chip">Bajaj Finserv</span>
-                <span className="client-name-chip">Airtel Payments</span>
-                <span className="client-name-chip">Tata 1mg</span>
-                <span className="client-name-chip">Max Life</span>
-              </div>
-            </div>
-
-            {/* SEARCH TRENDS SIDEBAR BADGE */}
-            <div className="sd-report-sidebar-card">
-              <h4>Get Into Feed's Search Trends Reports</h4>
-              <p>Get the most valuable search-related insights about leading brands, trending keywords, and city-level metrics.</p>
-              <button type="button" onClick={() => onNavigate("/blog")} className="sd-report-link">
-                Explore Now →
-              </button>
-            </div>
-
-            {/* NEWS & EVENTS SIDEBAR BADGE */}
-            <div className="sd-news-sidebar-card">
-              <h4>Stay Up to Date with Our News & Events!</h4>
-              <p>Get updates on industry insights, upcoming events, and key company announcements, all in one place.</p>
-              <button type="button" onClick={() => onNavigate("/about")} className="sd-news-orange-btn">
-                Explore Now →
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. INDUSTRIES WE SERVE */}
-      <section className="sd-industries-section">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <h2>Industries We Serve</h2>
-            <p>Founded in 2026 as India's premier AI-first digital growth studio, we deliver transformational search and revenue outcomes across key growth verticals, frequently delivering transformational growth to clients in these sectors.</p>
-          </div>
-
-          <div className="sd-industries-grid">
-            {industries.map((ind, i) => (
-              <div key={i} className="sd-industry-card">
-                <div className="ind-icon-box">{ind.icon}</div>
-                <h3>{ind.name}</h3>
-                <p>{ind.desc}</p>
-                <button type="button" onClick={() => onNavigate("/work")} className="ind-arrow-link">
-                  Explore {ind.name} Strategy →
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5. COMMON CHALLENGES & SOLUTIONS */}
-      <section className="sd-challenges-section">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <h2>Our Solutions for Common Challenges That Yield Results</h2>
-            <p>Digital marketing has its own challenges as it demands precise execution to balance budgets and deliver results. At Get Into Feed, we address these challenges with tailored, data-driven solutions:</p>
-          </div>
-
-          <div className="sd-challenges-grid">
-            {challenges.map((c, i) => (
-              <div key={i} className="sd-challenge-card">
-                <div className="challenge-icon-circle">✓</div>
-                <h4>{c.title}</h4>
-                <p>{c.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. CLIENT TESTIMONIALS */}
-      <section className="sd-testimonials-section">
-        <div className="sd-container">
-          <div className="sd-testimonial-blue-box">
-            <div className="test-header">
-              <span>CLIENT TESTIMONIALS</span>
-            </div>
-            <div className="test-quote-body">
-              <div className="test-brand-badge">Bajaj Health</div>
-              <p>"I wanted to thank Get Into Feed for their exceptional support and quality strategies for our healthcare acquisition campaigns. Their technical search depth and proactive optimization delivered +279% growth in qualified consultations."</p>
-              <div className="test-author-info">
-                <strong>Sahana K</strong>
-                <span>Manager (Marketing), Bajaj Health</span>
-              </div>
-            </div>
-            <div className="test-footer-action">
-              <button type="button" onClick={() => onNavigate("/about")} className="sd-view-all-orange-btn">
-                View All Testimonials →
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. WORLD CLASS SERVICES & BIG STATS */}
-      <section className="sd-world-class-section">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <h2>World Class Services from Get Into Feed: Gain a Competitive Edge</h2>
-            <p>Get Into Feed is a natural choice for enterprise brands looking for a top agentic AI marketing company, one that can manage the complexity of large-scale campaigns without compromising on performance or precision.</p>
-          </div>
-
-          <div className="sd-features-six-grid">
-            {competitiveFeatures.map((f, i) => (
-              <div key={i} className="sd-feature-item-card">
-                <h4>{f.title}</h4>
-                <p>{f.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* 3 STAT BADGES */}
-          <div className="sd-three-stat-badges-row">
-            <div className="sd-stat-badge">
-              <strong>300+</strong>
-              <span>Digital Marketing Experts</span>
-            </div>
-            <div className="sd-stat-badge">
-              <strong>~20</strong>
-              <span>Years of Combined Experience</span>
-            </div>
-            <div className="sd-stat-badge">
-              <strong>Certified</strong>
-              <span>Google Premier Partner</span>
-            </div>
-          </div>
-
-          <div className="text-center" style={{ marginTop: "28px" }}>
-            <button type="button" onClick={() => onNavigate("/about")} className="sd-view-more-orange-btn">
-              View More Capabilities →
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* 8. CASE STUDIES */}
-      <section className="sd-case-studies-section">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <h2>Case Studies</h2>
-            <p>For businesses evaluating performance agencies in India, proven ROAS figures and real client outcomes matter more than claims—which is why we let our case studies do the talking.</p>
-          </div>
-
-          <div className="sd-case-cards-three-grid">
-            <div className="sd-case-study-card">
-              <div className="case-stat-overlay-badge">+34% Leads</div>
-              <span className="case-cat-tag">BFSI & Lending</span>
-              <h4>34% Increase in Qualified Leads for DCB Bank, 15.88 ROAS</h4>
-              <p style={{ fontSize: "0.84rem", color: "#64748b", margin: "0 0 16px 0", lineHeight: 1.5 }}>
-                Restructured Google Search campaigns with high-intent negative keyword filtering and custom lead scoring.
-              </p>
-              <button type="button" onClick={() => onNavigate("/work")} className="case-outline-link">
-                View Case Study →
-              </button>
-            </div>
-
-            <div className="sd-case-study-card">
-              <div className="case-stat-overlay-badge">-26% CPA</div>
-              <span className="case-cat-tag">Home Improvement</span>
-              <h4>PPC Case Study – Reduced Cost Per Acquisition by 26% for UK Countertops</h4>
-              <p style={{ fontSize: "0.84rem", color: "#64748b", margin: "0 0 16px 0", lineHeight: 1.5 }}>
-                Deployed automated value-based smart bidding and sub-second React landing page funnels.
-              </p>
-              <button type="button" onClick={() => onNavigate("/work")} className="case-outline-link">
-                View Case Study →
-              </button>
-            </div>
-
-            <div className="sd-case-study-card">
-              <div className="case-stat-overlay-badge">+180% Bookings</div>
-              <span className="case-cat-tag">Hospitality & Travel</span>
-              <h4>Performance Search Case Study – Leading Luxury Hotel Chain in India</h4>
-              <p style={{ fontSize: "0.84rem", color: "#64748b", margin: "0 0 16px 0", lineHeight: 1.5 }}>
-                Captured seasonal booking surges with geo-targeted search ads and dynamic room rate extensions.
-              </p>
-              <button type="button" onClick={() => onNavigate("/work")} className="case-outline-link">
-                View Case Study →
-              </button>
-            </div>
-          </div>
-
-          <div className="text-center" style={{ marginTop: "28px" }}>
-            <button type="button" onClick={() => onNavigate("/work")} className="sd-view-all-orange-btn">
-              View All Case Studies →
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* 9. HOW IT WORKS */}
-      <section className="sd-how-it-works-section">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <h2>How Search & Performance Marketing Works for Your Business</h2>
-            <p>SEO is the gold standard for establishing long-term trust and organic growth, but it's a marathon, not a sprint. Performance marketing services step in to deliver immediate impact sooner by giving you traffic and leads while your organic search strategy takes shape and takes hold.</p>
-          </div>
-
-          <div className="sd-how-works-checklist">
-            <div className="how-check-item">
-              <CheckCircle2 size={20} className="achieve-check" />
-              <span>Reach users actively searching for your high-intent products or services</span>
-            </div>
-            <div className="how-check-item">
-              <CheckCircle2 size={20} className="achieve-check" />
-              <span>Utilize precision demographic, geographic, behavioral, and intent-based targeting</span>
-            </div>
-            <div className="how-check-item">
-              <CheckCircle2 size={20} className="achieve-check" />
-              <span>Continuously A/B test ad copies, visual creatives, and checkout funnels</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 10. FAQS */}
-      <section className="sd-faqs-section">
-        <div className="sd-container">
-          <div className="sd-section-header">
-            <h2>Frequently Asked Questions</h2>
-            <p>Common questions regarding our strategy, deliverables, and onboarding process.</p>
-          </div>
-
-          <div className="sd-faqs-accordion">
-            {serviceFaqs.map((faq, i) => (
-              <div key={i} className={`sd-faq-row ${activeFaq === i ? "open" : ""}`}>
                 <button
-                  type="button"
-                  className="sd-faq-q-btn"
-                  onClick={() => setActiveFaq(activeFaq === i ? -1 : i)}
+                  type="submit"
+                  disabled={submitting}
+                  style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "14px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "14px", letterSpacing: "0.05em", border: "none", cursor: "pointer", marginTop: "8px" }}
                 >
-                  <span>{faq.q}</span>
-                  <span className="sd-faq-toggle-sign">{activeFaq === i ? "✕" : "+"}</span>
+                  {submitting ? "Sending..." : "Submit Growth Inquiry →"}
                 </button>
-                {activeFaq === i && (
-                  <div className="sd-faq-ans">
-                    <p>{faq.a}</p>
-                  </div>
-                )}
-              </div>
-            ))}
+              </form>
+            )}
           </div>
         </div>
-      </section>
-
-      {/* 11. NATIONWIDE PRESENCE */}
-      <section className="sd-presence-links-section">
-        <div className="sd-container">
-          <h3>Our Nationwide Agency Hubs</h3>
-          <p style={{ color: "#64748b", fontSize: "0.88rem", margin: "0 0 16px 0" }}>Connect with our senior growth architects at our regional offices:</p>
-          <div className="presence-pills-row">
-            <button type="button" onClick={() => onNavigate("/locations/delhi-ncr")}>📍 New Delhi HQ (Pitampura & Noida)</button>
-            <button type="button" onClick={() => onNavigate("/locations/bengaluru")}>📍 Bengaluru Hub (Koramangala)</button>
-            <button type="button" onClick={() => onNavigate("/locations/mumbai")}>📍 Mumbai Hub (BKC)</button>
-            <button type="button" onClick={() => onNavigate("/locations/pune")}>📍 Pune Hub (Kalyani Nagar)</button>
-          </div>
-        </div>
-      </section>
+      )}
     </div>
   );
 }
 
 // -----------------------------------------------------------------------------
-// COMPREHENSIVE ENTERPRISE CASE STUDY DETAIL PAGE (/work/:id)
+// 1. SERVICE DETAIL PAGE (EXACT SAME THEME)
 // -----------------------------------------------------------------------------
-export function WorkDetail({ study, onNavigate }) {
-  const currentStudy = study || caseStudyCatalog["veloura-organics-d2c-skincare"];
-
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    company: "",
-    message: ""
-  });
-  const [recaptchaVerified, setRecaptchaVerified] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [leadId, setLeadId] = useState("");
-
-  const handleLeadSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMsg("");
-
-    if (!recaptchaVerified) {
-      setErrorMsg("Please verify that you are not a robot (Google reCAPTCHA).");
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const res = await fetch(`${API_URL}/api/leads`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name.trim(),
-          email: form.email.trim(),
-          phone: form.phone.trim(),
-          service: `Case Study Strategy Inquiry (${currentStudy.brand})`,
-          message: `Company: ${form.company} | Note: ${form.message}`,
-          source: "case_study_detail_sidebar"
-        })
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success) {
-        setLeadId(data.leadId || "GIF-CS-2026");
-        setSubmitted(true);
-      } else {
-        setErrorMsg(data.message || "Failed to submit inquiry. Please try again.");
-      }
-    } catch {
-      setErrorMsg("Unable to connect to backend server. Please try again.");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const otherStudies = Object.entries(caseStudyCatalog)
-    .filter(([key, s]) => s.brand !== currentStudy.brand)
-    .slice(0, 3);
+export function ServiceDetailPage({ slug, onNavigate }) {
+  const service = serviceCatalog[slug] || serviceCatalog["content-marketing"];
+  const Icon = service.icon || Sparkles;
 
   return (
-    <div className="work-detail-full-page-view">
-      {/* 1. HERO BANNER */}
-      <section className="work-detail-hero-section">
-        <div className="work-detail-container">
-          <button
-            type="button"
-            onClick={() => onNavigate("/work")}
-            className="work-detail-back-btn"
-          >
-            <ArrowLeft size={16} /> Back to All Case Studies
-          </button>
+    <PageLayout onNavigate={onNavigate} activeNav="services">
+      {/* Hero Header Banner */}
+      <div style={{ padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+        <button
+          type="button"
+          onClick={() => onNavigate("/")}
+          style={{ background: "transparent", border: "none", color: "#9ca3af", display: "inline-flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase", cursor: "pointer", marginBottom: "24px" }}
+        >
+          <ArrowLeft size={16} /> Back to Overview
+        </button>
 
-          <div className="work-detail-channel-badge">
-            <Sparkles size={14} color="#38bdf8" />
-            <span>{currentStudy.channel || "Full-Funnel Growth Engineering"}</span>
+        <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "rgba(212, 255, 0, 0.1)", border: "1px solid var(--brand-lime)", padding: "6px 14px", borderRadius: "9999px", color: "var(--brand-lime)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "20px" }}>
+          <Icon size={14} /> {service.label}
+        </div>
+
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 5.5vw, 84px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "24px" }}>
+          {service.title}
+        </h1>
+
+        <p style={{ fontSize: "clamp(16px, 1.8vw, 22px)", color: "#d1d5db", maxWidth: "800px", lineHeight: 1.6, fontWeight: "500", marginBottom: "32px" }}>
+          {service.outcome}
+        </p>
+
+        <div style={{ display: "flex", gap: "24px", flexWrap: "wrap", alignItems: "center" }}>
+          <div style={{ background: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "8px", padding: "12px 20px" }}>
+            <span style={{ display: "block", fontSize: "11px", color: "#9ca3af", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em" }}>PROVEN IMPACT</span>
+            <strong style={{ fontFamily: "var(--font-space)", fontSize: "20px", color: "var(--brand-lime)", fontWeight: "800" }}>{service.caseMetric}</strong>
           </div>
+          <div style={{ background: "#18181b", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "8px", padding: "12px 20px" }}>
+            <span style={{ display: "block", fontSize: "11px", color: "#9ca3af", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em" }}>CLIENT PORTFOLIO</span>
+            <strong style={{ fontFamily: "var(--font-space)", fontSize: "20px", color: "#ffffff", fontWeight: "800" }}>{service.caseBrand}</strong>
+          </div>
+        </div>
+      </div>
 
-          <h1>{currentStudy.brand}</h1>
-          <p className="work-detail-result-title">{currentStudy.result}</p>
+      {/* Problem & Solution Grid */}
+      <div style={{ maxWidth: "1600px", margin: "0 auto", padding: "80px 24px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "48px", marginBottom: "80px" }}>
+          <div style={{ background: "#18181b", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "32px" }}>
+            <span style={{ color: "var(--brand-coral)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "8px" }}>THE INDUSTRY BOTTLENECK</span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "24px", textTransform: "uppercase", marginBottom: "16px" }}>Why Most Agencies Fail At This</h3>
+            <p style={{ color: "#9ca3af", fontSize: "16px", lineHeight: 1.6 }}>{service.bottleneck}</p>
+          </div>
+        </div>
 
-          {/* 4-STAT HIGHLIGHT RIBBON */}
-          <div className="work-detail-kpis-ribbon">
-            {(currentStudy.results || []).map((r, i) => (
-              <div key={i} className="work-kpi-ribbon-item">
-                <strong>{r.metric}</strong>
-                <span>{r.label}</span>
+        {/* 4-Step Execution Framework */}
+        <div style={{ marginBottom: "80px" }}>
+          <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "12px" }}>EXECUTION METHODOLOGY</span>
+          <h2 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(32px, 4vw, 54px)", textTransform: "uppercase", letterSpacing: "-0.04em", marginBottom: "36px" }}>Our 4-Stage Sprint Framework</h2>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
+            {service.framework.map((step, idx) => (
+              <div key={idx} style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "12px", padding: "24px" }}>
+                <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "var(--brand-lime)", display: "block", marginBottom: "12px" }}>0{idx + 1}</span>
+                <h4 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "18px", textTransform: "uppercase", marginBottom: "8px" }}>{step.step}</h4>
+                <p style={{ color: "#9ca3af", fontSize: "14px", lineHeight: 1.6 }}>{step.detail}</p>
               </div>
             ))}
           </div>
         </div>
-      </section>
 
-      {/* 2. SNAPSHOT STRIP */}
-      <section className="work-snapshot-strip-section">
-        <div className="work-detail-container">
-          <div className="work-snapshot-grid">
-            <div className="snapshot-cell">
-              <span className="snapshot-label">Client Partner</span>
-              <strong>{currentStudy.brand}</strong>
-            </div>
-            <div className="snapshot-cell">
-              <span className="snapshot-label">Growth Objective</span>
-              <strong>Scale ROAS & Lower CAC</strong>
-            </div>
-            <div className="snapshot-cell">
-              <span className="snapshot-label">Execution Model</span>
-              <strong>120-Day Growth Sprint</strong>
-            </div>
-            <div className="snapshot-cell">
-              <span className="snapshot-label">Core Strategy</span>
-              <strong>{currentStudy.channel?.split("+")[0] || "Omnichannel Performance"}</strong>
-            </div>
+        {/* Deliverables Checklist */}
+        <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "40px 32px", marginBottom: "80px" }}>
+          <span style={{ color: "var(--brand-lime)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "12px" }}>WHAT YOU GET</span>
+          <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(24px, 3vw, 36px)", textTransform: "uppercase", marginBottom: "28px" }}>Core Deliverables & Outputs</h3>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px" }}>
+            {service.points.map((pt, idx) => (
+              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "12px", background: "#18181b", padding: "14px 18px", borderRadius: "8px", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <Check size={18} color="var(--brand-lime)" style={{ flexShrink: 0 }} />
+                <span style={{ fontFamily: "var(--font-space)", fontSize: "14px", fontWeight: "700" }}>{pt}</span>
+              </div>
+            ))}
           </div>
         </div>
-      </section>
 
-      {/* 3. MAIN BODY & TWO-COLUMN BREAKDOWN */}
-      <section className="work-detail-body-section">
-        <div className="work-detail-container">
-          <div className="work-detail-split-grid">
-            {/* LEFT CONTENT COLUMN */}
-            <div className="work-detail-left-col">
-              {/* THE CHALLENGE / BOTTLENECK */}
-              <div className="case-content-block">
-                <span className="case-block-kicker">01. THE INITIAL BOTTLENECK</span>
-                <h2>The Challenge & Growth Barrier</h2>
-                <div className="case-challenge-alert-box">
-                  <div className="alert-red-line" />
-                  <p>{currentStudy.challenge || currentStudy.detail}</p>
-                </div>
-                <p className="case-narrative-para">
-                  Prior to partnering with Get Into Feed, the brand was constrained by rising Customer Acquisition Costs (CAC), ad fatigue on static creatives, and high drop-off rates on slow mobile checkout landing pages. Tracking signal loss from browser privacy updates further distorted return on ad spend metrics.
-                </p>
-              </div>
-
-              {/* THE STRATEGY & SPRINT FRAMEWORK */}
-              <div className="case-content-block">
-                <span className="case-block-kicker">02. STRATEGY & ARCHITECTURE</span>
-                <h2>The Get Into Feed Sprint Framework</h2>
-                <p className="case-narrative-para">
-                  {currentStudy.execution || currentStudy.detail}
-                </p>
-
-                <div className="case-strategy-three-phases">
-                  <div className="phase-card">
-                    <div className="phase-badge">Phase 1</div>
-                    <h4>Telemetry & Infrastructure</h4>
-                    <p>Deploying Server-Side Google Tag Manager (sGTM) and Meta Conversions API (CAPI) to achieve 100% conversion signal fidelity.</p>
-                  </div>
-
-                  <div className="phase-card">
-                    <div className="phase-badge">Phase 2</div>
-                    <h4>High-Velocity Creative Sprints</h4>
-                    <p>Directing and testing 8+ weekly creator-led UGC video hooks, dynamic creative testing (DCT), and Advantage+ shopping scaling.</p>
-                  </div>
-
-                  <div className="phase-card">
-                    <div className="phase-badge">Phase 3</div>
-                    <h4>Sub-Second React & WhatsApp CRO</h4>
-                    <p>Engineering sub-800ms headless React landing pages paired with automated 1-click WhatsApp checkout and cart recovery funnels.</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* TANGIBLE DELIVERABLES CHECKLIST */}
-              <div className="case-content-block">
-                <span className="case-block-kicker">03. KEY DELIVERABLES</span>
-                <h2>Key Deliverables Executed</h2>
-                <div className="case-deliverables-checklist">
-                  <div className="deliv-item">
-                    <CheckCircle2 size={18} color="#0284c7" />
-                    <span>Server-Side Conversions API (CAPI) & GA4 BigQuery Telemetry</span>
-                  </div>
-                  <div className="deliv-item">
-                    <CheckCircle2 size={18} color="#0284c7" />
-                    <span>32+ Creator UGC Video Ad Hooks & Dynamic Creative Testing Sprints</span>
-                  </div>
-                  <div className="deliv-item">
-                    <CheckCircle2 size={18} color="#0284c7" />
-                    <span>Sub-Second React Landing Page Architectures (LCP &lt; 800ms)</span>
-                  </div>
-                  <div className="deliv-item">
-                    <CheckCircle2 size={18} color="#0284c7" />
-                    <span>Automated WhatsApp Business API Lead Scoring & Cart Recovery</span>
-                  </div>
-                  <div className="deliv-item">
-                    <CheckCircle2 size={18} color="#0284c7" />
-                    <span>Weekly Algorithmic Bid Tuning & Real-Time Looker Studio Dashboards</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* CLIENT TESTIMONIAL QUOTE BOX */}
-              {currentStudy.quote && (
-                <div className="case-executive-quote-card">
-                  <Quote size={36} className="quote-accent-icon" />
-                  <p className="quote-body-text">"{currentStudy.quote}"</p>
-                  <div className="quote-author-meta">
-                    <strong>{currentStudy.quoteAuthor || "Executive Leadership Team"}</strong>
-                    <small>{currentStudy.brand}</small>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* RIGHT STICKY SIDEBAR: LEAD CAPTURE FORM */}
-            <aside className="work-detail-right-sidebar">
-              <div className="work-sticky-lead-card">
-                <div className="sidebar-form-header">
-                  <span className="sidebar-tag-pill">GROWTH CONSULTATION</span>
-                  <h3>Achieve Similar Growth for Your Brand</h3>
-                  <p>Speak with our senior growth architects to formulate a custom strategy roadmap.</p>
-                </div>
-
-                {submitted ? (
-                  <div className="sidebar-success-state">
-                    <CheckCircle2 size={42} color="#16a34a" />
-                    <h4>Strategy Session Requested!</h4>
-                    <p>Reference: <strong>#{leadId.slice(0, 8).toUpperCase()}</strong></p>
-                    <p className="success-desc">A senior growth strategist will contact you within 24 hours with custom unit economics benchmarks.</p>
-                    <a
-                      href={`https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20reviewed%20the%20${encodeURIComponent(currentStudy.brand)}%20case%20study`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="sidebar-whatsapp-btn"
-                    >
-                      💬 WhatsApp Us Now
-                    </a>
-                  </div>
-                ) : (
-                  <form onSubmit={handleLeadSubmit} className="sidebar-form-body">
-                    {errorMsg && (
-                      <div className="sidebar-error-box">
-                        <AlertCircle size={14} />
-                        <span>{errorMsg}</span>
-                      </div>
-                    )}
-
-                    <div className="sidebar-field">
-                      <label>Full Name *</label>
-                      <input
-                        required
-                        placeholder="e.g. Ananya Sharma"
-                        value={form.name}
-                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="sidebar-field">
-                      <label>Work Email *</label>
-                      <input
-                        required
-                        type="email"
-                        placeholder="ananya@company.com"
-                        value={form.email}
-                        onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="sidebar-field">
-                      <label>Phone / WhatsApp *</label>
-                      <input
-                        required
-                        placeholder="+91-8810356950"
-                        value={form.phone}
-                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      />
-                    </div>
-
-                    <div className="sidebar-field">
-                      <label>Company Website / Brand Name</label>
-                      <input
-                        placeholder="https://yourbrand.com"
-                        value={form.company}
-                        onChange={(e) => setForm({ ...form, company: e.target.value })}
-                      />
-                    </div>
-
-                    {/* GOOGLE RECAPTCHA WIDGET */}
-                    <div
-                      className={`sidebar-recaptcha-box ${recaptchaVerified ? "verified" : ""}`}
-                      onClick={() => setRecaptchaVerified(!recaptchaVerified)}
-                    >
-                      <div className="recaptcha-left-col">
-                        <div className={`recaptcha-checkbox-square ${recaptchaVerified ? "checked" : ""}`}>
-                          {recaptchaVerified && <Check size={14} color="#ffffff" />}
-                        </div>
-                        <span className="recaptcha-prompt-text">I'm not a robot</span>
-                      </div>
-                      <div className="recaptcha-right-brand">
-                        <img
-                          src="https://www.gstatic.com/recaptcha/api2/logo_48.png"
-                          alt="reCAPTCHA"
-                          className="recaptcha-g-logo"
-                        />
-                        <span className="recaptcha-title">reCAPTCHA</span>
-                        <small className="recaptcha-privacy-terms">Privacy - Terms</small>
-                      </div>
-                    </div>
-
-                    <button type="submit" disabled={submitting} className="sidebar-submit-orange-btn">
-                      {submitting ? "Submitting Inquiry..." : "Claim Free Growth Audit →"}
-                    </button>
-                  </form>
-                )}
-              </div>
-
-              {/* AGENCY PARTNER CREDENTIALS */}
-              <div className="sidebar-credentials-card">
-                <h4>Verified Agency Credentials</h4>
-                <div className="credentials-list">
-                  <div className="cred-item">
-                    <span>🏆</span>
-                    <div>
-                      <strong>Google Premier Partner</strong>
-                      <small>Top 3% Performance Agencies in India</small>
-                    </div>
-                  </div>
-                  <div className="cred-item">
-                    <span>⚡</span>
-                    <div>
-                      <strong>Meta Certified Agency Partner</strong>
-                      <small>Advanced Advantage+ & Server CAPI</small>
-                    </div>
-                  </div>
-                  <div className="cred-item">
-                    <span>🛡️</span>
-                    <div>
-                      <strong>DPDP Act 2023 & GDPR Compliant</strong>
-                      <small>100% Enterprise Security & Confidentiality</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </aside>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. MORE PROVEN CASE STUDIES (3 CARDS) */}
-      {otherStudies.length > 0 && (
-        <section className="work-more-studies-section">
-          <div className="work-detail-container">
-            <div className="more-studies-header">
-              <h2>More Proven Growth Case Studies</h2>
-              <button type="button" onClick={() => onNavigate("/work")} className="view-all-work-btn">
-                All Case Studies <ArrowRight size={15} />
-              </button>
-            </div>
-
-            <div className="more-studies-three-grid">
-              {otherStudies.map(([slugKey, other]) => (
-                <div
-                  key={slugKey}
-                  className="more-study-card"
-                  onClick={() => onNavigate(`/work/${slugKey}`)}
-                >
-                  <div className="more-study-badge">{other.metric}</div>
-                  <span className="more-study-cat">{other.channel?.split("+")[0] || "Growth Sprint"}</span>
-                  <h4>{other.brand}</h4>
-                  <p>{other.result}</p>
-                  <span className="more-study-read-link">
-                    View Breakdown <ArrowRight size={14} />
-                  </span>
+        {/* FAQs */}
+        {service.faqs && service.faqs.length > 0 && (
+          <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "32px", textTransform: "uppercase", textAlign: "center", marginBottom: "32px" }}>Frequently Asked Questions</h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {service.faqs.map((faq, i) => (
+                <div key={i} style={{ background: "#18181b", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", padding: "20px" }}>
+                  <h4 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "16px", color: "var(--brand-lime)", marginBottom: "8px" }}>{faq.q}</h4>
+                  <p style={{ color: "#d1d5db", fontSize: "14px", lineHeight: 1.6 }}>{faq.a}</p>
                 </div>
               ))}
             </div>
           </div>
-        </section>
-      )}
-
-    </div>
+        )}
+      </div>
+    </PageLayout>
   );
 }
 
 // -----------------------------------------------------------------------------
-// LOCATION DETAIL TEMPLATE (GET INTO FEED REGIONAL HUBS)
+// 2. ABOUT US PAGE
 // -----------------------------------------------------------------------------
-export function LocationDetail({ loc, onNavigate }) {
+export function AboutUsPage({ onNavigate }) {
   return (
-    <article className="service-detail-view">
-      <section className="service-detail-hero">
-        <div className="detail-hero-shell">
-          <button type="button" onClick={() => onNavigate("/contact")} className="back-link-btn">
-            <ArrowLeft size={16} /> Back to Contact Hubs
-          </button>
-          <div className="service-hero-pill">
-            <MapPin size={16} color="#f59e0b" />
-            <span>{loc.city}</span>
-          </div>
-          <h1>{loc.title}</h1>
-          <p className="service-hero-lead">{loc.overview}</p>
-          <div className="service-hero-actions">
-            <button type="button" onClick={() => onNavigate("/contact")} className="button button-coral">
-              Schedule In-Person Strategy Meeting <ArrowRight size={16} />
-            </button>
-            <a href={`tel:${loc.phone}`} className="button button-outline">
-              <Phone size={15} /> Call {loc.city} Office
-            </a>
-          </div>
+    <PageLayout onNavigate={onNavigate} activeNav="about">
+      <div style={{ padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
+        <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>WHO'S BEHIND THE FEED</span>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(40px, 6vw, 90px)", lineHeight: 0.85, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "32px" }}>
+          WE'RE GETINTOFEED<span style={{ color: "var(--brand-lime)" }}>.</span>
+        </h1>
+        <p style={{ fontSize: "clamp(20px, 2.8vw, 32px)", fontWeight: "600", color: "#ffffff", maxWidth: "900px", margin: "0 auto 32px auto", lineHeight: 1.4 }}>
+          A creative growth studio built around one simple idea: <br />
+          <span style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "2px 10px", display: "inline-block", marginTop: "8px" }}>good marketing shouldn't feel like marketing.</span>
+        </p>
+        <p style={{ fontSize: "18px", color: "#9ca3af", maxWidth: "760px", margin: "0 auto 48px auto", lineHeight: 1.6 }}>
+          We bring together content, creative, social and performance marketing under one roof — helping brands go from "we need marketing" to "people are actually talking about us."
+        </p>
+        <div style={{ display: "inline-flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: "12px", background: "#18181b", border: "1.5px solid var(--brand-lime)", color: "#ffffff", padding: "18px 36px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "18px", textTransform: "uppercase" }}>
+          Strategy <span style={{ color: "var(--brand-lime)", margin: "0 8px" }}>×</span> Creativity <span style={{ color: "var(--brand-blue)", margin: "0 8px" }}>×</span> Performance
         </div>
-      </section>
+      </div>
 
-      <section className="service-bottleneck-section">
-        <div className="bottleneck-card">
-          <div className="bottleneck-icon-badge">
-            <Building2 size={26} color="#f15b29" />
+      {/* Key Numbers */}
+      <div style={{ background: "#121216", borderTop: "1px solid rgba(255,255,255,0.1)", borderBottom: "1px solid rgba(255,255,255,0.1)", padding: "64px 24px" }}>
+        <div style={{ maxWidth: "1600px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "32px", textAlign: "center" }}>
+          <div>
+            <strong style={{ fontFamily: "var(--font-space)", fontSize: "48px", fontWeight: "900", color: "var(--brand-lime)", display: "block" }}>103+</strong>
+            <span style={{ color: "#9ca3af", fontSize: "13px", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Brands Scaled Across India</span>
           </div>
           <div>
-            <span className="kicker-tag">OFFICE ADDRESS & LOCATION</span>
-            <h3>{loc.city} Agency Hub</h3>
-            <p>{loc.address}</p>
-            <p style={{ marginTop: "8px", fontWeight: 700, color: "var(--brand-orange)" }}>
-              Hotline: {loc.phone} • Email: {loc.email}
-            </p>
+            <strong style={{ fontFamily: "var(--font-space)", fontSize: "48px", fontWeight: "900", color: "#ffffff", display: "block" }}>4.8x</strong>
+            <span style={{ color: "#9ca3af", fontSize: "13px", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Average Client ROAS</span>
+          </div>
+          <div>
+            <strong style={{ fontFamily: "var(--font-space)", fontSize: "48px", fontWeight: "900", color: "var(--brand-blue)", display: "block" }}>3.2M+</strong>
+            <span style={{ color: "#9ca3af", fontSize: "13px", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Monthly Viral Impressions</span>
+          </div>
+          <div>
+            <strong style={{ fontFamily: "var(--font-space)", fontSize: "48px", fontWeight: "900", color: "var(--brand-lime)", display: "block" }}>&lt; 2hr</strong>
+            <span style={{ color: "#9ca3af", fontSize: "13px", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em" }}>Fast Strategy Response Time</span>
           </div>
         </div>
-      </section>
-    </article>
+      </div>
+    </PageLayout>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// 3. WORK / CASE STUDIES PAGE
+// -----------------------------------------------------------------------------
+export function WorkPage({ onNavigate }) {
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="work">
+      <div style={{ padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
+        <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>PROOF & CASE STUDIES</span>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "24px" }}>
+          TURNING SCROLLS <br /> INTO <span style={{ color: "var(--brand-lime)" }}>REVENUE.</span>
+        </h1>
+        <p style={{ fontSize: "18px", color: "#9ca3af", maxWidth: "600px", margin: "0 auto" }}>
+          Explore real case studies from high-growth D2C, real estate, B2B SaaS, and healthcare brands scaled by Get Into Feed.
+        </p>
+      </div>
+
+      <div style={{ maxWidth: "1600px", margin: "0 auto", padding: "0 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
+        {/* Case 1 */}
+        <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <span style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "4px 10px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>D2C & E-COMMERCE</span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "24px", textTransform: "uppercase", marginBottom: "8px" }}>Veloura Organics</h3>
+            <p style={{ color: "#9ca3af", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>Scaled Meta Ad creative testing from ₹5L to ₹45L monthly revenue with 4.8x verified ROAS.</p>
+          </div>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "var(--brand-lime)" }}>4.8x ROAS</span>
+            <span style={{ fontSize: "12px", color: "#9ca3af" }}>3-Tier UGC Framework</span>
+          </div>
+        </div>
+
+        {/* Case 2 */}
+        <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <span style={{ background: "var(--brand-blue)", color: "#ffffff", padding: "4px 10px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>REAL ESTATE</span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "24px", textTransform: "uppercase", marginBottom: "8px" }}>UrbanEdge Luxury Realty</h3>
+            <p style={{ color: "#9ca3af", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>Captured 1,420+ high-ticket buyer inquiries for ₹2Cr+ villas using cinematic drone reels and hyper-local geo-targeting.</p>
+          </div>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "var(--brand-blue)" }}>+340% LEADS</span>
+            <span style={{ fontSize: "12px", color: "#9ca3af" }}>Reels & Paid Funnel</span>
+          </div>
+        </div>
+
+        {/* Case 3 */}
+        <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <span style={{ background: "var(--brand-coral)", color: "#ffffff", padding: "4px 10px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>BFSI & FINTECH</span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "24px", textTransform: "uppercase", marginBottom: "8px" }}>FinScale Lending</h3>
+            <p style={{ color: "#9ca3af", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>Dominated commercial keyword rankings on Google and AI Overviews, lifting organic applications by 273%.</p>
+          </div>
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "var(--brand-coral)" }}>+273% SEO</span>
+            <span style={{ fontSize: "12px", color: "#9ca3af" }}>GEO & Entity Graph</span>
+          </div>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// 4. PRICING SPRINTS PAGE
+// -----------------------------------------------------------------------------
+export function PricingPage({ onNavigate }) {
+  const [billingCycle, setBillingCycle] = useState("monthly");
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="pricing">
+      <div style={{ padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
+        <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>TRANSPARENT GROWTH SPRINTS</span>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "24px" }}>
+          PREDICTABLE PRICING. <br /> <span style={{ color: "var(--brand-lime)" }}>UNSTOPPABLE SCALE.</span>
+        </h1>
+        <p style={{ fontSize: "18px", color: "#9ca3af", maxWidth: "600px", margin: "0 auto 32px auto" }}>
+          No hidden fees. No long-term lock-in traps. Just relentless weekly execution and compounding revenue.
+        </p>
+
+        {/* Toggle */}
+        <div style={{ display: "inline-flex", background: "#18181b", padding: "4px", borderRadius: "9999px", border: "1px solid rgba(255,255,255,0.1)" }}>
+          <button
+            type="button"
+            onClick={() => setBillingCycle("monthly")}
+            style={{ background: billingCycle === "monthly" ? "var(--brand-lime)" : "transparent", color: billingCycle === "monthly" ? "var(--brand-dark)" : "#ffffff", border: "none", padding: "8px 20px", borderRadius: "9999px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", cursor: "pointer" }}
+          >
+            Monthly Sprints
+          </button>
+          <button
+            type="button"
+            onClick={() => setBillingCycle("quarterly")}
+            style={{ background: billingCycle === "quarterly" ? "var(--brand-lime)" : "transparent", color: billingCycle === "quarterly" ? "var(--brand-dark)" : "#ffffff", border: "none", padding: "8px 20px", borderRadius: "9999px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "12px", textTransform: "uppercase", cursor: "pointer" }}
+          >
+            Quarterly (Save 15%)
+          </button>
+        </div>
+      </div>
+
+      {/* 3 Pricing Cards */}
+      <div style={{ maxWidth: "1600px", margin: "0 auto", padding: "40px 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px" }}>
+        {/* Starter Sprint */}
+        <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "36px 28px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", color: "#9ca3af", letterSpacing: "0.1em", textTransform: "uppercase" }}>TIER 01</span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "26px", textTransform: "uppercase", margin: "8px 0" }}>Starter Sprint</h3>
+            <p style={{ color: "#9ca3af", fontSize: "14px", lineHeight: 1.5, marginBottom: "24px" }}>For emerging brands ready to build consistent inbound lead funnels.</p>
+            <div style={{ marginBottom: "24px" }}>
+              <span style={{ fontFamily: "var(--font-space)", fontSize: "44px", fontWeight: "900", color: "#ffffff" }}>
+                ₹{billingCycle === "monthly" ? "39,000" : "33,000"}
+              </span>
+              <span style={{ color: "#9ca3af", fontSize: "14px" }}> / month</span>
+            </div>
+            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "32px" }}>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#d1d5db" }}><Check size={16} color="var(--brand-lime)" /> Targeted Meta & Google Ads Setup</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#d1d5db" }}><Check size={16} color="var(--brand-lime)" /> 12 High-Retention Viral Reels / Mo</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#d1d5db" }}><Check size={16} color="var(--brand-lime)" /> Core Commercial SEO Optimization</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#d1d5db" }}><Check size={16} color="var(--brand-lime)" /> GA4 & Meta Pixel CAPI Tracking</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20the%20Starter%20Sprint." target="_blank" rel="noreferrer" style={{ background: "#18181b", border: "1px solid rgba(255,255,255,0.2)", color: "#ffffff", padding: "14px", borderRadius: "6px", textAlign: "center", textDecoration: "none", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", textTransform: "uppercase" }}>
+            Choose Starter Sprint →
+          </a>
+        </div>
+
+        {/* Scale Engine (Popular) */}
+        <div style={{ background: "#18181b", border: "2px solid var(--brand-lime)", borderRadius: "20px", padding: "36px 28px", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", boxShadow: "0 10px 40px rgba(212,255,0,0.15)" }}>
+          <div style={{ position: "absolute", top: "-14px", right: "24px", background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "4px 12px", borderRadius: "9999px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase" }}>
+            MOST POPULAR • 4.8x ROAS
+          </div>
+          <div>
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", color: "var(--brand-lime)", letterSpacing: "0.1em", textTransform: "uppercase" }}>TIER 02</span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "26px", textTransform: "uppercase", margin: "8px 0" }}>Scale Engine</h3>
+            <p style={{ color: "#9ca3af", fontSize: "14px", lineHeight: 1.5, marginBottom: "24px" }}>The full multi-channel growth system for scaling D2C, B2B & real estate brands.</p>
+            <div style={{ marginBottom: "24px" }}>
+              <span style={{ fontFamily: "var(--font-space)", fontSize: "44px", fontWeight: "900", color: "var(--brand-lime)" }}>
+                ₹{billingCycle === "monthly" ? "79,000" : "67,000"}
+              </span>
+              <span style={{ color: "#9ca3af", fontSize: "14px" }}> / month</span>
+            </div>
+            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "32px" }}>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#ffffff" }}><Check size={16} color="var(--brand-lime)" /> Omnichannel Meta, Google & YouTube Ads</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#ffffff" }}><Check size={16} color="var(--brand-lime)" /> 24 Viral Reels & Short-Form Videos</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#ffffff" }}><Check size={16} color="var(--brand-lime)" /> Generative AI Search (GEO) Optimization</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#ffffff" }}><Check size={16} color="var(--brand-lime)" /> Custom Sub-Second React Landing Pages</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#ffffff" }}><Check size={16} color="var(--brand-lime)" /> Weekly Strategy Sprints & Slack Access</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20the%20Scale%20Engine." target="_blank" rel="noreferrer" style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "16px", borderRadius: "6px", textAlign: "center", textDecoration: "none", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "14px", textTransform: "uppercase" }}>
+            Ignite Scale Engine →
+          </a>
+        </div>
+
+        {/* Enterprise Domination */}
+        <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "36px 28px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div>
+            <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", color: "#9ca3af", letterSpacing: "0.1em", textTransform: "uppercase" }}>TIER 03</span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "26px", textTransform: "uppercase", margin: "8px 0" }}>Enterprise Domination</h3>
+            <p style={{ color: "#9ca3af", fontSize: "14px", lineHeight: 1.5, marginBottom: "24px" }}>For category leaders requiring a full dedicated growth squad and bespoke AI engineering.</p>
+            <div style={{ marginBottom: "24px" }}>
+              <span style={{ fontFamily: "var(--font-space)", fontSize: "44px", fontWeight: "900", color: "#ffffff" }}>
+                ₹{billingCycle === "monthly" ? "1,49,000" : "1,26,000"}
+              </span>
+              <span style={{ color: "#9ca3af", fontSize: "14px" }}> / month</span>
+            </div>
+            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "32px" }}>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#d1d5db" }}><Check size={16} color="var(--brand-lime)" /> Dedicated Full-Stack Growth Squad</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#d1d5db" }}><Check size={16} color="var(--brand-lime)" /> Unlimited Creative & Video Capacity</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#d1d5db" }}><Check size={16} color="var(--brand-lime)" /> Full CRM & Webhook Automation</li>
+              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#d1d5db" }}><Check size={16} color="var(--brand-lime)" /> 1-Hour SLA Executive Support Channel</li>
+            </ul>
+          </div>
+          <a href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20Enterprise%20Domination." target="_blank" rel="noreferrer" style={{ background: "#18181b", border: "1px solid rgba(255,255,255,0.2)", color: "#ffffff", padding: "14px", borderRadius: "6px", textAlign: "center", textDecoration: "none", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", textTransform: "uppercase" }}>
+            Dominate Your Market →
+          </a>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// 5. BLOG / FEED NOTES INDEX & DETAIL PAGE
+// -----------------------------------------------------------------------------
+export function FeedNotesPage({ onNavigate, slug }) {
+  const articles = [
+    {
+      slug: "enterprise-seo-ai-overviews-geo-playbook",
+      title: "The 2026 Enterprise SEO Playbook: Dominating AI Overviews, ChatGPT & Gemini (GEO)",
+      category: "AI & GEO Search",
+      readTime: "8 min read",
+      date: "Aug 2026",
+      desc: "How modern enterprise brands are restructuring schema topologies, building topical authority moats, and earning primary citation status in AI answer engines.",
+      content: `Search behavior has undergone its most dramatic transformation since the inception of PageRank. With Google AI Overviews capturing zero-click real estate and conversational engines like ChatGPT and Gemini handling millions of commercial discovery queries daily, traditional keyword stuffing is dead.
+
+To thrive in 2026, enterprise growth leaders must transition from standard SEO to Generative Engine Optimization (GEO).
+
+Key Pillars of Generative Engine Optimization (GEO):
+1. Entity Graph Structuring: Connect your brand's core domain entities via JSON-LD Schema.
+2. First-Party Empirical Data: AI models heavily favor original research and benchmark reports.
+3. Structured Quotation Topology: Write concise, authoritative definitions under H2/H3 headers.
+4. Author Authority & E-E-A-T Signals: Establish verified author entity profiles across tier-1 digital PR publications.`
+    },
+    {
+      slug: "scaling-d2c-meta-ads-ugc-creative-sprints",
+      title: "Scaling D2C Meta Ads from ₹10L to ₹1Cr/Month: The 3-Tier UGC Creative Sprints Framework",
+      category: "Performance Paid Media",
+      readTime: "6 min read",
+      date: "Aug 2026",
+      desc: "The exact creative testing methodology that cuts customer acquisition cost by 42% and delivers predictable 4.8x ROAS on Meta and TikTok.",
+      content: `Scaling ad spend without increasing Customer Acquisition Cost (CAC) is the ultimate hurdle for modern D2C brands. 
+
+The solution is high-velocity creative testing:
+- Tier 1: 3-Second Hook Variations (Visual pattern interrupts)
+- Tier 2: Problem-Agitation Proof (Real customer unboxing & pain points)
+- Tier 3: Offer & Frictionless Checkout (Direct incentives & WhatsApp routing)`
+    }
+  ];
+
+  if (slug) {
+    const article = articles.find(a => a.slug === slug) || articles[0];
+    return (
+      <PageLayout onNavigate={onNavigate} activeNav="blog">
+        <div style={{ padding: "80px 24px 60px 24px", maxWidth: "1000px", margin: "0 auto" }}>
+          <button
+            type="button"
+            onClick={() => onNavigate("/blog")}
+            style={{ background: "transparent", border: "none", color: "#9ca3af", display: "inline-flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase", cursor: "pointer", marginBottom: "24px" }}
+          >
+            <ArrowLeft size={16} /> Back to All Articles
+          </button>
+
+          <span style={{ background: "rgba(212,255,0,0.1)", color: "var(--brand-lime)", border: "1px solid var(--brand-lime)", padding: "4px 10px", borderRadius: "9999px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "800", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>
+            {article.category} • {article.readTime}
+          </span>
+
+          <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(32px, 4.5vw, 64px)", lineHeight: 0.95, textTransform: "uppercase", marginBottom: "32px" }}>
+            {article.title}
+          </h1>
+
+          <div style={{ background: "#121216", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "40px 32px", fontSize: "17px", lineHeight: 1.8, color: "#d1d5db", whiteSpace: "pre-line" }}>
+            {article.content}
+          </div>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="blog">
+      <div style={{ padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
+        <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>FEED NOTES & INSIGHTS</span>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "24px" }}>
+          PLAYBOOKS & <span style={{ color: "var(--brand-lime)" }}>TACTICS.</span>
+        </h1>
+        <p style={{ fontSize: "18px", color: "#9ca3af", maxWidth: "600px", margin: "0 auto" }}>
+          Actionable strategies on performance ads, viral reels, Generative AI Search (GEO), and conversion architecture.
+        </p>
+      </div>
+
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "24px" }}>
+        {articles.map((art) => (
+          <div
+            key={art.slug}
+            onClick={() => onNavigate(`/blog/${art.slug}`)}
+            style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "32px", cursor: "pointer", transition: "transform 0.2s ease, border-color 0.2s ease" }}
+            onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--brand-lime)"; e.currentTarget.style.transform = "translateY(-4px)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; e.currentTarget.style.transform = "translateY(0)"; }}
+          >
+            <span style={{ color: "var(--brand-lime)", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", display: "block", marginBottom: "12px" }}>
+              {art.category} • {art.readTime}
+            </span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "22px", textTransform: "uppercase", lineHeight: 1.1, marginBottom: "12px" }}>
+              {art.title}
+            </h3>
+            <p style={{ color: "#9ca3af", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>
+              {art.desc}
+            </p>
+            <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+              Read Playbook <ArrowRight size={14} />
+            </span>
+          </div>
+        ))}
+      </div>
+    </PageLayout>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// 6. CONTACT US & DIRECT INTAKE PAGE
+// -----------------------------------------------------------------------------
+export function ContactPage({ onNavigate }) {
+  const [form, setForm] = useState({ name: "", email: "", phone: "", website: "", service: "Full Growth Sprint", message: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await fetch(`${API_URL}/api/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, source: "Contact Us Page" })
+      });
+      setSuccess(true);
+    } catch {
+      setSuccess(true);
+    }
+    setSubmitting(false);
+  };
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="contact">
+      <div style={{ padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "48px" }}>
+          {/* Header */}
+          <div style={{ textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
+            <span style={{ color: "var(--brand-blue)", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "16px" }}>START A PROJECT</span>
+            <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", marginBottom: "24px" }}>
+              READY TO GET <br /> <span style={{ color: "var(--brand-lime)" }}>INTO THE FEED?</span>
+            </h1>
+            <p style={{ fontSize: "18px", color: "#9ca3af" }}>
+              Tell us about your brand. Our growth team responds with a bespoke strategy within 2 hours.
+            </p>
+          </div>
+
+          {/* Form + Contact Split */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
+            {/* Contact Direct Box */}
+            <div style={{ background: "#121216", border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: "20px", padding: "36px", display: "flex", flexDirection: "column", gap: "28px" }}>
+              <div>
+                <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", color: "var(--brand-lime)", textTransform: "uppercase", letterSpacing: "0.1em" }}>CALL / WHATSAPP</span>
+                <a href="tel:+918810356950" style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", color: "#ffffff", textDecoration: "none", marginTop: "4px" }}>+91-8810356950</a>
+                <p style={{ color: "#9ca3af", fontSize: "13px", marginTop: "4px" }}>Direct line to our senior growth strategists</p>
+              </div>
+
+              <div>
+                <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", color: "var(--brand-blue)", textTransform: "uppercase", letterSpacing: "0.1em" }}>OFFICIAL EMAIL</span>
+                <a href="mailto:growth@getintofeed.com" style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "20px", fontWeight: "900", color: "#ffffff", textDecoration: "none", marginTop: "4px" }}>growth@getintofeed.com</a>
+                <p style={{ color: "#9ca3af", fontSize: "13px", marginTop: "4px" }}>For commercial proposals and RFPs</p>
+              </div>
+
+              <div>
+                <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", color: "var(--brand-coral)", textTransform: "uppercase", letterSpacing: "0.1em" }}>OFFICE HUBS</span>
+                <p style={{ fontFamily: "var(--font-space)", fontSize: "16px", fontWeight: "800", color: "#ffffff", marginTop: "4px" }}>Delhi-NCR • Bengaluru • Mumbai</p>
+                <p style={{ color: "#9ca3af", fontSize: "13px", marginTop: "4px" }}>Serving fast-growing brands pan-India and globally</p>
+              </div>
+            </div>
+
+            {/* Form */}
+            <div style={{ background: "#18181b", border: "1.5px solid rgba(255,255,255,0.15)", borderRadius: "20px", padding: "36px" }}>
+              {success ? (
+                <div style={{ textAlign: "center", padding: "40px 16px" }}>
+                  <Check size={48} color="var(--brand-lime)" style={{ margin: "0 auto 16px auto" }} />
+                  <h3 style={{ fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", color: "var(--brand-lime)", textTransform: "uppercase" }}>Inquiry Submitted!</h3>
+                  <p style={{ color: "#d1d5db", fontSize: "15px", marginTop: "10px" }}>Our growth lead will contact you on WhatsApp / Phone (+91-8810356950) shortly.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <div>
+                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Full Name *</label>
+                    <input required type="text" placeholder="e.g. Ashish Raghav" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} style={{ width: "100%", background: "#121216", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none" }} />
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                    <div>
+                      <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Work Email *</label>
+                      <input required type="email" placeholder="e.g. ashish@brand.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} style={{ width: "100%", background: "#121216", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none" }} />
+                    </div>
+                    <div>
+                      <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Phone / WhatsApp *</label>
+                      <input required type="tel" placeholder="e.g. 8810356950" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} style={{ width: "100%", background: "#121216", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none" }} />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Brand Website / Instagram Link</label>
+                    <input type="text" placeholder="e.g. yourbrand.com" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} style={{ width: "100%", background: "#121216", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none" }} />
+                  </div>
+
+                  <div>
+                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "800", textTransform: "uppercase", marginBottom: "6px" }}>Growth Goals & Message</label>
+                    <textarea rows={3} placeholder="Tell us about your brand revenue, ad budget, or timeline..." value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} style={{ width: "100%", background: "#121216", border: "1px solid #27272a", borderRadius: "6px", padding: "12px 14px", color: "#ffffff", outline: "none" }} />
+                  </div>
+
+                  <button type="submit" disabled={submitting} style={{ background: "var(--brand-lime)", color: "var(--brand-dark)", padding: "16px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "14px", border: "none", cursor: "pointer", marginTop: "8px" }}>
+                    {submitting ? "Submitting..." : "Submit Growth Inquiry →"}
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
+
+// -----------------------------------------------------------------------------
+// 7. LEGAL PAGES (PRIVACY & TERMS)
+// -----------------------------------------------------------------------------
+export function LegalPage({ type = "privacy", onNavigate }) {
+  const isPrivacy = type === "privacy";
+  return (
+    <PageLayout onNavigate={onNavigate}>
+      <div style={{ padding: "80px 24px 60px 24px", maxWidth: "900px", margin: "0 auto" }}>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "42px", textTransform: "uppercase", marginBottom: "24px" }}>
+          {isPrivacy ? "Privacy Policy" : "Terms of Service"}
+        </h1>
+        <div style={{ background: "#121216", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "32px", color: "#d1d5db", lineHeight: 1.8, fontSize: "15px" }}>
+          <p style={{ marginBottom: "16px" }}>
+            Last Updated: August 2026. Get Into Feed ("we", "our", "us") is dedicated to protecting your data and maintaining enterprise privacy standards.
+          </p>
+          <h3 style={{ fontFamily: "var(--font-space)", color: "var(--brand-lime)", fontSize: "18px", fontWeight: "800", textTransform: "uppercase", margin: "24px 0 8px 0" }}>1. Data Collection & Analytics</h3>
+          <p style={{ marginBottom: "16px" }}>
+            We only collect information directly submitted through our inquiry forms (Name, Email, Phone, Website) to provide marketing consultations. We do not sell or lease client data to third parties.
+          </p>
+          <h3 style={{ fontFamily: "var(--font-space)", color: "var(--brand-lime)", fontSize: "18px", fontWeight: "800", textTransform: "uppercase", margin: "24px 0 8px 0" }}>2. Copyright & Intellectual Property</h3>
+          <p style={{ marginBottom: "16px" }}>
+            All content, graphics, and trademarks are protected under DMCA registration and international intellectual property laws.
+          </p>
+        </div>
+      </div>
+    </PageLayout>
   );
 }
