@@ -3,7 +3,7 @@ import {
   ArrowLeft, ArrowRight, Bookmark, CalendarDays, Check, CheckCircle2, Clock3, Eye, Flame, Heart, Linkedin, MessageCircle, MessageSquare, Search, Send, Share2, Sparkles, Tag, TrendingUp, Twitter, User, Zap
 } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 export const defaultBlogPosts = [
   {
