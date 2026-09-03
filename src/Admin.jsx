@@ -517,7 +517,7 @@ export default function AdminDashboard({ onNavigate }) {
       <div className="admin-login-screen">
         <div className="admin-login-card">
           <div className="login-badge-brand">
-            <img src="/logo-navbar.png" alt="Get Into Feed Logo" className="admin-logo-img" />
+            
             <div>
               <strong>Get Into Feed</strong>
               <small>Agency Studio CMS</small>
@@ -569,7 +569,7 @@ export default function AdminDashboard({ onNavigate }) {
       {/* MOBILE APP TOP BAR */}
       <header className="admin-mobile-top-bar" aria-label="Mobile Admin Header">
         <div className="admin-mobile-brand-title">
-          <img src="/logo-navbar.png" alt="Get Into Feed" style={{ width: "30px", height: "30px", borderRadius: "6px" }} />
+          
           <span>Agency OS</span>
         </div>
         <div className="admin-mobile-top-actions">
@@ -599,7 +599,7 @@ export default function AdminDashboard({ onNavigate }) {
       {/* 1. LEFT SIDEBAR NAVIGATION */}
       <aside className="admin-sidebar-nav">
         <div className="admin-sidebar-brand">
-          <img src="/logo-navbar.png" alt="Get Into Feed" className="admin-logo-img" />
+          
           <div className="brand-text-col">
             <strong>Get Into Feed</strong>
             <small>Enterprise CMS</small>
@@ -1205,7 +1205,7 @@ export default function AdminDashboard({ onNavigate }) {
 
                         <div className={`serp-snippet-render ${serpDevice}`}>
                           <div className="serp-favicon-row">
-                            <img src="/logo-navbar.png" alt="Favicon" className="serp-fav" />
+                            
                             <span className="serp-domain">https://getintofeed.com › {editingItem.category ? slugify(editingItem.category) : "services"} › {editingItem.slug || "growth"}</span>
                           </div>
                           <h4 className="serp-render-title">{editingItem.metaTitle || editingItem.title || "Enterprise Digital Growth Strategy"}</h4>
