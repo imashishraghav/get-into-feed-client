@@ -953,36 +953,39 @@ export default function App() {
       </section>
 
       {/* Philosophy */}
-      <section className="relative z-20 py-16 md:py-24 bg-brand-lime text-brand-dark px-6 md:px-12 lg:px-16 w-full overflow-hidden border-t border-brand-dark">
-        <svg className="absolute left-[-2%] top-[30%] w-40 h-40 text-brand-dark/5 hidden xl:block -rotate-45 pointer-events-none" style={{ width: "160px", height: "160px" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93" />
-        </svg>
+      <section id="philosophy" className="relative z-20 py-16 md:py-24 bg-brand-lime text-brand-dark px-6 md:px-12 lg:px-16 w-full border-t border-brand-dark">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <svg className="absolute left-[-2%] top-[30%] w-40 h-40 text-brand-dark/5 hidden xl:block -rotate-45" style={{ width: "160px", height: "160px" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07L19.07 4.93" />
+          </svg>
+        </div>
 
-        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 relative z-10">
-          <div className="reveal flex flex-col items-start">
-            <h2 className="font-space font-bold text-[40px] sm:text-[60px] md:text-[80px] xl:text-[90px] leading-[0.8] tracking-tighter uppercase lg:sticky lg:top-32">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-10 lg:gap-16 items-start relative z-10">
+          <div className="text-left lg:sticky lg:top-32">
+            <h2 className="font-space font-bold text-xs tracking-widest uppercase text-brand-blue mb-4">Philosophy</h2>
+            <h3 className="font-space font-bold text-[38px] sm:text-[55px] md:text-[70px] xl:text-[80px] leading-[0.85] tracking-tighter uppercase text-brand-dark">
               NO <br /> BORING <br /> MARKETING.
-            </h2>
+            </h3>
           </div>
 
-          <div className="space-y-10 lg:space-y-12 mt-4 lg:mt-0 reveal reveal-delay-1">
+          <div className="space-y-8 lg:space-y-10 mt-4 lg:mt-0 text-left">
             <div className="border-t border-brand-dark/20 pt-6 group hover:border-brand-dark hover:pl-2 transition-all duration-300 cursor-default">
-              <h3 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO RANDOM POSTING.</h3>
+              <h4 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO RANDOM POSTING.</h4>
               <p className="text-sm md:text-base xl:text-lg font-medium opacity-80 leading-relaxed font-inter">Every single piece of content has a strategic reason for existing. Hope is not a strategy.</p>
             </div>
 
             <div className="border-t border-brand-dark/20 pt-6 group hover:border-brand-dark hover:pl-2 transition-all duration-300 cursor-default">
-              <h3 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO "BOOST BUTTON" STRATEGY.</h3>
+              <h4 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO "BOOST BUTTON" STRATEGY.</h4>
               <p className="text-sm md:text-base xl:text-lg font-medium opacity-80 leading-relaxed font-inter">Paid media requires actual architecture. We build robust funnels, not quick fixes.</p>
             </div>
 
             <div className="border-t border-brand-dark/20 pt-6 group hover:border-brand-dark hover:pl-2 transition-all duration-300 cursor-default">
-              <h3 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO DESIGN FOR DESIGN'S SAKE.</h3>
+              <h4 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO DESIGN FOR DESIGN'S SAKE.</h4>
               <p className="text-sm md:text-base xl:text-lg font-medium opacity-80 leading-relaxed font-inter">Pretty visuals are useless if they don't communicate. Creative must drive action.</p>
             </div>
 
             <div className="border-t border-brand-dark/20 pt-6 group hover:border-brand-dark hover:pl-2 transition-all duration-300 cursor-default">
-              <h3 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO VANITY METRICS.</h3>
+              <h4 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO VANITY METRICS.</h4>
               <p className="text-sm md:text-base xl:text-lg font-medium opacity-80 leading-relaxed mb-6 font-inter">Reach and likes are nice for the ego. Conversions and revenue are better for the business.</p>
             </div>
 
@@ -990,7 +993,7 @@ export default function App() {
               <a
                 href="#contact"
                 onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="inline-flex bg-brand-dark text-white px-6 py-3.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime hover:shadow-lg transition-all items-center gap-2 group text-decoration-none"
+                className="inline-flex bg-brand-dark text-white px-6 py-3.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-blue hover:text-white transition-all items-center gap-2 group text-decoration-none shadow-md"
               >
                 Tired of boring? Let's talk <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
               </a>
