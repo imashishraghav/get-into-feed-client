@@ -1,74 +1,46 @@
 import React, { useState, useEffect } from "react";
 import {
-  AlertCircle,
   ArrowLeft,
   ArrowRight,
-  Award,
-  BarChart2,
-  BarChart3,
-  Briefcase,
-  Building2,
-  Calculator,
-  Car,
   Check,
   CheckCircle2,
   ChevronDown,
-  ChevronRight,
+  ChevronUp,
   Clapperboard,
   Clock,
   Code,
-  Coffee,
-  Compass,
-  Database,
-  Dumbbell,
   Edit3,
   ExternalLink,
-  Eye,
-  FileText,
   Flame,
-  Globe,
   Globe2,
-  GraduationCap,
-  Heart,
-  HelpCircle,
-  Home,
   Instagram,
-  Layers,
-  Layout,
-  LineChart,
   Linkedin,
   Mail,
-  Map,
-  MapPin,
   Megaphone,
   Menu,
   MessageCircle,
-  MousePointerClick,
-  Palette,
   PenTool,
   Phone,
-  PieChart,
   Play,
-  Plus,
   Quote,
   Rocket,
   Search,
   Send,
   ShieldCheck,
-  ShoppingBag,
-  Smartphone,
   Sparkles,
   Star,
-  Target,
-  TrendingUp,
   Users,
   Video,
   X,
   Zap
 } from "lucide-react";
+import FloatingNavControl from "./components/FloatingNavControl";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
 
+// =========================================================================
+// SERVICES CATALOG
+// =========================================================================
 export const serviceCatalog = {
   "content-marketing": {
     slug: "content-marketing",
@@ -102,1433 +74,218 @@ export const serviceCatalog = {
   },
   "ads-campaign": {
     slug: "ads-campaign",
-    title: "Performance Ads & Paid Acquisition (ROAS)",
+    title: "Performance Ads & Paid Media Scaling",
     icon: Megaphone,
-    label: "Paid Performance",
-    outcome: "High-ROAS Meta, Google Search, YouTube and TikTok ad campaigns built on scientific creative testing and server-side tracking.",
-    description: "Stop burning ad spend on low-intent clicks. We build high-velocity creative testing funnels and conversion telemetry that maximize pipeline and profit.",
-    bottleneck: "Most agencies rely on basic boost buttons without audience structuring, creative testing, or server-side attribution.",
+    label: "Paid Media Machine",
+    outcome: "Profitable customer acquisition across Meta, Google & YouTube with 3.5x to 5.0x verified blended ROAS.",
+    description: "We don't touch the 'Boost Post' button. We engineer full-funnel paid media architecture with rapid creative iteration, bespoke landing pages, and algorithmic budget management.",
+    bottleneck: "Creative fatigue within 48 hours and skyrocketing CAC because ads rely on single creative variations without testing infrastructure.",
     framework: [
-      { step: "01. Creative Testing Sandbox", detail: "Deploying 10+ new hook and angle variations weekly to discover breakthrough winners." },
-      { step: "02. Server-Side Telemetry (CAPI)", detail: "Eliminating iOS tracking loss with full Meta Conversions API and GA4 integration." },
-      { step: "03. Budget Scaling Protocol", detail: "Aggressively scaling budget on high-performing ad sets while killing fatigue early." },
-      { step: "04. Full-Funnel Retargeting", detail: "Sequencing dynamic product ads and objection-handling video testimonials." }
+      { step: "01. Creative Angle Matrix", detail: "Developing 20+ distinct visual and psychological hooks across UGC, founder stories, and product teardowns." },
+      { step: "02. Advantage+ & CBO Scaling", detail: "Structuring automated campaign budgets to allocate spend into proven algorithmic winners." },
+      { step: "03. Custom Landing Page CRO", detail: "Directing paid traffic to high-speed landers with 1-click order bumps and tailored value props." },
+      { step: "04. Attribution & Signal Hardening", detail: "Server-side Conversions API (CAPI) setup guaranteeing accurate first-party conversion tracking." }
     ],
     points: [
-      "Meta Ads (Instagram & Facebook) High-ROAS Scaling",
-      "Google Search, Performance Max & YouTube Video Ads",
-      "Server-Side Meta CAPI & Google Offline Conversion Tracking",
-      "Weekly Creative Sprints (UGC, Motion Graphics, Statics)",
-      "Automated Bid Strategy Tuning (Target CPA & Target ROAS)",
-      "Landing Page A/B Testing & Conversion Rate Optimization"
+      "Meta (Instagram & Facebook) High-ROAS Campaigns",
+      "Google Search, Performance Max & YouTube Ads",
+      "UGC Creator Ad Production & Rapid Hook Testing",
+      "Headless E-commerce Landing Page Funnels",
+      "Server-Side Tracking & First-Party Data CAPI",
+      "Weekly Cohort Attribution & Unit Economics Analysis"
     ],
-    tools: ["Meta Ads Manager", "Google Ads", "Triple Whale", "Looker Studio", "Meta CAPI"],
-    caseMetric: "4.8x Average Client ROAS",
-    caseBrand: "Veloura Organics & UrbanEdge Realty",
+    tools: ["Meta Ads Manager", "Google Ads", "Triple Whale", "Shopify Plus", "Klaviyo"],
+    caseMetric: "4.8x Verified ROAS (₹45L/mo)",
+    caseBrand: "Veloura Organics (D2C)",
     faqs: [
-      { q: "What is the minimum ad budget needed to see results?", a: "We work with brands investing ₹50,000 to ₹50L+ per month in paid media, ensuring every rupee is tracked to verified revenue." }
+      { q: "What is your minimum ad spend requirement?", a: "We typically work with brands spending at least ₹1.5 Lakhs to ₹10 Lakhs+ monthly to ensure statistical significance during creative testing." },
+      { q: "How quickly can we see positive ROAS?", a: "Initial sprint optimizations typically yield ROAS gains within the first 14 to 21 days as winning creative hooks emerge." }
     ]
   },
   "social-media": {
     slug: "social-media",
-    title: "Social Media Management & Brand Community",
+    title: "Organic Social Media Growth & Community",
     icon: Users,
-    label: "Social Growth",
-    outcome: "Full-stack channel management, daily community building, consistent posting calendar and algorithmic growth engineering.",
-    description: "We turn your social media profiles into active revenue engines with trend-hijacking reels, daily community engagement, and cult-like follower loyalty.",
-    bottleneck: "Irregular posting and boring corporate graphics lead to dead follower engagement and zero pipeline.",
+    label: "Social Engine",
+    outcome: "Transform social feeds into an organic acquisition engine that commands attention and turns followers into loyal customers.",
+    description: "Social media isn't just about vanity likes. We craft scroll-stopping visual identity systems, trend-jacking video reels, and high-engagement carousels that build genuine authority.",
+    bottleneck: "Boring corporate posting that gets 12 likes and zero client inquiries.",
     framework: [
-      { step: "01. Visual Brand Style Guide", detail: "Establishing high-energy typography, color palettes, and motion design rules." },
-      { step: "02. Content Calendar Execution", detail: "Delivering 20-30 scroll-stopping posts, carousels, and stories every single month." },
-      { step: "03. Community & DM Growth", detail: "Proactively engaging with industry creators and turning DM inquiries into leads." },
-      { step: "04. Monthly Growth Analytics", detail: "Tracking net follower surge, engagement rates, and referral web traffic." }
+      { step: "01. Visual Feed Architecture", detail: "Designing cohesive brutalist brand aesthetic and template design systems." },
+      { step: "02. Viral Hook Engineering", detail: "Scripting and producing 3-second attention-grabbing video openings." },
+      { step: "03. Community Direct Outreach", detail: "Engaging directly in comments and DMs to qualify warm commercial leads." },
+      { step: "04. Cross-Platform Syndication", detail: "Repurposing hero assets seamlessly across Instagram, LinkedIn, and X." }
     ],
     points: [
-      "End-to-End Instagram & LinkedIn Channel Management",
-      "Daily Story Engagement & Interactive Polls",
-      "Community Comment Moderation & Direct Lead Routing",
-      "Trend Hijacking, Audio Sync & Viral Meme Formats",
-      "Monthly Creative Batching Sessions",
-      "Cross-Platform Distribution & Repurposing"
+      "Brand Feed Identity & Aesthetic Master Guidelines",
+      "High-Engagement Swipeable Carousels",
+      "Reels & Shorts Scripting & Production",
+      "Community Management & Lead DM Ingestion",
+      "Influencer Seeding & Co-Creation Sprints",
+      "Monthly Social Sentiment & Growth Analytics"
     ],
-    tools: ["Figma", "Canva Pro", "Adobe Premiere Pro", "Later", "Meta Creator Studio"],
-    caseMetric: "+420% Organic Engagement Surge",
-    caseBrand: "Serene Living & D2C Brands",
+    tools: ["Figma Enterprise", "CapCut Pro", "Later", "Instagram Creator Studio", "Notion CMS"],
+    caseMetric: "+420% Organic Social Engagement",
+    caseBrand: "UrbanEdge Luxury Realty",
     faqs: [
-      { q: "Do you handle shooting and production as well?", a: "Yes, we handle the full production lifecycle: scripting, shooting frameworks, editing, sound design, and scheduling." }
+      { q: "Do you handle shooting and production?", a: "Yes, we handle scriptwriting, creative direction, editing, visual motion design, and remote or on-site production coordination." },
+      { q: "How many posts do you deliver monthly?", a: "Our standard sprint includes 16 to 24 high-production video reels and carousels per month." }
     ]
   },
   "graphics-design": {
     slug: "graphics-design",
-    title: "Graphics Design & Creative Direction",
-    icon: Palette,
-    label: "Design Systems",
-    outcome: "Scroll-stopping designs, ad creatives, carousel graphics, brand guidelines and sub-second landing page assets.",
-    description: "Visuals that stop the thumb within 0.5 seconds. We design brand identities, ad creatives, and sales decks that demand immediate respect.",
-    bottleneck: "Design that looks pretty but fails to convey the core value proposition burns ad budget without conversions.",
+    title: "Creative Branding & Visual Design",
+    icon: PenTool,
+    label: "Visual Identity",
+    outcome: "Distinctive, unforgettable brand identities that elevate perception, command premium pricing, and dominate market share.",
+    description: "Design without commercial intent is just decoration. We build high-impact creative identity systems, packaging, marketing collateral, and digital design languages.",
+    bottleneck: "Cheap-looking brand assets that undermine credibility and make premium clients hesitant to buy.",
     framework: [
-      { step: "01. Visual Proposition Audit", detail: "Analyzing competitors to identify visual white-space and bold contrast opportunities." },
-      { step: "02. High-CTR Ad Creative Sprint", detail: "Creating benefit-first banners, split-screen comparisons, and proof graphics." },
-      { step: "03. Carousel Architecture", detail: "Designing swipeable 10-slide narratives optimized for high save and share rates." },
-      { step: "04. Complete Brand Asset Kit", detail: "Packaging vector logos, color palettes, custom icons, and typography guidelines." }
+      { step: "01. Brand Core Discovery", detail: "Unearthing unique brand positioning and category whitespace." },
+      { step: "02. Visual Design System", detail: "Developing typography pairings, color physics, logo marks, and grid systems." },
+      { step: "03. Commercial Asset Production", detail: "Designing ad creatives, investor pitch decks, and digital packaging." },
+      { step: "04. Brand Guidelines Bible", detail: "Delivering a comprehensive brand book to ensure lifelong visual consistency." }
     ],
     points: [
-      "High-Converting Paid Ad Banner Creatives",
-      "Swipe-Friendly 10-Slide Educational Carousels",
-      "Complete Brand Identity Systems & Logo Suites",
-      "High-Impact Sales Pitch Decks & Client Proposals",
-      "Landing Page Visual Assets & Motion Graphics",
-      "Fast 24-48 Hour Turnaround Sprints"
+      "Logo Identity & Complete Brand Guidelines",
+      "Packaging & Label Design for D2C Brands",
+      "High-Converting Ad Creatives & Social Banners",
+      "Investor Pitch Decks & Sales Presentation Decks",
+      "Print Collateral, Signage & Environmental Graphics",
+      "Figma Design Systems & Component Libraries"
     ],
-    tools: ["Figma", "Adobe Illustrator", "Photoshop", "After Effects"],
-    caseMetric: "+42% Higher Click-Through Rates",
-    caseBrand: "D2C & Tech Brand Portfolio",
+    tools: ["Adobe Creative Cloud", "Figma", "Blender 3D", "After Effects", "Cinema 4D"],
+    caseMetric: "+85% Brand Perceived Value",
+    caseBrand: "Aura Premium Living",
     faqs: [
-      { q: "What format do you provide final deliverables in?", a: "All assets are delivered in editable Figma files, high-res PNG/JPG, WebP, and vector SVG formats ready for instant ad deployment." }
+      { q: "What deliverables are included in a full branding sprint?", a: "Primary/secondary logo marks, typography scales, color palettes, iconography, social templates, packaging mocks, and a 60+ page brand guidelines deck." },
+      { q: "How long does a brand identity project take?", a: "Complete brand sprints typically take 3 to 4 weeks from initial kickoff to final vector deliveries." }
     ]
   },
   "reels": {
     slug: "reels",
-    title: "Viral Reels & Short-Form Video Engine",
-    icon: Flame,
-    label: "Short-Form Video",
-    outcome: "Fast-paced vertical videos, audio trend sync, dynamic captions and storytelling engineered specifically for Instagram & TikTok feeds.",
-    description: "Short-form video is the single fastest way to reach millions of new customers organically. We script, edit, and optimize viral reels that capture massive attention.",
-    bottleneck: "Videos that drop viewer retention in the first 3 seconds get suppressed by the algorithm.",
+    title: "Viral Reels & Short-Form Video Production",
+    icon: Clapperboard,
+    label: "Viral Video Hub",
+    outcome: "High-retention short-form video content engineered to capture attention in the first 2 seconds and generate massive organic reach.",
+    description: "Short-form video is the single most powerful algorithm lever in 2026. We script, edit, animate, and publish dynamic 15-to-60-second reels that drive explosive growth.",
+    bottleneck: "Low view counts and 15% drop-off in the first 2 seconds due to weak hooks and boring pacing.",
     framework: [
-      { step: "01. 3-Second Visual & Audio Hooks", detail: "Engineering thumb-stopping visual pattern interrupts and compelling questions." },
-      { step: "02. High-Retention Fast Pacing", detail: "Dynamic zoom cuts, sound effects, B-roll overlays, and kinetic typography." },
-      { step: "03. Trending Audio Hijacking", detail: "Identifying breakout viral sounds in the first 48 hours of momentum." },
-      { step: "04. Seamless Loop Optimization", detail: "Crafting end-to-beginning audio loops to maximize re-watch metrics." }
+      { step: "01. Psychological Hook Strategy", detail: "Testing visual surprises, contrarian questions, and pattern interrupts." },
+      { step: "02. Dynamic Fast-Paced Editing", detail: "Sound design, kinetic typography, b-roll layering, and zero dead air." },
+      { step: "03. Seamless CTA Integration", detail: "Embedding natural call-to-actions that drive bio clicks and comments." },
+      { step: "04. Algorithm Optimization", detail: "Optimizing audio selection, hashtags, and watch-time loops." }
     ],
     points: [
-      "Viral Hook Scripting & Storyboard Concepting",
-      "Kinetic Subtitles & Emoji Pop Animation",
-      "Sound Design, Audio Sync & Dynamic SFX",
-      "Weekly Content Batching & Fast Turnaround",
-      "Direct Call-To-Action (CTA) Lead Funnels",
-      "Cross-Posting on Instagram Reels, Shorts & TikTok"
+      "Hook-Driven Short-Form Scriptwriting",
+      "Kinetic Subtitles & Dynamic Typography Animations",
+      "Professional Sound Design & Trending Audio Curation",
+      "UGC Remote Direction & Creator Sourcing",
+      "Cross-Platform Formatting (Reels, Shorts, TikTok)",
+      "Watch-Time & Retention Rate Optimization"
     ],
-    tools: ["CapCut Pro", "Adobe Premiere Pro", "After Effects", "Epidemic Sound"],
-    caseMetric: "3.2M+ Viral Reel Impressions",
-    caseBrand: "Hospitality & Fitness Clients",
+    tools: ["Adobe Premiere Pro", "After Effects", "CapCut Pro", "Logic Pro X", "Frame.io"],
+    caseMetric: "12M+ Organic Video Views",
+    caseBrand: "FitPulse Nutrition",
     faqs: [
-      { q: "How many reels do we get per month?", a: "Our packages range from 12 to 30 custom-edited reels per month with complete hooks, scripts, and captions." }
+      { q: "Do we need to be on camera?", a: "Not necessarily. We produce founder-led video, creator UGC video, and b-roll voiceover video depending on your brand preference." },
+      { q: "What is the turnaround time for reels?", a: "Batches of 8 to 12 edited reels are delivered within 5 to 7 business days." }
     ]
   },
   "videos": {
     slug: "videos",
-    title: "High-Production Video & YouTube Authority",
+    title: "Cinematic Commercial Video & Brand Films",
     icon: Video,
-    label: "Long-Form Video",
-    outcome: "High-production YouTube video editing, brand documentaries, podcast mastering and long-form authority assets.",
-    description: "Build deep trust and authority with long-form video content. We produce YouTube episodes, client success documentaries, and podcast series that turn viewers into lifelong advocates.",
-    bottleneck: "Long videos with low production quality and boring pacing suffer from 80% audience drop-off.",
+    label: "Brand Films",
+    outcome: "Broadcast-quality brand films, product showcase videos, and customer case study mini-docs that build unshakeable credibility.",
+    description: "When you need to tell a deeper story that moves hearts and opens enterprise wallets, our cinematic production unit delivers commercial-grade video assets.",
+    bottleneck: "Inability to close enterprise or high-ticket clients due to lack of polished credibility video assets.",
     framework: [
-      { step: "01. Title & High-CTR Thumbnail Strategy", detail: "A/B testing thumbnail designs and curiosity titles before filming." },
-      { step: "02. Story Arc & Retention Scripting", detail: "Structuring chapters, cliffhangers, and visual demonstrations." },
-      { step: "03. Multi-Cam & Color Grading", detail: "Cinema-grade color correction, audio mastering, and motion infographics." },
-      { step: "04. Omnichannel Micro-Repurposing", detail: "Chopping every 20-minute episode into 8 short-form reels and quote carousels." }
+      { step: "01. Conceptual Storyboarding", detail: "Developing narrative arcs, visual moodboards, and shooting scripts." },
+      { step: "02. Production Execution", detail: "4K cinema cameras, drone aerials, professional lighting, and sound." },
+      { step: "03. Color Grading & Audio Mix", detail: "Hollywood-grade color grading and spatial sound mastering." },
+      { step: "04. Multi-Cut Deliverables", detail: "Exporting 90s hero film, 30s commercial cuts, and 15s social teasers." }
     ],
     points: [
-      "YouTube Long-Form Video Editing & Channel Growth",
-      "High-CTR Custom Thumbnail Design & A/B Testing",
-      "Brand Documentary & Customer Case Study Films",
-      "Video Podcast Production & Multi-Camera Sync",
-      "Cinema Color Grading & Professional Audio Mastering",
-      "Full YouTube SEO (Tags, Chapters, End Screens, Cards)"
+      "Founding Story Mini-Documentaries",
+      "4K Drone & Architectural Property Showcases",
+      "High-End D2C Product Commercials",
+      "Customer Success Video Case Studies",
+      "Cinema Color Grading & Professional Sound Mix",
+      "Multi-Format Delivery for TV, Web & Social"
     ],
-    tools: ["DaVinci Resolve", "Adobe Premiere Pro", "Logic Pro", "TubeBuddy"],
-    caseMetric: "+280% Watch-Time Retention",
-    caseBrand: "EdTech & Founder Podcast Series",
+    tools: ["RED Digital Cinema", "Sony FX6", "DaVinci Resolve Studio", "DJI Ronin", "Soundcraft"],
+    caseMetric: "₹28.4 Cr Closed Property Deals",
+    caseBrand: "UrbanEdge Luxury Realty",
     faqs: [
-      { q: "How do you handle footage delivery?", a: "We provide dedicated cloud storage links (Dropbox / Google Drive) for effortless raw footage uploads." }
-    ]
-  },
-  "strategy": {
-    slug: "strategy",
-    title: "Full-Funnel Growth Strategy & Positioning",
-    icon: Compass,
-    label: "Strategic Roadmap",
-    outcome: "Comprehensive market positioning, competitor vulnerability audit, pricing psychology and acquisition channel roadmaps.",
-    description: "Marketing without strategy is just noise. We build end-to-end commercial growth architecture that aligns your product offer, ad channels, and revenue targets.",
-    bottleneck: "Businesses jump between disjointed marketing tactics without a unified customer acquisition playbook.",
-    framework: [
-      { step: "01. Full-Stack Diagnostic Audit", detail: "Analyzing historical CAC, conversion bottlenecks, and competitor ad strategies." },
-      { step: "02. Value Proposition & Offer Tuning", detail: "Refining pricing psychology and irresistible core offers." },
-      { step: "03. 90-Day Omnichannel Roadmap", detail: "Prioritizing high-leverage marketing sprints with clear KPIs." },
-      { step: "04. Executive Review & Weekly Tuning", detail: "Weekly strategic sprint syncs with our senior leadership." }
-    ],
-    points: [
-      "Comprehensive Competitor & Market Positioning Audit",
-      "Unit Economics, LTV/CAC & Margin Calibration",
-      "90-Day Omnichannel Marketing Sprint Roadmap",
-      "High-Converting Offer Architecture & Pricing Psychology",
-      "Full Attribution Setup (GA4, CAPI & Looker Studio)",
-      "Weekly Strategic Syncs with Senior Growth Leads"
-    ],
-    tools: ["Looker Studio", "Miro", "Notion Growth OS", "SimilarWeb", "GA4"],
-    caseMetric: "3.9x Blended Business Growth",
-    caseBrand: "B2B SaaS & Real Estate Portfolios",
-    faqs: [
-      { q: "What deliverables are included in a growth strategy sprint?", a: "You receive a comprehensive 90-day execution roadmap, competitor breakdown, creative angles document, and weekly milestone tracking." }
+      { q: "Do you travel for shoots across India?", a: "Yes, our cinema crew travels across Bengaluru, Mumbai, Delhi NCR, Hyderabad, and overseas on request." },
+      { q: "What resolution do you deliver in?", a: "All footage is shot in 4K/6K RAW and delivered in pristine 4K UHD with color grading." }
     ]
   },
   "growth": {
     slug: "growth",
-    title: "Growth Personalized & AI Acceleration",
-    icon: Rocket,
-    label: "Bespoke Scale",
-    outcome: "Generative AI Search (GEO), ChatGPT and Gemini entity indexing, automated lead nurturing and bespoke scaling pods.",
-    description: "A tailored growth pod built around your brand. We combine cutting-edge AI search optimization, custom CRM routing, and dedicated talent to scale your revenue exponentially.",
-    bottleneck: "One-size-fits-all agency models fail to adapt to complex product requirements and modern AI discovery.",
+    title: "Full-Stack Web Development & CRO Funnels",
+    icon: Code,
+    label: "Web Engineering",
+    outcome: "Lightning-fast, high-converting digital storefronts and web apps built on modern React, Next.js, and headless architectures.",
+    description: "A slow website kills ad spend. We engineer bespoke, responsive web experiences optimized for sub-second page loads, SEO perfection, and frictionless conversion.",
+    bottleneck: "Bloated WordPress or Shopify themes taking 6+ seconds to load, resulting in 50%+ bounce rates on paid traffic.",
     framework: [
-      { step: "01. Dedicated Growth Squad", detail: "Assigning dedicated strategists, media buyers, video editors, and engineers." },
-      { step: "02. AI Search & Entity Domination", detail: "Optimizing your brand for ChatGPT, Gemini, and Google AI Overviews." },
-      { step: "03. Real-Time WhatsApp & CRM Ingestion", detail: "Connecting inbound inquiries instantly to your sales team with automated alerts." },
-      { step: "04. Continuous Scale Protocol", detail: "Aggressively expanding winning angles into new markets and channels." }
+      { step: "01. UX/UI Wireframing & Prototyping", detail: "Mapping friction-free user journeys in high-fidelity Figma." },
+      { step: "02. Clean Component Architecture", detail: "Developing accessible, modular React code with Tailwind CSS." },
+      { step: "03. Sub-Second Speed Optimization", detail: "Achieving 95+ Google PageSpeed scores with edge caching." },
+      { step: "04. Conversion Funnel Optimization", detail: "A/B testing order bumps, sticky CTAs, and 1-click checkout." }
     ],
     points: [
-      "Dedicated Full-Stack Growth Pod (Lead, Dev, Creative, Media Buyer)",
-      "Generative Engine Optimization (GEO) for ChatGPT & Gemini",
-      "Sub-Second React Web Applications & Automated Webhooks",
-      "Instant WhatsApp & Phone Lead Ingestion Telemetry",
-      "Executive Slack/WhatsApp Direct Channel with 1-Hour SLA",
-      "Unlimited Creative Iterations & Real-Time Performance Tuning"
+      "Custom React & Next.js Headless Applications",
+      "High-Speed Shopify Plus Custom Theme Engineering",
+      "Sub-Second Core Web Vitals Optimization",
+      "Interactive Calculators, Audits & Lead Tools",
+      "Secure REST API & Database Integrations",
+      "Continuous A/B Testing & Funnel CRO"
     ],
-    tools: ["OpenAI API", "Google Gemini", "React", "Node.js", "WhatsApp API", "Zapier"],
-    caseMetric: "+273% Commercial Revenue Surge",
-    caseBrand: "Enterprise Conglomerates & D2C Market Leaders",
+    tools: ["React 18", "Next.js", "Tailwind CSS", "FastAPI / Python", "PostgreSQL", "Vercel"],
+    caseMetric: "+64% Site Conversion Rate",
+    caseBrand: "CureZen Healthcare",
     faqs: [
-      { q: "How is Growth Personalized different from standard services?", a: "You get a dedicated multidisciplinary squad working exclusively on your brand with custom engineering, AI integrations, and direct founder-level access." }
+      { q: "Do you build custom web apps or just landing pages?", a: "We build both: from rapid high-converting direct-response landers to complex full-stack web applications with Python backends." },
+      { q: "Will our website be mobile-optimized?", a: "100%. We design mobile-first with thumb-friendly touch targets and rapid touch feedback." }
+    ]
+  },
+  "strategy": {
+    slug: "strategy",
+    title: "Enterprise SEO & Generative Engine Optimization",
+    icon: Search,
+    label: "Organic Dominance",
+    outcome: "Dominate Google search results and generative AI answers (ChatGPT, Perplexity, Gemini) with entity-based search architecture.",
+    description: "Traditional keyword stuffing is dead. We build comprehensive semantic topic clusters, technical schema graphs, and authority citations that secure permanent #1 organic visibility.",
+    bottleneck: "Spending thousands on PPC ads every month with zero long-term organic equity or compounding inbound pipeline.",
+    framework: [
+      { step: "01. Entity & Knowledge Graph Audit", detail: "Mapping your brand's authority footprint across search engines and AI models." },
+      { step: "02. Technical SEO Core Optimization", detail: "Fixing crawl budgets, Core Web Vitals, and structured JSON-LD schema." },
+      { step: "03. Semantic Topic Cluster Creation", detail: "Publishing exhaustive pillar pages that rank for hundreds of long-tail terms." },
+      { step: "04. Generative Engine Optimization (GEO)", detail: "Formatting content so AI chatbots cite your brand as the definitive authority." }
+    ],
+    points: [
+      "Full Technical SEO & Core Web Vitals Hardening",
+      "Semantic Topic Clusters & Content Pillar Architecture",
+      "Generative Engine Optimization (GEO for ChatGPT & Gemini)",
+      "Advanced Schema.org JSON-LD Structured Data",
+      "High-Authority Digital PR & Editorial Backlinks",
+      "Commercial Keyword Ranking & Pipeline Tracking"
+    ],
+    tools: ["Ahrefs Enterprise", "Google Search Console", "Screaming Frog SEO Spider", "Schema App", "SEMrush"],
+    caseMetric: "+273% Organic Inbound Leads",
+    caseBrand: "FinScale Lending",
+    faqs: [
+      { q: "What is Generative Engine Optimization (GEO)?", a: "GEO is the new evolution of SEO that optimizes your brand to be cited and recommended inside AI answers like ChatGPT, Google AI Overviews, and Perplexity." },
+      { q: "How long does SEO take to produce measurable pipeline?", a: "Most clients see indexation and ranking velocity within 30 to 60 days, with exponential inbound pipeline compounding over 6 to 12 months." }
     ]
   }
 };
 
-export function PageLayout({ children, onNavigate, activeNav = "" }) {
-  const [showTopBar, setShowTopBar] = useState(true);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
-  const [leadModalOpen, setLeadModalOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState("General Inbound");
-
-  useEffect(() => {
-    document.body.style.backgroundColor = "#FFFFFF";
-    document.body.style.color = "#09090B";
-    window.scrollTo({ top: 0, behavior: "instant" });
-  }, []);
-
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", website: "", service: "Content & Paid Growth", message: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitSuccess, setSubmitSuccess] = useState(false);
-
-  const handleLeadSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert("Please enter your name, email, and phone number.");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await fetch(API_URL + "/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, service: selectedService || formData.service, source: "Sub-page Inquiry Modal" })
-      });
-      setSubmitSuccess(true);
-      setTimeout(() => {
-        setSubmitSuccess(false);
-        setLeadModalOpen(false);
-        setFormData({ name: "", email: "", phone: "", website: "", service: "Content & Paid Growth", message: "" });
-      }, 2000);
-    } catch {
-      alert("Thanks! Your message has been received. Our team will contact you on WhatsApp/Phone (+91-8810356950) shortly.");
-      setLeadModalOpen(false);
-    }
-    setSubmitting(false);
-  };
-
-  return (
-    <div style={{ backgroundColor: "#FFFFFF", color: "#09090B", minHeight: "100vh", fontFamily: "var(--font-inter)", display: "flex", flexDirection: "column" }}>
-      {showTopBar && (
-        <div style={{ background: "#D4FF00", color: "#09090B", padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", fontSize: "12px", fontFamily: "var(--font-space)", fontWeight: "800", letterSpacing: "0.05em", borderBottom: "2px solid #09090B" }}>
-          <Zap size={14} fill="#09090B" />
-          <span>NOW TAKING ON 3 NEW BRANDS THIS MONTH — LET'S BUILD SOMETHING PEOPLE CAN'T SCROLL PAST.</span>
-          <button
-            type="button"
-            onClick={() => { setSelectedService("High-Growth Retainer"); setLeadModalOpen(true); }}
-            style={{ background: "#09090B", color: "#D4FF00", border: "none", padding: "4px 10px", borderRadius: "4px", fontSize: "11px", fontWeight: "900", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "4px" }}
-          >
-            LET'S TALK <ArrowRight size={10} />
-          </button>
-          <button
-            type="button"
-            onClick={() => setShowTopBar(false)}
-            style={{ background: "transparent", border: "none", cursor: "pointer", color: "#09090B", display: "flex", alignItems: "center" }}
-            aria-label="Close"
-          >
-            <X size={16} />
-          </button>
-        </div>
-      )}
-
-      <nav style={{ background: "#FFFFFF", borderBottom: "2px solid #09090B", position: "sticky", top: 0, zIndex: 50, padding: "16px 24px" }}>
-        <div style={{ maxWidth: "1600px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <a
-            href="/"
-            onClick={(e) => { e.preventDefault(); onNavigate("/"); }}
-            style={{ textDecoration: "none", color: "#09090B", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "26px", letterSpacing: "-0.03em" }}
-          >
-            getintofeed<span style={{ color: "#0033FF" }}>.</span>
-          </a>
-
-          <div className="subpage-nav-links">
-            <div
-              style={{ position: "relative" }}
-              onMouseEnter={() => setServicesDropdownOpen(true)}
-              onMouseLeave={() => setServicesDropdownOpen(false)}
-            >
-              <a
-                href="/services"
-                onClick={(e) => { e.preventDefault(); onNavigate("/services"); }}
-                style={{ color: activeNav === "services" ? "#0033FF" : "#09090B", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px" }}
-              >
-                Services <ChevronDown size={14} />
-              </a>
-              {servicesDropdownOpen && (
-                <div style={{ position: "absolute", top: "100%", left: "-20px", background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "12px", padding: "16px", minWidth: "260px", boxShadow: "6px 6px 0px #09090B", zIndex: 100, display: "flex", flexDirection: "column", gap: "8px" }}>
-                  {Object.values(serviceCatalog).map(s => (
-                    <a
-                      key={s.slug}
-                      href={"/services/" + s.slug}
-                      onClick={(e) => { e.preventDefault(); setServicesDropdownOpen(false); onNavigate("/services/" + s.slug); }}
-                      style={{ color: "#09090B", fontSize: "12px", fontFamily: "var(--font-space)", fontWeight: "800", textDecoration: "none", textTransform: "uppercase", padding: "8px 12px", borderRadius: "6px", transition: "all 0.2s ease" }}
-                      onMouseEnter={(e) => { e.currentTarget.style.background = "#D4FF00"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-                    >
-                      {s.title.split("&")[0]}
-                    </a>
-                  ))}
-                  <div style={{ borderTop: "1px solid #E4E4E7", paddingTop: "8px", marginTop: "4px" }}>
-                    <a
-                      href="/services"
-                      onClick={(e) => { e.preventDefault(); setServicesDropdownOpen(false); onNavigate("/services"); }}
-                      style={{ color: "#0033FF", fontSize: "11px", fontFamily: "var(--font-space)", fontWeight: "900", textDecoration: "none", textTransform: "uppercase", display: "flex", alignItems: "center", gap: "4px" }}
-                    >
-                      View All 8 Services →
-                    </a>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <a href="/work" onClick={(e) => { e.preventDefault(); onNavigate("/work"); }} style={{ color: activeNav === "work" ? "#0033FF" : "#09090B", textDecoration: "none" }}>Work</a>
-            <a href="/testimonials" onClick={(e) => { e.preventDefault(); onNavigate("/testimonials"); }} style={{ color: activeNav === "testimonials" ? "#0033FF" : "#09090B", textDecoration: "none" }}>Reviews</a>
-            <a href="/about" onClick={(e) => { e.preventDefault(); onNavigate("/about"); }} style={{ color: activeNav === "about" ? "#0033FF" : "#09090B", textDecoration: "none" }}>About Us</a>
-            <a href="/pricing" onClick={(e) => { e.preventDefault(); onNavigate("/pricing"); }} style={{ color: activeNav === "pricing" ? "#0033FF" : "#09090B", textDecoration: "none" }}>Pricing</a>
-            <a href="/audit" onClick={(e) => { e.preventDefault(); onNavigate("/audit"); }} style={{ background: "#D4FF00", color: "#09090B", border: "1.5px solid #09090B", padding: "4px 12px", borderRadius: "9999px", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px", boxShadow: "2px 2px 0px #09090B" }}>⚡ Free Audit</a>
-            <a href="/blog" onClick={(e) => { e.preventDefault(); onNavigate("/blog"); }} style={{ color: activeNav === "blog" ? "#0033FF" : "#09090B", textDecoration: "none" }}>Feed Notes</a>
-            <a href="tel:+918810356950" style={{ color: "#09090B", textDecoration: "none", fontWeight: "900" }}>📞 8810356950</a>
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <button
-              type="button"
-              onClick={() => { setSelectedService("Start a Project"); setLeadModalOpen(true); }}
-              style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "10px 22px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "12px", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px", boxShadow: "3px 3px 0px #09090B" }}
-            >
-              Start a project <ArrowRight size={14} />
-            </button>
-            <button type="button" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="subpage-mobile-toggle" aria-label="Toggle menu">
-              {mobileMenuOpen ? <X size={26} color="#09090B" /> : <Menu size={26} color="#09090B" />}
-            </button>
-          </div>
-        </div>
-
-        {mobileMenuOpen && (
-          <div style={{ background: "#FFFFFF", borderTop: "2px solid #09090B", padding: "20px 24px", display: "flex", flexDirection: "column", gap: "14px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "14px", textTransform: "uppercase" }}>
-            <a href="/" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/"); }} style={{ color: "#09090B", textDecoration: "none" }}>01. Home</a>
-            <a href="/services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/services"); }} style={{ color: "#09090B", textDecoration: "none" }}>02. Services Hub</a>
-            <a href="/testimonials" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/testimonials"); }} style={{ color: "#09090B", textDecoration: "none" }}>03. Reviews & Proof</a>
-            <a href="/work" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/work"); }} style={{ color: "#09090B", textDecoration: "none" }}>03. Our Work & Portfolio</a>
-            <a href="/about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/about"); }} style={{ color: "#09090B", textDecoration: "none" }}>04. About Us</a>
-            <a href="/pricing" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/pricing"); }} style={{ color: "#09090B", textDecoration: "none" }}>05. Pricing Sprints</a>
-            <a href="/audit" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/audit"); }} style={{ color: "#09090B", textDecoration: "none", background: "#D4FF00", border: "1.5px solid #09090B", padding: "6px 12px", borderRadius: "4px", display: "inline-block" }}>06. ⚡ Free Growth Audit</a>
-            <a href="/blog" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/blog"); }} style={{ color: "#09090B", textDecoration: "none" }}>07. Feed Notes (Blog)</a>
-            <a href="/contact" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/contact"); }} style={{ color: "#09090B", textDecoration: "none" }}>08. Contact & Intake</a>
-          </div>
-        )}
-      </nav>
-
-      <main style={{ backgroundColor: "#FFFFFF", color: "#09090B", flexGrow: 1 }}>
-        {children}
-      </main>
-
-      <section style={{ backgroundColor: "#FFFFFF", padding: "80px 24px", maxWidth: "1600px", margin: "0 auto", width: "100%" }}>
-        <div style={{ background: "#D4FF00", color: "#09090B", border: "3px solid #09090B", borderRadius: "24px", padding: "60px 32px", textAlign: "center", position: "relative", overflow: "hidden", boxShadow: "8px 8px 0px #09090B" }}>
-          <div style={{ position: "relative", zIndex: 10, maxWidth: "800px", margin: "0 auto" }}>
-            <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", letterSpacing: "0.15em", textTransform: "uppercase", background: "#09090B", color: "#D4FF00", padding: "6px 16px", borderRadius: "9999px", display: "inline-block", marginBottom: "20px" }}>
-              TAKE ACTION TODAY
-            </span>
-            <h2 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5vw, 68px)", lineHeight: 0.95, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "20px" }}>
-              READY TO GET <br /> INTO THE FEED?
-            </h2>
-            <p style={{ fontSize: "18px", fontWeight: "600", color: "#09090B", maxWidth: "560px", margin: "0 auto 36px auto", lineHeight: 1.5 }}>
-              Tell us what you're building. We'll figure out how to get it noticed, clicked, and scaled.
-            </p>
-            <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
-              <button
-                type="button"
-                onClick={() => { setSelectedService("Full Growth Sprint"); setLeadModalOpen(true); }}
-                style={{ background: "#09090B", color: "#FFFFFF", padding: "16px 36px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "14px", border: "2px solid #09090B", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px", boxShadow: "3px 3px 0px #FFFFFF" }}
-              >
-                Start a project <ArrowRight size={16} />
-              </button>
-              <a
-                href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20to%20scale%20my%20brand."
-                target="_blank"
-                rel="noreferrer"
-                style={{ background: "#FFFFFF", color: "#09090B", border: "2px solid #09090B", padding: "16px 28px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "14px", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "8px", boxShadow: "3px 3px 0px #09090B" }}
-              >
-                💬 WhatsApp (8810356950)
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer style={{ background: "#F4F4F5", borderTop: "2px solid #09090B", padding: "64px 24px 32px 24px", color: "#09090B" }}>
-        <div style={{ maxWidth: "1600px", margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "40px", marginBottom: "48px" }}>
-          <div>
-            <a href="/" onClick={(e) => { e.preventDefault(); onNavigate("/"); }} style={{ textDecoration: "none", color: "#09090B", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "28px", display: "block", marginBottom: "12px" }}>
-              getintofeed<span style={{ color: "#0033FF" }}>.</span>
-            </a>
-            <p style={{ fontSize: "14px", color: "#52525B", maxWidth: "340px", lineHeight: 1.6 }}>
-              A vibrant growth studio that gets brands into the feed — and gets them real results.
-            </p>
-          </div>
-
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "48px" }}>
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase" }}>
-              <span style={{ color: "#09090B", fontSize: "11px", fontWeight: "900", letterSpacing: "0.1em", marginBottom: "4px" }}>SERVICES</span>
-              <a href="/services/content-marketing" onClick={(e) => { e.preventDefault(); onNavigate("/services/content-marketing"); }} style={{ color: "#52525B", textDecoration: "none" }}>Content Marketing</a>
-              <a href="/services/ads-campaign" onClick={(e) => { e.preventDefault(); onNavigate("/services/ads-campaign"); }} style={{ color: "#52525B", textDecoration: "none" }}>Performance Ads</a>
-              <a href="/services/social-media" onClick={(e) => { e.preventDefault(); onNavigate("/services/social-media"); }} style={{ color: "#52525B", textDecoration: "none" }}>Social Media</a>
-              <a href="/services/reels" onClick={(e) => { e.preventDefault(); onNavigate("/services/reels"); }} style={{ color: "#52525B", textDecoration: "none" }}>Viral Reels</a>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase" }}>
-              <span style={{ color: "#09090B", fontSize: "11px", fontWeight: "900", letterSpacing: "0.1em", marginBottom: "4px" }}>COMPANY</span>
-              <a href="/about" onClick={(e) => { e.preventDefault(); onNavigate("/about"); }} style={{ color: "#52525B", textDecoration: "none" }}>About Us</a>
-              <a href="/work" onClick={(e) => { e.preventDefault(); onNavigate("/work"); }} style={{ color: "#52525B", textDecoration: "none" }}>Case Studies</a>
-              <a href="/pricing" onClick={(e) => { e.preventDefault(); onNavigate("/pricing"); }} style={{ color: "#52525B", textDecoration: "none" }}>Pricing Sprints</a>
-              <a href="/careers" onClick={(e) => { e.preventDefault(); onNavigate("/careers"); }} style={{ color: "#52525B", textDecoration: "none" }}>Careers</a>
-              <a href="/admin" onClick={(e) => { e.preventDefault(); onNavigate("/admin"); }} style={{ color: "#0033FF", textDecoration: "none" }}>Admin Studio</a>
-            </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase" }}>
-              <span style={{ color: "#09090B", fontSize: "11px", fontWeight: "900", letterSpacing: "0.1em", marginBottom: "4px" }}>CONNECT</span>
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" style={{ color: "#52525B", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}><Instagram size={14} /> Instagram</a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer" style={{ color: "#52525B", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}><Linkedin size={14} /> LinkedIn</a>
-              <a href="https://wa.me/918810356950" target="_blank" rel="noreferrer" style={{ color: "#52525B", textDecoration: "none", display: "flex", alignItems: "center", gap: "6px" }}><MessageCircle size={14} /> WhatsApp</a>
-              <a href="/audit" onClick={(e) => { e.preventDefault(); onNavigate("/audit"); }} style={{ color: "#09090B", textDecoration: "none", background: "#D4FF00", border: "1px solid #09090B", padding: "2px 8px", borderRadius: "4px", display: "inline-block" }}>⚡ Audit Tool</a>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ maxWidth: "1600px", margin: "0 auto", borderTop: "1px solid #E4E4E7", paddingTop: "24px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", fontSize: "12px", fontFamily: "var(--font-space)", fontWeight: "800", textTransform: "uppercase", color: "#71717A" }}>
-          <p>© 2026 GetIntoFeed Growth Studio.</p>
-          <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-            <a href="https://www.dmca.com/Protection/Status.aspx?ID=d7bfaa8b-113f-40c7-b0b8-9da53cf5cba7" target="_blank" rel="noreferrer">
-              <img src="/dmca-badge.svg" alt="DMCA Protected" style={{ height: "22px" }} />
-            </a>
-            <a href="/privacy" onClick={(e) => { e.preventDefault(); onNavigate("/privacy"); }} style={{ color: "#71717A", textDecoration: "none" }}>Privacy</a>
-            <a href="/terms" onClick={(e) => { e.preventDefault(); onNavigate("/terms"); }} style={{ color: "#71717A", textDecoration: "none" }}>Terms</a>
-          </div>
-        </div>
-      </footer>
-
-      {leadModalOpen && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }} onClick={() => setLeadModalOpen(false)}>
-          <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", maxWidth: "480px", width: "100%", position: "relative", boxShadow: "8px 8px 0px #09090B" }} onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              onClick={() => setLeadModalOpen(false)}
-              style={{ position: "absolute", top: "16px", right: "16px", background: "transparent", border: "none", color: "#71717A", cursor: "pointer" }}
-              aria-label="Close"
-            >
-              <X size={20} />
-            </button>
-
-            <div style={{ marginBottom: "20px" }}>
-              <span style={{ fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", background: "#D4FF00", color: "#09090B", padding: "2px 8px", borderRadius: "4px", textTransform: "uppercase", border: "1px solid #09090B" }}>GET INTO THE FEED</span>
-              <h3 style={{ fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", textTransform: "uppercase", margin: "8px 0 4px 0", color: "#09090B" }}>Let's Scale Your Brand</h3>
-              <p style={{ fontSize: "13px", color: "#71717A" }}>Tell us what you're building. Our team will reach out in under 2 hours.</p>
-            </div>
-
-            {submitSuccess ? (
-              <div style={{ textAlign: "center", padding: "28px 16px" }}>
-                <Check size={36} color="#0033FF" style={{ margin: "0 auto 12px auto" }} />
-                <h4 style={{ fontFamily: "var(--font-space)", fontSize: "20px", fontWeight: "800", color: "#09090B" }}>Inquiry Received!</h4>
-                <p style={{ color: "#52525B", fontSize: "14px", marginTop: "6px" }}>We'll reach out on WhatsApp/Phone (+91-8810356950) shortly.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleLeadSubmit} style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                <div>
-                  <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "800", textTransform: "uppercase", marginBottom: "4px", color: "#09090B" }}>Your Name *</label>
-                  <input
-                    required
-                    type="text"
-                    placeholder="e.g. Ashish Raghav"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #E4E4E7", borderRadius: "6px", padding: "10px 12px", color: "#09090B", outline: "none", fontSize: "14px" }}
-                  />
-                </div>
-
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-                  <div>
-                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "800", textTransform: "uppercase", marginBottom: "4px", color: "#09090B" }}>Work Email *</label>
-                    <input
-                      required
-                      type="email"
-                      placeholder="e.g. ashish@brand.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #E4E4E7", borderRadius: "6px", padding: "10px 12px", color: "#09090B", outline: "none", fontSize: "14px" }}
-                    />
-                  </div>
-                  <div>
-                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "800", textTransform: "uppercase", marginBottom: "4px", color: "#09090B" }}>Phone / WhatsApp *</label>
-                    <input
-                      required
-                      type="tel"
-                      placeholder="e.g. 8810356950"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #E4E4E7", borderRadius: "6px", padding: "10px 12px", color: "#09090B", outline: "none", fontSize: "14px" }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "800", textTransform: "uppercase", marginBottom: "4px", color: "#09090B" }}>Website / Instagram</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. yourbrand.com"
-                    value={formData.website}
-                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                    style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #E4E4E7", borderRadius: "6px", padding: "10px 12px", color: "#09090B", outline: "none", fontSize: "14px" }}
-                  />
-                </div>
-
-                <div>
-                  <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "800", textTransform: "uppercase", marginBottom: "4px", color: "#09090B" }}>Message / Growth Goals</label>
-                  <textarea
-                    rows={2}
-                    placeholder="Tell us what you want to achieve..."
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #E4E4E7", borderRadius: "6px", padding: "10px 12px", color: "#09090B", outline: "none", fontSize: "14px" }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "12px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "13px", cursor: "pointer", marginTop: "6px", boxShadow: "2px 2px 0px #09090B" }}
-                >
-                  {submitting ? "Sending..." : "Submit Growth Inquiry →"}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-export function ServicesHubPage({ onNavigate }) {
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="services">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
-          FULL CAPABILITY SUITE
-        </span>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5.5vw, 76px)", lineHeight: 0.95, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-          GROWTH SERVICES <br /> FOR <span style={{ background: "#D4FF00", padding: "2px 12px", borderRadius: "8px", border: "2px solid #09090B" }}>MODERN BRANDS.</span>
-        </h1>
-        <p style={{ fontSize: "18px", color: "#52525B", maxWidth: "620px", margin: "0 auto 32px auto", lineHeight: 1.6 }}>
-          From viral reels to high-ROAS Meta/Google ads and AI entity optimization, explore our 8 dedicated growth engines.
-        </p>
-      </div>
-
-      <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1600px", margin: "0 auto", padding: "20px 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "28px" }}>
-        {Object.values(serviceCatalog).map(s => {
-          const Icon = s.icon || Sparkles;
-          return (
-            <div
-              key={s.slug}
-              onClick={() => onNavigate("/services/" + s.slug)}
-              style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", transition: "all 0.2s ease", boxShadow: "5px 5px 0px #09090B" }}
-              onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "8px 8px 0px #D4FF00"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "5px 5px 0px #09090B"; }}
-            >
-              <div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                  <div style={{ width: "48px", height: "48px", borderRadius: "10px", background: "#D4FF00", color: "#09090B", display: "flex", alignItems: "center", justifyContent: "center", border: "2px solid #09090B" }}>
-                    <Icon size={24} />
-                  </div>
-                  <span style={{ fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", color: "#09090B", background: "#F4F4F5", padding: "4px 10px", borderRadius: "6px", border: "1px solid #E4E4E7", textTransform: "uppercase" }}>{s.label}</span>
-                </div>
-                <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "22px", textTransform: "uppercase", color: "#09090B", marginBottom: "12px", lineHeight: 1.15 }}>{s.title}</h3>
-                <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>{s.outcome}</p>
-              </div>
-              <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "900", color: "#09090B", background: "#D4FF00", border: "1px solid #09090B", padding: "3px 10px", borderRadius: "6px" }}>{s.caseMetric}</span>
-                <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", display: "flex", alignItems: "center", gap: "4px" }}>
-                  Explore Specs <ArrowRight size={14} />
-                </span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </PageLayout>
-  );
-}
-
-export function ServiceDetailPage({ slug, onNavigate }) {
-  const service = serviceCatalog[slug] || serviceCatalog["content-marketing"];
-  const Icon = service.icon || Sparkles;
-
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="services">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "60px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto" }}>
-        <button
-          type="button"
-          onClick={() => onNavigate("/services")}
-          style={{ background: "#F4F4F5", border: "1.5px solid #09090B", padding: "8px 16px", borderRadius: "6px", color: "#09090B", display: "inline-flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", cursor: "pointer", marginBottom: "28px" }}
-        >
-          <ArrowLeft size={16} /> All Services
-        </button>
-
-        <div style={{ background: "#FFFFFF", border: "2.5px solid #09090B", borderRadius: "20px", padding: "48px 36px", boxShadow: "6px 6px 0px #09090B" }}>
-          <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", background: "#D4FF00", border: "1.5px solid #09090B", padding: "6px 14px", borderRadius: "9999px", color: "#09090B", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "20px" }}>
-            <Icon size={14} /> {service.label}
-          </div>
-
-          <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(34px, 5vw, 68px)", lineHeight: 0.95, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-            {service.title}
-          </h1>
-
-          <p style={{ fontSize: "clamp(16px, 1.8vw, 20px)", color: "#3F3F46", maxWidth: "880px", lineHeight: 1.6, fontWeight: "500", marginBottom: "32px" }}>
-            {service.outcome}
-          </p>
-
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", alignItems: "center" }}>
-            <div style={{ background: "#F4F4F5", border: "2px solid #09090B", borderRadius: "10px", padding: "14px 22px" }}>
-              <span style={{ display: "block", fontSize: "11px", color: "#71717A", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: "800" }}>PROVEN IMPACT</span>
-              <strong style={{ fontFamily: "var(--font-space)", fontSize: "22px", color: "#09090B", fontWeight: "900" }}>{service.caseMetric}</strong>
-            </div>
-            <div style={{ background: "#F4F4F5", border: "2px solid #09090B", borderRadius: "10px", padding: "14px 22px" }}>
-              <span style={{ display: "block", fontSize: "11px", color: "#71717A", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: "800" }}>CLIENT PORTFOLIO</span>
-              <strong style={{ fontFamily: "var(--font-space)", fontSize: "22px", color: "#0033FF", fontWeight: "900" }}>{service.caseBrand}</strong>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1600px", margin: "0 auto", padding: "40px 24px 80px 24px" }}>
-        <div style={{ background: "#FEF2F2", border: "2px solid #EF4444", borderRadius: "16px", padding: "32px", marginBottom: "60px", boxShadow: "4px 4px 0px #EF4444" }}>
-          <span style={{ color: "#DC2626", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.1em", display: "block", marginBottom: "8px" }}>THE INDUSTRY BOTTLENECK</span>
-          <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "24px", textTransform: "uppercase", marginBottom: "12px", color: "#991B1B" }}>Why Most Traditional Agencies Fall Short</h3>
-          <p style={{ color: "#7F1D1D", fontSize: "16px", lineHeight: 1.6, fontWeight: "500" }}>{service.bottleneck}</p>
-        </div>
-
-        <div style={{ marginBottom: "60px" }}>
-          <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "12px" }}>EXECUTION METHODOLOGY</span>
-          <h2 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(30px, 4vw, 48px)", textTransform: "uppercase", letterSpacing: "-0.04em", color: "#09090B", marginBottom: "32px" }}>Our 4-Stage Sprint Framework</h2>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "24px" }}>
-            {service.framework.map((step, idx) => (
-              <div key={idx} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "28px", boxShadow: "4px 4px 0px #09090B" }}>
-                <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#09090B", background: "#D4FF00", border: "1.5px solid #09090B", padding: "2px 10px", borderRadius: "6px", display: "inline-block", marginBottom: "16px" }}>0{idx + 1}</span>
-                <h4 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "18px", textTransform: "uppercase", color: "#09090B", marginBottom: "8px" }}>{step.step}</h4>
-                <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.6 }}>{step.detail}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div style={{ background: "#F4F4F5", border: "2.5px solid #09090B", borderRadius: "20px", padding: "40px 32px", marginBottom: "60px", boxShadow: "6px 6px 0px #09090B" }}>
-          <span style={{ color: "#09090B", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", letterSpacing: "0.15em", textTransform: "uppercase", display: "block", marginBottom: "12px" }}>WHAT YOU GET</span>
-          <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(24px, 3vw, 36px)", textTransform: "uppercase", color: "#09090B", marginBottom: "28px" }}>Core Deliverables & Outputs</h3>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px" }}>
-            {service.points.map((pt, idx) => (
-              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "12px", background: "#FFFFFF", padding: "16px 20px", borderRadius: "10px", border: "1.5px solid #09090B" }}>
-                <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: "#D4FF00", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, border: "1.5px solid #09090B" }}>
-                  <Check size={14} color="#09090B" />
-                </div>
-                <span style={{ fontFamily: "var(--font-space)", fontSize: "14px", fontWeight: "800", color: "#09090B" }}>{pt}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {service.faqs && service.faqs.length > 0 && (
-          <div style={{ maxWidth: "900px", margin: "0 auto" }}>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "32px", textTransform: "uppercase", color: "#09090B", textAlign: "center", marginBottom: "32px" }}>Frequently Asked Questions</h3>
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {service.faqs.map((faq, i) => (
-                <div key={i} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "12px", padding: "24px", boxShadow: "3px 3px 0px #09090B" }}>
-                  <h4 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "16px", color: "#0033FF", marginBottom: "8px" }}>{faq.q}</h4>
-                  <p style={{ color: "#3F3F46", fontSize: "14px", lineHeight: 1.6 }}>{faq.a}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    </PageLayout>
-  );
-}
-
-export function AboutUsPage({ onNavigate }) {
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="about">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
-          WHO'S BEHIND THE FEED
-        </span>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(40px, 6vw, 90px)", lineHeight: 0.85, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "32px" }}>
-          WE'RE GETINTOFEED<span style={{ color: "#0033FF" }}>.</span>
-        </h1>
-        <p style={{ fontSize: "clamp(20px, 2.8vw, 32px)", fontWeight: "800", color: "#09090B", maxWidth: "900px", margin: "0 auto 32px auto", lineHeight: 1.4 }}>
-          A creative growth studio built around one simple idea: <br />
-          <span style={{ background: "#D4FF00", color: "#09090B", padding: "4px 14px", borderRadius: "6px", display: "inline-block", marginTop: "8px", border: "2px solid #09090B" }}>good marketing shouldn't feel like marketing.</span>
-        </p>
-        <p style={{ fontSize: "18px", color: "#52525B", maxWidth: "760px", margin: "0 auto 48px auto", lineHeight: 1.6 }}>
-          We bring together content, creative, social and performance marketing under one roof — helping brands go from "we need marketing" to "people are actually talking about us."
-        </p>
-        <div style={{ display: "inline-flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: "12px", background: "#FFFFFF", border: "2px solid #09090B", color: "#09090B", padding: "18px 36px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "18px", textTransform: "uppercase", boxShadow: "4px 4px 0px #09090B" }}>
-          Strategy <span style={{ color: "#0033FF", margin: "0 8px" }}>×</span> Creativity <span style={{ color: "#FF6B5E", margin: "0 8px" }}>×</span> Performance
-        </div>
-      </div>
-
-      <div style={{ background: "#F4F4F5", borderTop: "2px solid #09090B", borderBottom: "2px solid #09090B", padding: "64px 24px" }}>
-        <div style={{ maxWidth: "1600px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "32px", textAlign: "center" }}>
-          <div style={{ background: "#FFFFFF", padding: "28px", borderRadius: "12px", border: "2px solid #09090B", boxShadow: "4px 4px 0px #09090B" }}>
-            <strong style={{ fontFamily: "var(--font-space)", fontSize: "48px", fontWeight: "900", color: "#09090B", display: "block" }}>103+</strong>
-            <span style={{ color: "#71717A", fontSize: "13px", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: "800" }}>Brands Scaled Across India</span>
-          </div>
-          <div style={{ background: "#FFFFFF", padding: "28px", borderRadius: "12px", border: "2px solid #09090B", boxShadow: "4px 4px 0px #09090B" }}>
-            <strong style={{ fontFamily: "var(--font-space)", fontSize: "48px", fontWeight: "900", color: "#0033FF", display: "block" }}>4.8x</strong>
-            <span style={{ color: "#71717A", fontSize: "13px", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: "800" }}>Average Client ROAS</span>
-          </div>
-          <div style={{ background: "#FFFFFF", padding: "28px", borderRadius: "12px", border: "2px solid #09090B", boxShadow: "4px 4px 0px #09090B" }}>
-            <strong style={{ fontFamily: "var(--font-space)", fontSize: "48px", fontWeight: "900", color: "#09090B", display: "block" }}>3.2M+</strong>
-            <span style={{ color: "#71717A", fontSize: "13px", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: "800" }}>Monthly Viral Impressions</span>
-          </div>
-          <div style={{ background: "#FFFFFF", padding: "28px", borderRadius: "12px", border: "2px solid #09090B", boxShadow: "4px 4px 0px #09090B" }}>
-            <strong style={{ fontFamily: "var(--font-space)", fontSize: "48px", fontWeight: "900", color: "#0033FF", display: "block" }}>&lt; 2hr</strong>
-            <span style={{ color: "#71717A", fontSize: "13px", fontFamily: "var(--font-space)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: "800" }}>Fast Strategy Response Time</span>
-          </div>
-        </div>
-      </div>
-    </PageLayout>
-  );
-}
-
-export function WorkPage({ onNavigate }) {
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="work">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
-          PROOF & CASE STUDIES
-        </span>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-          TURNING SCROLLS <br /> INTO <span style={{ background: "#D4FF00", padding: "2px 12px", borderRadius: "8px", border: "2px solid #09090B" }}>REVENUE.</span>
-        </h1>
-        <p style={{ fontSize: "18px", color: "#52525B", maxWidth: "600px", margin: "0 auto" }}>
-          Explore real case studies from high-growth D2C, real estate, B2B SaaS, and healthcare brands scaled by Get Into Feed.
-        </p>
-      </div>
-
-      <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1600px", margin: "0 auto", padding: "0 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "28px" }}>
-        <div onClick={() => onNavigate("/work/veloura-organics")} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B", cursor: "pointer", transition: "transform 0.2s ease" }} onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"} onMouseLeave={(e) => e.currentTarget.style.transform = "none"}>
-          <div>
-            <span style={{ background: "#D4FF00", color: "#09090B", padding: "4px 12px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px", border: "1px solid #09090B" }}>D2C & E-COMMERCE</span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "24px", textTransform: "uppercase", color: "#09090B", marginBottom: "8px" }}>Veloura Organics</h3>
-            <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>Scaled Meta Ad creative testing from ₹5L to ₹45L monthly revenue with 4.8x verified ROAS.</p>
-          </div>
-          <div>
-            <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-              <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#09090B" }}>4.8x ROAS</span>
-              <span style={{ fontSize: "12px", color: "#71717A", fontWeight: "700" }}>3-Tier UGC Sprints</span>
-            </div>
-            <span style={{ color: "#0033FF", fontWeight: "900", fontSize: "12px", fontFamily: "var(--font-space)", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-              Read Full Case Study →
-            </span>
-          </div>
-        </div>
-
-        <div onClick={() => onNavigate("/work/urbanedge-realty")} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B", cursor: "pointer", transition: "transform 0.2s ease" }} onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"} onMouseLeave={(e) => e.currentTarget.style.transform = "none"}>
-          <div>
-            <span style={{ background: "#0033FF", color: "#FFFFFF", padding: "4px 12px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>REAL ESTATE</span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "24px", textTransform: "uppercase", color: "#09090B", marginBottom: "8px" }}>UrbanEdge Luxury Realty</h3>
-            <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>Captured 1,420+ high-ticket buyer inquiries for ₹2Cr+ villas using cinematic drone reels and hyper-local geo-targeting.</p>
-          </div>
-          <div>
-            <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-              <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#0033FF" }}>+340% LEADS</span>
-              <span style={{ fontSize: "12px", color: "#71717A", fontWeight: "700" }}>Reels & Paid Funnel</span>
-            </div>
-            <span style={{ color: "#0033FF", fontWeight: "900", fontSize: "12px", fontFamily: "var(--font-space)", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-              Read Full Case Study →
-            </span>
-          </div>
-        </div>
-
-        <div onClick={() => onNavigate("/work/finscale-lending")} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B", cursor: "pointer", transition: "transform 0.2s ease" }} onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"} onMouseLeave={(e) => e.currentTarget.style.transform = "none"}>
-          <div>
-            <span style={{ background: "#09090B", color: "#D4FF00", padding: "4px 12px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>BFSI & FINTECH</span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "24px", textTransform: "uppercase", color: "#09090B", marginBottom: "8px" }}>FinScale Lending</h3>
-            <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>Dominated commercial keyword rankings on Google and AI Overviews, lifting organic applications by 273%.</p>
-          </div>
-          <div>
-            <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-              <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#09090B" }}>+273% SEO</span>
-              <span style={{ fontSize: "12px", color: "#71717A", fontWeight: "700" }}>GEO & Entity Graph</span>
-            </div>
-            <span style={{ color: "#0033FF", fontWeight: "900", fontSize: "12px", fontFamily: "var(--font-space)", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-              Read Full Case Study →
-            </span>
-          </div>
-        </div>
-      </div>
-    </PageLayout>
-  );
-}
-
-export function PricingPage({ onNavigate }) {
-  const [billingCycle, setBillingCycle] = useState("monthly");
-  const [budgetSlider, setBudgetSlider] = useState(150000);
-
-  const estimatedClicks = Math.round(budgetSlider / 25);
-  const estimatedLeads = Math.round(estimatedClicks * 0.045);
-  const estimatedRevenue = Math.round(budgetSlider * 4.8);
-
-  const formatRupees = (n) => {
-    if (n >= 10000000) return "₹" + (n / 10000000).toFixed(2) + " Cr";
-    if (n >= 100000) return "₹" + (n / 100000).toFixed(2) + " Lakhs";
-    return "₹" + n.toLocaleString("en-IN");
-  };
-
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="pricing">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
-          TRANSPARENT GROWTH SPRINTS
-        </span>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-          PREDICTABLE PRICING. <br /> <span style={{ background: "#D4FF00", padding: "2px 12px", borderRadius: "8px", border: "2px solid #09090B" }}>UNSTOPPABLE SCALE.</span>
-        </h1>
-        <p style={{ fontSize: "18px", color: "#52525B", maxWidth: "600px", margin: "0 auto 32px auto" }}>
-          No hidden fees. No long-term lock-in traps. Just relentless weekly execution and compounding revenue.
-        </p>
-
-        <div style={{ display: "inline-flex", background: "#F4F4F5", padding: "4px", borderRadius: "9999px", border: "2px solid #09090B" }}>
-          <button
-            type="button"
-            onClick={() => setBillingCycle("monthly")}
-            style={{ background: billingCycle === "monthly" ? "#D4FF00" : "transparent", color: "#09090B", border: billingCycle === "monthly" ? "1.5px solid #09090B" : "none", padding: "8px 20px", borderRadius: "9999px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", textTransform: "uppercase", cursor: "pointer" }}
-          >
-            Monthly Sprints
-          </button>
-          <button
-            type="button"
-            onClick={() => setBillingCycle("quarterly")}
-            style={{ background: billingCycle === "quarterly" ? "#D4FF00" : "transparent", color: "#09090B", border: billingCycle === "quarterly" ? "1.5px solid #09090B" : "none", padding: "8px 20px", borderRadius: "9999px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", textTransform: "uppercase", cursor: "pointer" }}
-          >
-            Quarterly (Save 15%)
-          </button>
-        </div>
-      </div>
-
-      <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1600px", margin: "0 auto", padding: "40px 24px 60px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "28px" }}>
-        <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "20px", padding: "36px 28px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B" }}>
-          <div>
-            <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", color: "#71717A", letterSpacing: "0.1em", textTransform: "uppercase" }}>TIER 01</span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "26px", textTransform: "uppercase", margin: "8px 0", color: "#09090B" }}>Starter Sprint</h3>
-            <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.5, marginBottom: "24px" }}>For emerging brands ready to build consistent inbound lead funnels.</p>
-            <div style={{ marginBottom: "24px" }}>
-              <span style={{ fontFamily: "var(--font-space)", fontSize: "44px", fontWeight: "900", color: "#09090B" }}>
-                {billingCycle === "monthly" ? "₹39,000" : "₹33,000"}
-              </span>
-              <span style={{ color: "#71717A", fontSize: "14px", fontWeight: "700" }}> / month</span>
-            </div>
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "32px" }}>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "600" }}><Check size={16} color="#0033FF" /> Targeted Meta & Google Ads Setup</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "600" }}><Check size={16} color="#0033FF" /> 12 High-Retention Viral Reels / Mo</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "600" }}><Check size={16} color="#0033FF" /> Core Commercial SEO Optimization</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "600" }}><Check size={16} color="#0033FF" /> GA4 & Meta Pixel CAPI Tracking</li>
-            </ul>
-          </div>
-          <a href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20the%20Starter%20Sprint." target="_blank" rel="noreferrer" style={{ background: "#F4F4F5", border: "2px solid #09090B", color: "#09090B", padding: "14px", borderRadius: "6px", textAlign: "center", textDecoration: "none", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", textTransform: "uppercase" }}>
-            Choose Starter Sprint →
-          </a>
-        </div>
-
-        <div style={{ background: "#FFFFFF", border: "3px solid #09090B", borderRadius: "20px", padding: "36px 28px", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", boxShadow: "8px 8px 0px #D4FF00" }}>
-          <div style={{ position: "absolute", top: "-14px", right: "24px", background: "#D4FF00", color: "#09090B", padding: "4px 14px", borderRadius: "9999px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", border: "1.5px solid #09090B" }}>
-            MOST POPULAR • 4.8x ROAS
-          </div>
-          <div>
-            <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", color: "#0033FF", letterSpacing: "0.1em", textTransform: "uppercase" }}>TIER 02</span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "26px", textTransform: "uppercase", margin: "8px 0", color: "#09090B" }}>Scale Engine</h3>
-            <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.5, marginBottom: "24px" }}>The full multi-channel growth system for scaling D2C, B2B & real estate brands.</p>
-            <div style={{ marginBottom: "24px" }}>
-              <span style={{ fontFamily: "var(--font-space)", fontSize: "44px", fontWeight: "900", color: "#09090B" }}>
-                {billingCycle === "monthly" ? "₹79,000" : "₹67,000"}
-              </span>
-              <span style={{ color: "#71717A", fontSize: "14px", fontWeight: "700" }}> / month</span>
-            </div>
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "32px" }}>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "800" }}><Check size={16} color="#0033FF" /> Omnichannel Meta, Google & YouTube Ads</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "800" }}><Check size={16} color="#0033FF" /> 24 Viral Reels & Short-Form Videos</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "800" }}><Check size={16} color="#0033FF" /> Generative AI Search (GEO) Optimization</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "800" }}><Check size={16} color="#0033FF" /> Custom Sub-Second React Landing Pages</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "800" }}><Check size={16} color="#0033FF" /> Weekly Strategy Sprints & Slack Access</li>
-            </ul>
-          </div>
-          <a href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20the%20Scale%20Engine." target="_blank" rel="noreferrer" style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "16px", borderRadius: "6px", textAlign: "center", textDecoration: "none", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "14px", textTransform: "uppercase", boxShadow: "2px 2px 0px #09090B" }}>
-            Ignite Scale Engine →
-          </a>
-        </div>
-
-        <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "20px", padding: "36px 28px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B" }}>
-          <div>
-            <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", color: "#71717A", letterSpacing: "0.1em", textTransform: "uppercase" }}>TIER 03</span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "26px", textTransform: "uppercase", margin: "8px 0", color: "#09090B" }}>Enterprise Domination</h3>
-            <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.5, marginBottom: "24px" }}>For category leaders requiring a full dedicated growth squad and bespoke AI engineering.</p>
-            <div style={{ marginBottom: "24px" }}>
-              <span style={{ fontFamily: "var(--font-space)", fontSize: "44px", fontWeight: "900", color: "#09090B" }}>
-                {billingCycle === "monthly" ? "₹1,49,000" : "₹1,26,000"}
-              </span>
-              <span style={{ color: "#71717A", fontSize: "14px", fontWeight: "700" }}> / month</span>
-            </div>
-            <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px", marginBottom: "32px" }}>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "600" }}><Check size={16} color="#0033FF" /> Dedicated Full-Stack Growth Squad</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "600" }}><Check size={16} color="#0033FF" /> Unlimited Creative & Video Capacity</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "600" }}><Check size={16} color="#0033FF" /> Full CRM & Webhook Automation</li>
-              <li style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "14px", color: "#09090B", fontWeight: "600" }}><Check size={16} color="#0033FF" /> 1-Hour SLA Executive Support Channel</li>
-            </ul>
-          </div>
-          <a href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20want%20Enterprise%20Domination." target="_blank" rel="noreferrer" style={{ background: "#F4F4F5", border: "2px solid #09090B", color: "#09090B", padding: "14px", borderRadius: "6px", textAlign: "center", textDecoration: "none", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", textTransform: "uppercase" }}>
-            Dominate Your Market →
-          </a>
-        </div>
-      </div>
-
-      <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1200px", margin: "0 auto", padding: "0 24px 80px 24px" }}>
-        <div style={{ background: "#F4F4F5", border: "2px solid #09090B", borderRadius: "20px", padding: "40px", boxShadow: "6px 6px 0px #09090B" }}>
-          <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <span style={{ background: "#D4FF00", color: "#09090B", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", padding: "3px 10px", borderRadius: "4px", border: "1px solid #09090B" }}>INTERACTIVE ROI CALCULATOR</span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", textTransform: "uppercase", margin: "8px 0 4px 0", color: "#09090B" }}>Calculate Your Monthly Revenue Return</h3>
-            <p style={{ color: "#52525B", fontSize: "14px" }}>Drag the budget slider to see projected high-intent clicks, leads, and estimated returns.</p>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "32px", alignItems: "center" }}>
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                <span style={{ fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase", color: "#09090B" }}>Monthly Ad Spend</span>
-                <span style={{ fontFamily: "var(--font-space)", fontSize: "20px", fontWeight: "900", color: "#09090B" }}>{formatRupees(budgetSlider)}</span>
-              </div>
-              <input
-                type="range"
-                min={50000}
-                max={2000000}
-                step={25000}
-                value={budgetSlider}
-                onChange={(e) => setBudgetSlider(Number(e.target.value))}
-                style={{ width: "100%", accentColor: "#0033FF", height: "8px", cursor: "pointer" }}
-              />
-              <div style={{ display: "flex", justifyContent: "space-between", fontSize: "11px", color: "#71717A", marginTop: "6px", fontFamily: "var(--font-space)", fontWeight: "700" }}>
-                <span>₹50K</span>
-                <span>₹10 Lakhs</span>
-                <span>₹20 Lakhs</span>
-              </div>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-              <div style={{ background: "#FFFFFF", padding: "20px", borderRadius: "12px", border: "2px solid #09090B" }}>
-                <span style={{ fontSize: "11px", color: "#71717A", fontFamily: "var(--font-space)", textTransform: "uppercase", fontWeight: "800" }}>Projected Leads</span>
-                <strong style={{ fontFamily: "var(--font-space)", fontSize: "26px", fontWeight: "900", color: "#09090B", display: "block", marginTop: "4px" }}>{estimatedLeads.toLocaleString("en-IN")}+</strong>
-              </div>
-              <div style={{ background: "#FFFFFF", padding: "20px", borderRadius: "12px", border: "2px solid #09090B" }}>
-                <span style={{ fontSize: "11px", color: "#71717A", fontFamily: "var(--font-space)", textTransform: "uppercase", fontWeight: "800" }}>Estimated Revenue</span>
-                <strong style={{ fontFamily: "var(--font-space)", fontSize: "26px", fontWeight: "900", color: "#0033FF", display: "block", marginTop: "4px" }}>{formatRupees(estimatedRevenue)}</strong>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </PageLayout>
-  );
-}
-
-export function AuditToolPage({ onNavigate }) {
-  const [urlInput, setUrlInput] = useState("");
-  const [category, setCategory] = useState("D2C & E-Commerce");
-  const [auditing, setAuditing] = useState(false);
-  const [report, setReport] = useState(null);
-
-  const handleAudit = async (e) => {
-    e.preventDefault();
-    if (!urlInput) return;
-    setAuditing(true);
-    try {
-      const res = await fetch(API_URL + "/api/audit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: urlInput, targetCategory: category })
-      });
-      const data = await res.json();
-      if (data.success && data.report) {
-        setReport(data.report);
-      } else {
-        setReport({
-          domain: urlInput.replace(/https?:\/\//, '').replace(/www\./, '').split('/')[0],
-          targetCategory: category,
-          overallScore: 78,
-          metrics: { seoScore: 74, speedScore: 82, socialScore: 78, mobileUsability: "High", schemaMarkup: "Basic", metaPixelStatus: "Active", geoAiIndexStatus: "Needs Optimization" },
-          criticalIssues: ["Missing Knowledge Graph schema for AI Overviews", "Conversion tracking drop-off on mobile checkout", "Reel video retention hook below 8.4% median"],
-          quickWins: ["Deploy programmatic keyword clusters", "Activate weekly 3-tier UGC creative testing sprints", "Enable Generative Engine Optimization (GEO)"]
-        });
-      }
-    } catch {
-      setReport({
-        domain: urlInput.replace(/https?:\/\//, '').replace(/www\./, '').split('/')[0],
-        targetCategory: category,
-        overallScore: 81,
-        metrics: { seoScore: 79, speedScore: 85, socialScore: 80, mobileUsability: "High", schemaMarkup: "Basic", metaPixelStatus: "Active", geoAiIndexStatus: "Needs Optimization" },
-        criticalIssues: ["Missing Knowledge Graph schema for AI Overviews", "Conversion tracking drop-off on mobile checkout"],
-        quickWins: ["Deploy programmatic keyword clusters", "Activate weekly 3-tier UGC creative testing sprints"]
-      });
-    }
-    setAuditing(false);
-  };
-
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="audit">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
-          PROPRIETARY GROWTH TELEMETRY
-        </span>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-          INSTANT GROWTH & <br /> <span style={{ background: "#D4FF00", padding: "2px 12px", borderRadius: "8px", border: "2px solid #09090B" }}>SEO AUDIT TOOL.</span>
-        </h1>
-        <p style={{ fontSize: "18px", color: "#52525B", maxWidth: "680px", margin: "0 auto 40px auto" }}>
-          Enter your brand domain to calculate your Growth Readiness Score across SEO, AI search indexation, PageSpeed, and creative retention.
-        </p>
-
-        <div style={{ maxWidth: "700px", margin: "0 auto", background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", textAlign: "left", boxShadow: "6px 6px 0px #09090B" }}>
-          <form onSubmit={handleAudit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-            <div>
-              <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", marginBottom: "6px", color: "#09090B" }}>Your Website or Store URL *</label>
-              <input
-                required
-                type="text"
-                placeholder="e.g. yourbrand.com"
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #09090B", borderRadius: "8px", padding: "14px 16px", color: "#09090B", fontSize: "16px", outline: "none" }}
-              />
-            </div>
-
-            <div>
-              <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", marginBottom: "6px", color: "#09090B" }}>Industry Sector</label>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #09090B", borderRadius: "8px", padding: "14px 16px", color: "#09090B", fontSize: "14px", outline: "none" }}
-              >
-                <option value="D2C & E-Commerce">D2C & E-Commerce</option>
-                <option value="Real Estate & Property">Real Estate & Property</option>
-                <option value="B2B SaaS & Tech">B2B SaaS & Tech</option>
-                <option value="Healthcare & Wellness">Healthcare & Wellness</option>
-                <option value="Hospitality & Dining">Hospitality & Dining</option>
-              </select>
-            </div>
-
-            <button
-              type="submit"
-              disabled={auditing}
-              style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "16px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "14px", letterSpacing: "0.05em", cursor: "pointer", marginTop: "8px", boxShadow: "2px 2px 0px #09090B" }}
-            >
-              {auditing ? "Analyzing Domain Metrics..." : "Run Instant Growth Audit ⚡"}
-            </button>
-          </form>
-        </div>
-      </div>
-
-      {report && (
-        <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1200px", margin: "0 auto", padding: "0 24px 80px 24px" }}>
-          <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "20px", padding: "40px", boxShadow: "8px 8px 0px #D4FF00" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #09090B", paddingBottom: "24px", marginBottom: "32px", flexWrap: "wrap", gap: "16px" }}>
-              <div>
-                <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase" }}>AUDIT REPORT GENERATED</span>
-                <h3 style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", textTransform: "uppercase", color: "#09090B", margin: "4px 0" }}>{report.domain}</h3>
-                <span style={{ color: "#71717A", fontSize: "13px" }}>Sector: {report.targetCategory}</span>
-              </div>
-              <div style={{ textAlign: "center", background: "#D4FF00", border: "2px solid #09090B", borderRadius: "12px", padding: "16px 28px" }}>
-                <span style={{ fontSize: "11px", color: "#09090B", fontFamily: "var(--font-space)", textTransform: "uppercase", fontWeight: "800" }}>OVERALL SCORE</span>
-                <strong style={{ fontFamily: "var(--font-space)", fontSize: "40px", fontWeight: "900", color: "#09090B", display: "block" }}>{report.overallScore}/100</strong>
-              </div>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "32px" }}>
-              <div style={{ background: "#F4F4F5", padding: "16px", borderRadius: "10px", border: "1.5px solid #09090B" }}>
-                <span style={{ color: "#71717A", fontSize: "12px", fontWeight: "700" }}>SEO Authority</span>
-                <strong style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", color: "#09090B", marginTop: "4px" }}>{report.metrics.seoScore}/100</strong>
-              </div>
-              <div style={{ background: "#F4F4F5", padding: "16px", borderRadius: "10px", border: "1.5px solid #09090B" }}>
-                <span style={{ color: "#71717A", fontSize: "12px", fontWeight: "700" }}>Speed & Core Vitals</span>
-                <strong style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", color: "#0033FF", marginTop: "4px" }}>{report.metrics.speedScore}/100</strong>
-              </div>
-              <div style={{ background: "#F4F4F5", padding: "16px", borderRadius: "10px", border: "1.5px solid #09090B" }}>
-                <span style={{ color: "#71717A", fontSize: "12px", fontWeight: "700" }}>Social Retention</span>
-                <strong style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", color: "#09090B", marginTop: "4px" }}>{report.metrics.socialScore}/100</strong>
-              </div>
-            </div>
-
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px" }}>
-              <div style={{ background: "#FEF2F2", padding: "24px", borderRadius: "12px", border: "2px solid #EF4444" }}>
-                <h4 style={{ fontFamily: "var(--font-space)", fontSize: "16px", fontWeight: "900", color: "#991B1B", textTransform: "uppercase", marginBottom: "16px" }}>⚠️ Critical Bottlenecks</h4>
-                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px" }}>
-                  {report.criticalIssues.map((iss, i) => (
-                    <li key={i} style={{ fontSize: "13px", color: "#7F1D1D", display: "flex", alignItems: "flex-start", gap: "8px", fontWeight: "600" }}>
-                      <X size={16} color="#DC2626" style={{ flexShrink: 0, marginTop: "2px" }} /> {iss}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div style={{ background: "#F0FDF4", padding: "24px", borderRadius: "12px", border: "2px solid #22C55E" }}>
-                <h4 style={{ fontFamily: "var(--font-space)", fontSize: "16px", fontWeight: "900", color: "#166534", textTransform: "uppercase", marginBottom: "16px" }}>⚡ Recommended High-ROI Fixes</h4>
-                <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "10px" }}>
-                  {report.quickWins.map((win, i) => (
-                    <li key={i} style={{ fontSize: "13px", color: "#14532D", display: "flex", alignItems: "flex-start", gap: "8px", fontWeight: "600" }}>
-                      <Check size={16} color="#16A34A" style={{ flexShrink: 0, marginTop: "2px" }} /> {win}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            <div style={{ marginTop: "32px", textAlign: "center" }}>
-              <a
-                href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%2C%20I%20just%20ran%20an%20audit%20for%20my%20website%20and%20want%20a%20full%20strategy%20call."
-                target="_blank"
-                rel="noreferrer"
-                style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "16px 36px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "14px", textDecoration: "none", display: "inline-block", boxShadow: "4px 4px 0px #09090B" }}
-              >
-                Claim Free 30-Min Strategy Call on WhatsApp →
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-    </PageLayout>
-  );
-}
-
-export function FeedNotesPage({ onNavigate, slug }) {
-  const articles = [
-    {
-      slug: "enterprise-seo-ai-overviews-geo-playbook",
-      title: "The 2026 Enterprise SEO Playbook: Dominating AI Overviews, ChatGPT & Gemini (GEO)",
-      category: "AI & GEO Search",
-      readTime: "8 min read",
-      date: "Aug 2026",
-      desc: "How modern enterprise brands are restructuring schema topologies, building topical authority moats, and earning primary citation status in AI answer engines.",
-      content: `Search behavior has undergone its most dramatic transformation since the inception of PageRank. With Google AI Overviews capturing zero-click real estate and conversational engines like ChatGPT and Gemini handling millions of commercial discovery queries daily, traditional keyword stuffing is dead.
-
-To thrive in 2026, enterprise growth leaders must transition from standard SEO to Generative Engine Optimization (GEO).
-
-Key Pillars of Generative Engine Optimization (GEO):
-1. Entity Graph Structuring: Connect your brand's core domain entities via JSON-LD Schema.
-2. First-Party Empirical Data: AI models heavily favor original research and benchmark reports.
-3. Structured Quotation Topology: Write concise, authoritative definitions under H2/H3 headers.
-4. Author Authority & E-E-A-T Signals: Establish verified author entity profiles across tier-1 digital PR publications.`
-    },
-    {
-      slug: "scaling-d2c-meta-ads-ugc-creative-sprints",
-      title: "Scaling D2C Meta Ads from ₹10L to ₹1Cr/Month: The 3-Tier UGC Creative Sprints Framework",
-      category: "Performance Paid Media",
-      readTime: "6 min read",
-      date: "Aug 2026",
-      desc: "The exact creative testing methodology that cuts customer acquisition cost by 42% and delivers predictable 4.8x ROAS on Meta and TikTok.",
-      content: `Scaling ad spend without increasing Customer Acquisition Cost (CAC) is the ultimate hurdle for modern D2C brands. 
-
-The solution is high-velocity creative testing:
-- Tier 1: 3-Second Hook Variations (Visual pattern interrupts)
-- Tier 2: Problem-Agitation Proof (Real customer unboxing & pain points)
-- Tier 3: Offer & Frictionless Checkout (Direct incentives & WhatsApp routing)`
-    }
-  ];
-
-  if (slug) {
-    const article = articles.find(a => a.slug === slug) || articles[0];
-    return (
-      <PageLayout onNavigate={onNavigate} activeNav="blog">
-        <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 60px 24px", maxWidth: "1000px", margin: "0 auto" }}>
-          <button
-            type="button"
-            onClick={() => onNavigate("/blog")}
-            style={{ background: "#F4F4F5", border: "1.5px solid #09090B", padding: "8px 16px", borderRadius: "6px", color: "#09090B", display: "inline-flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "800", textTransform: "uppercase", cursor: "pointer", marginBottom: "24px" }}
-          >
-            <ArrowLeft size={16} /> Back to All Articles
-          </button>
-
-          <span style={{ background: "#D4FF00", color: "#09090B", border: "1.5px solid #09090B", padding: "4px 10px", borderRadius: "9999px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>
-            {article.category} • {article.readTime}
-          </span>
-
-          <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(32px, 4.5vw, 60px)", lineHeight: 0.95, textTransform: "uppercase", color: "#09090B", marginBottom: "32px" }}>
-            {article.title}
-          </h1>
-
-          <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "40px 32px", fontSize: "17px", lineHeight: 1.8, color: "#27272A", whiteSpace: "pre-line", boxShadow: "5px 5px 0px #09090B" }}>
-            {article.content}
-          </div>
-        </div>
-      </PageLayout>
-    );
-  }
-
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="blog">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
-          FEED NOTES & INSIGHTS
-        </span>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-          PLAYBOOKS & <span style={{ background: "#D4FF00", padding: "2px 12px", borderRadius: "8px", border: "2px solid #09090B" }}>TACTICS.</span>
-        </h1>
-        <p style={{ fontSize: "18px", color: "#52525B", maxWidth: "600px", margin: "0 auto" }}>
-          Actionable strategies on performance ads, viral reels, Generative AI Search (GEO), and conversion architecture.
-        </p>
-      </div>
-
-      <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1200px", margin: "0 auto", padding: "40px 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "28px" }}>
-        {articles.map((art) => (
-          <div
-            key={art.slug}
-            onClick={() => onNavigate("/blog/" + art.slug)}
-            style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", cursor: "pointer", transition: "all 0.2s ease", boxShadow: "5px 5px 0px #09090B" }}
-            onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "8px 8px 0px #D4FF00"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "5px 5px 0px #09090B"; }}
-          >
-            <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", display: "block", marginBottom: "12px" }}>
-              {art.category} • {art.readTime}
-            </span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "22px", textTransform: "uppercase", color: "#09090B", lineHeight: 1.15, marginBottom: "12px" }}>
-              {art.title}
-            </h3>
-            <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>
-              {art.desc}
-            </p>
-            <span style={{ color: "#09090B", fontFamily: "var(--font-space)", fontSize: "13px", fontWeight: "900", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "6px" }}>
-              Read Playbook <ArrowRight size={14} />
-            </span>
-          </div>
-        ))}
-      </div>
-    </PageLayout>
-  );
-}
-
-export function CareersPage({ onNavigate }) {
-  const roles = [
-    { title: "Senior Performance Media Buyer (Meta & Google)", exp: "3-5 Yrs", type: "Full-Time • Delhi-NCR / Remote", desc: "Manage ₹20L+ monthly ad spends, build high-velocity creative testing sandboxes, and scale ROAS for category leaders." },
-    { title: "Viral Short-Form Video Editor & Motion Designer", exp: "2-4 Yrs", type: "Full-Time • Delhi-NCR", desc: "Script, pace, and edit high-retention vertical reels, kinetic typography, and audio-synced video ads." },
-    { title: "Generative AI Search & SEO Architect (GEO)", exp: "3-6 Yrs", type: "Full-Time • Remote / Hybrid", desc: "Build semantic Schema.org Knowledge Graphs, programmatic keyword hubs, and AI answer engine domination systems." },
-    { title: "Full-Stack React & Next.js Growth Engineer", exp: "2-5 Yrs", type: "Full-Time • Remote / Hybrid", desc: "Develop sub-second React web experiences, automated webhook CRM funnels, and high-converting landing pages." }
-  ];
-
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="careers">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 40px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
-          JOIN THE SQUAD
-        </span>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-          BUILD WHAT PEOPLE <br /> <span style={{ background: "#D4FF00", padding: "2px 12px", borderRadius: "8px", border: "2px solid #09090B" }}>CAN'T SCROLL PAST.</span>
-        </h1>
-        <p style={{ fontSize: "18px", color: "#52525B", maxWidth: "600px", margin: "0 auto 40px auto" }}>
-          We're looking for ambitious media buyers, video creators, SEO architects, and engineers ready to scale India's fastest growing brands.
-        </p>
-      </div>
-
-      <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1200px", margin: "0 auto", padding: "0 24px 80px 24px", display: "flex", flexDirection: "column", gap: "20px" }}>
-        {roles.map((r, i) => (
-          <div key={i} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "28px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "20px", boxShadow: "4px 4px 0px #09090B" }}>
-            <div>
-              <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase" }}>{r.type}</span>
-              <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "22px", textTransform: "uppercase", color: "#09090B", margin: "4px 0 8px 0" }}>{r.title}</h3>
-              <p style={{ color: "#52525B", fontSize: "14px", maxWidth: "700px" }}>{r.desc}</p>
-            </div>
-            <a
-              href="mailto:careers@getintofeed.com?subject=Job%20Application%20for%20"
-              style={{ background: "#D4FF00", color: "#09090B", border: "1.5px solid #09090B", padding: "12px 24px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "12px", textDecoration: "none", boxShadow: "2px 2px 0px #09090B" }}
-            >
-              Apply Now →
-            </a>
-          </div>
-        ))}
-      </div>
-    </PageLayout>
-  );
-}
-
-export function ContactPage({ onNavigate }) {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", website: "", service: "Full Growth Sprint", message: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    try {
-      await fetch(API_URL + "/api/leads", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, source: "Contact Us Page" })
-      });
-      setSuccess(true);
-    } catch {
-      setSuccess(true);
-    }
-    setSubmitting(false);
-  };
-
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="contact">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "48px" }}>
-          <div style={{ textAlign: "center", maxWidth: "800px", margin: "0 auto" }}>
-            <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
-              START A PROJECT
-            </span>
-            <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-              READY TO GET <br /> <span style={{ background: "#D4FF00", padding: "2px 12px", borderRadius: "8px", border: "2px solid #09090B" }}>INTO THE FEED?</span>
-            </h1>
-            <p style={{ fontSize: "18px", color: "#52525B" }}>
-              Tell us about your brand. Our growth team responds with a bespoke strategy within 2 hours.
-            </p>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "32px", maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
-            <div style={{ background: "#F4F4F5", border: "2.5px solid #09090B", borderRadius: "20px", padding: "36px", display: "flex", flexDirection: "column", gap: "28px", boxShadow: "6px 6px 0px #09090B" }}>
-              <div>
-                <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", color: "#09090B", background: "#D4FF00", padding: "2px 8px", borderRadius: "4px", textTransform: "uppercase", border: "1px solid #09090B" }}>CALL / WHATSAPP</span>
-                <a href="tel:+918810356950" style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", color: "#09090B", textDecoration: "none", marginTop: "8px" }}>+91-8810356950</a>
-                <p style={{ color: "#71717A", fontSize: "13px", marginTop: "4px" }}>Direct line to our senior growth strategists</p>
-              </div>
-
-              <div>
-                <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", color: "#FFFFFF", background: "#0033FF", padding: "2px 8px", borderRadius: "4px", textTransform: "uppercase" }}>OFFICIAL EMAIL</span>
-                <a href="mailto:growth@getintofeed.com" style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "20px", fontWeight: "900", color: "#09090B", textDecoration: "none", marginTop: "8px" }}>growth@getintofeed.com</a>
-                <p style={{ color: "#71717A", fontSize: "13px", marginTop: "4px" }}>For commercial proposals and RFPs</p>
-              </div>
-
-              <div>
-                <span style={{ fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", color: "#FFFFFF", background: "#09090B", padding: "2px 8px", borderRadius: "4px", textTransform: "uppercase" }}>OFFICE HUBS</span>
-                <p style={{ fontFamily: "var(--font-space)", fontSize: "16px", fontWeight: "900", color: "#09090B", marginTop: "8px" }}>Delhi-NCR • Bengaluru • Mumbai</p>
-                <p style={{ color: "#71717A", fontSize: "13px", marginTop: "4px" }}>Serving fast-growing brands pan-India and globally</p>
-              </div>
-            </div>
-
-            <div style={{ background: "#FFFFFF", border: "2.5px solid #09090B", borderRadius: "20px", padding: "36px", boxShadow: "6px 6px 0px #09090B" }}>
-              {success ? (
-                <div style={{ textAlign: "center", padding: "40px 16px" }}>
-                  <Check size={48} color="#0033FF" style={{ margin: "0 auto 16px auto" }} />
-                  <h3 style={{ fontFamily: "var(--font-space)", fontSize: "24px", fontWeight: "900", textTransform: "uppercase", color: "#09090B" }}>Inquiry Submitted!</h3>
-                  <p style={{ color: "#52525B", fontSize: "15px", marginTop: "10px" }}>Our growth lead will contact you on WhatsApp / Phone (+91-8810356950) shortly.</p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-                  <div>
-                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", marginBottom: "6px", color: "#09090B" }}>Full Name *</label>
-                    <input required type="text" placeholder="e.g. Ashish Raghav" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #09090B", borderRadius: "6px", padding: "12px 14px", color: "#09090B", outline: "none" }} />
-                  </div>
-
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
-                    <div>
-                      <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", marginBottom: "6px", color: "#09090B" }}>Work Email *</label>
-                      <input required type="email" placeholder="e.g. ashish@brand.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #09090B", borderRadius: "6px", padding: "12px 14px", color: "#09090B", outline: "none" }} />
-                    </div>
-                    <div>
-                      <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", marginBottom: "6px", color: "#09090B" }}>Phone / WhatsApp *</label>
-                      <input required type="tel" placeholder="e.g. 8810356950" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #09090B", borderRadius: "6px", padding: "12px 14px", color: "#09090B", outline: "none" }} />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", marginBottom: "6px", color: "#09090B" }}>Brand Website / Instagram</label>
-                    <input type="text" placeholder="e.g. yourbrand.com" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #09090B", borderRadius: "6px", padding: "12px 14px", color: "#09090B", outline: "none" }} />
-                  </div>
-
-                  <div>
-                    <label style={{ display: "block", fontFamily: "var(--font-space)", fontSize: "12px", fontWeight: "900", textTransform: "uppercase", marginBottom: "6px", color: "#09090B" }}>Growth Goals & Message</label>
-                    <textarea rows={3} placeholder="Tell us about your brand revenue, ad budget, or timeline..." value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} style={{ width: "100%", background: "#F4F4F5", border: "1.5px solid #09090B", borderRadius: "6px", padding: "12px 14px", color: "#09090B", outline: "none" }} />
-                  </div>
-
-                  <button type="submit" disabled={submitting} style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "16px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "14px", cursor: "pointer", marginTop: "6px", boxShadow: "2px 2px 0px #09090B" }}>
-                    {submitting ? "Submitting..." : "Submit Growth Inquiry →"}
-                  </button>
-                </form>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </PageLayout>
-  );
-}
-
-export function LegalPage({ type = "privacy", onNavigate }) {
-  const isPrivacy = type === "privacy";
-  return (
-    <PageLayout onNavigate={onNavigate}>
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 60px 24px", maxWidth: "900px", margin: "0 auto" }}>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "42px", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-          {isPrivacy ? "Privacy Policy" : "Terms of Service"}
-        </h1>
-        <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", color: "#27272A", lineHeight: 1.8, fontSize: "15px", boxShadow: "5px 5px 0px #09090B" }}>
-          <p style={{ marginBottom: "16px" }}>
-            Last Updated: August 2026. Get Into Feed ("we", "our", "us") is dedicated to protecting your data and maintaining enterprise privacy standards.
-          </p>
-          <h3 style={{ fontFamily: "var(--font-space)", color: "#09090B", background: "#D4FF00", border: "1px solid #09090B", display: "inline-block", padding: "2px 8px", borderRadius: "4px", fontSize: "16px", fontWeight: "900", textTransform: "uppercase", margin: "24px 0 8px 0" }}>1. Data Collection & Analytics</h3>
-          <p style={{ marginBottom: "16px" }}>
-            We only collect information directly submitted through our inquiry forms (Name, Email, Phone, Website) to provide marketing consultations. We do not sell or lease client data to third parties.
-          </p>
-          <h3 style={{ fontFamily: "var(--font-space)", color: "#09090B", background: "#D4FF00", border: "1px solid #09090B", display: "inline-block", padding: "2px 8px", borderRadius: "4px", fontSize: "16px", fontWeight: "900", textTransform: "uppercase", margin: "24px 0 8px 0" }}>2. Copyright & Intellectual Property</h3>
-          <p style={{ marginBottom: "16px" }}>
-            All content, graphics, and trademarks are protected under DMCA registration and international intellectual property laws.
-          </p>
-        </div>
-      </div>
-    </PageLayout>
-  );
-}
-
 // =========================================================================
-// CASE STUDIES CATALOG & DETAILED CASE STUDY VIEW
+// CASE STUDIES CATALOG
 // =========================================================================
 export const caseStudiesCatalog = {
   "veloura-organics": {
@@ -1614,345 +371,1552 @@ export const caseStudiesCatalog = {
   }
 };
 
-export function CaseStudyDetailPage({ slug, onNavigate }) {
-  const caseData = caseStudiesCatalog[slug] || caseStudiesCatalog["veloura-organics"];
+// =========================================================================
+// MASTER PAGE LAYOUT (INHERITING EXACT HOMEPAGE DNA)
+// =========================================================================
+export function PageLayout({ children, onNavigate, activeNav = "" }) {
+  const [showTopBar, setShowTopBar] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState("General Growth Inquiry");
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", website: "", service: "General Growth Inquiry", message: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleLeadSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.phone) {
+      alert("Please fill in your name, email, and phone number.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await fetch(`${API_URL}/api/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, service: selectedService || formData.service, source: "Subpage Lead Modal" })
+      });
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setLeadModalOpen(false);
+        setFormData({ name: "", email: "", phone: "", website: "", service: "General Growth Inquiry", message: "" });
+      }, 2000);
+    } catch {
+      alert("Thank you! Your growth inquiry has been received. Our team will contact you shortly.");
+      setLeadModalOpen(false);
+    }
+    setSubmitting(false);
+  };
 
   return (
-    <PageLayout onNavigate={onNavigate} activeNav="work">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "60px 24px 40px 24px", maxWidth: "1400px", margin: "0 auto" }}>
-        {/* Back Link */}
-        <button
-          type="button"
-          onClick={() => onNavigate("/work")}
-          style={{ background: "transparent", border: "none", color: "#71717A", display: "inline-flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-space)", fontWeight: "700", fontSize: "12px", textTransform: "uppercase", cursor: "pointer", marginBottom: "24px" }}
-        >
-          <ArrowLeft size={16} /> Back to all case studies
-        </button>
-
-        {/* Case Study Header */}
-        <div style={{ borderBottom: "2px solid #09090B", paddingBottom: "40px", marginBottom: "50px" }}>
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
-            <span style={{ background: "#0033FF", color: "#FFFFFF", padding: "6px 14px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase" }}>
-              {caseData.industry}
-            </span>
-            <span style={{ background: "#D4FF00", color: "#09090B", padding: "6px 14px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "11px", letterSpacing: "0.05em", textTransform: "uppercase", border: "1.5px solid #09090B" }}>
-              VERIFIED GROWTH CASE STUDY
-            </span>
-          </div>
-
-          <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(34px, 5vw, 68px)", lineHeight: 0.95, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", margin: "0 0 20px 0" }}>
-            {caseData.brand}
-          </h1>
-
-          <p style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(18px, 2.5vw, 26px)", color: "#0033FF", textTransform: "uppercase", letterSpacing: "-0.02em", margin: "0 0 20px 0" }}>
-            {caseData.tagline}
-          </p>
-
-          <p style={{ fontSize: "16px", color: "#52525B", maxWidth: "800px", lineHeight: 1.7, margin: 0 }}>
-            {caseData.overview}
-          </p>
+    <div className="antialiased selection:bg-brand-lime selection:text-brand-dark bg-brand-dark font-inter min-h-screen text-white flex flex-col relative">
+      {/* Top Bar Announcement Banner */}
+      {showTopBar && (
+        <div className="bg-[#D4FF00] text-[#09090B] font-space font-bold text-xs uppercase tracking-wider py-2.5 px-4 flex items-center justify-center gap-3 relative z-50 text-center select-none">
+          <Zap size={14} fill="#09090B" className="shrink-0" />
+          <span className="hidden sm:inline">NOW TAKING ON 3 NEW BRANDS THIS MONTH — LET'S BUILD SOMETHING PEOPLE CAN'T SCROLL PAST.</span>
+          <span className="sm:hidden">TAKING ON 3 NEW BRANDS THIS MONTH.</span>
+          <button
+            type="button"
+            onClick={() => { setSelectedService("High-Growth Retainer"); setLeadModalOpen(true); }}
+            className="inline-flex bg-brand-dark text-white px-3 py-1 rounded text-[10px] hover:bg-black shrink-0 items-center gap-1 transition-colors group cursor-pointer border-none font-bold"
+          >
+            LET'S TALK <ArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowTopBar(false)}
+            className="absolute right-4 top-1/2 -translate-y-1/2 opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none text-brand-dark cursor-pointer p-1"
+            aria-label="Close"
+          >
+            <X size={14} />
+          </button>
         </div>
+      )}
 
-        {/* Metrics Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "60px" }}>
-          {caseData.metrics.map((m, idx) => (
-            <div key={idx} style={{ background: idx === 0 ? "#D4FF00" : "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "28px", boxShadow: "5px 5px 0px #09090B" }}>
-              <div style={{ fontSize: "12px", fontFamily: "var(--font-space)", fontWeight: "800", textTransform: "uppercase", color: idx === 0 ? "#09090B" : "#71717A", marginBottom: "8px" }}>
-                {m.label}
-              </div>
-              <div style={{ fontSize: "clamp(32px, 4vw, 44px)", fontFamily: "var(--font-space)", fontWeight: "900", color: "#09090B", letterSpacing: "-0.04em", lineHeight: 1 }}>
-                {m.value}
-              </div>
-              <div style={{ fontSize: "12px", fontWeight: "700", color: idx === 0 ? "#09090B" : "#0033FF", marginTop: "10px" }}>
-                ✓ {m.change}
-              </div>
+      {/* Global Master Navbar */}
+      <nav className="w-full z-50 bg-brand-dark border-b border-white/10 sticky top-0 backdrop-blur-md" id="navbar">
+        <div className="max-w-[1280px] mx-auto px-6 md:px-12 lg:px-16 py-4 md:py-5 flex justify-between items-center">
+          <a
+            href="/"
+            onClick={(e) => { e.preventDefault(); onNavigate("/"); }}
+            className="font-space font-bold text-2xl tracking-tighter text-white hover:text-brand-lime transition-colors text-decoration-none"
+          >
+            getintofeed<span className="text-brand-blue">.</span>
+          </a>
+
+          {/* Desktop Nav Links */}
+          <div className="hidden lg:flex items-center gap-8 font-bold font-space text-xs tracking-widest uppercase">
+            <div
+              className="relative py-2"
+              onMouseEnter={() => setServicesDropdownOpen(true)}
+              onMouseLeave={() => setServicesDropdownOpen(false)}
+            >
+              <a
+                href="/services"
+                onClick={(e) => { e.preventDefault(); onNavigate("/services"); }}
+                className={`flex items-center gap-1.5 transition-colors text-decoration-none ${
+                  activeNav === "services" ? "text-brand-lime" : "text-white/85 hover:text-brand-lime"
+                }`}
+              >
+                Services <ChevronDown size={13} />
+              </a>
+
+              {servicesDropdownOpen && (
+                <div className="absolute top-full left-0 bg-[#18181B] border border-white/15 rounded-xl p-3 min-w-[280px] shadow-2xl z-50 flex flex-col gap-1">
+                  {Object.values(serviceCatalog).map(s => (
+                    <a
+                      key={s.slug}
+                      href={"/services/" + s.slug}
+                      onClick={(e) => { e.preventDefault(); setServicesDropdownOpen(false); onNavigate("/services/" + s.slug); }}
+                      className="text-white/80 hover:text-brand-lime hover:bg-white/5 px-3 py-2 rounded-lg text-[11px] font-space font-bold uppercase tracking-wider text-decoration-none transition-colors"
+                    >
+                      {s.title.split("&")[0]}
+                    </a>
+                  ))}
+                  <div className="border-t border-white/10 pt-2 mt-1">
+                    <a
+                      href="/services"
+                      onClick={(e) => { e.preventDefault(); setServicesDropdownOpen(false); onNavigate("/services"); }}
+                      className="text-brand-lime hover:text-white px-3 py-1.5 text-[10px] font-space font-bold uppercase tracking-widest text-decoration-none flex items-center gap-1"
+                    >
+                      View All 8 Services →
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
-          ))}
+
+            <a
+              href="/work"
+              onClick={(e) => { e.preventDefault(); onNavigate("/work"); }}
+              className={`transition-colors text-decoration-none ${
+                activeNav === "work" ? "text-brand-lime" : "text-white/85 hover:text-brand-lime"
+              }`}
+            >
+              Work
+            </a>
+
+            <a
+              href="/testimonials"
+              onClick={(e) => { e.preventDefault(); onNavigate("/testimonials"); }}
+              className={`transition-colors text-decoration-none ${
+                activeNav === "testimonials" ? "text-brand-lime" : "text-white/85 hover:text-brand-lime"
+              }`}
+            >
+              Reviews
+            </a>
+
+            <a
+              href="/about"
+              onClick={(e) => { e.preventDefault(); onNavigate("/about"); }}
+              className={`transition-colors text-decoration-none ${
+                activeNav === "about" ? "text-brand-lime" : "text-white/85 hover:text-brand-lime"
+              }`}
+            >
+              About Us
+            </a>
+
+            <a
+              href="/pricing"
+              onClick={(e) => { e.preventDefault(); onNavigate("/pricing"); }}
+              className={`transition-colors text-decoration-none ${
+                activeNav === "pricing" ? "text-brand-lime" : "text-white/85 hover:text-brand-lime"
+              }`}
+            >
+              Pricing
+            </a>
+
+            <a
+              href="/blog"
+              onClick={(e) => { e.preventDefault(); onNavigate("/blog"); }}
+              className={`transition-colors text-decoration-none ${
+                activeNav === "blog" ? "text-brand-lime" : "text-white/85 hover:text-brand-lime"
+              }`}
+            >
+              Feed Notes
+            </a>
+
+            <a
+              href="tel:+918810356950"
+              className="text-white/90 hover:text-brand-lime transition-colors text-decoration-none font-bold"
+            >
+              📞 8810356950
+            </a>
+          </div>
+
+          {/* Desktop Right CTA */}
+          <button
+            type="button"
+            onClick={() => { setSelectedService("Start a Project"); setLeadModalOpen(true); }}
+            className="hidden md:flex bg-brand-blue text-white px-5 py-2.5 rounded-lg text-xs font-bold font-space uppercase tracking-wider hover:bg-blue-600 hover:shadow-[0_0_20px_rgba(0,51,255,0.4)] transition-all items-center gap-2 group cursor-pointer border-none"
+          >
+            Start a project <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="lg:hidden text-white p-1 bg-transparent border-none cursor-pointer"
+            aria-label="Toggle Menu"
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
 
-        {/* Challenge & Solution Cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "30px", marginBottom: "60px" }}>
-          <div style={{ background: "#F4F4F5", border: "2px solid #09090B", borderRadius: "16px", padding: "36px", boxShadow: "5px 5px 0px #09090B" }}>
-            <span style={{ background: "#FF6B5E", color: "#FFFFFF", padding: "4px 10px", borderRadius: "4px", fontSize: "11px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>
-              THE BOTTLENECK
-            </span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "22px", textTransform: "uppercase", color: "#09090B", marginBottom: "14px" }}>
-              The Challenge
-            </h3>
-            <p style={{ color: "#52525B", fontSize: "15px", lineHeight: 1.7, margin: 0 }}>
-              {caseData.challenge}
+        {/* Mobile Menu Drawer */}
+        {mobileMenuOpen && (
+          <div className="flex flex-col bg-brand-dark px-6 py-6 border-b border-white/10 gap-5 absolute w-full z-40 left-0 top-full lg:hidden shadow-2xl">
+            <a href="/" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/"); }} className="text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">01. Home</a>
+            <a href="/services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/services"); }} className="text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">02. Services Hub</a>
+            <a href="/work" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/work"); }} className="text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">03. Case Studies & Proof</a>
+            <a href="/testimonials" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/testimonials"); }} className="text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">04. Client Reviews</a>
+            <a href="/about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/about"); }} className="text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">05. About Us</a>
+            <a href="/pricing" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/pricing"); }} className="text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">06. Pricing Sprints</a>
+            <a href="/blog" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/blog"); }} className="text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">07. Feed Notes</a>
+            <a href="/contact" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/contact"); }} className="text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">08. Contact & Discovery</a>
+            <button
+              type="button"
+              onClick={() => { setMobileMenuOpen(false); setSelectedService("Start a Project"); setLeadModalOpen(true); }}
+              className="bg-brand-blue text-white px-6 py-3 rounded-lg text-xs font-bold font-space uppercase tracking-wider hover:bg-blue-600 transition-all flex justify-center items-center gap-2 group w-full mt-2 cursor-pointer border-none"
+            >
+              Start a project <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+        )}
+      </nav>
+
+      {/* Main Subpage Content */}
+      <main className="flex-grow">
+        {children}
+      </main>
+
+      {/* Global Master Footer */}
+      <footer className="relative z-30 bg-brand-dark pt-16 pb-8 px-6 md:px-12 lg:px-16 w-full text-white border-t border-white/10 mt-auto">
+        <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-10 mb-12">
+          <div>
+            <a href="/" onClick={(e) => { e.preventDefault(); onNavigate("/"); }} className="font-space font-bold text-3xl tracking-tighter text-white hover:text-brand-lime transition-colors block mb-3 text-decoration-none">
+              getintofeed<span className="text-brand-blue">.</span>
+            </a>
+            <p className="text-xs text-gray-400 font-medium max-w-[280px] leading-relaxed font-inter">
+              A vibrant growth studio that gets brands into the feed — and gets them verified revenue.
             </p>
           </div>
 
-          <div style={{ background: "#09090B", color: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "36px", boxShadow: "5px 5px 0px #D4FF00" }}>
-            <span style={{ background: "#D4FF00", color: "#09090B", padding: "4px 10px", borderRadius: "4px", fontSize: "11px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>
-              OUR PLAYBOOK
-            </span>
-            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "22px", textTransform: "uppercase", color: "#D4FF00", marginBottom: "14px" }}>
-              The Execution
-            </h3>
-            <p style={{ color: "#D4D4D8", fontSize: "15px", lineHeight: 1.7, margin: 0 }}>
-              {caseData.solution}
-            </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 md:gap-12 w-full md:w-auto">
+            <div className="flex flex-col gap-3 font-space font-bold text-[10px] uppercase tracking-widest text-white">
+              <a href="/services/content-marketing" onClick={(e) => { e.preventDefault(); onNavigate("/services/content-marketing"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white/80">Content</a>
+              <a href="/services/ads-campaign" onClick={(e) => { e.preventDefault(); onNavigate("/services/ads-campaign"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white/80">Paid Media</a>
+              <a href="/services/social-media" onClick={(e) => { e.preventDefault(); onNavigate("/services/social-media"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white/80">Social</a>
+            </div>
+            <div className="flex flex-col gap-3 font-space font-bold text-[10px] uppercase tracking-widest text-white">
+              <a href="/services/graphics-design" onClick={(e) => { e.preventDefault(); onNavigate("/services/graphics-design"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white/80">Creative</a>
+              <a href="/services/growth" onClick={(e) => { e.preventDefault(); onNavigate("/services/growth"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white/80">Web Dev</a>
+              <a href="/services/strategy" onClick={(e) => { e.preventDefault(); onNavigate("/services/strategy"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white/80">SEO</a>
+            </div>
+            <div className="flex flex-col gap-3 font-space font-bold text-[10px] uppercase tracking-widest text-white col-span-2 sm:col-span-1">
+              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-brand-lime transition-colors flex items-center gap-2 text-decoration-none text-white/80"><Instagram size={12} className="text-brand-lime" /> Instagram</a>
+              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-brand-blue transition-colors flex items-center gap-2 text-decoration-none text-white/80"><Linkedin size={12} className="text-brand-blue" /> LinkedIn</a>
+              <a href="mailto:hello@getintofeed.com" className="hover:text-brand-lime transition-colors flex items-center gap-2 text-decoration-none text-white/80"><Mail size={12} className="text-white" /> Email</a>
+            </div>
           </div>
         </div>
 
-        {/* Deliverables */}
-        <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "36px", marginBottom: "60px", boxShadow: "5px 5px 0px #09090B" }}>
-          <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "20px", textTransform: "uppercase", color: "#09090B", marginBottom: "20px" }}>
-            Key Deliverables & Assets Built
-          </h3>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
-            {caseData.deliverables.map((d, idx) => (
-              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "10px", background: "#F4F4F5", padding: "14px 18px", borderRadius: "8px", border: "1px solid #E4E4E7" }}>
-                <CheckCircle2 size={18} color="#0033FF" style={{ flexShrink: 0 }} />
-                <span style={{ fontSize: "13px", fontWeight: "700", color: "#09090B", fontFamily: "var(--font-space)" }}>{d}</span>
+        <div className="max-w-[1280px] mx-auto border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] sm:text-[10px] font-space font-bold tracking-widest uppercase text-gray-500">
+          <p>© 2026 GetIntoFeed Growth Studio. All rights reserved.</p>
+          <div className="flex gap-6">
+            <a href="/privacy" onClick={(e) => { e.preventDefault(); onNavigate("/privacy"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-gray-400">Privacy Policy</a>
+            <a href="/terms" onClick={(e) => { e.preventDefault(); onNavigate("/terms"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-gray-400">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
+
+      {/* Lead Intake Modal */}
+      {leadModalOpen && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-[200] flex items-center justify-center p-4" onClick={() => setLeadModalOpen(false)}>
+          <div className="bg-[#09090B] border-2 border-[#D4FF00] rounded-2xl p-6 sm:p-8 max-w-md w-full relative shadow-[0_0_50px_rgba(212,255,0,0.2)] text-white" onClick={(e) => e.stopPropagation()}>
+            <button type="button" onClick={() => setLeadModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-white bg-transparent border-none cursor-pointer"><X size={20} /></button>
+            <div className="mb-6">
+              <span className="font-space font-bold text-xs uppercase tracking-widest text-[#D4FF00] mb-2 block">Quick Inquiry</span>
+              <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-2">Let's build your feed.</h3>
+              <p className="text-gray-400 text-xs font-inter">Tell us about your brand. We'll reply within 15 minutes.</p>
+            </div>
+            {submitted ? (
+              <div className="bg-[#18181B] border border-[#D4FF00] rounded-xl p-6 text-center">
+                <CheckCircle2 size={36} className="text-[#D4FF00] mx-auto mb-3" />
+                <h4 className="font-space font-bold text-lg uppercase text-white mb-1">Inquiry Received!</h4>
+                <p className="text-gray-300 text-xs font-inter">Our lead strategist will reach out to you directly.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleLeadSubmit} className="flex flex-col gap-4">
+                <div>
+                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Your Name *</label>
+                  <input required type="text" placeholder="e.g. Ashish Raghav" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Email *</label>
+                    <input required type="email" placeholder="ashish@brand.com" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none" />
+                  </div>
+                  <div>
+                    <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Phone *</label>
+                    <input required type="tel" placeholder="8810356950" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Website or Handle</label>
+                  <input type="text" placeholder="yourbrand.com" value={formData.website} onChange={(e) => setFormData({ ...formData, website: e.target.value })} className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none" />
+                </div>
+                <div>
+                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">What are your growth goals?</label>
+                  <textarea rows={2} placeholder="Tell us what you want to achieve..." value={formData.message} onChange={(e) => setFormData({ ...formData, message: e.target.value })} className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none" />
+                </div>
+                <button type="submit" disabled={submitting} className="bg-[#D4FF00] text-[#09090B] font-space font-bold uppercase text-xs tracking-wider py-3 rounded-lg hover:bg-[#E2FF4D] hover:shadow-[0_0_20px_rgba(212,255,0,0.4)] transition-all cursor-pointer border-none mt-2">
+                  {submitting ? "Sending..." : "Submit Growth Inquiry →"}
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Floating Right-Side Navigation Dock */}
+      <FloatingNavControl />
+    </div>
+  );
+}
+
+// =========================================================================
+// SERVICES HUB PAGE (/services)
+// =========================================================================
+export function ServicesHubPage({ onNavigate }) {
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="services">
+      {/* Dark Hero */}
+      <section className="relative pt-16 pb-16 md:pt-20 md:pb-20 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto text-center">
+          <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue mb-4">
+            Capabilities & Growth Engines
+          </p>
+          <h1 className="font-space font-bold text-[36px] sm:text-[50px] md:text-[68px] lg:text-[76px] leading-[0.85] tracking-tighter uppercase mb-6">
+            SERVICES ENGINEERED <br />
+            FOR <span className="text-brand-lime">PREDICTABLE REVENUE.</span>
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-medium font-inter mb-8">
+            We don't sell random packages. We deploy modular growth systems across content, paid media, creative design, and technical conversion.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <span className="bg-[#18181B] border border-white/15 text-white px-4 py-1.5 rounded-full text-[11px] font-space font-bold uppercase tracking-wider">
+              8 Specialized Capabilities
+            </span>
+            <span className="bg-[#18181B] border border-brand-lime/40 text-brand-lime px-4 py-1.5 rounded-full text-[11px] font-space font-bold uppercase tracking-wider">
+              Weekly Creative Testing Sprints
+            </span>
+            <span className="bg-[#18181B] border border-white/15 text-white px-4 py-1.5 rounded-full text-[11px] font-space font-bold uppercase tracking-wider">
+              Direct Senior Execution
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* 8 Services Master Grid */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {Object.values(serviceCatalog).map((s, idx) => {
+            const IconComp = s.icon;
+            return (
+              <div
+                key={s.slug}
+                onClick={() => onNavigate("/services/" + s.slug)}
+                className="group bg-[#18181B] border border-white/10 hover:border-brand-lime rounded-2xl p-6 flex flex-col justify-between cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_10px_30px_rgba(0,0,0,0.6)]"
+              >
+                <div>
+                  <div className="flex justify-between items-start mb-6">
+                    <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-brand-lime group-hover:bg-brand-lime group-hover:text-brand-dark transition-colors">
+                      <IconComp size={22} />
+                    </div>
+                    <span className="font-space font-bold text-xs text-gray-500 group-hover:text-brand-lime transition-colors">
+                      0{idx + 1}
+                    </span>
+                  </div>
+
+                  <span className="font-space font-bold text-[10px] uppercase tracking-widest text-brand-blue block mb-2">
+                    {s.label}
+                  </span>
+                  <h3 className="font-space font-bold text-lg md:text-xl uppercase tracking-tight text-white mb-3 group-hover:text-brand-lime transition-colors">
+                    {s.title}
+                  </h3>
+                  <p className="text-gray-400 text-xs md:text-sm leading-relaxed font-inter line-clamp-3 mb-6">
+                    {s.outcome}
+                  </p>
+                </div>
+
+                <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+                  <span className="text-brand-lime text-xs font-space font-bold uppercase tracking-wider flex items-center gap-1.5 group-hover:underline">
+                    Explore Capability <ArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Delivery Sprints (Alternating Light Gray Section) */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-light-gray text-brand-dark border-y border-gray-200">
+        <div className="max-w-[1280px] mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue mb-3">Our Delivery Framework</p>
+            <h2 className="font-space font-bold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-brand-dark mb-4 leading-tight">
+              HOW WE SHIP WINS IN <span className="text-brand-blue">30-DAY CYCLES.</span>
+            </h2>
+            <p className="text-gray-600 text-sm md:text-base font-inter">
+              No endless agency onboarding. We deploy proven growth playbooks from Day 1.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            {[
+              { step: "Sprint 01", title: "Funnel & Creative Audit", desc: "Diagnostic teardown of current CPA, creative fatigue, unit economics, and keyword gaps." },
+              { step: "Sprint 02", title: "Creative Engine Build", desc: "Producing 20+ hook-driven UGC video reels, carousels, and custom direct-response landers." },
+              { step: "Sprint 03", title: "Algorithmic Scaling", desc: "Deploying Advantage+ CBO campaigns, Google Search capture, and conversion signal hardening." },
+              { step: "Sprint 04", title: "Retention & LTV Lift", desc: "Optimizing email flows, SMS retention, and category authority digital PR." }
+            ].map((st, i) => (
+              <div key={i} className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between hover:border-brand-dark transition-colors">
+                <div>
+                  <span className="font-space font-bold text-xs text-brand-blue tracking-widest uppercase block mb-3">{st.step}</span>
+                  <h3 className="font-space font-bold text-lg uppercase tracking-tight text-brand-dark mb-2">{st.title}</h3>
+                  <p className="text-gray-600 text-xs md:text-sm leading-relaxed font-inter">{st.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
+      </section>
 
-        {/* Client Testimonial */}
-        <div style={{ background: "#0033FF", color: "#FFFFFF", borderRadius: "20px", padding: "48px 36px", marginBottom: "60px", position: "relative", overflow: "hidden" }}>
-          <Quote size={60} style={{ position: "absolute", top: "20px", right: "24px", opacity: 0.15 }} />
-          <div style={{ display: "flex", gap: "4px", marginBottom: "20px" }}>
-            {[...Array(caseData.testimonial.rating)].map((_, i) => (
-              <Star key={i} size={20} fill="#D4FF00" color="#D4FF00" />
-            ))}
-          </div>
-          <p style={{ fontSize: "clamp(18px, 2.5vw, 24px)", fontFamily: "var(--font-space)", fontWeight: "700", lineHeight: 1.5, marginBottom: "24px", maxWidth: "900px" }}>
-            "{caseData.testimonial.quote}"
-          </p>
-          <div>
-            <div style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "16px", textTransform: "uppercase" }}>{caseData.testimonial.author}</div>
-            <div style={{ color: "#D4FF00", fontSize: "13px", fontWeight: "700" }}>{caseData.testimonial.role}</div>
-          </div>
-        </div>
-
-        {/* CTA Banner */}
-        <div style={{ background: "#09090B", color: "#FFFFFF", borderRadius: "20px", padding: "50px 36px", textAlign: "center", border: "2px solid #D4FF00" }}>
-          <h2 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(26px, 4vw, 44px)", textTransform: "uppercase", color: "#FFFFFF", marginBottom: "16px" }}>
-            WANT SIMILAR RESULTS FOR YOUR FEED?
+      {/* Bottom CTA Banner */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1280px] mx-auto bg-brand-blue rounded-3xl p-10 md:p-16 text-center shadow-2xl relative overflow-hidden">
+          <h2 className="font-space font-bold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-white mb-4">
+            NOT SURE WHICH CAPABILITY YOU NEED?
           </h2>
-          <p style={{ color: "#A1A1AA", fontSize: "15px", maxWidth: "600px", margin: "0 auto 30px auto" }}>
-            Let's audit your current marketing funnel and identify high-converting revenue opportunities.
+          <p className="text-blue-100 text-sm md:text-base max-w-xl mx-auto mb-8 font-inter">
+            Let's conduct a free 360° growth audit of your current ad account, organic feed, and website conversion rate.
           </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
-            <button
-              type="button"
-              onClick={() => onNavigate("/audit")}
-              style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #D4FF00", padding: "14px 28px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "13px", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px" }}
-            >
-              Get Free Growth Audit <ArrowRight size={16} />
-            </button>
-            <button
-              type="button"
-              onClick={() => onNavigate("/contact")}
-              style={{ background: "transparent", color: "#FFFFFF", border: "2px solid #FFFFFF", padding: "14px 28px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "13px", cursor: "pointer" }}
-            >
-              Book Strategy Call
-            </button>
-          </div>
+          <a
+            href="/contact"
+            onClick={(e) => { e.preventDefault(); onNavigate("/contact"); }}
+            className="bg-brand-lime text-brand-dark px-8 py-3.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] hover:shadow-[0_0_25px_rgba(212,255,0,0.5)] transition-all inline-flex items-center gap-2 group text-decoration-none"
+          >
+            Claim Free Growth Audit <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </a>
         </div>
-      </div>
+      </section>
     </PageLayout>
   );
 }
 
 // =========================================================================
-// CLIENTS & TESTIMONIALS PAGE (/clients, /testimonials)
+// SERVICE DETAIL PAGE (/services/:slug)
+// =========================================================================
+export function ServiceDetailPage({ slug, onNavigate }) {
+  const service = serviceCatalog[slug] || serviceCatalog["content-marketing"];
+  const IconComp = service.icon;
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="services">
+      {/* Dark Hero */}
+      <section className="pt-16 pb-16 md:pt-20 md:pb-20 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto">
+          <button
+            type="button"
+            onClick={() => onNavigate("/services")}
+            className="text-gray-400 hover:text-brand-lime font-space font-bold text-xs uppercase tracking-widest flex items-center gap-2 mb-6 cursor-pointer bg-transparent border-none"
+          >
+            <ArrowLeft size={14} /> Back to all services
+          </button>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-10 items-center">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="bg-brand-blue text-white px-3 py-1 rounded text-[11px] font-space font-bold uppercase tracking-wider">
+                  {service.label}
+                </span>
+                <span className="bg-white/10 text-brand-lime px-3 py-1 rounded text-[11px] font-space font-bold uppercase tracking-wider border border-brand-lime/30">
+                  Sprint Capability
+                </span>
+              </div>
+              <h1 className="font-space font-bold text-[36px] sm:text-[48px] md:text-[60px] leading-[0.9] tracking-tighter uppercase text-white mb-6">
+                {service.title}
+              </h1>
+              <p className="text-gray-300 text-base md:text-lg leading-relaxed font-inter max-w-2xl mb-8">
+                {service.outcome}
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <a
+                  href="/contact"
+                  onClick={(e) => { e.preventDefault(); onNavigate("/contact"); }}
+                  className="bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] hover:shadow-[0_0_20px_rgba(212,255,0,0.4)] transition-all inline-flex items-center gap-2 group text-decoration-none"
+                >
+                  Book This Sprint <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </a>
+                <a
+                  href="/pricing"
+                  onClick={(e) => { e.preventDefault(); onNavigate("/pricing"); }}
+                  className="bg-transparent border border-white/20 text-white px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-blue hover:border-brand-blue transition-all inline-flex items-center gap-2 text-decoration-none"
+                >
+                  View Sprint Pricing
+                </a>
+              </div>
+            </div>
+
+            {/* Verified Case Metric Box */}
+            <div className="bg-[#18181B] border-2 border-white/10 rounded-2xl p-8 shadow-2xl">
+              <span className="font-space font-bold text-xs uppercase tracking-widest text-brand-lime block mb-2">Verified Result</span>
+              <div className="font-space font-bold text-3xl sm:text-4xl text-white uppercase tracking-tight mb-2">
+                {service.caseMetric}
+              </div>
+              <p className="text-gray-400 text-xs font-inter mb-6">Client: {service.caseBrand}</p>
+              <div className="border-t border-white/10 pt-4 flex items-center justify-between text-xs text-gray-400 font-space uppercase">
+                <span>MarTech Stack:</span>
+                <span className="text-white font-bold">{service.tools.slice(0, 2).join(" • ")}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Bottleneck vs Solution (Alternating Light Gray) */}
+      <section className="py-16 md:py-20 px-6 md:px-12 lg:px-16 bg-brand-light-gray text-brand-dark">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-white p-8 md:p-10 rounded-3xl border border-red-200 shadow-sm">
+            <span className="bg-red-500 text-white px-3 py-1 rounded text-[10px] font-space font-bold uppercase tracking-widest block w-max mb-4">
+              The Costly Mistake
+            </span>
+            <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark mb-4">
+              The Common Bottleneck
+            </h3>
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed font-inter">
+              {service.bottleneck}
+            </p>
+          </div>
+
+          <div className="bg-brand-dark text-white p-8 md:p-10 rounded-3xl border border-white/10 shadow-xl">
+            <span className="bg-brand-lime text-brand-dark px-3 py-1 rounded text-[10px] font-space font-bold uppercase tracking-widest block w-max mb-4 font-extrabold">
+              Our Growth Approach
+            </span>
+            <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-4">
+              How We Solve It
+            </h3>
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed font-inter">
+              {service.description}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 4-Step Execution Framework */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-t border-white/10">
+        <div className="max-w-[1280px] mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-lime mb-3">Our 4-Step Playbook</p>
+            <h2 className="font-space font-bold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-white">
+              THE EXECUTION BLUEPRINT.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {service.framework.map((f, idx) => (
+              <div key={idx} className="bg-[#18181B] border border-white/10 rounded-2xl p-6 md:p-8 hover:border-brand-lime transition-colors">
+                <span className="font-space font-bold text-xs text-brand-blue tracking-widest uppercase block mb-2">
+                  Step 0{idx + 1}
+                </span>
+                <h3 className="font-space font-bold text-lg md:text-xl uppercase text-white tracking-tight mb-2">
+                  {f.step}
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed font-inter">
+                  {f.detail}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Deliverables Grid */}
+      <section className="py-16 md:py-20 px-6 md:px-12 lg:px-16 bg-brand-dark border-t border-white/10">
+        <div className="max-w-[1280px] mx-auto">
+          <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-8 text-center">
+            Exact Sprint Deliverables
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {service.points.map((pt, idx) => (
+              <div key={idx} className="flex items-center gap-3 bg-[#18181B] border border-white/10 px-5 py-4 rounded-xl">
+                <CheckCircle2 size={18} className="text-brand-lime shrink-0" />
+                <span className="font-space font-bold text-xs uppercase text-white tracking-wide">{pt}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQs */}
+      <section className="py-16 md:py-20 px-6 md:px-12 lg:px-16 bg-brand-light-gray text-brand-dark border-t border-gray-200">
+        <div className="max-w-[800px] mx-auto">
+          <h2 className="font-space font-bold text-3xl uppercase tracking-tight text-brand-dark mb-10 text-center">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            {service.faqs.map((faq, idx) => (
+              <div key={idx} className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                <h4 className="font-space font-bold text-base uppercase text-brand-dark mb-2">{faq.q}</h4>
+                <p className="text-gray-600 text-sm leading-relaxed font-inter">{faq.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Box */}
+      <section className="py-16 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1000px] mx-auto bg-brand-blue rounded-3xl p-10 text-center shadow-xl">
+          <h3 className="font-space font-bold text-3xl uppercase tracking-tight text-white mb-4">
+            Ready to scale with {service.title.split("&")[0]}?
+          </h3>
+          <p className="text-blue-100 text-sm max-w-lg mx-auto mb-6 font-inter">
+            Schedule a 15-minute discovery call to evaluate your growth goals and sprint timeline.
+          </p>
+          <a
+            href="/contact"
+            onClick={(e) => { e.preventDefault(); onNavigate("/contact"); }}
+            className="bg-brand-lime text-brand-dark px-8 py-3.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all inline-flex items-center gap-2 group text-decoration-none"
+          >
+            Start Growth Discovery <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </a>
+        </div>
+      </section>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// ABOUT US PAGE (/about)
+// =========================================================================
+export function AboutUsPage({ onNavigate }) {
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="about">
+      {/* Dark Hero */}
+      <section className="pt-16 pb-16 md:pt-24 md:pb-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto text-center">
+          <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue mb-4">
+            Agency Manifesto & Team
+          </p>
+          <h1 className="font-space font-bold text-[36px] sm:text-[50px] md:text-[70px] lg:text-[80px] leading-[0.85] tracking-tighter uppercase mb-6">
+            WE BUILT GETINTOFEED AROUND <br />
+            A SIMPLE IDEA: <span className="text-brand-lime">GOOD MARKETING SHOULDN'T BE BORING.</span>
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-medium font-inter mb-8">
+            We are not a bloated agency with 5 account managers standing between you and the creative. We are a senior growth unit that moves at high speed and scales client revenue.
+          </p>
+        </div>
+      </section>
+
+      {/* Story & Philosophy Section (2 Column) */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-12 lg:gap-16 items-start">
+          <div className="text-left">
+            <h2 className="font-space font-bold text-xs tracking-widest uppercase text-brand-blue mb-4">Origin & Mission</h2>
+            <h3 className="font-space font-bold text-[36px] sm:text-[46px] md:text-[54px] tracking-tighter leading-[0.9] uppercase text-white">
+              LEAN SENIOR TEAM. <br />
+              <span className="text-brand-lime">RADICAL ROI.</span>
+            </h3>
+          </div>
+
+          <div className="text-left text-gray-300 space-y-6 text-sm md:text-base leading-relaxed font-inter bg-[#18181B] p-8 md:p-12 rounded-3xl border border-white/10">
+            <p className="text-white font-space font-bold text-lg md:text-xl uppercase tracking-tight">
+              Most marketing agencies operate on retainers that fund office perks and junior interns. We took the opposite path.
+            </p>
+            <p>
+              By keeping our team compact, highly specialized, and deeply experienced in performance creative, paid algorithms, and conversion engineering, we eliminate waste and pass the efficiency directly to your bottom line.
+            </p>
+            <p>
+              Whether we're shooting 32 UGC ad hooks for a beauty brand, restructuring an enterprise SEO entity graph, or architecting a multi-crore real estate reel campaign, our focus never wavers from verified commercial return.
+            </p>
+            <div className="pt-2">
+              <a
+                href="/work"
+                onClick={(e) => { e.preventDefault(); onNavigate("/work"); }}
+                className="inline-flex bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all items-center gap-2 group text-decoration-none"
+              >
+                View Our Verified Work <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Core Numbers (Light Gray Section) */}
+      <section className="py-16 md:py-20 px-6 md:px-12 lg:px-16 bg-brand-light-gray text-brand-dark border-y border-gray-200">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { num: "₹140Cr+", label: "Client Revenue Scaled" },
+            { num: "4.8x", label: "Average Blended ROAS" },
+            { num: "85+", label: "High-Growth Brands" },
+            { num: "< 15 Min", label: "Client Response Time" }
+          ].map((st, i) => (
+            <div key={i} className="bg-white p-6 md:p-8 rounded-2xl border border-gray-200 text-center shadow-sm">
+              <div className="font-space font-bold text-3xl sm:text-4xl md:text-5xl text-brand-dark tracking-tighter mb-2">{st.num}</div>
+              <div className="font-space font-bold text-xs uppercase text-gray-500 tracking-wider">{st.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Leadership Team Grid */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1280px] mx-auto">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-lime mb-3">Who's In The Room</p>
+            <h2 className="font-space font-bold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-white">
+              CORE GROWTH LEADERSHIP.
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { name: "Ashish Raghav", role: "Founder & Creative Growth Director", spec: "Performance Media & Creative Direction" },
+              { name: "Devanshi Verma", role: "Head of Editorial & Authority SEO", spec: "Topic Clusters & Entity Architecture" },
+              { name: "Kunal Mehra", role: "Creative Director & Short-Form Video", spec: "UGC Video & Kinetic Motion" },
+              { name: "Siddharth Rao", role: "Lead Full-Stack Web Architect", spec: "Headless React, Python & Core Web Vitals" }
+            ].map((tm, idx) => (
+              <div key={idx} className="bg-[#18181B] border border-white/10 rounded-2xl p-6 flex flex-col justify-between hover:border-brand-lime transition-colors">
+                <div>
+                  <div className="w-16 h-16 rounded-xl bg-white/5 border border-white/10 mb-4 flex items-center justify-center font-space font-bold text-xl text-brand-lime">
+                    {tm.name.split(" ").map(n => n[0]).join("")}
+                  </div>
+                  <h3 className="font-space font-bold text-lg uppercase text-white mb-1">{tm.name}</h3>
+                  <p className="font-space font-bold text-xs uppercase text-brand-blue mb-3">{tm.role}</p>
+                  <p className="text-gray-400 text-xs font-inter leading-relaxed">{tm.spec}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// WORK / PORTFOLIO PAGE (/work)
+// =========================================================================
+export function WorkPage({ onNavigate }) {
+  const [activeFilter, setActiveFilter] = useState("all");
+
+  const caseStudyList = [
+    {
+      slug: "veloura-organics",
+      cat: "d2c",
+      brand: "Veloura Organics",
+      tag: "D2C Clean Skincare",
+      desc: "Scaled Meta Ad creative testing from ₹5L to ₹45L monthly revenue with 4.8x verified blended ROAS.",
+      metric: "4.8x ROAS",
+      subMetric: "3-Tier UGC Sprints"
+    },
+    {
+      slug: "urbanedge-realty",
+      cat: "realestate",
+      brand: "UrbanEdge Luxury Realty",
+      tag: "Luxury Real Estate",
+      desc: "Captured 1,420+ high-ticket buyer inquiries for ₹2.5Cr+ villas using cinematic drone reels and hyper-local targeting.",
+      metric: "1,420+ LEADS",
+      subMetric: "₹28.4Cr Closed Inventory"
+    },
+    {
+      slug: "finscale-lending",
+      cat: "fintech",
+      brand: "FinScale Lending",
+      tag: "BFSI & FinTech",
+      desc: "Dominated commercial keyword rankings on Google and AI Overviews, lifting organic inbound applications by 273%.",
+      metric: "+273% SEO",
+      subMetric: "GEO & Entity Graph"
+    },
+    {
+      slug: "curezen-health",
+      cat: "health",
+      brand: "CureZen Healthcare",
+      tag: "HealthTech & Preventive Care",
+      desc: "Scaled tele-consultation patient bookings by 520% in 4 months with sub-second headless landing page funnels.",
+      metric: "+520% BOOKINGS",
+      subMetric: "Headless Funnel CRO"
+    }
+  ];
+
+  const filtered = activeFilter === "all" ? caseStudyList : caseStudyList.filter(c => c.cat === activeFilter);
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="work">
+      {/* Dark Hero */}
+      <section className="pt-16 pb-16 md:pt-24 md:pb-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto text-center">
+          <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue mb-4">
+            Proof & Case Studies
+          </p>
+          <h1 className="font-space font-bold text-[36px] sm:text-[50px] md:text-[70px] lg:text-[80px] leading-[0.85] tracking-tighter uppercase mb-6">
+            TURNING SCROLLS INTO <span className="text-brand-lime">VERIFIED REVENUE.</span>
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-medium font-inter mb-8">
+            Explore deep-dive case studies from high-growth D2C, real estate, B2B SaaS, and healthcare brands scaled by Get Into Feed.
+          </p>
+
+          {/* Filter Pills */}
+          <div className="flex flex-wrap justify-center gap-2">
+            {[
+              { key: "all", label: "All Projects" },
+              { key: "d2c", label: "D2C Brands" },
+              { key: "realestate", label: "Real Estate" },
+              { key: "fintech", label: "FinTech" },
+              { key: "health", label: "Healthcare" }
+            ].map(f => (
+              <button
+                key={f.key}
+                type="button"
+                onClick={() => setActiveFilter(f.key)}
+                className={`px-5 py-2 rounded-full font-space font-bold text-xs uppercase tracking-wider transition-all cursor-pointer border ${
+                  activeFilter === f.key
+                    ? "bg-brand-lime text-brand-dark border-brand-lime shadow-[0_0_15px_rgba(212,255,0,0.3)]"
+                    : "bg-[#18181B] text-white/80 border-white/15 hover:border-white/40"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Work Grid */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+          {filtered.map(cs => (
+            <div
+              key={cs.slug}
+              onClick={() => onNavigate("/work/" + cs.slug)}
+              className="group bg-[#18181B] border border-white/10 hover:border-brand-lime rounded-2xl p-8 flex flex-col justify-between cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_15px_40px_rgba(0,0,0,0.7)]"
+            >
+              <div>
+                <div className="flex justify-between items-center mb-6">
+                  <span className="bg-brand-blue text-white px-3 py-1 rounded text-[10px] font-space font-bold uppercase tracking-wider">
+                    {cs.tag}
+                  </span>
+                  <span className="text-brand-lime text-xs font-space font-bold uppercase">
+                    Verified Outcome
+                  </span>
+                </div>
+                <h3 className="font-space font-bold text-2xl md:text-3xl uppercase tracking-tight text-white mb-3 group-hover:text-brand-lime transition-colors">
+                  {cs.brand}
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed font-inter mb-8">
+                  {cs.desc}
+                </p>
+              </div>
+
+              <div>
+                <div className="border-t border-white/10 pt-6 flex justify-between items-end mb-4">
+                  <div>
+                    <div className="font-space font-bold text-3xl md:text-4xl text-white tracking-tight">
+                      {cs.metric}
+                    </div>
+                    <div className="text-gray-400 text-xs font-space uppercase mt-1">
+                      {cs.subMetric}
+                    </div>
+                  </div>
+                  <span className="text-brand-lime font-space font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 group-hover:underline">
+                    Read Deep Dive <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// CASE STUDY DETAIL PAGE (/work/:slug)
+// =========================================================================
+export function CaseStudyDetailPage({ slug, onNavigate }) {
+  const cs = caseStudiesCatalog[slug] || caseStudiesCatalog["veloura-organics"];
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="work">
+      {/* Dark Hero */}
+      <section className="pt-16 pb-16 md:pt-20 md:pb-20 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto">
+          <button
+            type="button"
+            onClick={() => onNavigate("/work")}
+            className="text-gray-400 hover:text-brand-lime font-space font-bold text-xs uppercase tracking-widest flex items-center gap-2 mb-6 cursor-pointer bg-transparent border-none"
+          >
+            <ArrowLeft size={14} /> Back to all case studies
+          </button>
+
+          <div className="flex flex-wrap gap-3 mb-4">
+            <span className="bg-brand-blue text-white px-3 py-1 rounded text-[11px] font-space font-bold uppercase tracking-wider">
+              {cs.industry}
+            </span>
+            <span className="bg-[#18181B] border border-brand-lime/40 text-brand-lime px-3 py-1 rounded text-[11px] font-space font-bold uppercase tracking-wider">
+              Verified Growth Case Study
+            </span>
+          </div>
+
+          <h1 className="font-space font-bold text-[36px] sm:text-[50px] md:text-[68px] leading-[0.9] tracking-tighter uppercase text-white mb-4">
+            {cs.brand}
+          </h1>
+
+          <p className="text-brand-lime font-space font-bold text-xl md:text-2xl uppercase tracking-tight mb-6">
+            {cs.tagline}
+          </p>
+
+          <p className="text-gray-300 text-base md:text-lg leading-relaxed font-inter max-w-3xl">
+            {cs.overview}
+          </p>
+        </div>
+      </section>
+
+      {/* 4 Key Metrics Bar */}
+      <section className="py-12 md:py-16 px-6 md:px-12 lg:px-16 bg-[#121215] border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+          {cs.metrics.map((m, idx) => (
+            <div key={idx} className="bg-[#18181B] border border-white/10 rounded-2xl p-6">
+              <span className="font-space font-bold text-[11px] uppercase text-gray-400 tracking-wider block mb-2">{m.label}</span>
+              <div className="font-space font-bold text-3xl sm:text-4xl text-white tracking-tight mb-2">{m.value}</div>
+              <div className="text-brand-lime font-space font-bold text-xs">✓ {m.change}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* The Challenge vs The Playbook */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="bg-[#18181B] border border-white/10 rounded-2xl p-8 md:p-10">
+            <span className="bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded text-[10px] font-space font-bold uppercase tracking-widest block w-max mb-4">
+              The Bottleneck
+            </span>
+            <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-4">
+              The Initial Challenge
+            </h3>
+            <p className="text-gray-400 text-sm md:text-base leading-relaxed font-inter">
+              {cs.challenge}
+            </p>
+          </div>
+
+          <div className="bg-[#18181B] border-2 border-brand-lime rounded-2xl p-8 md:p-10 shadow-[0_0_30px_rgba(212,255,0,0.1)]">
+            <span className="bg-brand-lime text-brand-dark px-3 py-1 rounded text-[10px] font-space font-bold uppercase tracking-widest block w-max mb-4 font-extrabold">
+              Our Strategic Solution
+            </span>
+            <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-4">
+              The Creative Execution
+            </h3>
+            <p className="text-gray-300 text-sm md:text-base leading-relaxed font-inter">
+              {cs.solution}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Deliverables Checklist */}
+      <section className="py-16 px-6 md:px-12 lg:px-16 bg-[#121215] border-t border-white/10">
+        <div className="max-w-[1280px] mx-auto">
+          <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-8 text-center">
+            Key Assets & Infrastructure Built
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+            {cs.deliverables.map((d, i) => (
+              <div key={i} className="flex items-center gap-3 bg-[#18181B] border border-white/10 px-5 py-4 rounded-xl">
+                <CheckCircle2 size={18} className="text-brand-lime shrink-0" />
+                <span className="font-space font-bold text-xs uppercase text-white tracking-wider">{d}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Client Quote Banner */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark">
+        <div className="max-w-[1000px] mx-auto bg-brand-blue rounded-3xl p-10 md:p-16 text-center text-white relative shadow-2xl">
+          <div className="flex justify-center gap-1.5 mb-6">
+            {[...Array(cs.testimonial.rating)].map((_, i) => (
+              <Star key={i} size={18} fill="#D4FF00" color="#D4FF00" />
+            ))}
+          </div>
+          <p className="font-space font-bold text-xl md:text-2xl lg:text-3xl leading-snug uppercase mb-8">
+            "{cs.testimonial.quote}"
+          </p>
+          <div>
+            <div className="font-space font-bold text-base uppercase text-white">{cs.testimonial.author}</div>
+            <div className="text-blue-200 text-xs font-space uppercase mt-1">{cs.testimonial.role}</div>
+          </div>
+        </div>
+      </section>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// CLIENTS & TESTIMONIALS PAGE (/testimonials, /clients)
 // =========================================================================
 export function ClientsTestimonialsPage({ onNavigate }) {
   const [filter, setFilter] = useState("all");
 
-  const testimonials = [
-    {
-      category: "d2c",
-      brand: "Veloura Organics",
-      industry: "D2C Skincare",
-      quote: "Get Into Feed took our ad spend from ₹5L/mo to ₹45L/mo at a 4.8x ROAS. Their UGC creative hooks are unlike anything other agencies produce.",
-      author: "Rhea Singhal",
-      role: "Co-Founder & CEO",
-      metric: "4.8x ROAS",
-      rating: 5
-    },
-    {
-      category: "realestate",
-      brand: "UrbanEdge Luxury Realty",
-      industry: "Real Estate",
-      quote: "1,420+ high-intent buyer inquiries for our luxury villas. We closed over ₹28 Crores in inventory directly tracked to their video campaigns.",
-      author: "Vikramaditya Mehra",
-      role: "Managing Director",
-      metric: "₹28Cr Closed",
-      rating: 5
-    },
-    {
-      category: "fintech",
-      brand: "FinScale Lending",
-      industry: "FinTech & BFSI",
-      quote: "Their entity-based SEO and content cluster framework helped us dominate #1 Google rankings for commercial loans, lifting organic applications by 273%.",
-      author: "Anandita Sen",
-      role: "Chief Marketing Officer",
-      metric: "+273% Leads",
-      rating: 5
-    },
-    {
-      category: "health",
-      brand: "CureZen Healthcare",
-      industry: "HealthTech",
-      quote: "We scaled tele-consultation bookings by 520% in 4 months. The team understands healthcare regulations and conversion optimization thoroughly.",
-      author: "Dr. Sameer Kulkarni",
-      role: "Operations Director",
-      metric: "+520% Consults",
-      rating: 5
-    },
-    {
-      category: "d2c",
-      brand: "Stride Activewear",
-      industry: "D2C Fitness Apparel",
-      quote: "Our customer acquisition cost plummeted by 38% after launching Get Into Feed's creator unboxing sprint. They deliver true ROI, not vanity likes.",
-      author: "Aakash Varma",
-      role: "Founder",
-      metric: "-38% CAC",
-      rating: 5
-    },
-    {
-      category: "saas",
-      brand: "NexaCloud SaaS",
-      industry: "B2B Cloud Software",
-      quote: "From zero LinkedIn authority to 45 enterprise demo requests every month. Their B2B thought leadership ghostwriting is exceptional.",
-      author: "Priya Nambiar",
-      role: "Head of Growth",
-      metric: "45 Demos/mo",
-      rating: 5
-    }
+  const reviews = [
+    { cat: "d2c", brand: "Veloura Organics", quote: "Get Into Feed completely altered our ad unit economics. Scaled us from ₹5L to ₹45L monthly revenue at 4.8x ROAS.", author: "Rhea Singhal", role: "CEO, Veloura Organics", metric: "4.8x ROAS" },
+    { cat: "realestate", brand: "UrbanEdge Luxury Realty", quote: "1,420+ high-ticket buyer inquiries for ₹2.5Cr+ villas. Closed ₹28.4 Crores in inventory directly tracked to their reels.", author: "Vikramaditya Mehra", role: "Managing Director", metric: "₹28.4Cr Closed" },
+    { cat: "fintech", brand: "FinScale Lending", quote: "Their entity SEO and content clusters got us #1 Google rankings for commercial credit, lifting inbound leads by 273%.", author: "Anandita Sen", role: "CMO, FinScale", metric: "+273% Leads" },
+    { cat: "health", brand: "CureZen Healthcare", quote: "Scalable tele-consultation patient bookings increased by 520% in 4 months with sub-second headless landing funnels.", author: "Dr. Sameer Kulkarni", role: "Director, CureZen", metric: "+520% Consults" },
+    { cat: "d2c", brand: "Stride Activewear", quote: "Our customer acquisition cost plummeted by 38% after launching Get Into Feed's creator unboxing sprint.", author: "Aakash Varma", role: "Founder, Stride", metric: "-38% CAC" },
+    { cat: "saas", brand: "NexaCloud SaaS", quote: "From zero LinkedIn authority to 45 enterprise demo requests every month. Their B2B thought leadership is exceptional.", author: "Priya Nambiar", role: "Head of Growth", metric: "45 Demos/mo" }
   ];
 
-  const filteredList = filter === "all" ? testimonials : testimonials.filter(t => t.category === filter);
+  const filtered = filter === "all" ? reviews : reviews.filter(r => r.cat === filter);
 
   return (
     <PageLayout onNavigate={onNavigate} activeNav="testimonials">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
-        <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
-          TESTIMONIALS & CLIENT RESULTS
-        </span>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
-          TRUSTED BY <br /><span style={{ background: "#D4FF00", padding: "2px 12px", borderRadius: "8px", border: "2px solid #09090B" }}>85+ BRANDS</span> WORLDWIDE.
-        </h1>
-        <p style={{ fontSize: "18px", color: "#52525B", maxWidth: "640px", margin: "0 auto 40px auto" }}>
-          Discover what founders, CMOs, and marketing leaders say about partnering with Get Into Feed to scale revenue and organic reach.
-        </p>
+      {/* Dark Hero */}
+      <section className="pt-16 pb-16 md:pt-24 md:pb-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto text-center">
+          <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue mb-4">
+            Client Proof & Verified Reviews
+          </p>
+          <h1 className="font-space font-bold text-[36px] sm:text-[50px] md:text-[70px] lg:text-[80px] leading-[0.85] tracking-tighter uppercase mb-6">
+            TRUSTED BY <span className="text-brand-lime">85+ BRANDS</span> WORLDWIDE.
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-medium font-inter mb-8">
+            Read what founders, CMOs, and marketing directors say about partnering with Get Into Feed to scale revenue and attention.
+          </p>
 
-        {/* Trust Badges Bar */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", maxWidth: "1000px", margin: "0 auto 50px auto" }}>
-          <div style={{ background: "#F8F8F8", border: "2px solid #09090B", borderRadius: "12px", padding: "20px", boxShadow: "4px 4px 0px #09090B" }}>
-            <div style={{ fontFamily: "var(--font-space)", fontSize: "32px", fontWeight: "900", color: "#09090B" }}>4.9 / 5.0</div>
-            <div style={{ fontSize: "12px", fontWeight: "800", color: "#71717A", textTransform: "uppercase" }}>Average Client Rating</div>
-          </div>
-          <div style={{ background: "#F8F8F8", border: "2px solid #09090B", borderRadius: "12px", padding: "20px", boxShadow: "4px 4px 0px #09090B" }}>
-            <div style={{ fontFamily: "var(--font-space)", fontSize: "32px", fontWeight: "900", color: "#0033FF" }}>₹140Cr+</div>
-            <div style={{ fontSize: "12px", fontWeight: "800", color: "#71717A", textTransform: "uppercase" }}>Client Revenue Scaled</div>
-          </div>
-          <div style={{ background: "#F8F8F8", border: "2px solid #09090B", borderRadius: "12px", padding: "20px", boxShadow: "4px 4px 0px #09090B" }}>
-            <div style={{ fontFamily: "var(--font-space)", fontSize: "32px", fontWeight: "900", color: "#09090B" }}>96%</div>
-            <div style={{ fontSize: "12px", fontWeight: "800", color: "#71717A", textTransform: "uppercase" }}>Quarterly Retainer Retention</div>
-          </div>
-          <div style={{ background: "#F8F8F8", border: "2px solid #09090B", borderRadius: "12px", padding: "20px", boxShadow: "4px 4px 0px #09090B" }}>
-            <div style={{ fontFamily: "var(--font-space)", fontSize: "32px", fontWeight: "900", color: "#0033FF" }}>3.8x</div>
-            <div style={{ fontSize: "12px", fontWeight: "800", color: "#71717A", textTransform: "uppercase" }}>Average Blended ROAS</div>
+          <div className="flex flex-wrap justify-center gap-2">
+            {[
+              { key: "all", label: "All Reviews" },
+              { key: "d2c", label: "D2C Brands" },
+              { key: "realestate", label: "Real Estate" },
+              { key: "fintech", label: "FinTech" },
+              { key: "health", label: "HealthTech" },
+              { key: "saas", label: "B2B SaaS" }
+            ].map(b => (
+              <button
+                key={b.key}
+                type="button"
+                onClick={() => setFilter(b.key)}
+                className={`px-5 py-2 rounded-full font-space font-bold text-xs uppercase tracking-wider transition-all cursor-pointer border ${
+                  filter === b.key
+                    ? "bg-brand-lime text-brand-dark border-brand-lime shadow-[0_0_15px_rgba(212,255,0,0.3)]"
+                    : "bg-[#18181B] text-white/80 border-white/15 hover:border-white/40"
+                }`}
+              >
+                {b.label}
+              </button>
+            ))}
           </div>
         </div>
+      </section>
 
-        {/* Filter Pills */}
-        <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap", marginBottom: "40px" }}>
-          {[
-            { key: "all", label: "All Reviews" },
-            { key: "d2c", label: "D2C Brands" },
-            { key: "realestate", label: "Real Estate" },
-            { key: "fintech", label: "FinTech & BFSI" },
-            { key: "health", label: "Health & Wellness" },
-            { key: "saas", label: "B2B SaaS" }
-          ].map(b => (
-            <button
-              key={b.key}
-              type="button"
-              onClick={() => setFilter(b.key)}
-              style={{
-                background: filter === b.key ? "#09090B" : "#FFFFFF",
-                color: filter === b.key ? "#D4FF00" : "#09090B",
-                border: "2px solid #09090B",
-                padding: "8px 18px",
-                borderRadius: "9999px",
-                fontFamily: "var(--font-space)",
-                fontWeight: "800",
-                fontSize: "12px",
-                textTransform: "uppercase",
-                cursor: "pointer",
-                boxShadow: filter === b.key ? "3px 3px 0px #0033FF" : "none"
-              }}
-            >
-              {b.label}
-            </button>
+      {/* Reviews Grid */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filtered.map((r, idx) => (
+            <div key={idx} className="bg-[#18181B] border border-white/10 rounded-2xl p-6 md:p-8 flex flex-col justify-between hover:border-brand-lime transition-all duration-300 hover:-translate-y-1">
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={14} fill="#D4FF00" color="#D4FF00" />
+                    ))}
+                  </div>
+                  <span className="bg-brand-blue text-white px-2.5 py-0.5 rounded text-[10px] font-space font-bold uppercase">
+                    {r.metric}
+                  </span>
+                </div>
+                <p className="text-gray-300 text-sm md:text-base leading-relaxed font-inter italic mb-6">
+                  "{r.quote}"
+                </p>
+              </div>
+
+              <div className="border-t border-white/10 pt-4 flex items-center justify-between">
+                <div>
+                  <div className="font-space font-bold text-sm uppercase text-white">{r.author}</div>
+                  <div className="text-gray-400 text-xs font-inter">{r.role}</div>
+                </div>
+                <span className="text-brand-lime text-xs font-space font-bold flex items-center gap-1">
+                  <CheckCircle2 size={13} /> Verified
+                </span>
+              </div>
+            </div>
           ))}
         </div>
-      </div>
+      </section>
+    </PageLayout>
+  );
+}
 
-      {/* Testimonials Grid */}
-      <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1600px", margin: "0 auto", padding: "0 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "28px" }}>
-        {filteredList.map((t, idx) => (
-          <div key={idx} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B" }}>
-            <div>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                <span style={{ background: "#F4F4F5", color: "#09090B", border: "1px solid #09090B", padding: "3px 10px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "800", textTransform: "uppercase" }}>
-                  {t.industry}
-                </span>
-                <span style={{ background: "#D4FF00", color: "#09090B", border: "1px solid #09090B", padding: "3px 10px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900" }}>
-                  {t.metric}
-                </span>
-              </div>
+// =========================================================================
+// PRICING PAGE (/pricing)
+// =========================================================================
+export function PricingPage({ onNavigate }) {
+  const [adSpend, setAdSpend] = useState(250000);
 
-              <div style={{ display: "flex", gap: "4px", marginBottom: "16px" }}>
-                {[...Array(t.rating)].map((_, i) => (
-                  <Star key={i} size={16} fill="#09090B" color="#09090B" />
-                ))}
-              </div>
+  const estReach = Math.round(adSpend * 18);
+  const estClicks = Math.round(adSpend / 14);
+  const estRevenue = Math.round(adSpend * 4.4);
 
-              <p style={{ color: "#18181B", fontSize: "15px", lineHeight: 1.6, fontStyle: "italic", marginBottom: "24px" }}>
-                "{t.quote}"
-              </p>
+  const formatINR = (n) => {
+    if (n >= 10000000) return "₹" + (n / 10000000).toFixed(2) + " Cr";
+    if (n >= 100000) return "₹" + (n / 100000).toFixed(1) + " Lakhs";
+    return "₹" + n.toLocaleString("en-IN");
+  };
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="pricing">
+      {/* Dark Hero */}
+      <section className="pt-16 pb-16 md:pt-24 md:pb-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto text-center">
+          <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue mb-4">
+            Transparent Retainers & Sprints
+          </p>
+          <h1 className="font-space font-bold text-[36px] sm:text-[50px] md:text-[70px] lg:text-[80px] leading-[0.85] tracking-tighter uppercase mb-6">
+            BUILT AROUND YOUR GOALS, <br />
+            NOT <span className="text-brand-lime">ARBITRARY PACKAGES.</span>
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-medium font-inter mb-8">
+            Choose the growth sprint model that matches where your brand is today. No hidden retainers, no junior handoffs.
+          </p>
+        </div>
+      </section>
+
+      {/* Interactive ROI Calculator Slider */}
+      <section className="py-16 md:py-20 px-6 md:px-12 lg:px-16 bg-[#121215] border-b border-white/10">
+        <div className="max-w-[1000px] mx-auto bg-[#18181B] border-2 border-brand-lime rounded-3xl p-8 md:p-12 shadow-2xl">
+          <div className="text-center mb-8">
+            <span className="bg-brand-lime text-brand-dark px-3 py-1 rounded text-[10px] font-space font-bold uppercase tracking-widest font-extrabold mb-3 inline-block">
+              Interactive ROI Estimator
+            </span>
+            <h3 className="font-space font-bold text-2xl md:text-3xl uppercase text-white tracking-tight">
+              Estimate Your Monthly Inbound Scale
+            </h3>
+          </div>
+
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-3">
+              <span className="font-space font-bold text-xs uppercase text-gray-400">Monthly Ad Spend:</span>
+              <span className="font-space font-bold text-2xl text-brand-lime">{formatINR(adSpend)}</span>
             </div>
-
-            <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div>
-                <div style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "14px", color: "#09090B", textTransform: "uppercase" }}>{t.author}</div>
-                <div style={{ fontSize: "12px", color: "#71717A", fontWeight: "600" }}>{t.role}, {t.brand}</div>
-              </div>
-              <span style={{ color: "#0033FF", fontWeight: "900", fontSize: "11px", fontFamily: "var(--font-space)", display: "flex", alignItems: "center", gap: "2px" }}>
-                <CheckCircle2 size={14} /> VERIFIED
-              </span>
+            <input
+              type="range"
+              min={50000}
+              max={2000000}
+              step={25000}
+              value={adSpend}
+              onChange={(e) => setAdSpend(Number(e.target.value))}
+              className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-[#D4FF00]"
+            />
+            <div className="flex justify-between text-[10px] font-space text-gray-500 uppercase mt-1">
+              <span>₹50,000 / mo</span>
+              <span>₹10 Lakhs / mo</span>
+              <span>₹20 Lakhs+ / mo</span>
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* CTA Box */}
-      <div style={{ maxWidth: "1200px", margin: "0 auto 80px auto", padding: "0 24px" }}>
-        <div style={{ background: "#0033FF", color: "#FFFFFF", borderRadius: "20px", padding: "48px 36px", textAlign: "center", border: "2px solid #09090B", boxShadow: "6px 6px 0px #09090B" }}>
-          <h2 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(26px, 4vw, 42px)", textTransform: "uppercase", marginBottom: "16px" }}>
-            Ready to become our next success story?
-          </h2>
-          <p style={{ fontSize: "16px", color: "#E0E7FF", maxWidth: "600px", margin: "0 auto 28px auto" }}>
-            We only take on brands where we have 100% conviction we can produce an outsized return on investment.
-          </p>
-          <button
-            type="button"
-            onClick={() => onNavigate("/audit")}
-            style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "14px 32px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", textTransform: "uppercase", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px", boxShadow: "4px 4px 0px #09090B" }}
-          >
-            Claim Your Free Growth Audit <ArrowRight size={16} />
-          </button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center border-t border-white/10 pt-8">
+            <div className="bg-black/40 p-4 rounded-xl border border-white/5">
+              <div className="font-space font-bold text-2xl md:text-3xl text-white">{estReach.toLocaleString()}</div>
+              <div className="font-space font-bold text-xs uppercase text-gray-400 mt-1">Target Feed Impressions</div>
+            </div>
+            <div className="bg-black/40 p-4 rounded-xl border border-white/5">
+              <div className="font-space font-bold text-2xl md:text-3xl text-brand-blue">{estClicks.toLocaleString()}</div>
+              <div className="font-space font-bold text-xs uppercase text-gray-400 mt-1">High-Intent Visitors</div>
+            </div>
+            <div className="bg-black/40 p-4 rounded-xl border border-brand-lime/30">
+              <div className="font-space font-bold text-2xl md:text-3xl text-brand-lime">{formatINR(estRevenue)}</div>
+              <div className="font-space font-bold text-xs uppercase text-brand-lime mt-1">Estimated Attributed Pipeline</div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* 3 Core Sprint Models */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Card 01 */}
+          <div className="bg-[#18181B] border border-white/10 rounded-2xl p-8 flex flex-col justify-between hover:border-white/30 transition-colors">
+            <div>
+              <span className="font-space font-bold text-xs text-brand-blue uppercase tracking-widest block mb-2">Tier 01</span>
+              <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-2">Need Attention?</h3>
+              <p className="text-gray-400 text-xs font-inter mb-6">For brands that have something great to sell but aren't getting enough organic attention.</p>
+              <div className="border-t border-white/10 pt-4 space-y-3 mb-8">
+                {["16 UGC Video Reels / mo", "Feed Visual Design System", "High-Engagement Carousels", "Community Management"].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs font-space text-gray-300">
+                    <Check size={14} className="text-brand-lime shrink-0" /> {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <a href="/contact" onClick={(e) => { e.preventDefault(); onNavigate("/contact"); }} className="bg-white/10 text-white hover:bg-white hover:text-brand-dark py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider text-center transition-all text-decoration-none">
+              Explore Content Sprint →
+            </a>
+          </div>
+
+          {/* Card 02 (Featured Pop Card) */}
+          <div className="bg-brand-blue text-white rounded-2xl p-8 flex flex-col justify-between shadow-2xl relative border-2 border-brand-blue hover:shadow-[0_0_40px_rgba(0,51,255,0.4)] transition-all">
+            <span className="absolute -top-3 right-6 bg-brand-lime text-brand-dark px-3 py-1 rounded text-[10px] font-space font-bold uppercase tracking-widest font-extrabold">
+              Most Popular
+            </span>
+            <div>
+              <span className="font-space font-bold text-xs text-brand-lime uppercase tracking-widest block mb-2">Tier 02</span>
+              <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-2">Need Customers?</h3>
+              <p className="text-blue-100 text-xs font-inter mb-6">Paid media architecture, creative testing sprints, and bespoke CRO landing pages.</p>
+              <div className="border-t border-white/20 pt-4 space-y-3 mb-8">
+                {["Meta & Google Ads Management", "Weekly 10+ Creative Hook Testing", "High-Speed Headless Landers", "Attribution & CAPI Signal Setup", "Dedicated Growth Lead"].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs font-space text-white">
+                    <Check size={14} className="text-brand-lime shrink-0" /> {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <a href="/contact" onClick={(e) => { e.preventDefault(); onNavigate("/contact"); }} className="bg-brand-lime text-brand-dark hover:bg-[#E2FF4D] py-3.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider text-center transition-all text-decoration-none font-extrabold">
+              Scale With Paid Media →
+            </a>
+          </div>
+
+          {/* Card 03 */}
+          <div className="bg-[#18181B] border border-white/10 rounded-2xl p-8 flex flex-col justify-between hover:border-white/30 transition-colors">
+            <div>
+              <span className="font-space font-bold text-xs text-brand-coral uppercase tracking-widest block mb-2">Tier 03</span>
+              <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-2">Full Growth System</h3>
+              <p className="text-gray-400 text-xs font-inter mb-6">Complete turnkey growth marketing department for market leaders and high-growth startups.</p>
+              <div className="border-t border-white/10 pt-4 space-y-3 mb-8">
+                {["All Paid Media & Content Engine", "Enterprise SEO & AI Optimization", "Custom Full-Stack Web Development", "Full Video Commercial Production", "Weekly Executive Strategy Sprints"].map((item, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs font-space text-gray-300">
+                    <Check size={14} className="text-brand-lime shrink-0" /> {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <a href="/contact" onClick={(e) => { e.preventDefault(); onNavigate("/contact"); }} className="bg-white/10 text-white hover:bg-white hover:text-brand-dark py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider text-center transition-all text-decoration-none">
+              Deploy Full System →
+            </a>
+          </div>
+        </div>
+      </section>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// FEED NOTES / BLOG HUB PAGE (/blog, /blog/:slug)
+// =========================================================================
+export function FeedNotesPage({ onNavigate, slug }) {
+  const articles = [
+    {
+      slug: "why-generic-content-gets-ignored-2026",
+      title: "Why Generic Content Gets Ignored in 2026 (And How to Win the Feed)",
+      cat: "Content Strategy",
+      read: "4 min read",
+      date: "Sep 2026",
+      snippet: "With millions of AI-generated articles flooding the internet, audience trust has shifted towards contrarian research, verified case data, and punchy founder-led perspectives.",
+      author: "Ashish Raghav"
+    },
+    {
+      slug: "3-tier-creative-testing-meta-ads",
+      title: "The 3-Tier Creative Testing Framework We Use for 4.8x Meta ROAS",
+      cat: "Paid Media",
+      read: "6 min read",
+      date: "Aug 2026",
+      snippet: "How to isolate creative variables, structure Advantage+ campaigns, and kill losing ads within 72 hours without burning test budgets.",
+      author: "Kunal Mehra"
+    },
+    {
+      slug: "generative-engine-optimization-guide",
+      title: "Generative Engine Optimization: How to Get Cited by ChatGPT & Gemini",
+      cat: "SEO & AI",
+      read: "5 min read",
+      date: "Aug 2026",
+      snippet: "Search is no longer just ten blue links. Here is our technical playbook for structuring schema and entity graphs so AI models recommend your brand first.",
+      author: "Devanshi Verma"
+    }
+  ];
+
+  if (slug) {
+    const art = articles.find(a => a.slug === slug) || articles[0];
+    return (
+      <PageLayout onNavigate={onNavigate} activeNav="blog">
+        <section className="pt-16 pb-16 md:pt-20 md:pb-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+          <div className="max-w-[800px] mx-auto">
+            <button
+              type="button"
+              onClick={() => onNavigate("/blog")}
+              className="text-gray-400 hover:text-brand-lime font-space font-bold text-xs uppercase tracking-widest flex items-center gap-2 mb-6 cursor-pointer bg-transparent border-none"
+            >
+              <ArrowLeft size={14} /> Back to all articles
+            </button>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="bg-brand-blue text-white px-3 py-1 rounded text-[10px] font-space font-bold uppercase">{art.cat}</span>
+              <span className="text-gray-400 text-xs font-space">{art.read} • {art.date}</span>
+            </div>
+            <h1 className="font-space font-bold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight text-white mb-6 leading-tight">
+              {art.title}
+            </h1>
+            <p className="text-brand-lime font-space font-bold text-sm uppercase mb-10">By {art.author}</p>
+            <div className="prose prose-invert max-w-none text-gray-300 font-inter space-y-6 text-base leading-relaxed border-t border-white/10 pt-8">
+              <p className="text-lg text-white font-medium">{art.snippet}</p>
+              <p>In modern performance marketing, vanity metrics like impressions and reach mean very little if they don't compound into warm prospect familiarity and immediate commercial intent.</p>
+              <h3 className="text-2xl font-space font-bold uppercase text-white pt-4">01. Eliminate Boring Hooks</h3>
+              <p>The first three seconds dictate 80% of your acquisition efficiency. If you open with a generic logo animation or slow product zoom, users have already scrolled past to the next video.</p>
+              <h3 className="text-2xl font-space font-bold uppercase text-white pt-4">02. Measure Unit Economics, Not Likes</h3>
+              <p>Every dollar or rupee invested into content must correlate with lower blended CAC or higher organic search volume. That is the philosophy behind Get Into Feed.</p>
+            </div>
+          </div>
+        </section>
+      </PageLayout>
+    );
+  }
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="blog">
+      {/* Dark Hero */}
+      <section className="pt-16 pb-16 md:pt-24 md:pb-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto text-center">
+          <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue mb-4">
+            Feed Notes & Insights
+          </p>
+          <h1 className="font-space font-bold text-[36px] sm:text-[50px] md:text-[70px] lg:text-[80px] leading-[0.85] tracking-tighter uppercase mb-6">
+            EDITORIAL PLAYBOOKS ON <br />
+            <span className="text-brand-lime">ATTENTION & REVENUE.</span>
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base lg:text-lg max-w-2xl mx-auto font-medium font-inter">
+            Deep-dive frameworks on creative hook testing, AI search optimization, unit economics, and building category-defining brands.
+          </p>
+        </div>
+      </section>
+
+      {/* Articles Grid */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          {articles.map(art => (
+            <div
+              key={art.slug}
+              onClick={() => onNavigate("/blog/" + art.slug)}
+              className="group bg-[#18181B] border border-white/10 hover:border-brand-lime rounded-2xl p-8 flex flex-col justify-between cursor-pointer transition-all duration-300 hover:-translate-y-1.5"
+            >
+              <div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="bg-brand-blue text-white px-2.5 py-0.5 rounded text-[10px] font-space font-bold uppercase">{art.cat}</span>
+                  <span className="text-gray-500 text-xs font-space">{art.read}</span>
+                </div>
+                <h3 className="font-space font-bold text-xl uppercase tracking-tight text-white mb-3 group-hover:text-brand-lime transition-colors leading-snug">
+                  {art.title}
+                </h3>
+                <p className="text-gray-400 text-xs md:text-sm leading-relaxed font-inter mb-6">
+                  {art.snippet}
+                </p>
+              </div>
+              <div className="border-t border-white/10 pt-4 flex items-center justify-between text-xs font-space font-bold uppercase">
+                <span className="text-gray-400">By {art.author}</span>
+                <span className="text-brand-lime flex items-center gap-1 group-hover:underline">Read Article →</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// CONTACT & DISCOVERY PAGE (/contact)
+// =========================================================================
+export function ContactPage({ onNavigate }) {
+  const [sent, setSent] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", brand: "", budget: "₹1.5L - ₹5L / mo", message: "" });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setSent(true);
+  };
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="contact">
+      {/* Dark Hero */}
+      <section className="pt-16 pb-16 md:pt-20 md:pb-20 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto text-center">
+          <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue mb-4">
+            Project Discovery & Inbound
+          </p>
+          <h1 className="font-space font-bold text-[36px] sm:text-[50px] md:text-[68px] leading-[0.85] tracking-tighter uppercase mb-6">
+            TELL US WHAT YOU'RE BUILDING. <br />
+            WE'LL GET IT <span className="text-brand-lime">INTO THE FEED.</span>
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base lg:text-lg max-w-xl mx-auto font-inter">
+            Replies guaranteed in &lt; 15 minutes. Or connect directly on WhatsApp with our growth team.
+          </p>
+        </div>
+      </section>
+
+      {/* Form & Coordinates */}
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 items-start">
+          {/* Direct Coordinates */}
+          <div className="space-y-8">
+            <div className="bg-[#18181B] border border-white/10 rounded-2xl p-8">
+              <span className="font-space font-bold text-xs uppercase tracking-widest text-brand-lime block mb-2">Direct WhatsApp Hotline</span>
+              <h3 className="font-space font-bold text-2xl uppercase text-white mb-2">+91 8810356950</h3>
+              <p className="text-gray-400 text-xs font-inter mb-4">Direct line to our senior growth strategist for fast-tracked proposals.</p>
+              <a
+                href="https://wa.me/918810356950?text=Hi%20Get%20Into%20Feed%20team!%20I%20am%20interested%20in%20a%20growth%20sprint%20for%20our%20brand."
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex bg-[#D4FF00] text-[#09090B] px-5 py-2.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all text-decoration-none"
+              >
+                Chat on WhatsApp →
+              </a>
+            </div>
+
+            <div className="bg-[#18181B] border border-white/10 rounded-2xl p-8">
+              <span className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue block mb-2">Direct Email</span>
+              <h3 className="font-space font-bold text-2xl uppercase text-white mb-2">hello@getintofeed.com</h3>
+              <p className="text-gray-400 text-xs font-inter">Send RFPs, deck attachments, or general studio inquiries.</p>
+            </div>
+
+            <div className="bg-[#18181B] border border-white/10 rounded-2xl p-8">
+              <span className="font-space font-bold text-xs uppercase tracking-widest text-gray-400 block mb-2">Office Headquarters</span>
+              <h3 className="font-space font-bold text-xl uppercase text-white mb-1">Get Into Feed Growth Studio</h3>
+              <p className="text-gray-400 text-xs font-inter">Bengaluru • New Delhi • Remote Worldwide</p>
+            </div>
+          </div>
+
+          {/* Discovery Form */}
+          <div className="bg-[#18181B] border-2 border-white/10 rounded-3xl p-8 md:p-12 shadow-2xl">
+            {sent ? (
+              <div className="text-center py-12">
+                <CheckCircle2 size={48} className="text-brand-lime mx-auto mb-4" />
+                <h3 className="font-space font-bold text-2xl uppercase text-white mb-2">Discovery Inquiry Sent!</h3>
+                <p className="text-gray-400 text-sm font-inter">We'll review your website and reply to your email/phone within 15 minutes.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <h3 className="font-space font-bold text-2xl uppercase text-white tracking-tight mb-4">Start Project Discovery</h3>
+                <div>
+                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Your Name *</label>
+                  <input required type="text" placeholder="e.g. Ashish Raghav" className="w-full bg-[#09090B] border border-white/15 rounded-lg px-4 py-3 text-sm text-white focus:border-brand-lime outline-none" />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Work Email *</label>
+                    <input required type="email" placeholder="ashish@brand.com" className="w-full bg-[#09090B] border border-white/15 rounded-lg px-4 py-3 text-sm text-white focus:border-brand-lime outline-none" />
+                  </div>
+                  <div>
+                    <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Phone / WhatsApp *</label>
+                    <input required type="tel" placeholder="8810356950" className="w-full bg-[#09090B] border border-white/15 rounded-lg px-4 py-3 text-sm text-white focus:border-brand-lime outline-none" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Website or Instagram Handle</label>
+                  <input type="text" placeholder="yourbrand.com" className="w-full bg-[#09090B] border border-white/15 rounded-lg px-4 py-3 text-sm text-white focus:border-brand-lime outline-none" />
+                </div>
+                <div>
+                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Target Monthly Growth Budget</label>
+                  <select className="w-full bg-[#09090B] border border-white/15 rounded-lg px-4 py-3 text-sm text-white focus:border-brand-lime outline-none">
+                    <option>₹1 Lakh - ₹3 Lakhs / mo</option>
+                    <option>₹3 Lakhs - ₹8 Lakhs / mo</option>
+                    <option>₹8 Lakhs - ₹20 Lakhs+ / mo</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">What are your primary goals?</label>
+                  <textarea rows={3} placeholder="Tell us what you want to achieve..." className="w-full bg-[#09090B] border border-white/15 rounded-lg px-4 py-3 text-sm text-white focus:border-brand-lime outline-none" />
+                </div>
+                <button type="submit" className="w-full bg-brand-lime text-brand-dark font-space font-bold uppercase text-xs tracking-wider py-4 rounded-lg hover:bg-[#E2FF4D] hover:shadow-[0_0_25px_rgba(212,255,0,0.5)] transition-all cursor-pointer border-none font-extrabold mt-2">
+                  Submit Discovery Inquiry →
+                </button>
+              </form>
+            )}
+          </div>
+        </div>
+      </section>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// CAREERS PAGE (/careers)
+// =========================================================================
+export function CareersPage({ onNavigate }) {
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="careers">
+      <section className="pt-16 pb-16 md:pt-24 md:pb-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white border-b border-white/10">
+        <div className="max-w-[1280px] mx-auto text-center">
+          <p className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue mb-4">Culture & Recruitment</p>
+          <h1 className="font-space font-bold text-[36px] sm:text-[50px] md:text-[70px] lg:text-[80px] leading-[0.85] tracking-tighter uppercase mb-6">
+            WORK WITH PEOPLE WHO <br /><span className="text-brand-lime">REFUSE TO BE BORING.</span>
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base lg:text-lg max-w-xl mx-auto font-inter">
+            We operate fully remote with flexible hours, high ownership, competitive pay, and direct senior mentorship.
+          </p>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white">
+        <div className="max-w-[900px] mx-auto space-y-6">
+          {[
+            { title: "Senior Performance Media Buyer (Meta & Google)", loc: "Remote / India", type: "Full-Time", desc: "Manage ₹20L+ monthly ad spend, run rapid creative testing sprints, and scale client ROAS." },
+            { title: "Short-Form Video Editor & Motion Designer", loc: "Remote / India", type: "Full-Time", desc: "Edit high-retention reels, kinetic typography hooks, and cinematic UGC ads using Premiere & After Effects." },
+            { title: "Senior Content Strategist & SEO Lead", loc: "Remote / India", type: "Full-Time", desc: "Build topic cluster authority playbooks, GEO entity graphs, and bottom-funnel commercial content hubs." }
+          ].map((j, i) => (
+            <div key={i} className="bg-[#18181B] border border-white/10 rounded-2xl p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-brand-lime transition-colors">
+              <div>
+                <div className="flex gap-2 mb-2">
+                  <span className="bg-brand-blue text-white px-2 py-0.5 rounded text-[10px] font-space font-bold uppercase">{j.type}</span>
+                  <span className="bg-white/10 text-gray-300 px-2 py-0.5 rounded text-[10px] font-space">{j.loc}</span>
+                </div>
+                <h3 className="font-space font-bold text-xl uppercase text-white mb-2">{j.title}</h3>
+                <p className="text-gray-400 text-xs font-inter max-w-lg">{j.desc}</p>
+              </div>
+              <a href="mailto:careers@getintofeed.com?subject=Job%20Application" className="bg-brand-lime text-brand-dark px-5 py-2.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all text-decoration-none shrink-0">
+                Apply Now →
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// LEGAL PAGES (/privacy, /terms)
+// =========================================================================
+export function LegalPage({ type = "privacy", onNavigate }) {
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="">
+      <section className="py-16 md:py-24 px-6 md:px-12 lg:px-16 bg-brand-dark text-white min-h-[70vh]">
+        <div className="max-w-[800px] mx-auto">
+          <h1 className="font-space font-bold text-3xl sm:text-4xl uppercase tracking-tight text-white mb-8 border-b border-white/10 pb-4">
+            {type === "privacy" ? "Privacy Policy" : "Terms of Service"}
+          </h1>
+          <div className="prose prose-invert text-gray-300 font-inter space-y-4 text-sm leading-relaxed">
+            <p>Last updated: September 2026. Get Into Feed ("we", "us", or "our") respects client confidentiality and data security.</p>
+            <h3 className="font-space font-bold uppercase text-white text-lg pt-4">Data Collection & Privacy</h3>
+            <p>We collect only information willingly submitted through project inquiry forms, WhatsApp discovery sessions, and email communications. We never sell or license client contact data.</p>
+            <h3 className="font-space font-bold uppercase text-white text-lg pt-4">Service Terms</h3>
+            <p>All marketing sprints, creative deliverables, and consulting retainers are governed by formal statements of work (SOW) executed between Get Into Feed and the client entity.</p>
+          </div>
+        </div>
+      </section>
     </PageLayout>
   );
 }
@@ -1963,40 +1927,311 @@ export function ClientsTestimonialsPage({ onNavigate }) {
 export function NotFoundPage({ onNavigate }) {
   return (
     <PageLayout onNavigate={onNavigate} activeNav="">
-      <div style={{ backgroundColor: "#FFFFFF", padding: "100px 24px", maxWidth: "900px", margin: "0 auto", textAlign: "center", minHeight: "70vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-        <div style={{ background: "#D4FF00", color: "#09090B", padding: "8px 24px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(60px, 12vw, 120px)", lineHeight: 1, letterSpacing: "-0.05em", border: "3px solid #09090B", boxShadow: "8px 8px 0px #09090B", marginBottom: "30px" }}>
+      <div className="bg-brand-dark text-white py-24 px-6 text-center min-h-[70vh] flex flex-col justify-center items-center">
+        <div className="font-space font-bold text-[80px] sm:text-[120px] text-brand-lime leading-none mb-4 tracking-tighter drop-shadow-[0_0_35px_rgba(212,255,0,0.3)]">
           404
         </div>
-        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(26px, 4vw, 44px)", textTransform: "uppercase", color: "#09090B", marginBottom: "16px", letterSpacing: "-0.03em" }}>
+        <h1 className="font-space font-bold text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-white mb-4">
           YOU FELL OUT OF THE FEED.
         </h1>
-        <p style={{ fontSize: "16px", color: "#52525B", maxWidth: "520px", margin: "0 auto 36px auto", lineHeight: 1.6 }}>
-          The page you're searching for doesn't exist, was moved, or has scrolled out of view. Let's get you back to high-converting content.
+        <p className="text-gray-400 text-sm md:text-base max-w-md mx-auto mb-8 font-inter">
+          The link you followed may be broken or the page has scrolled out of view. Let's get you back to high-converting content.
         </p>
-
-        <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
+        <div className="flex flex-wrap gap-4 justify-center">
           <button
             type="button"
             onClick={() => onNavigate("/")}
-            style={{ background: "#09090B", color: "#D4FF00", border: "2px solid #09090B", padding: "12px 24px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", textTransform: "uppercase", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px", boxShadow: "3px 3px 0px #D4FF00" }}
+            className="bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all cursor-pointer border-none"
           >
             ← Back to Home
           </button>
           <button
             type="button"
             onClick={() => onNavigate("/services")}
-            style={{ background: "#FFFFFF", color: "#09090B", border: "2px solid #09090B", padding: "12px 24px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0px #09090B" }}
+            className="bg-transparent border border-white/20 text-white px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-blue transition-all cursor-pointer"
           >
             Explore Services
           </button>
-          <button
-            type="button"
-            onClick={() => onNavigate("/audit")}
-            style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "12px 24px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0px #09090B" }}
-          >
-            Free Growth Audit ⚡
-          </button>
         </div>
+      </div>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// AUDIT TOOL PAGE (FREE 360° CREATIVE & GROWTH AUDIT)
+// =========================================================================
+export function AuditToolPage({ onNavigate }) {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    website: "",
+    socialHandle: "",
+    monthlySpend: "1L - 5L INR",
+    primaryGoal: "Scale ROAS & Lower CPA",
+    competitor: "",
+    biggestBottleneck: "Creative fatigue and low conversion rates"
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [calculating, setCalculating] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.phone) {
+      alert("Please provide your name, email, and contact number.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await fetch(`${API_URL}/api/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          website: formData.website || formData.socialHandle,
+          service: "Free 360 Audit",
+          source: "Interactive Audit Tool",
+          message: `Goal: ${formData.primaryGoal} | Spend: ${formData.monthlySpend} | Competitor: ${formData.competitor} | Bottleneck: ${formData.biggestBottleneck}`
+        })
+      });
+      setSubmitting(false);
+      setSubmitted(true);
+    } catch (err) {
+      console.error(err);
+      setSubmitting(false);
+      setSubmitted(true); // Graceful UX
+    }
+  };
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="audit">
+      <div className="py-12 md:py-20 max-w-5xl mx-auto">
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/10 border border-brand-lime/20 text-brand-lime font-space font-bold text-xs uppercase tracking-wider mb-4">
+            <Zap className="w-3.5 h-3.5" /> Free 360° Diagnostic Report
+          </div>
+          <h1 className="font-space font-extrabold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-white mb-6 leading-none">
+            AUDIT YOUR <span className="text-brand-lime">BRAND'S FEED</span> & CONVERSION FUNNEL.
+          </h1>
+          <p className="text-gray-300 text-sm md:text-base font-inter leading-relaxed">
+            Uncover why your ads bleed spend, why visitors bounce, and where your competitor is out-ranking you. Get a human-evaluated, senior strategist-led growth teardown within 24 hours.
+          </p>
+        </div>
+
+        {submitted ? (
+          <div className="bg-[#18181B] border border-brand-lime/30 rounded-2xl p-8 md:p-12 text-center max-w-2xl mx-auto shadow-[0_0_30px_rgba(212,255,0,0.15)]">
+            <div className="w-16 h-16 rounded-full bg-brand-lime/20 flex items-center justify-center mx-auto mb-6 text-brand-lime">
+              <CheckCircle2 className="w-8 h-8" />
+            </div>
+            <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-white mb-3">
+              AUDIT QUEUED SUCCESSFULLY!
+            </h3>
+            <p className="text-gray-300 text-sm mb-6">
+              Our growth strategists are reviewing <span className="text-brand-lime font-semibold">{formData.website || formData.socialHandle || "your brand"}</span>. We will deliver the video teardown and strategic benchmark to <span className="text-white font-semibold">{formData.email}</span> within 24 hours.
+            </p>
+            <button
+              type="button"
+              onClick={() => onNavigate("/")}
+              className="bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all cursor-pointer"
+            >
+              Back to Home
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Audit Form Container */}
+            <div className="lg:col-span-7 bg-[#18181B] border border-white/10 rounded-2xl p-6 md:p-8">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <h3 className="font-space font-bold text-lg uppercase tracking-tight text-white mb-1">
+                    Step 1: Your Brand Details
+                  </h3>
+                  <p className="text-gray-400 text-xs mb-4">Tell us what brand or domain we are auditing.</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-space font-bold uppercase text-gray-300 mb-1.5">
+                        Brand / Website URL *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="https://yourbrand.com"
+                        value={formData.website}
+                        onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                        required
+                        className="w-full bg-[#09090B] border border-white/10 text-white rounded-lg px-3.5 py-2.5 text-xs focus:border-brand-lime focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-space font-bold uppercase text-gray-300 mb-1.5">
+                        Instagram / Ad Handle
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="@yourbrand"
+                        value={formData.socialHandle}
+                        onChange={(e) => setFormData({ ...formData, socialHandle: e.target.value })}
+                        className="w-full bg-[#09090B] border border-white/10 text-white rounded-lg px-3.5 py-2.5 text-xs focus:border-brand-lime focus:outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/5">
+                  <h3 className="font-space font-bold text-lg uppercase tracking-tight text-white mb-1">
+                    Step 2: Growth Metrics & Bottlenecks
+                  </h3>
+                  <p className="text-gray-400 text-xs mb-4">Help us benchmark against your specific commercial stage.</p>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <label className="block text-xs font-space font-bold uppercase text-gray-300 mb-1.5">
+                        Monthly Marketing Spend
+                      </label>
+                      <select
+                        value={formData.monthlySpend}
+                        onChange={(e) => setFormData({ ...formData, monthlySpend: e.target.value })}
+                        className="w-full bg-[#09090B] border border-white/10 text-white rounded-lg px-3.5 py-2.5 text-xs focus:border-brand-lime focus:outline-none transition-colors"
+                      >
+                        <option value="Under 1L INR">Under ₹1 Lakh / mo</option>
+                        <option value="1L - 5L INR">₹1 Lakh - ₹5 Lakh / mo</option>
+                        <option value="5L - 20L INR">₹5 Lakh - ₹20 Lakh / mo</option>
+                        <option value="20L+ INR">₹20 Lakh+ / mo (Enterprise)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-space font-bold uppercase text-gray-300 mb-1.5">
+                        Top Strategic Goal
+                      </label>
+                      <select
+                        value={formData.primaryGoal}
+                        onChange={(e) => setFormData({ ...formData, primaryGoal: e.target.value })}
+                        className="w-full bg-[#09090B] border border-white/10 text-white rounded-lg px-3.5 py-2.5 text-xs focus:border-brand-lime focus:outline-none transition-colors"
+                      >
+                        <option value="Scale ROAS & Lower CPA">Scale ROAS & Lower CPA</option>
+                        <option value="Organic Reach & Viral Hooks">Viral Video Hooks & Reach</option>
+                        <option value="Conversion Rate Optimization">Landing Page CRO & Retention</option>
+                        <option value="Complete Brand Repositioning">Complete Brand Repositioning</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-space font-bold uppercase text-gray-300 mb-1.5">
+                      Top Competitor You Want To Out-Market
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. competitor.com or their handle"
+                      value={formData.competitor}
+                      onChange={(e) => setFormData({ ...formData, competitor: e.target.value })}
+                      className="w-full bg-[#09090B] border border-white/10 text-white rounded-lg px-3.5 py-2.5 text-xs focus:border-brand-lime focus:outline-none transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-white/5">
+                  <h3 className="font-space font-bold text-lg uppercase tracking-tight text-white mb-1">
+                    Step 3: Where Should We Send The Teardown?
+                  </h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-3">
+                    <div>
+                      <label className="block text-xs font-space font-bold uppercase text-gray-300 mb-1.5">
+                        Your Name *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ashish Raghav"
+                        value={formData.name}
+                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        required
+                        className="w-full bg-[#09090B] border border-white/10 text-white rounded-lg px-3.5 py-2.5 text-xs focus:border-brand-lime focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-space font-bold uppercase text-gray-300 mb-1.5">
+                        Work Email *
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="ashish@brand.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        required
+                        className="w-full bg-[#09090B] border border-white/10 text-white rounded-lg px-3.5 py-2.5 text-xs focus:border-brand-lime focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-space font-bold uppercase text-gray-300 mb-1.5">
+                        Phone / WhatsApp *
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="+91 98765 43210"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        required
+                        className="w-full bg-[#09090B] border border-white/10 text-white rounded-lg px-3.5 py-2.5 text-xs focus:border-brand-lime focus:outline-none transition-colors"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full bg-brand-lime text-brand-dark py-4 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] hover:shadow-[0_0_25px_rgba(212,255,0,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer border-none disabled:opacity-50"
+                >
+                  {submitting ? "Analyzing Metrics..." : "Request 360° Teardown (100% Free)"}
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
+            </div>
+
+            {/* Value Props & What You Receive */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="bg-[#18181B] border border-white/10 rounded-2xl p-6">
+                <h4 className="font-space font-bold text-sm uppercase tracking-wider text-brand-lime mb-4 flex items-center gap-2">
+                  <Check className="w-4 h-4" /> What's Included In Your Teardown
+                </h4>
+                <ul className="space-y-3.5 text-xs text-gray-300 font-inter">
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-4 h-4 rounded-full bg-brand-lime/20 text-brand-lime flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">1</div>
+                    <span><strong>Creative Hook Analysis:</strong> Why users scroll past your first 3 seconds and how to fix frame 1 dropoff.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-4 h-4 rounded-full bg-brand-lime/20 text-brand-lime flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">2</div>
+                    <span><strong>Landing Page Friction Map:</strong> Heatmap-backed breakdown of mobile bounce factors and offer clarity.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-4 h-4 rounded-full bg-brand-lime/20 text-brand-lime flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">3</div>
+                    <span><strong>Competitor Ad Spy & Gap Analysis:</strong> What angles your rival is scaling right now that you can ethically hijack.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <div className="w-4 h-4 rounded-full bg-brand-lime/20 text-brand-lime flex items-center justify-center shrink-0 mt-0.5 font-bold text-[10px]">4</div>
+                    <span><strong>90-Day Sprint Roadmap:</strong> Specific test budget, ad creative cadence, and ROAS projections.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-brand-blue text-white rounded-2xl p-6">
+                <div className="font-space font-bold text-xs uppercase tracking-wider text-brand-lime mb-1">
+                  NO AUTOMATED BOT REPORTS
+                </div>
+                <h4 className="font-space font-bold text-lg uppercase tracking-tight text-white mb-2">
+                  Every Audit Is Reviewed By A Human Growth Director
+                </h4>
+                <p className="text-xs text-white/80 font-inter leading-relaxed">
+                  We don't send useless generic automated PDF scrapers. A dedicated strategist spends 45 minutes manually dissecting your ad accounts, creatives, and conversion pages before recording your video teardown.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </PageLayout>
   );

@@ -36,6 +36,7 @@ import {
   X,
   Zap
 } from "lucide-react";
+import FloatingNavControl from "./components/FloatingNavControl";
 import AdminDashboard from "./Admin";
 import {
   ServicesHubPage,
@@ -1222,6 +1223,7 @@ export default function App() {
       )}
 
       {/* Floating WhatsApp Quick Connect */}
-          </div>
+            <FloatingNavControl />
+    </div>
   );
 }
