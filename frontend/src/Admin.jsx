@@ -1,3 +1,4 @@
+import "./admin.css";
 import React, { useState, useEffect, useRef } from "react";
 import {
   AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Bold, BookOpen, Bot, BriefcaseBusiness, Check, CheckCircle2, ChevronDown, ChevronRight, Clock, Code, Copy, Download, ExternalLink, Eye, FileText, Filter, Globe2, Heading, Heading1, Heading2, Heading3, HelpCircle, Image as ImageIcon, Italic, KeyRound, Layers, LayoutDashboard, LineChart, Link2, List, ListOrdered, Lock, LogOut, Mail, Maximize2, Megaphone, MessageCircle, MessageSquare, Minimize2, Monitor, MoreVertical, Palette, PenTool, Pencil, Phone, Play, Plus, Quote, RefreshCw, Save, Search, Send, Share2, ShieldCheck, Sliders, Smartphone, Sparkles, Star, Strikethrough, Table, Tag, Trash2, Underline, UploadCloud, UsersRound, Video, Wand2, X, Zap

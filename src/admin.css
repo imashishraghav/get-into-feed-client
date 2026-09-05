@@ -1,0 +1,341 @@
+/* =============================================================================
+   ADMIN MOBILE & DESKTOP RESPONSIVE SUITE
+============================================================================= */
+
+/* Desktop view: Hide mobile headers and bottom touch bar */
+@media (min-width: 1024px) {
+  .admin-mobile-top-bar {
+    display: none !important;
+  }
+  .admin-mobile-bottom-nav {
+    display: none !important;
+  }
+}
+
+/* Mobile view (< 1024px): Show top bar, bottom bar, hide desktop sidebar */
+@media (max-width: 1023px) {
+  .admin-sidebar-nav {
+    display: none !important;
+  }
+
+  .admin-dashboard-container {
+    flex-direction: column !important;
+    padding-bottom: 76px !important;
+  }
+
+  .admin-mobile-top-bar {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 16px !important;
+    background: #0b1528 !important;
+    color: #ffffff !important;
+    border-bottom: 1px solid #1e293b !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 50 !important;
+  }
+
+  .admin-mobile-brand-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-weight: 800 !important;
+    font-size: 0.95rem !important;
+    color: #ffffff !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  .admin-mobile-top-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .admin-mobile-bottom-nav {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: rgba(11, 21, 40, 0.96) !important;
+    backdrop-filter: blur(12px) !important;
+    border-top: 1px solid #1e293b !important;
+    padding: 8px 4px !important;
+    z-index: 50 !important;
+  }
+
+  .admin-mobile-nav-tab {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 3px !important;
+    background: transparent !important;
+    border: none !important;
+    color: #94a3b8 !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    position: relative !important;
+    padding: 4px 8px !important;
+  }
+
+  .admin-mobile-nav-tab.active {
+    color: #38bdf8 !important;
+  }
+
+  .admin-mobile-tab-badge {
+    position: absolute !important;
+    top: -2px !important;
+    right: 4px !important;
+    background: #f97316 !important;
+    color: #ffffff !important;
+    font-size: 0.6rem !important;
+    padding: 1px 5px !important;
+    border-radius: 9999px !important;
+    font-weight: 800 !important;
+  }
+
+  .admin-top-header {
+    padding: 14px 16px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .admin-stats-ribbon {
+    padding: 14px 16px !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .canvas-content-body {
+    padding: 10px 16px 24px 16px !important;
+  }
+
+  .saas-data-table-card {
+    padding: 16px 12px !important;
+  }
+}
+
+/* ADMIN LOGIN SCREEN STYLES */
+.admin-login-screen {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 25%, #1e293b 0%, #0b1528 100%);
+  padding: 24px 16px;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: #0f172a;
+}
+
+.admin-login-card {
+  max-width: 440px;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 36px 32px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: left;
+}
+
+.login-badge-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.login-badge-brand strong {
+  display: block;
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #0b1528;
+}
+
+.login-badge-brand small {
+  font-size: 0.72rem;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.admin-login-card h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0b1528;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.admin-login-card p {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.login-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.login-form label {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.login-form label span {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.password-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrap .pass-icon {
+  position: absolute;
+  left: 14px;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.password-input-wrap input {
+  width: 100%;
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px 14px 12px 42px;
+  font-size: 0.88rem;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.password-input-wrap input:focus {
+  border-color: #f97316;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+}
+
+.login-footer-hint {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: #64748b;
+  background: #f8fafc;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.login-footer-hint code {
+  background: #e2e8f0;
+  color: #0f172a;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
+/* BUTTON ENHANCEMENTS */
+.hero-orange-cta-btn {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+}
+
+.hero-orange-cta-btn:hover {
+  opacity: 0.94;
+  transform: translateY(-1px);
+}
+
+.button-coral {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 10px 18px !important;
+  font-size: 0.88rem !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  box-shadow: 0 3px 10px rgba(234, 88, 12, 0.25) !important;
+  transition: all 0.15s ease !important;
+}
+
+.button-coral:hover {
+  opacity: 0.94 !important;
+  transform: translateY(-1px) !important;
+}
+
+.button-coral.small {
+  padding: 7px 14px !important;
+  font-size: 0.8rem !important;
+}
+
+.button.full-width {
+  width: 100% !important;
+}
+
+.button-paper {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  padding: 7px 14px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  transition: all 0.15s ease !important;
+}
+
+.button-paper:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+}
+
+/* SPIN ANIMATION */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
