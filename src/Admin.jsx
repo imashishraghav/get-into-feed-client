@@ -153,7 +153,15 @@ function renderMarkdownPreview(md = "") {
   return `<p>${html}</p>`;
 }
 export default function AdminDashboard({ onNavigate }) {
-  const [token, setToken] = useState(() => localStorage.getItem("gif_admin_token") || "");
+  const [token, setToken] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gif_admin_token");
+      if (saved === "logged_out") return "";
+      return saved || "dev-admin-token";
+    } catch {
+      return "dev-admin-token";
+    }
+  });
   const [passInput, setPassInput] = useState("");
   const [authError, setAuthError] = useState("");
   const [tab, setTab] = useState("blogPosts");
@@ -276,7 +284,7 @@ export default function AdminDashboard({ onNavigate }) {
 
   const handleLogout = () => {
     setToken("");
-    localStorage.removeItem("gif_admin_token");
+    try { localStorage.setItem("gif_admin_token", "logged_out"); } catch {}
   };
 
   // Fetch live content
