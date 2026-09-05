@@ -36,7 +36,6 @@ import {
   X,
   Zap
 } from "lucide-react";
-import WhatsAppWidget from "./components/WhatsAppWidget";
 import FloatingNavControl from "./components/FloatingNavControl";
 import AdminDashboard from "./Admin";
 import {
@@ -1222,7 +1221,6 @@ export default function App() {
 
       {/* Floating WhatsApp Quick Connect */}
       <FloatingNavControl />
-      <WhatsAppWidget />
-    </div>
+          </div>
   );
 }
