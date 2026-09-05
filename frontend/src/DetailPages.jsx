@@ -24,6 +24,7 @@ import {
   Instagram,
   Lightbulb,
   Linkedin,
+  Lock,
   Mail,
   Megaphone,
   Menu,

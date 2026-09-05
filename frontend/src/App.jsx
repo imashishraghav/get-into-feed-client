@@ -1,3 +1,42 @@
+import {
+  ArrowDown,
+  ArrowRight,
+  Bookmark,
+  Briefcase,
+  Car,
+  Check,
+  Clapperboard,
+  Code,
+  Coffee,
+  Dumbbell,
+  Edit3,
+  Flame,
+  GraduationCap,
+  Heart,
+  Home,
+  Instagram,
+  Linkedin,
+  Mail,
+  Map,
+  Megaphone,
+  Menu,
+  MessageCircle,
+  MoreHorizontal,
+  PenTool,
+  Phone,
+  PieChart,
+  Rocket,
+  Search,
+  Send,
+  ShoppingBag,
+  Sparkles,
+  Star,
+  Users,
+  Video,
+  X,
+  Zap
+} from "lucide-react";
+import FloatingNavControl from "./components/FloatingNavControl";
 import React, { useState, useEffect } from "react";
 import AdminDashboard from "./Admin";
 import {
