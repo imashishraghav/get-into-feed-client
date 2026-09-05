@@ -4,7 +4,7 @@ import { MessageSquare, PhoneCall, Sparkles, X, Zap } from "lucide-react";
 export default function WhatsAppWidget({ onOpenAudit }) {
   const [open, setOpen] = useState(false);
 
-  const phone = "919876543210";
+  const phone = "918810356950";
   const defaultMsg = encodeURIComponent("Hi Get Into Feed team! I am interested in scaling our digital marketing (SEO, Ads, Creative & Web) with your agency. Can we discuss a custom growth sprint?");
   const whatsappUrl = `https://wa.me/${phone}?text=${defaultMsg}`;
 
@@ -62,7 +62,7 @@ export default function WhatsAppWidget({ onOpenAudit }) {
             </button>
 
             <a
-              href="tel:+919876543210"
+              href="tel:+918810356950"
               className="widget-action-btn call-btn"
             >
               <PhoneCall size={16} />

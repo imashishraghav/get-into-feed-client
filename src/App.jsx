@@ -37,6 +37,7 @@ import {
   Zap
 } from "lucide-react";
 import WhatsAppWidget from "./components/WhatsAppWidget";
+import FloatingNavControl from "./components/FloatingNavControl";
 import AdminDashboard from "./Admin";
 import {
   ServicesHubPage,
@@ -48,7 +49,10 @@ import {
   FeedNotesPage,
   CareersPage,
   ContactPage,
-  LegalPage
+  LegalPage,
+  CaseStudyDetailPage,
+  ClientsTestimonialsPage,
+  NotFoundPage
 } from "./DetailPages";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
@@ -181,8 +185,15 @@ export default function App() {
   if (route.startsWith("/about")) {
     return <AboutUsPage onNavigate={navigate} />;
   }
-  if (route.startsWith("/work") || route.startsWith("/case-studies")) {
+  if (route === "/work" || route === "/work/" || route === "/case-studies" || route === "/case-studies/") {
     return <WorkPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/work/") || route.startsWith("/case-studies/")) {
+    const slug = route.replace("/work/", "").replace("/case-studies/", "").replace(/\/.*$/, "");
+    return <CaseStudyDetailPage slug={slug} onNavigate={navigate} />;
+  }
+  if (route.startsWith("/clients") || route.startsWith("/testimonials")) {
+    return <ClientsTestimonialsPage onNavigate={navigate} />;
   }
   if (route.startsWith("/pricing")) {
     return <PricingPage onNavigate={navigate} />;
@@ -205,6 +216,10 @@ export default function App() {
   }
   if (route.startsWith("/terms")) {
     return <LegalPage type="terms" onNavigate={navigate} />;
+  }
+
+  if (route !== "/" && route !== "") {
+    return <NotFoundPage onNavigate={navigate} />;
   }
 
   // =========================================================================
@@ -332,7 +347,7 @@ export default function App() {
               <a
                 href="#contact"
                 onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="w-full sm:w-auto bg-brand-lime text-brand-dark px-8 py-3.5 sm:py-4 rounded-lg font-bold font-space uppercase text-xs sm:text-sm tracking-wider hover:bg-white hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group shadow-[0_0_30px_rgba(212,255,0,0.3)] hover:shadow-[0_0_40px_rgba(255,255,255,0.4)] text-decoration-none"
+                className="w-full sm:w-auto bg-brand-lime text-brand-dark px-8 py-3.5 sm:py-4 rounded-lg font-bold font-space uppercase text-xs sm:text-sm tracking-wider hover:bg-[#E2FF4D] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group shadow-[0_0_30px_rgba(212,255,0,0.3)] hover:shadow-[0_0_40px_rgba(212,255,0,0.6)] text-decoration-none"
               >
                 Let's Talk
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
@@ -566,7 +581,7 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => navigate("/audit")}
-                className="w-full md:w-auto shrink-0 bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-white transition-all flex items-center justify-center gap-2 group shadow-md hover:shadow-lg hover:-translate-y-0.5 cursor-pointer border-none"
+                className="w-full md:w-auto shrink-0 bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 group shadow-md hover:shadow-[0_0_25px_rgba(212,255,0,0.5)] hover:-translate-y-0.5 cursor-pointer border-none"
               >
                 Get a Free Audit <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
               </button>
@@ -609,53 +624,53 @@ export default function App() {
 
           {/* Compact Industry Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 w-full mb-10">
-            <div onClick={() => { setSelectedService("Real Estate"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 reveal border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
+            <div onClick={() => { setSelectedService("Real Estate"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <Home className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Real Estate</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Real Estate</h3>
             </div>
-            <div onClick={() => { setSelectedService("D2C & E-Commerce"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 reveal reveal-delay-1 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
+            <div onClick={() => { setSelectedService("D2C & E-Commerce"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <ShoppingBag className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">D2C & E-Commerce</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">D2C & E-Commerce</h3>
             </div>
-            <div onClick={() => { setSelectedService("Hospitality"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 reveal reveal-delay-2 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
+            <div onClick={() => { setSelectedService("Hospitality"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <Coffee className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Hospitality</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Hospitality</h3>
             </div>
-            <div onClick={() => { setSelectedService("Healthcare & Wellness"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 reveal reveal-delay-3 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
+            <div onClick={() => { setSelectedService("Healthcare & Wellness"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <Heart className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Healthcare & Wellness</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Healthcare & Wellness</h3>
             </div>
-            <div onClick={() => { setSelectedService("Education"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 reveal border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
+            <div onClick={() => { setSelectedService("Education"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <GraduationCap className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Education</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Education</h3>
             </div>
-            <div onClick={() => { setSelectedService("Automotive"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 reveal reveal-delay-1 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
+            <div onClick={() => { setSelectedService("Automotive"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <Car className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Automotive</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Automotive</h3>
             </div>
-            <div onClick={() => { setSelectedService("Fashion & Beauty"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 reveal reveal-delay-2 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
+            <div onClick={() => { setSelectedService("Fashion & Beauty"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <Sparkles className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Fashion & Beauty</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Fashion & Beauty</h3>
             </div>
-            <div onClick={() => { setSelectedService("Pro Services"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 reveal reveal-delay-3 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
+            <div onClick={() => { setSelectedService("Pro Services"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <Briefcase className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Pro Services</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Pro Services</h3>
             </div>
             <div onClick={() => { setSelectedService("Startups & Tech"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <Rocket className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Startups & Tech</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Startups & Tech</h3>
             </div>
             <div onClick={() => { setSelectedService("Fitness & Sports"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <Dumbbell className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Fitness & Sports</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Fitness & Sports</h3>
             </div>
             <div onClick={() => { setSelectedService("Travel & Experiences"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <Map className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Travel & Experiences</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Travel & Experiences</h3>
             </div>
             <div onClick={() => { setSelectedService("Finance"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
               <PieChart className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-white transition-colors">Finance</h3>
+              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Finance</h3>
             </div>
           </div>
 
@@ -663,7 +678,7 @@ export default function App() {
             <a
               href="#contact"
               onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-              className="inline-flex bg-white border border-gray-200 text-brand-dark px-6 py-2.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-dark hover:text-white transition-all items-center gap-2 group shadow-sm hover:-translate-y-0.5 text-decoration-none"
+              className="inline-flex bg-white border border-gray-200 text-brand-dark px-6 py-2.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-dark hover:text-brand-lime hover:border-brand-dark transition-all items-center gap-2 group shadow-sm hover:-translate-y-0.5 text-decoration-none"
             >
               Is your industry missing? Let's talk <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
             </a>
@@ -773,7 +788,7 @@ export default function App() {
             <a
               href="#ways-to-work"
               onClick={(e) => { e.preventDefault(); scrollToSection("#ways-to-work"); }}
-              className="shrink-0 inline-flex bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-white transition-all items-center gap-2 group shadow-sm hover:-translate-y-0.5 text-decoration-none"
+              className="shrink-0 inline-flex bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] hover:shadow-[0_0_20px_rgba(212,255,0,0.4)] transition-all items-center gap-2 group shadow-sm hover:-translate-y-0.5 text-decoration-none"
             >
               View Solutions <ArrowDown className="w-3 h-3 group-hover:translate-y-1 transition-transform" style={{ width: "12px", height: "12px" }} />
             </a>
@@ -868,7 +883,7 @@ export default function App() {
             <a
               href="#contact"
               onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-              className="inline-flex bg-transparent border border-white/20 text-white px-6 py-2.5 rounded-lg font-bold font-space uppercase text-[10px] sm:text-xs tracking-wider hover:bg-white hover:text-brand-dark transition-all items-center gap-2 group shadow-sm text-decoration-none"
+              className="inline-flex bg-transparent border border-white/20 text-white px-6 py-2.5 rounded-lg font-bold font-space uppercase text-[10px] sm:text-xs tracking-wider hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime transition-all items-center gap-2 group shadow-sm text-decoration-none"
             >
               Talk to Sales <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
             </a>
@@ -888,7 +903,7 @@ export default function App() {
               <a
                 href="#contact"
                 onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="mt-auto w-full text-center bg-white/5 border border-white/10 hover:bg-white hover:text-brand-dark text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn text-decoration-none"
+                className="mt-auto w-full text-center bg-white/5 border border-white/10 hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn text-decoration-none"
               >
                 EXPLORE <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
               </a>
@@ -930,7 +945,7 @@ export default function App() {
               <a
                 href="#contact"
                 onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="mt-auto w-full text-center bg-white/5 border border-white/10 hover:bg-white hover:text-brand-dark text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn text-decoration-none"
+                className="mt-auto w-full text-center bg-white/5 border border-white/10 hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn text-decoration-none"
               >
                 EXPLORE <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
               </a>
@@ -953,22 +968,22 @@ export default function App() {
           </div>
 
           <div className="space-y-10 lg:space-y-12 mt-4 lg:mt-0 reveal reveal-delay-1">
-            <div className="border-t border-brand-dark/20 pt-6 group hover:-translate-y-1 transition-transform duration-300 cursor-default">
+            <div className="border-t border-brand-dark/20 pt-6 group hover:border-brand-dark hover:pl-2 transition-all duration-300 cursor-default">
               <h3 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO RANDOM POSTING.</h3>
               <p className="text-sm md:text-base xl:text-lg font-medium opacity-80 leading-relaxed font-inter">Every single piece of content has a strategic reason for existing. Hope is not a strategy.</p>
             </div>
 
-            <div className="border-t border-brand-dark/20 pt-6 group hover:-translate-y-1 transition-transform duration-300 cursor-default">
+            <div className="border-t border-brand-dark/20 pt-6 group hover:border-brand-dark hover:pl-2 transition-all duration-300 cursor-default">
               <h3 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO "BOOST BUTTON" STRATEGY.</h3>
               <p className="text-sm md:text-base xl:text-lg font-medium opacity-80 leading-relaxed font-inter">Paid media requires actual architecture. We build robust funnels, not quick fixes.</p>
             </div>
 
-            <div className="border-t border-brand-dark/20 pt-6 group hover:-translate-y-1 transition-transform duration-300 cursor-default">
+            <div className="border-t border-brand-dark/20 pt-6 group hover:border-brand-dark hover:pl-2 transition-all duration-300 cursor-default">
               <h3 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO DESIGN FOR DESIGN'S SAKE.</h3>
               <p className="text-sm md:text-base xl:text-lg font-medium opacity-80 leading-relaxed font-inter">Pretty visuals are useless if they don't communicate. Creative must drive action.</p>
             </div>
 
-            <div className="border-t border-brand-dark/20 pt-6 group hover:-translate-y-1 transition-transform duration-300 cursor-default">
+            <div className="border-t border-brand-dark/20 pt-6 group hover:border-brand-dark hover:pl-2 transition-all duration-300 cursor-default">
               <h3 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO VANITY METRICS.</h3>
               <p className="text-sm md:text-base xl:text-lg font-medium opacity-80 leading-relaxed mb-6 font-inter">Reach and likes are nice for the ego. Conversions and revenue are better for the business.</p>
             </div>
@@ -977,7 +992,7 @@ export default function App() {
               <a
                 href="#contact"
                 onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="inline-flex bg-brand-dark text-white px-6 py-3.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-white hover:text-brand-dark hover:shadow-lg transition-all items-center gap-2 group text-decoration-none"
+                className="inline-flex bg-brand-dark text-white px-6 py-3.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime hover:shadow-lg transition-all items-center gap-2 group text-decoration-none"
               >
                 Tired of boring? Let's talk <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
               </a>
@@ -1195,7 +1210,7 @@ export default function App() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-[#D4FF00] text-[#09090B] font-space font-bold uppercase text-xs tracking-wider py-3 rounded-lg hover:bg-white transition-colors mt-2 cursor-pointer border-none shadow-[0_0_20px_rgba(212,255,0,0.3)]"
+                  className="bg-[#D4FF00] text-[#09090B] font-space font-bold uppercase text-xs tracking-wider py-3 rounded-lg hover:bg-[#E2FF4D] hover:shadow-[0_0_25px_rgba(212,255,0,0.5)] transition-all mt-2 cursor-pointer border-none shadow-[0_0_20px_rgba(212,255,0,0.3)]"
                 >
                   {submitting ? "Sending..." : "Submit Growth Inquiry →"}
                 </button>
@@ -1206,6 +1221,7 @@ export default function App() {
       )}
 
       {/* Floating WhatsApp Quick Connect */}
+      <FloatingNavControl />
       <WhatsAppWidget />
     </div>
   );

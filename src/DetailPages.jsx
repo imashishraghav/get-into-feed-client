@@ -423,6 +423,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             </div>
 
             <a href="/work" onClick={(e) => { e.preventDefault(); onNavigate("/work"); }} style={{ color: activeNav === "work" ? "#0033FF" : "#09090B", textDecoration: "none" }}>Work</a>
+            <a href="/testimonials" onClick={(e) => { e.preventDefault(); onNavigate("/testimonials"); }} style={{ color: activeNav === "testimonials" ? "#0033FF" : "#09090B", textDecoration: "none" }}>Reviews</a>
             <a href="/about" onClick={(e) => { e.preventDefault(); onNavigate("/about"); }} style={{ color: activeNav === "about" ? "#0033FF" : "#09090B", textDecoration: "none" }}>About Us</a>
             <a href="/pricing" onClick={(e) => { e.preventDefault(); onNavigate("/pricing"); }} style={{ color: activeNav === "pricing" ? "#0033FF" : "#09090B", textDecoration: "none" }}>Pricing</a>
             <a href="/audit" onClick={(e) => { e.preventDefault(); onNavigate("/audit"); }} style={{ background: "#D4FF00", color: "#09090B", border: "1.5px solid #09090B", padding: "4px 12px", borderRadius: "9999px", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: "4px", boxShadow: "2px 2px 0px #09090B" }}>⚡ Free Audit</a>
@@ -448,6 +449,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
           <div style={{ background: "#FFFFFF", borderTop: "2px solid #09090B", padding: "20px 24px", display: "flex", flexDirection: "column", gap: "14px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "14px", textTransform: "uppercase" }}>
             <a href="/" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/"); }} style={{ color: "#09090B", textDecoration: "none" }}>01. Home</a>
             <a href="/services" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/services"); }} style={{ color: "#09090B", textDecoration: "none" }}>02. Services Hub</a>
+            <a href="/testimonials" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/testimonials"); }} style={{ color: "#09090B", textDecoration: "none" }}>03. Reviews & Proof</a>
             <a href="/work" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/work"); }} style={{ color: "#09090B", textDecoration: "none" }}>03. Our Work & Portfolio</a>
             <a href="/about" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/about"); }} style={{ color: "#09090B", textDecoration: "none" }}>04. About Us</a>
             <a href="/pricing" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); onNavigate("/pricing"); }} style={{ color: "#09090B", textDecoration: "none" }}>05. Pricing Sprints</a>
@@ -856,39 +858,54 @@ export function WorkPage({ onNavigate }) {
       </div>
 
       <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1600px", margin: "0 auto", padding: "0 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "28px" }}>
-        <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B" }}>
+        <div onClick={() => onNavigate("/work/veloura-organics")} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B", cursor: "pointer", transition: "transform 0.2s ease" }} onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"} onMouseLeave={(e) => e.currentTarget.style.transform = "none"}>
           <div>
             <span style={{ background: "#D4FF00", color: "#09090B", padding: "4px 12px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px", border: "1px solid #09090B" }}>D2C & E-COMMERCE</span>
             <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "24px", textTransform: "uppercase", color: "#09090B", marginBottom: "8px" }}>Veloura Organics</h3>
             <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>Scaled Meta Ad creative testing from ₹5L to ₹45L monthly revenue with 4.8x verified ROAS.</p>
           </div>
-          <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#09090B" }}>4.8x ROAS</span>
-            <span style={{ fontSize: "12px", color: "#71717A", fontWeight: "700" }}>3-Tier UGC Sprints</span>
+          <div>
+            <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+              <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#09090B" }}>4.8x ROAS</span>
+              <span style={{ fontSize: "12px", color: "#71717A", fontWeight: "700" }}>3-Tier UGC Sprints</span>
+            </div>
+            <span style={{ color: "#0033FF", fontWeight: "900", fontSize: "12px", fontFamily: "var(--font-space)", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              Read Full Case Study →
+            </span>
           </div>
         </div>
 
-        <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B" }}>
+        <div onClick={() => onNavigate("/work/urbanedge-realty")} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B", cursor: "pointer", transition: "transform 0.2s ease" }} onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"} onMouseLeave={(e) => e.currentTarget.style.transform = "none"}>
           <div>
             <span style={{ background: "#0033FF", color: "#FFFFFF", padding: "4px 12px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>REAL ESTATE</span>
             <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "24px", textTransform: "uppercase", color: "#09090B", marginBottom: "8px" }}>UrbanEdge Luxury Realty</h3>
             <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>Captured 1,420+ high-ticket buyer inquiries for ₹2Cr+ villas using cinematic drone reels and hyper-local geo-targeting.</p>
           </div>
-          <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#0033FF" }}>+340% LEADS</span>
-            <span style={{ fontSize: "12px", color: "#71717A", fontWeight: "700" }}>Reels & Paid Funnel</span>
+          <div>
+            <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+              <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#0033FF" }}>+340% LEADS</span>
+              <span style={{ fontSize: "12px", color: "#71717A", fontWeight: "700" }}>Reels & Paid Funnel</span>
+            </div>
+            <span style={{ color: "#0033FF", fontWeight: "900", fontSize: "12px", fontFamily: "var(--font-space)", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              Read Full Case Study →
+            </span>
           </div>
         </div>
 
-        <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B" }}>
+        <div onClick={() => onNavigate("/work/finscale-lending")} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B", cursor: "pointer", transition: "transform 0.2s ease" }} onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-4px)"} onMouseLeave={(e) => e.currentTarget.style.transform = "none"}>
           <div>
             <span style={{ background: "#09090B", color: "#D4FF00", padding: "4px 12px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>BFSI & FINTECH</span>
             <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "24px", textTransform: "uppercase", color: "#09090B", marginBottom: "8px" }}>FinScale Lending</h3>
             <p style={{ color: "#52525B", fontSize: "14px", lineHeight: 1.6, marginBottom: "20px" }}>Dominated commercial keyword rankings on Google and AI Overviews, lifting organic applications by 273%.</p>
           </div>
-          <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#09090B" }}>+273% SEO</span>
-            <span style={{ fontSize: "12px", color: "#71717A", fontWeight: "700" }}>GEO & Entity Graph</span>
+          <div>
+            <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+              <span style={{ fontFamily: "var(--font-space)", fontSize: "28px", fontWeight: "900", color: "#09090B" }}>+273% SEO</span>
+              <span style={{ fontSize: "12px", color: "#71717A", fontWeight: "700" }}>GEO & Entity Graph</span>
+            </div>
+            <span style={{ color: "#0033FF", fontWeight: "900", fontSize: "12px", fontFamily: "var(--font-space)", textTransform: "uppercase", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+              Read Full Case Study →
+            </span>
           </div>
         </div>
       </div>
@@ -1504,6 +1521,481 @@ export function LegalPage({ type = "privacy", onNavigate }) {
           <p style={{ marginBottom: "16px" }}>
             All content, graphics, and trademarks are protected under DMCA registration and international intellectual property laws.
           </p>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// CASE STUDIES CATALOG & DETAILED CASE STUDY VIEW
+// =========================================================================
+export const caseStudiesCatalog = {
+  "veloura-organics": {
+    slug: "veloura-organics",
+    brand: "Veloura Organics",
+    industry: "D2C Clean Skincare & Beauty",
+    tagline: "Scaling from ₹5L to ₹45L Monthly Revenue with 4.8x Verified ROAS",
+    overview: "Veloura had outstanding organic customer sentiment, but their Meta ad spend was hitting a ceiling at ₹5 Lakhs per month with soaring CAC. We rebuilt their creative testing engine from scratch.",
+    metrics: [
+      { label: "Monthly Revenue", value: "₹45L+", change: "+800% in 90 days" },
+      { label: "Blended ROAS", value: "4.82x", change: "Across Meta & Google" },
+      { label: "CPA Reduction", value: "-42%", change: "Down to ₹380 per buyer" },
+      { label: "Net New Customers", value: "18,400+", change: "First-time buyers acquired" }
+    ],
+    challenge: "Creative fatigue was setting in every 48 hours. Generic product studio shots were getting high scroll-by rates and cost-per-purchase had spiked above ₹950.",
+    solution: "We deployed our 3-Tier UGC Sprints: 32 high-hook creator videos testing founder stories, dermatologist breakdowns, and customer unboxings. Simultaneously, we replaced their slow collection pages with a high-speed custom lander with 1-click cart bumps.",
+    deliverables: [
+      "32 High-Converting UGC Video Ad Variations",
+      "Direct-Response Landers with Instant Cart Bumps",
+      "Advantage+ & CBO Full-Funnel Scaling Structure",
+      "Post-Purchase Klaviyo Retention & Upsell Workflows"
+    ],
+    testimonial: {
+      quote: "Get Into Feed completely altered our unit economics. Their creative team moves at lightning speed, testing dozens of hooks every week until they find 4x+ ROAS winners.",
+      author: "Rhea Singhal",
+      role: "Founder & CEO, Veloura Organics",
+      rating: 5
+    }
+  },
+  "urbanedge-realty": {
+    slug: "urbanedge-realty",
+    brand: "UrbanEdge Luxury Realty",
+    industry: "Premium Real Estate & Villas",
+    tagline: "1,420+ High-Ticket HNI Inquiries for ₹2.5Cr+ Luxury Villas",
+    overview: "Selling luxury properties via digital ads requires supreme credibility, cinematic production, and surgical geographic targeting of high-net-worth individuals.",
+    metrics: [
+      { label: "High-Ticket Leads", value: "1,420+", change: "Verified HNI buyers" },
+      { label: "Cost Per Site Visit", value: "₹2,100", change: "64% lower than industry avg" },
+      { label: "Inventory Closed", value: "₹28.4 Cr", change: "Directly attributed to ads" },
+      { label: "Video Completion Rate", value: "68%", change: "Cinematic drone reels" }
+    ],
+    challenge: "Low-quality generic form fill ads from previous agencies flooded the sales team with unqualified leads who could not afford luxury villa price points.",
+    solution: "We shot 4K cinematic walkthrough reels featuring the head architect, integrated an interactive 3D floorplan qualification questionnaire, and targeted Tier-1 tech founders and corporate executives.",
+    deliverables: [
+      "4K Cinematic Architectural Walkthrough Reels",
+      "Interactive WhatsApp Lead Qualification Bot",
+      "Meta Instant Experience Property Showcase Landers",
+      "Hyper-Targeted High-Net-Worth Persona Audiences"
+    ],
+    testimonial: {
+      quote: "The quality of leads changed overnight. Instead of bargain hunters, our sales team was talking directly to CXOs and business owners ready to book site visits.",
+      author: "Vikramaditya Mehra",
+      role: "Managing Director, UrbanEdge Properties",
+      rating: 5
+    }
+  },
+  "finscale-lending": {
+    slug: "finscale-lending",
+    brand: "FinScale Lending",
+    industry: "BFSI & Digital MSME Loans",
+    tagline: "+273% Organic Inbound Pipeline via Enterprise SEO & Entity Graph",
+    overview: "In a heavily saturated commercial lending landscape dominated by legacy banks, FinScale needed to capture high-intent MSME business owners searching for working capital.",
+    metrics: [
+      { label: "Organic Inbound Leads", value: "+273%", change: "High-intent loan applications" },
+      { label: "#1 Keyword Rankings", value: "142", change: "High-commercial intent terms" },
+      { label: "AI Search Citations", value: "84%", change: "Cited in ChatGPT & Gemini answers" },
+      { label: "Domain Authority", value: "58", change: "Up from 24 via Tier-1 Digital PR" }
+    ],
+    challenge: "Commercial finance keywords carry massive CPCs exceeding ₹450 per click on Google Search. Organic rankings were negligible due to lack of topical authority.",
+    solution: "We mapped and published 45 deep commercial intent playbooks, implemented advanced schema markup for financial calculators, and built authoritative entity citations across financial trade media.",
+    deliverables: [
+      "45 Enterprise Financial Topic Clusters & Content Hubs",
+      "Custom Interactive Working Capital ROI Calculator",
+      "GEO (Generative Engine Optimization) Schema Structuring",
+      "Tier-1 Financial PR Mentions and Authority Backlinks"
+    ],
+    testimonial: {
+      quote: "Get Into Feed didn't just get us rankings—they drove verified business owners looking for ₹20L to ₹1Cr credit lines. Our organic CAC dropped to near zero.",
+      author: "Anandita Sen",
+      role: "Chief Marketing Officer, FinScale",
+      rating: 5
+    }
+  }
+};
+
+export function CaseStudyDetailPage({ slug, onNavigate }) {
+  const caseData = caseStudiesCatalog[slug] || caseStudiesCatalog["veloura-organics"];
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="work">
+      <div style={{ backgroundColor: "#FFFFFF", padding: "60px 24px 40px 24px", maxWidth: "1400px", margin: "0 auto" }}>
+        {/* Back Link */}
+        <button
+          type="button"
+          onClick={() => onNavigate("/work")}
+          style={{ background: "transparent", border: "none", color: "#71717A", display: "inline-flex", alignItems: "center", gap: "8px", fontFamily: "var(--font-space)", fontWeight: "700", fontSize: "12px", textTransform: "uppercase", cursor: "pointer", marginBottom: "24px" }}
+        >
+          <ArrowLeft size={16} /> Back to all case studies
+        </button>
+
+        {/* Case Study Header */}
+        <div style={{ borderBottom: "2px solid #09090B", paddingBottom: "40px", marginBottom: "50px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "12px", marginBottom: "16px" }}>
+            <span style={{ background: "#0033FF", color: "#FFFFFF", padding: "6px 14px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+              {caseData.industry}
+            </span>
+            <span style={{ background: "#D4FF00", color: "#09090B", padding: "6px 14px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "11px", letterSpacing: "0.05em", textTransform: "uppercase", border: "1.5px solid #09090B" }}>
+              VERIFIED GROWTH CASE STUDY
+            </span>
+          </div>
+
+          <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(34px, 5vw, 68px)", lineHeight: 0.95, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", margin: "0 0 20px 0" }}>
+            {caseData.brand}
+          </h1>
+
+          <p style={{ fontFamily: "var(--font-space)", fontWeight: "800", fontSize: "clamp(18px, 2.5vw, 26px)", color: "#0033FF", textTransform: "uppercase", letterSpacing: "-0.02em", margin: "0 0 20px 0" }}>
+            {caseData.tagline}
+          </p>
+
+          <p style={{ fontSize: "16px", color: "#52525B", maxWidth: "800px", lineHeight: 1.7, margin: 0 }}>
+            {caseData.overview}
+          </p>
+        </div>
+
+        {/* Metrics Grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "20px", marginBottom: "60px" }}>
+          {caseData.metrics.map((m, idx) => (
+            <div key={idx} style={{ background: idx === 0 ? "#D4FF00" : "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "28px", boxShadow: "5px 5px 0px #09090B" }}>
+              <div style={{ fontSize: "12px", fontFamily: "var(--font-space)", fontWeight: "800", textTransform: "uppercase", color: idx === 0 ? "#09090B" : "#71717A", marginBottom: "8px" }}>
+                {m.label}
+              </div>
+              <div style={{ fontSize: "clamp(32px, 4vw, 44px)", fontFamily: "var(--font-space)", fontWeight: "900", color: "#09090B", letterSpacing: "-0.04em", lineHeight: 1 }}>
+                {m.value}
+              </div>
+              <div style={{ fontSize: "12px", fontWeight: "700", color: idx === 0 ? "#09090B" : "#0033FF", marginTop: "10px" }}>
+                ✓ {m.change}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Challenge & Solution Cards */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "30px", marginBottom: "60px" }}>
+          <div style={{ background: "#F4F4F5", border: "2px solid #09090B", borderRadius: "16px", padding: "36px", boxShadow: "5px 5px 0px #09090B" }}>
+            <span style={{ background: "#FF6B5E", color: "#FFFFFF", padding: "4px 10px", borderRadius: "4px", fontSize: "11px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>
+              THE BOTTLENECK
+            </span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "22px", textTransform: "uppercase", color: "#09090B", marginBottom: "14px" }}>
+              The Challenge
+            </h3>
+            <p style={{ color: "#52525B", fontSize: "15px", lineHeight: 1.7, margin: 0 }}>
+              {caseData.challenge}
+            </p>
+          </div>
+
+          <div style={{ background: "#09090B", color: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "36px", boxShadow: "5px 5px 0px #D4FF00" }}>
+            <span style={{ background: "#D4FF00", color: "#09090B", padding: "4px 10px", borderRadius: "4px", fontSize: "11px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", display: "inline-block", marginBottom: "16px" }}>
+              OUR PLAYBOOK
+            </span>
+            <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "22px", textTransform: "uppercase", color: "#D4FF00", marginBottom: "14px" }}>
+              The Execution
+            </h3>
+            <p style={{ color: "#D4D4D8", fontSize: "15px", lineHeight: 1.7, margin: 0 }}>
+              {caseData.solution}
+            </p>
+          </div>
+        </div>
+
+        {/* Deliverables */}
+        <div style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "36px", marginBottom: "60px", boxShadow: "5px 5px 0px #09090B" }}>
+          <h3 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "20px", textTransform: "uppercase", color: "#09090B", marginBottom: "20px" }}>
+            Key Deliverables & Assets Built
+          </h3>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
+            {caseData.deliverables.map((d, idx) => (
+              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "10px", background: "#F4F4F5", padding: "14px 18px", borderRadius: "8px", border: "1px solid #E4E4E7" }}>
+                <CheckCircle2 size={18} color="#0033FF" style={{ flexShrink: 0 }} />
+                <span style={{ fontSize: "13px", fontWeight: "700", color: "#09090B", fontFamily: "var(--font-space)" }}>{d}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Client Testimonial */}
+        <div style={{ background: "#0033FF", color: "#FFFFFF", borderRadius: "20px", padding: "48px 36px", marginBottom: "60px", position: "relative", overflow: "hidden" }}>
+          <Quote size={60} style={{ position: "absolute", top: "20px", right: "24px", opacity: 0.15 }} />
+          <div style={{ display: "flex", gap: "4px", marginBottom: "20px" }}>
+            {[...Array(caseData.testimonial.rating)].map((_, i) => (
+              <Star key={i} size={20} fill="#D4FF00" color="#D4FF00" />
+            ))}
+          </div>
+          <p style={{ fontSize: "clamp(18px, 2.5vw, 24px)", fontFamily: "var(--font-space)", fontWeight: "700", lineHeight: 1.5, marginBottom: "24px", maxWidth: "900px" }}>
+            "{caseData.testimonial.quote}"
+          </p>
+          <div>
+            <div style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "16px", textTransform: "uppercase" }}>{caseData.testimonial.author}</div>
+            <div style={{ color: "#D4FF00", fontSize: "13px", fontWeight: "700" }}>{caseData.testimonial.role}</div>
+          </div>
+        </div>
+
+        {/* CTA Banner */}
+        <div style={{ background: "#09090B", color: "#FFFFFF", borderRadius: "20px", padding: "50px 36px", textAlign: "center", border: "2px solid #D4FF00" }}>
+          <h2 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(26px, 4vw, 44px)", textTransform: "uppercase", color: "#FFFFFF", marginBottom: "16px" }}>
+            WANT SIMILAR RESULTS FOR YOUR FEED?
+          </h2>
+          <p style={{ color: "#A1A1AA", fontSize: "15px", maxWidth: "600px", margin: "0 auto 30px auto" }}>
+            Let's audit your current marketing funnel and identify high-converting revenue opportunities.
+          </p>
+          <div style={{ display: "flex", justifyContent: "center", gap: "16px", flexWrap: "wrap" }}>
+            <button
+              type="button"
+              onClick={() => onNavigate("/audit")}
+              style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #D4FF00", padding: "14px 28px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "13px", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px" }}
+            >
+              Get Free Growth Audit <ArrowRight size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate("/contact")}
+              style={{ background: "transparent", color: "#FFFFFF", border: "2px solid #FFFFFF", padding: "14px 28px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", textTransform: "uppercase", fontSize: "13px", cursor: "pointer" }}
+            >
+              Book Strategy Call
+            </button>
+          </div>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// CLIENTS & TESTIMONIALS PAGE (/clients, /testimonials)
+// =========================================================================
+export function ClientsTestimonialsPage({ onNavigate }) {
+  const [filter, setFilter] = useState("all");
+
+  const testimonials = [
+    {
+      category: "d2c",
+      brand: "Veloura Organics",
+      industry: "D2C Skincare",
+      quote: "Get Into Feed took our ad spend from ₹5L/mo to ₹45L/mo at a 4.8x ROAS. Their UGC creative hooks are unlike anything other agencies produce.",
+      author: "Rhea Singhal",
+      role: "Co-Founder & CEO",
+      metric: "4.8x ROAS",
+      rating: 5
+    },
+    {
+      category: "realestate",
+      brand: "UrbanEdge Luxury Realty",
+      industry: "Real Estate",
+      quote: "1,420+ high-intent buyer inquiries for our luxury villas. We closed over ₹28 Crores in inventory directly tracked to their video campaigns.",
+      author: "Vikramaditya Mehra",
+      role: "Managing Director",
+      metric: "₹28Cr Closed",
+      rating: 5
+    },
+    {
+      category: "fintech",
+      brand: "FinScale Lending",
+      industry: "FinTech & BFSI",
+      quote: "Their entity-based SEO and content cluster framework helped us dominate #1 Google rankings for commercial loans, lifting organic applications by 273%.",
+      author: "Anandita Sen",
+      role: "Chief Marketing Officer",
+      metric: "+273% Leads",
+      rating: 5
+    },
+    {
+      category: "health",
+      brand: "CureZen Healthcare",
+      industry: "HealthTech",
+      quote: "We scaled tele-consultation bookings by 520% in 4 months. The team understands healthcare regulations and conversion optimization thoroughly.",
+      author: "Dr. Sameer Kulkarni",
+      role: "Operations Director",
+      metric: "+520% Consults",
+      rating: 5
+    },
+    {
+      category: "d2c",
+      brand: "Stride Activewear",
+      industry: "D2C Fitness Apparel",
+      quote: "Our customer acquisition cost plummeted by 38% after launching Get Into Feed's creator unboxing sprint. They deliver true ROI, not vanity likes.",
+      author: "Aakash Varma",
+      role: "Founder",
+      metric: "-38% CAC",
+      rating: 5
+    },
+    {
+      category: "saas",
+      brand: "NexaCloud SaaS",
+      industry: "B2B Cloud Software",
+      quote: "From zero LinkedIn authority to 45 enterprise demo requests every month. Their B2B thought leadership ghostwriting is exceptional.",
+      author: "Priya Nambiar",
+      role: "Head of Growth",
+      metric: "45 Demos/mo",
+      rating: 5
+    }
+  ];
+
+  const filteredList = filter === "all" ? testimonials : testimonials.filter(t => t.category === filter);
+
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="testimonials">
+      <div style={{ backgroundColor: "#FFFFFF", padding: "80px 24px 60px 24px", maxWidth: "1600px", margin: "0 auto", textAlign: "center" }}>
+        <span style={{ color: "#0033FF", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", letterSpacing: "0.15em", textTransform: "uppercase", display: "inline-block", background: "#F4F4F5", border: "1.5px solid #E4E4E7", padding: "4px 14px", borderRadius: "9999px", marginBottom: "16px" }}>
+          TESTIMONIALS & CLIENT RESULTS
+        </span>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(36px, 5.5vw, 80px)", lineHeight: 0.9, letterSpacing: "-0.04em", textTransform: "uppercase", color: "#09090B", marginBottom: "24px" }}>
+          TRUSTED BY <br /><span style={{ background: "#D4FF00", padding: "2px 12px", borderRadius: "8px", border: "2px solid #09090B" }}>85+ BRANDS</span> WORLDWIDE.
+        </h1>
+        <p style={{ fontSize: "18px", color: "#52525B", maxWidth: "640px", margin: "0 auto 40px auto" }}>
+          Discover what founders, CMOs, and marketing leaders say about partnering with Get Into Feed to scale revenue and organic reach.
+        </p>
+
+        {/* Trust Badges Bar */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", maxWidth: "1000px", margin: "0 auto 50px auto" }}>
+          <div style={{ background: "#F8F8F8", border: "2px solid #09090B", borderRadius: "12px", padding: "20px", boxShadow: "4px 4px 0px #09090B" }}>
+            <div style={{ fontFamily: "var(--font-space)", fontSize: "32px", fontWeight: "900", color: "#09090B" }}>4.9 / 5.0</div>
+            <div style={{ fontSize: "12px", fontWeight: "800", color: "#71717A", textTransform: "uppercase" }}>Average Client Rating</div>
+          </div>
+          <div style={{ background: "#F8F8F8", border: "2px solid #09090B", borderRadius: "12px", padding: "20px", boxShadow: "4px 4px 0px #09090B" }}>
+            <div style={{ fontFamily: "var(--font-space)", fontSize: "32px", fontWeight: "900", color: "#0033FF" }}>₹140Cr+</div>
+            <div style={{ fontSize: "12px", fontWeight: "800", color: "#71717A", textTransform: "uppercase" }}>Client Revenue Scaled</div>
+          </div>
+          <div style={{ background: "#F8F8F8", border: "2px solid #09090B", borderRadius: "12px", padding: "20px", boxShadow: "4px 4px 0px #09090B" }}>
+            <div style={{ fontFamily: "var(--font-space)", fontSize: "32px", fontWeight: "900", color: "#09090B" }}>96%</div>
+            <div style={{ fontSize: "12px", fontWeight: "800", color: "#71717A", textTransform: "uppercase" }}>Quarterly Retainer Retention</div>
+          </div>
+          <div style={{ background: "#F8F8F8", border: "2px solid #09090B", borderRadius: "12px", padding: "20px", boxShadow: "4px 4px 0px #09090B" }}>
+            <div style={{ fontFamily: "var(--font-space)", fontSize: "32px", fontWeight: "900", color: "#0033FF" }}>3.8x</div>
+            <div style={{ fontSize: "12px", fontWeight: "800", color: "#71717A", textTransform: "uppercase" }}>Average Blended ROAS</div>
+          </div>
+        </div>
+
+        {/* Filter Pills */}
+        <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap", marginBottom: "40px" }}>
+          {[
+            { key: "all", label: "All Reviews" },
+            { key: "d2c", label: "D2C Brands" },
+            { key: "realestate", label: "Real Estate" },
+            { key: "fintech", label: "FinTech & BFSI" },
+            { key: "health", label: "Health & Wellness" },
+            { key: "saas", label: "B2B SaaS" }
+          ].map(b => (
+            <button
+              key={b.key}
+              type="button"
+              onClick={() => setFilter(b.key)}
+              style={{
+                background: filter === b.key ? "#09090B" : "#FFFFFF",
+                color: filter === b.key ? "#D4FF00" : "#09090B",
+                border: "2px solid #09090B",
+                padding: "8px 18px",
+                borderRadius: "9999px",
+                fontFamily: "var(--font-space)",
+                fontWeight: "800",
+                fontSize: "12px",
+                textTransform: "uppercase",
+                cursor: "pointer",
+                boxShadow: filter === b.key ? "3px 3px 0px #0033FF" : "none"
+              }}
+            >
+              {b.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Testimonials Grid */}
+      <div style={{ backgroundColor: "#FFFFFF", maxWidth: "1600px", margin: "0 auto", padding: "0 24px 80px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(340px, 1fr))", gap: "28px" }}>
+        {filteredList.map((t, idx) => (
+          <div key={idx} style={{ background: "#FFFFFF", border: "2px solid #09090B", borderRadius: "16px", padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "5px 5px 0px #09090B" }}>
+            <div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                <span style={{ background: "#F4F4F5", color: "#09090B", border: "1px solid #09090B", padding: "3px 10px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "800", textTransform: "uppercase" }}>
+                  {t.industry}
+                </span>
+                <span style={{ background: "#D4FF00", color: "#09090B", border: "1px solid #09090B", padding: "3px 10px", borderRadius: "4px", fontFamily: "var(--font-space)", fontSize: "11px", fontWeight: "900" }}>
+                  {t.metric}
+                </span>
+              </div>
+
+              <div style={{ display: "flex", gap: "4px", marginBottom: "16px" }}>
+                {[...Array(t.rating)].map((_, i) => (
+                  <Star key={i} size={16} fill="#09090B" color="#09090B" />
+                ))}
+              </div>
+
+              <p style={{ color: "#18181B", fontSize: "15px", lineHeight: 1.6, fontStyle: "italic", marginBottom: "24px" }}>
+                "{t.quote}"
+              </p>
+            </div>
+
+            <div style={{ borderTop: "2px solid #F4F4F5", paddingTop: "16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <div style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "14px", color: "#09090B", textTransform: "uppercase" }}>{t.author}</div>
+                <div style={{ fontSize: "12px", color: "#71717A", fontWeight: "600" }}>{t.role}, {t.brand}</div>
+              </div>
+              <span style={{ color: "#0033FF", fontWeight: "900", fontSize: "11px", fontFamily: "var(--font-space)", display: "flex", alignItems: "center", gap: "2px" }}>
+                <CheckCircle2 size={14} /> VERIFIED
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* CTA Box */}
+      <div style={{ maxWidth: "1200px", margin: "0 auto 80px auto", padding: "0 24px" }}>
+        <div style={{ background: "#0033FF", color: "#FFFFFF", borderRadius: "20px", padding: "48px 36px", textAlign: "center", border: "2px solid #09090B", boxShadow: "6px 6px 0px #09090B" }}>
+          <h2 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(26px, 4vw, 42px)", textTransform: "uppercase", marginBottom: "16px" }}>
+            Ready to become our next success story?
+          </h2>
+          <p style={{ fontSize: "16px", color: "#E0E7FF", maxWidth: "600px", margin: "0 auto 28px auto" }}>
+            We only take on brands where we have 100% conviction we can produce an outsized return on investment.
+          </p>
+          <button
+            type="button"
+            onClick={() => onNavigate("/audit")}
+            style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "14px 32px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "13px", textTransform: "uppercase", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "8px", boxShadow: "4px 4px 0px #09090B" }}
+          >
+            Claim Your Free Growth Audit <ArrowRight size={16} />
+          </button>
+        </div>
+      </div>
+    </PageLayout>
+  );
+}
+
+// =========================================================================
+// 404 NOT FOUND PAGE
+// =========================================================================
+export function NotFoundPage({ onNavigate }) {
+  return (
+    <PageLayout onNavigate={onNavigate} activeNav="">
+      <div style={{ backgroundColor: "#FFFFFF", padding: "100px 24px", maxWidth: "900px", margin: "0 auto", textAlign: "center", minHeight: "70vh", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+        <div style={{ background: "#D4FF00", color: "#09090B", padding: "8px 24px", borderRadius: "8px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(60px, 12vw, 120px)", lineHeight: 1, letterSpacing: "-0.05em", border: "3px solid #09090B", boxShadow: "8px 8px 0px #09090B", marginBottom: "30px" }}>
+          404
+        </div>
+        <h1 style={{ fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "clamp(26px, 4vw, 44px)", textTransform: "uppercase", color: "#09090B", marginBottom: "16px", letterSpacing: "-0.03em" }}>
+          YOU FELL OUT OF THE FEED.
+        </h1>
+        <p style={{ fontSize: "16px", color: "#52525B", maxWidth: "520px", margin: "0 auto 36px auto", lineHeight: 1.6 }}>
+          The page you're searching for doesn't exist, was moved, or has scrolled out of view. Let's get you back to high-converting content.
+        </p>
+
+        <div style={{ display: "flex", gap: "14px", flexWrap: "wrap", justifyContent: "center" }}>
+          <button
+            type="button"
+            onClick={() => onNavigate("/")}
+            style={{ background: "#09090B", color: "#D4FF00", border: "2px solid #09090B", padding: "12px 24px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", textTransform: "uppercase", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: "6px", boxShadow: "3px 3px 0px #D4FF00" }}
+          >
+            ← Back to Home
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate("/services")}
+            style={{ background: "#FFFFFF", color: "#09090B", border: "2px solid #09090B", padding: "12px 24px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0px #09090B" }}
+          >
+            Explore Services
+          </button>
+          <button
+            type="button"
+            onClick={() => onNavigate("/audit")}
+            style={{ background: "#D4FF00", color: "#09090B", border: "2px solid #09090B", padding: "12px 24px", borderRadius: "6px", fontFamily: "var(--font-space)", fontWeight: "900", fontSize: "12px", textTransform: "uppercase", cursor: "pointer", boxShadow: "3px 3px 0px #09090B" }}
+          >
+            Free Growth Audit ⚡
+          </button>
         </div>
       </div>
     </PageLayout>
