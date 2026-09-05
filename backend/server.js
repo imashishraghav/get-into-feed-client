@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
@@ -54,7 +55,14 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/mcp", mcpRoutes);
 app.use("/mcp", mcpRoutes);
 
-const frontendDist = path.join(__dirname, "..", "frontend", "dist");
+const possibleDists = [
+  path.join(__dirname, "..", "frontend", "dist"),
+  path.join(__dirname, "..", "dist"),
+  path.join(__dirname, "dist"),
+  path.join(process.cwd(), "frontend", "dist"),
+  path.join(process.cwd(), "dist")
+];
+const frontendDist = possibleDists.find(d => fs.existsSync(path.join(d, "index.html"))) || possibleDists[0];
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(frontendDist));

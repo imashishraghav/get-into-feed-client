@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <!-- Cache-Busting & Clean Slate Script -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <script>
+      (function() {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(regs) {
+            for (var i = 0; i < regs.length; i++) { regs[i].unregister(); }
+          });
+        }
+        if ('caches' in window) {
+          caches.keys().then(function(keys) {
+            for (var i = 0; i < keys.length; i++) { caches.delete(keys[i]); }
+          });
+        }
+      })();
+    </script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GetIntoFeed | Creative Growth Studio</title>
+    <meta
+      name="description"
+      content="Get Into Feed is a creative, content-led growth studio for next-gen brands. We create content, run ads, and build strategies that get brands noticed, clicked and remembered."
+    />
+    <link rel="icon" type="image/png" href="/favicon.svg" />
+
+    <!-- Google Fonts: Space Grotesk & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'brand-bg': '#F4F4F5',
+              'brand-dark': '#09090B',
+              'brand-blue': '#0033FF',
+              'brand-lime': '#D4FF00',
+              'brand-coral': '#FF6B5E',
+              'brand-gray': '#18181B',
+              'brand-light-gray': '#F4F4F5',
+            },
+            fontFamily: {
+              space: ['Space Grotesk', 'sans-serif'],
+              inter: ['Inter', 'sans-serif'],
+              sans: ['Inter', 'sans-serif'],
+            },
+            animation: {
+              'float-slow': 'float 6s ease-in-out infinite',
+              'float-medium': 'float 5s ease-in-out infinite',
+              'float-fast': 'float 4s ease-in-out infinite',
+              'marquee': 'marquee 25s linear infinite',
+              'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-15px)' },
+              },
+              marquee: {
+                '0%': { transform: 'translateX(0)' },
+                '100%': { transform: 'translateX(-50%)' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #09090B;
+        color: #FFFFFF;
+        font-family: 'Inter', sans-serif;
+        overflow-x: hidden;
+      }
+      h1, h2, h3, h4, h5, h6, .font-space {
+        font-family: 'Space Grotesk', sans-serif;
+      }
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+      .link-underline { position: relative; }
+      .link-underline::after {
+        content: ''; position: absolute; width: 0; height: 2px;
+        bottom: -4px; left: 0; background-color: currentColor; transition: width 0.3s ease;
+      }
+      .link-underline:hover::after { width: 100%; }
+    </style>
+  
+    <!-- JSON-LD Structured Data for Google & AI Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://get-into-feed-client.vercel.app/#organization",
+          "name": "GetIntoFeed",
+          "url": "https://get-into-feed-client.vercel.app/",
+          "logo": "https://get-into-feed-client.vercel.app/favicon.svg",
+          "description": "Full-stack creative marketing and performance growth agency specializing in short-form video reels, paid media acquisition, and custom web development.",
+          "telephone": "+91-98765-43210",
+          "email": "hello@getintofeed.com",
+          "sameAs": [
+            "https://instagram.com/getintofeed",
+            "https://linkedin.com/company/getintofeed"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://get-into-feed-client.vercel.app/#website",
+          "url": "https://get-into-feed-client.vercel.app/",
+          "name": "GetIntoFeed",
+          "publisher": {
+            "@id": "https://get-into-feed-client.vercel.app/#organization"
+          }
+        }
+      ]
+    }
+    </script>
+
+    <script type="module" crossorigin src="/assets/index-D2IBKfxn.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DDpHOr4p.css">
+  </head>
+  <body class="antialiased selection:bg-[#D4FF00] selection:text-[#09090B] bg-[#09090B] text-white">
+    <div id="root"></div>
+  </body>
+</html>

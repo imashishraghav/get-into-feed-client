@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/admin/*
+
+Sitemap: https://get-into-feed-client.vercel.app/sitemap.xml

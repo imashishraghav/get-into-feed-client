@@ -7,15 +7,21 @@
     "dev": "pnpm --dir frontend run dev",
     "build": "pnpm --dir frontend run build",
     "preview": "pnpm --dir frontend run preview",
-    "start": "node backend/start.js"
+    "start": "node app.js"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "lucide-react": "^0.468.0"
+    "lucide-react": "^0.468.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "helmet": "^8.0.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
     "vite": "^5.4.11"
-  }
+  },
+  "main": "app.js"
 }
