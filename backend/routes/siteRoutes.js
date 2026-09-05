@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { getSiteContent } from "../data/contentStore.js";
-import { addComment, addLike, getEngagement } from "../data/blogEngagementStore.js";
+import { addComment, addReaction, getEngagement } from "../data/blogEngagementStore.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -107,10 +107,27 @@ siteRoutes.get("/blog/:slug", async (req, res, next) => {
 
 siteRoutes.get("/blog/:slug/engagement", async (req, res, next) => {
   try {
-    const content = await getSiteContent();
-    const post = (content.blogPosts || []).find((item) => item.slug === req.params.slug);
-    if (!post) return res.status(404).json({ message: "Blog post not found." });
-    return res.json(await getEngagement(post.slug));
+    const data = await getEngagement(req.params.slug);
+    return res.json(data);
+  } catch (error) {
+    return next(error);
+  }
+});
+
+siteRoutes.get("/blog/:slug/comments", async (req, res, next) => {
+  try {
+    const data = await getEngagement(req.params.slug);
+    return res.json({ comments: data.comments || [] });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+siteRoutes.post("/blog/:slug/react", async (req, res, next) => {
+  try {
+    const { type } = req.body || {};
+    const reactions = await addReaction(req.params.slug, type);
+    return res.json({ success: true, reactions });
   } catch (error) {
     return next(error);
   }
@@ -118,10 +135,8 @@ siteRoutes.get("/blog/:slug/engagement", async (req, res, next) => {
 
 siteRoutes.post("/blog/:slug/likes", async (req, res, next) => {
   try {
-    const content = await getSiteContent();
-    const post = (content.blogPosts || []).find((item) => item.slug === req.params.slug);
-    if (!post) return res.status(404).json({ message: "Blog post not found." });
-    return res.json(await addLike(post.slug));
+    const reactions = await addReaction(req.params.slug, "fire");
+    return res.json({ success: true, reactions });
   } catch (error) {
     return next(error);
   }
@@ -129,15 +144,23 @@ siteRoutes.post("/blog/:slug/likes", async (req, res, next) => {
 
 siteRoutes.post("/blog/:slug/comments", async (req, res, next) => {
   try {
-    const content = await getSiteContent();
-    const post = (content.blogPosts || []).find((item) => item.slug === req.params.slug);
-    if (!post) return res.status(404).json({ message: "Blog post not found." });
-    const { name, text } = req.body || {};
-    if (!name || !text) {
-      return res.status(400).json({ message: "Name and text are required for comments." });
+    const { name, author_name, email, author_email, message, comment, comment_text, website } = req.body || {};
+    const author = name || author_name;
+    const bodyText = message || comment || comment_text;
+    if (!author || !bodyText) {
+      return res.status(400).json({ message: "Name and comment text are required." });
     }
-    const updated = await addComment(post.slug, { name, text });
-    return res.status(201).json(updated);
+    const result = await addComment(req.params.slug, {
+      name: author,
+      email: email || author_email,
+      message: bodyText,
+      website
+    });
+    return res.status(201).json({
+      success: true,
+      message: "Comment submitted successfully and pending editorial review.",
+      comment: result.comment
+    });
   } catch (error) {
     return next(error);
   }

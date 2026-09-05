@@ -171,3 +171,21 @@ class SiteSetting(Base):
     key = Column(String(100), unique=True, nullable=False)
     value = Column(Text, nullable=False)
     description = Column(String(255))
+
+class Comment(Base):
+    __tablename__ = "blog_comments"
+    id = Column(Integer, primary_key=True, index=True)
+    post_slug = Column(String(150), index=True, nullable=False)
+    author_name = Column(String(150), nullable=False)
+    author_email = Column(String(255), nullable=False)
+    website = Column(String(255))
+    comment_text = Column(Text, nullable=False)
+    status = Column(String(50), default="pending")  # pending, approved, rejected, spam
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+class BlogReaction(Base):
+    __tablename__ = "blog_reactions"
+    id = Column(Integer, primary_key=True, index=True)
+    post_slug = Column(String(150), index=True, nullable=False)
+    reaction_type = Column(String(50), nullable=False)  # love, fire, clap, insightful
+    count = Column(Integer, default=1)

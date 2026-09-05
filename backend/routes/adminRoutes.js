@@ -3,7 +3,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { createId, getSiteContent, saveSiteContent } from "../data/contentStore.js";
-import { getAllEngagement } from "../data/blogEngagementStore.js";
+import { getAllEngagement, getAllCommentsAdmin, updateCommentStatus, deleteComment } from "../data/blogEngagementStore.js";
+import { requireAdmin } from "../adminAuth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,15 +26,6 @@ function splitPoints(value) {
   return Array.isArray(value)
     ? value.map((point) => clean(point, 160)).filter(Boolean)
     : clean(value, 1000).split(",").map((point) => point.trim()).filter(Boolean);
-}
-
-function requireAdmin(req, res, next) {
-  const configuredToken = process.env.ADMIN_TOKEN || "dev-admin-token";
-  const incoming = req.get("x-admin-token") || (req.get("authorization") || "").replace(/^Bearer\s+/i, "");
-  if (incoming === configuredToken || incoming === "dev-admin-token" || incoming === "admin" || incoming === "growth2026") {
-    return next();
-  }
-  return res.status(401).json({ message: "Admin access key is invalid." });
 }
 
 function validateCollection(collection) {
@@ -196,6 +188,46 @@ adminRoutes.delete("/:collection/:id", async (req, res, next) => {
     content[collection] = remaining;
     await saveSiteContent(content);
     return res.status(204).end();
+  } catch (error) {
+    return next(error);
+  }
+});
+
+// -----------------------------------------------------------------------------
+// BLOG COMMENTS MODERATION ENDPOINTS
+// -----------------------------------------------------------------------------
+adminRoutes.get("/comments", async (req, res, next) => {
+  try {
+    const comments = await getAllCommentsAdmin();
+    const { status } = req.query;
+    if (status && status !== "all") {
+      return res.json({ comments: comments.filter((c) => c.status === status), total: comments.length });
+    }
+    return res.json({ comments, total: comments.length });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+adminRoutes.patch("/comments/:id/status", async (req, res, next) => {
+  try {
+    const { status } = req.body || {};
+    if (!["approved", "rejected", "spam", "pending"].includes(status)) {
+      return res.status(400).json({ message: "Invalid comment status. Must be approved, rejected, spam, or pending." });
+    }
+    const updated = await updateCommentStatus(req.params.id, status);
+    if (!updated) return res.status(404).json({ message: "Comment not found." });
+    return res.json({ success: true, comment: updated });
+  } catch (error) {
+    return next(error);
+  }
+});
+
+adminRoutes.delete("/comments/:id", async (req, res, next) => {
+  try {
+    const deleted = await deleteComment(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Comment not found." });
+    return res.json({ success: true, message: "Comment deleted." });
   } catch (error) {
     return next(error);
   }

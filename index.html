@@ -80,6 +80,39 @@
       }
       .link-underline:hover::after { width: 100%; }
     </style>
+  
+    <!-- JSON-LD Structured Data for Google & AI Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://get-into-feed-client.vercel.app/#organization",
+          "name": "GetIntoFeed",
+          "url": "https://get-into-feed-client.vercel.app/",
+          "logo": "https://get-into-feed-client.vercel.app/favicon.svg",
+          "description": "Full-stack creative marketing and performance growth agency specializing in short-form video reels, paid media acquisition, and custom web development.",
+          "telephone": "+91-98765-43210",
+          "email": "hello@getintofeed.com",
+          "sameAs": [
+            "https://instagram.com/getintofeed",
+            "https://linkedin.com/company/getintofeed"
+          ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://get-into-feed-client.vercel.app/#website",
+          "url": "https://get-into-feed-client.vercel.app/",
+          "name": "GetIntoFeed",
+          "publisher": {
+            "@id": "https://get-into-feed-client.vercel.app/#organization"
+          }
+        }
+      ]
+    }
+    </script>
+
   </head>
   <body class="antialiased selection:bg-[#D4FF00] selection:text-[#09090B] bg-[#09090B] text-white">
     <div id="root"></div>

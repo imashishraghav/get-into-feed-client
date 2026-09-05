@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { requireAdmin } from "../adminAuth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,7 +37,7 @@ async function saveLeads(leads) {
   await rename(leadTempFile, leadFile);
 }
 
-leadRoutes.get("/leads", async (req, res, next) => {
+leadRoutes.get(["/leads", "/enquiries"], requireAdmin, async (req, res, next) => {
   try {
     const leads = await readLeads();
     res.json({ leads, total: leads.length });
@@ -45,16 +46,16 @@ leadRoutes.get("/leads", async (req, res, next) => {
   }
 });
 
-leadRoutes.post("/leads", async (req, res, next) => {
+leadRoutes.post(["/leads", "/enquiries"], async (req, res, next) => {
   try {
     const payload = {
       name: clean(req.body.name),
       email: clean(req.body.email).toLowerCase(),
       phone: clean(req.body.phone),
       company: clean(req.body.company || "Direct Inquiry"),
-      service: clean(req.body.service || "Search Engine Optimization"),
-      budget: clean(req.body.budget || "Enterprise ROI Package"),
-      message: clean(req.body.message),
+      service: clean(req.body.service || req.body.service_required || req.body.service_interest || "Search Engine Optimization"),
+      budget: clean(req.body.budget || req.body.budget_tier || req.body.budget_range || "Enterprise Growth Package"),
+      message: clean(req.body.message || req.body.details || (req.body.project_timeline ? "Timeline: " + req.body.project_timeline : "")),
       whatsapp: Boolean(req.body.whatsapp !== false),
       agreeTerms: Boolean(req.body.agreeTerms !== false),
       recaptchaToken: clean(req.body.recaptchaToken)

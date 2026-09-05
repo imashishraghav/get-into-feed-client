@@ -1,43 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  ArrowDown,
-  ArrowRight,
-  Bookmark,
-  Check,
-  Clapperboard,
-  Code,
-  Coffee,
-  Briefcase,
-  Car,
-  Dumbbell,
-  Edit3,
-  Flame,
-  GraduationCap,
-  Heart,
-  Home,
-  Instagram,
-  Linkedin,
-  Mail,
-  Map,
-  Megaphone,
-  Menu,
-  MessageCircle,
-  MoreHorizontal,
-  PenTool,
-  PieChart,
-  Rocket,
-  Search,
-  Send,
-  ShoppingBag,
-  Sparkles,
-  Star,
-  Users,
-  Video,
-  X,
-  Zap
-} from "lucide-react";
-import AdminDashboard from "./Admin";
-import {
   ServicesHubPage,
   ServiceDetailPage,
   AboutUsPage,
@@ -49,7 +11,12 @@ import {
   ContactPage,
   LegalPage,
   CaseStudyDetailPage,
+  ReviewsPage,
   ClientsTestimonialsPage,
+  FaqsPage,
+  AwardsPage,
+  SitemapPage,
+  CookiePolicyPage,
   NotFoundPage
 } from "./DetailPages";
 
@@ -62,6 +29,57 @@ export default function App() {
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("General Inbound");
   const [scrollProgress, setScrollProgress] = useState(0);
+  useEffect(() => {
+    // Dynamic SEO Titles & Meta Descriptions
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const setSEO = (title, desc) => {
+      document.title = title;
+      if (metaDesc) metaDesc.setAttribute("content", desc);
+    };
+
+    if (route === "/" || route === "") {
+      setSEO("GetIntoFeed | Creative Marketing & Performance Growth Agency", "Premier creative performance marketing studio. We engineer thumb-stopping video reels, high-converting React funnels, and algorithmic paid media for ambitious brands.");
+    } else if (route === "/services" || route === "/services/") {
+      setSEO("Growth Services & Capabilities | GetIntoFeed", "Explore our 8 core growth disciplines: Brand Positioning, Paid Performance Ads, Video Reels, Web Development, SEO, and CRO Funnels.");
+    } else if (route.startsWith("/services/")) {
+      const slug = route.replace("/services/", "").replace(/\/.*$/, "");
+      setSEO(`${slug.toUpperCase().replace(/-/g, " ")} | GetIntoFeed Agency Capabilities`, "Senior strategist-led growth sprint with dedicated deliverables, transparent pricing tiers, and execution roadmap.");
+    } else if (route === "/work" || route === "/work/") {
+      setSEO("Selected Case Studies & Commercial Results | GetIntoFeed", "Real client outcomes: +380% qualified pipeline, 4.8x blended ROAS, and 28,000+ verified customer acquisitions.");
+    } else if (route.startsWith("/work/")) {
+      const slug = route.replace("/work/", "").replace(/\/.*$/, "");
+      setSEO(`${slug.toUpperCase().replace(/-/g, " ")} Case Study | GetIntoFeed`, "Deep-dive campaign teardown, creative direction gallery, and measurable business outcomes.");
+    } else if (route.startsWith("/about")) {
+      setSEO("About GetIntoFeed | We Build Marketing That People Remember", "Our story, vision, mission, and philosophy. We eliminate bloated agency layers and deliver high-velocity creative sprints.");
+    } else if (route.startsWith("/reviews") || route.startsWith("/testimonials") || route.startsWith("/clients")) {
+      setSEO("Verified Client Reviews & Testimonials | GetIntoFeed", "Read verified reviews from founders and CMOs who scale their businesses with GetIntoFeed.");
+    } else if (route.startsWith("/pricing")) {
+      setSEO("Transparent Growth Sprints & Retainers | GetIntoFeed", "Clear sprint pricing with zero hidden fees. Starter Sprints, Scale Retainers, and Enterprise partnerships.");
+    } else if (route.startsWith("/blog") || route.startsWith("/feed-notes")) {
+      setSEO("Feed Notes | Editorial Playbooks & Growth Strategies | GetIntoFeed", "Raw, battle-tested teardowns of short-form video algorithms, server-side attribution, and commercial brand positioning.");
+    } else if (route.startsWith("/contact")) {
+      setSEO("Contact Growth Desk | Schedule Strategy Consultation | GetIntoFeed", "Connect with senior growth architects. Schedule a 30-minute diagnostic session or chat directly via WhatsApp.");
+    } else if (route.startsWith("/careers")) {
+      setSEO("Careers at GetIntoFeed | Open Roles & Culture", "Join an elite squad of performance directors, creative strategists, and engineers.");
+    } else if (route.startsWith("/faqs")) {
+      setSEO("Frequently Asked Questions | GetIntoFeed", "Answers regarding sprint timelines, deliverables, payment models, and communication.");
+    } else if (route.startsWith("/awards")) {
+      setSEO("Awards & Industry Recognition | GetIntoFeed", "Recognition by ET BrandEquity, Clutch, and international marketing summits.");
+    } else if (route.startsWith("/sitemap")) {
+      setSEO("Website Directory & Sitemap | GetIntoFeed", "Comprehensive directory of all publicly accessible pages and agency resources.");
+    } else if (route.startsWith("/cookie-policy")) {
+      setSEO("Cookie & Privacy Policy | GetIntoFeed", "Transparent overview of cookies, tracking signals, and user data privacy.");
+    } else if (route.startsWith("/privacy")) {
+      setSEO("Privacy Policy | GetIntoFeed", "Our commitment to client data protection and confidentiality.");
+    } else if (route.startsWith("/terms")) {
+      setSEO("Terms of Service | GetIntoFeed", "Commercial terms and intellectual property rights.");
+    } else if (route.startsWith("/admin")) {
+      setSEO("Admin Studio OS | GetIntoFeed", "Secure agency management operating system.");
+    } else {
+      setSEO("Page Not Found | GetIntoFeed", "The requested page does not exist.");
+    }
+  }, [route]);
+  
 
   // Lead Form
   const [formData, setFormData] = useState({
@@ -106,6 +124,15 @@ export default function App() {
     };
     window.addEventListener("scroll", handleScroll);
 
+    
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [mobileMenuOpen]);
+  
     return () => {
       window.removeEventListener("popstate", handlePopState);
       window.removeEventListener("scroll", handleScroll);
@@ -190,8 +217,8 @@ export default function App() {
     const slug = route.replace("/work/", "").replace("/case-studies/", "").replace(/\/.*$/, "");
     return <CaseStudyDetailPage slug={slug} onNavigate={navigate} />;
   }
-  if (route.startsWith("/clients") || route.startsWith("/testimonials")) {
-    return <ClientsTestimonialsPage onNavigate={navigate} />;
+  if (route.startsWith("/reviews") || route.startsWith("/clients") || route.startsWith("/testimonials")) {
+    return <ReviewsPage onNavigate={navigate} />;
   }
   if (route.startsWith("/pricing")) {
     return <PricingPage onNavigate={navigate} />;
@@ -199,15 +226,27 @@ export default function App() {
   if (route.startsWith("/audit")) {
     return <AuditToolPage onNavigate={navigate} />;
   }
-  if (route.startsWith("/blog") || route.startsWith("/insights")) {
-    const slug = route.replace("/blog/", "").replace("/insights/", "").replace(/\/.*$/, "");
-    return <FeedNotesPage slug={slug !== "/blog" && slug !== "/insights" && slug !== "" ? slug : null} onNavigate={navigate} />;
+  if (route.startsWith("/blog") || route.startsWith("/feed-notes") || route.startsWith("/insights")) {
+    const cleanSlug = route.replace(/^\/(blog|feed-notes|insights)\/?/, "").replace(/\/.*$/, "");
+    return <FeedNotesPage slug={cleanSlug || null} onNavigate={navigate} />;
   }
   if (route.startsWith("/careers")) {
     return <CareersPage onNavigate={navigate} />;
   }
   if (route.startsWith("/contact")) {
     return <ContactPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/faqs") || route.startsWith("/faq")) {
+    return <FaqsPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/awards") || route.startsWith("/recognition")) {
+    return <AwardsPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/sitemap")) {
+    return <SitemapPage onNavigate={navigate} />;
+  }
+  if (route.startsWith("/cookie-policy") || route.startsWith("/cookies")) {
+    return <CookiePolicyPage onNavigate={navigate} />;
   }
   if (route.startsWith("/privacy")) {
     return <LegalPage type="privacy" onNavigate={navigate} />;
@@ -269,20 +308,30 @@ export default function App() {
             getintofeed.
           </a>
 
-          <div className="hidden lg:flex items-center gap-10 font-bold font-space text-xs tracking-widest text-white uppercase">
-            <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection("#services"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">Services</a>
-            <a href="#industries" onClick={(e) => { e.preventDefault(); scrollToSection("#industries"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">Industries</a>
-            <a href="#ways-to-work" onClick={(e) => { e.preventDefault(); scrollToSection("#ways-to-work"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">Solutions</a>
-            <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollToSection("#pricing"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">Pricing</a>
+          <div className="hidden lg:flex items-center gap-7 xl:gap-8 font-bold font-space text-xs tracking-widest text-white uppercase">
+            <button type="button" onClick={() => navigate("/services")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Services</button>
+            <button type="button" onClick={() => navigate("/work")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Work</button>
+            <button type="button" onClick={() => navigate("/reviews")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Reviews</button>
+            <button type="button" onClick={() => navigate("/about")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">About Us</button>
+            <button type="button" onClick={() => navigate("/pricing")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Pricing</button>
+            <button type="button" onClick={() => navigate("/blog")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Feed Notes</button>
           </div>
 
-          <button
-            type="button"
-            onClick={() => { setSelectedService("Start a Project"); setLeadModalOpen(true); }}
-            className="hidden md:flex bg-brand-blue text-white px-6 py-3 rounded-lg text-xs font-bold font-space uppercase tracking-wider hover:bg-blue-600 hover:shadow-[0_0_20px_rgba(0,51,255,0.4)] transition-all items-center gap-2 group cursor-pointer border-none"
-          >
-            Start a project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
-          </button>
+          <div className="hidden md:flex items-center gap-4">
+            <a
+              href="tel:+919876543210"
+              className="text-white hover:text-brand-lime font-space font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-1.5 text-decoration-none"
+            >
+              <Phone className="w-3.5 h-3.5 text-brand-lime" /> +91 98765 43210
+            </a>
+            <button
+              type="button"
+              onClick={() => { setSelectedService("Start a Project"); setLeadModalOpen(true); }}
+              className="bg-brand-blue text-white px-6 py-3 rounded-lg text-xs font-bold font-space uppercase tracking-wider hover:bg-blue-600 hover:shadow-[0_0_20px_rgba(0,51,255,0.4)] transition-all items-center gap-2 group cursor-pointer border-none flex"
+            >
+              Start a project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
+            </button>
+          </div>
 
           <button
             type="button"
@@ -297,19 +346,30 @@ export default function App() {
 
         {/* Mobile Menu Dropdown */}
         {mobileMenuOpen && (
-          <div id="mobile-menu" className="flex flex-col bg-brand-dark px-6 py-6 border-b border-white/10 gap-6 absolute w-full z-40 left-0 top-full lg:hidden shadow-2xl">
-            <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection("#services"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">Services</a>
-            <a href="#industries" onClick={(e) => { e.preventDefault(); scrollToSection("#industries"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">Industries</a>
-            <a href="#ways-to-work" onClick={(e) => { e.preventDefault(); scrollToSection("#ways-to-work"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">Solutions</a>
-            <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollToSection("#pricing"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">Pricing</a>
-            <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection("#about"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-decoration-none">About Us</a>
-            <button
-              type="button"
-              onClick={() => { setMobileMenuOpen(false); setSelectedService("Start a Project"); setLeadModalOpen(true); }}
-              className="mobile-link bg-brand-blue text-white px-6 py-3 rounded-lg text-xs font-bold font-space uppercase tracking-wider hover:bg-blue-600 transition-all flex justify-center items-center gap-2 group w-full mt-2 cursor-pointer border-none"
-            >
-              Start a project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
-            </button>
+          <div id="mobile-menu" className="flex flex-col bg-brand-dark px-6 py-6 border-b border-white/10 gap-4 absolute w-full z-40 left-0 top-full lg:hidden shadow-2xl animate-in slide-in-from-top duration-200">
+            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/services"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Services</button>
+            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/work"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Work</button>
+            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/reviews"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Reviews</button>
+            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/about"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">About Us</button>
+            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/pricing"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Pricing</button>
+            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/blog"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Feed Notes</button>
+            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/contact"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Contact Desk</button>
+
+            <div className="pt-3 border-t border-white/10 flex flex-col gap-3">
+              <a
+                href="tel:+919876543210"
+                className="text-white hover:text-brand-lime text-xs font-space font-bold uppercase tracking-wider py-1 flex items-center gap-2 text-decoration-none"
+              >
+                <Phone className="w-4 h-4 text-brand-lime" /> Call +91 98765 43210
+              </a>
+              <button
+                type="button"
+                onClick={() => { setMobileMenuOpen(false); setSelectedService("Start a Project"); setLeadModalOpen(true); }}
+                className="mobile-link bg-brand-blue text-white px-6 py-3 rounded-lg text-xs font-bold font-space uppercase tracking-wider hover:bg-blue-600 transition-all flex justify-center items-center gap-2 group w-full cursor-pointer border-none"
+              >
+                Start a project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
+              </button>
+            </div>
           </div>
         )}
       </nav>
@@ -1220,6 +1280,8 @@ export default function App() {
           </div>
         </div>
       )}
+      {/* Floating UP/DOWN Control */}
+      <FloatingNavControl />
     </div>
   );
 }

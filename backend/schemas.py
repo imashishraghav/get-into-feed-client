@@ -150,3 +150,27 @@ class BlogPostResponse(BlogPostBase):
     published_at: datetime
     class Config:
         from_attributes = True
+
+# Blog Comments & Moderation
+class CommentCreate(BaseModel):
+    author_name: str
+    author_email: str
+    comment_text: str
+    website: Optional[str] = None
+
+class CommentUpdate(BaseModel):
+    status: str  # approved, rejected, spam, pending
+
+class CommentResponse(BaseModel):
+    id: int
+    post_slug: str
+    author_name: str
+    comment_text: str
+    website: Optional[str]
+    status: str
+    created_at: datetime
+    class Config:
+        from_attributes = True
+
+class ReactionRequest(BaseModel):
+    reaction_type: str  # love, fire, clap, insightful

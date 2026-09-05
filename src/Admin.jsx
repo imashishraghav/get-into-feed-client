@@ -160,6 +160,49 @@ export default function AdminDashboard({ onNavigate }) {
   const [siteData, setSiteData] = useState(null);
   const [leads, setLeads] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [comments, setComments] = useState([
+    {
+      id: "cmt-seed-1",
+      articleSlug: "why-creative-fatigue-kills-meta-ads",
+      name: "Siddharth Rao",
+      email: "siddharth@growthlabs.io",
+      website: "https://growthlabs.io",
+      message: "The breakdown of frame 1 visual interrupts changed how we film our reels. Immediate 3x retention bump.",
+      status: "approved",
+      createdAt: "2026-03-03T09:30:00.000Z"
+    },
+    {
+      id: "cmt-seed-2",
+      articleSlug: "why-creative-fatigue-kills-meta-ads",
+      name: "Pooja Hegde",
+      email: "pooja@d2cbrands.in",
+      website: "",
+      message: "Finally an agency talking about the economic reality of CAC instead of just pretty aesthetics.",
+      status: "approved",
+      createdAt: "2026-03-04T14:15:00.000Z"
+    },
+    {
+      id: "cmt-seed-3",
+      articleSlug: "the-complete-guide-to-brand-identity",
+      name: "Arjun Mehta",
+      email: "arjun@finscale.tech",
+      website: "https://finscale.tech",
+      message: "The differentiation framework between visual skin vs economic moat was an eye opener for our board.",
+      status: "approved",
+      createdAt: "2026-03-02T11:00:00.000Z"
+    },
+    {
+      id: "cmt-seed-4",
+      articleSlug: "ai-search-optimization-geov-overviews",
+      name: "Vikram Malhotra",
+      email: "vikram@alpharetail.com",
+      website: "",
+      message: "Semantic schema injection literally got us cited in Perplexity and Google SGE within 3 weeks.",
+      status: "pending",
+      createdAt: "2026-03-05T08:20:00.000Z"
+    }
+  ]);
+  const [commentFilter, setCommentFilter] = useState("all");
   const [loading, setLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState("");
 
@@ -195,6 +238,41 @@ export default function AdminDashboard({ onNavigate }) {
     }
   };
 
+  const handleUpdateCommentStatus = async (commentId, newStatus) => {
+    setComments((prev) =>
+      prev.map((c) => (c.id === commentId ? { ...c, status: newStatus } : c))
+    );
+    try {
+      await fetch(`${API_URL}/api/admin/comments/${commentId}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "x-admin-token": token,
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+    } catch (err) {
+      console.log("Status updated locally:", err);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm("Are you sure you want to delete this comment?")) return;
+    setComments((prev) => prev.filter((c) => c.id !== commentId));
+    try {
+      await fetch(`${API_URL}/api/admin/comments/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          "x-admin-token": token,
+          Authorization: `Bearer ${token}`
+        }
+      });
+    } catch (err) {
+      console.log("Comment deleted locally:", err);
+    }
+  };
+
   const handleLogout = () => {
     setToken("");
     localStorage.removeItem("gif_admin_token");
@@ -207,7 +285,8 @@ export default function AdminDashboard({ onNavigate }) {
       const [siteRes, leadRes, appRes] = await Promise.all([
         fetch(`${API_URL}/api/site`),
         fetch(`${API_URL}/api/leads`, { headers: { "x-admin-token": token, Authorization: `Bearer ${token}` } }),
-        fetch(`${API_URL}/api/applications`, { headers: { "x-admin-token": token, Authorization: `Bearer ${token}` } })
+        fetch(`${API_URL}/api/applications`, { headers: { "x-admin-token": token, Authorization: `Bearer ${token}` } }),
+        fetch(`${API_URL}/api/admin/comments`, { headers: { "x-admin-token": token, Authorization: `Bearer ${token}` } }).catch(() => null)
       ]);
       if (siteRes.ok) setSiteData(await siteRes.json());
       if (leadRes.ok) {
@@ -217,6 +296,19 @@ export default function AdminDashboard({ onNavigate }) {
       if (appRes.ok) {
         const ad = await appRes.json();
         setApplications(ad.applications || []);
+      }
+      try {
+        const cmtRes = await fetch(`${API_URL}/api/admin/comments`, {
+          headers: { "x-admin-token": token, Authorization: `Bearer ${token}` }
+        });
+        if (cmtRes.ok) {
+          const cd = await cmtRes.json();
+          if (Array.isArray(cd.comments) && cd.comments.length > 0) {
+            setComments(cd.comments);
+          }
+        }
+      } catch (e) {
+        // preserve local seed comments
       }
     } catch {}
     setLoading(false);
@@ -654,6 +746,24 @@ export default function AdminDashboard({ onNavigate }) {
             <span>Job Candidates</span>
             <span className="nav-item-badge">{applications.length}</span>
           </button>
+
+          <span className="nav-section-title" style={{ marginTop: "14px" }}>COMMUNITY MODERATION</span>
+          <button
+            type="button"
+            onClick={() => {
+              setTab("comments");
+              setEditingItem(null);
+            }}
+            className={`admin-nav-item-btn ${tab === "comments" ? "active" : ""}`}
+          >
+            <MessageSquare size={16} />
+            <span>Comments Moderation</span>
+            {comments.filter((c) => c.status === "pending").length > 0 ? (
+              <span className="nav-item-badge orange">{comments.filter((c) => c.status === "pending").length}</span>
+            ) : (
+              <span className="nav-item-badge">{comments.length}</span>
+            )}
+          </button>
         </nav>
 
         <div className="admin-sidebar-footer">
@@ -680,6 +790,8 @@ export default function AdminDashboard({ onNavigate }) {
                 ? "Client Growth & SEO Inbound Leads"
                 : tab === "applications"
                 ? "Career Candidate Applications"
+                : tab === "comments"
+                ? "Blog Editorial Comments Moderation"
                 : contentTypes.find((c) => c.key === tab)?.label || "Studio Operations"}
             </h2>
             <span className="header-sync-pill">
@@ -1396,6 +1508,213 @@ export default function AdminDashboard({ onNavigate }) {
                       </tbody>
                     </table>
                   )}
+                </div>
+              ) : tab === "comments" ? (
+                /* BLOG COMMENTS MODERATION */
+                <div className="crm-table-wrapper" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  {/* Status filter tabs */}
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", padding: "12px 16px", background: "#f8fafc", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
+                    {[
+                      { key: "all", label: "All Comments", count: comments.length },
+                      { key: "pending", label: "Pending Review", count: comments.filter(c => c.status === "pending").length, highlight: true },
+                      { key: "approved", label: "Approved (Public)", count: comments.filter(c => c.status === "approved").length },
+                      { key: "rejected", label: "Rejected", count: comments.filter(c => c.status === "rejected").length },
+                      { key: "spam", label: "Spam", count: comments.filter(c => c.status === "spam").length }
+                    ].map(f => (
+                      <button
+                        key={f.key}
+                        type="button"
+                        onClick={() => setCommentFilter(f.key)}
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: "20px",
+                          fontSize: "0.78rem",
+                          fontWeight: 700,
+                          cursor: "pointer",
+                          border: commentFilter === f.key ? "2px solid #000" : "1px solid #cbd5e1",
+                          background: commentFilter === f.key ? (f.highlight ? "#fef08a" : "#000") : "#fff",
+                          color: commentFilter === f.key ? (f.highlight ? "#000" : "#fff") : "#475569",
+                          transition: "all 0.15s ease"
+                        }}
+                      >
+                        {f.label} ({f.count})
+                      </button>
+                    ))}
+                  </div>
+
+                  {(() => {
+                    const filtered = comments.filter(c => {
+                      const matchesStatus = commentFilter === "all" || c.status === commentFilter;
+                      const matchesSearch = !searchTerm ||
+                        (c.name && c.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                        (c.email && c.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                        (c.message && c.message.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                        (c.articleSlug && c.articleSlug.toLowerCase().includes(searchTerm.toLowerCase()));
+                      return matchesStatus && matchesSearch;
+                    });
+
+                    if (filtered.length === 0) {
+                      return (
+                        <div className="empty-state-card">
+                          <MessageSquare size={32} color="#cbd5e1" />
+                          <p>No comments found for filter "{commentFilter}".</p>
+                        </div>
+                      );
+                    }
+
+                    return (
+                      <table className="saas-table">
+                        <thead>
+                          <tr>
+                            <th>Commenter</th>
+                            <th>Article Reference</th>
+                            <th>Comment Content</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                            <th>Moderation Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filtered.map((c) => (
+                            <tr key={c.id}>
+                              <td>
+                                <strong>{c.name}</strong>
+                                <small style={{ display: "block", color: "#64748b" }}>{c.email}</small>
+                                {c.website && (
+                                  <a href={c.website} target="_blank" rel="noreferrer" style={{ fontSize: "0.72rem", color: "#0033FF" }}>
+                                    {c.website.replace(/^https?:\/\//, "")}
+                                  </a>
+                                )}
+                              </td>
+                              <td>
+                                <span className="badge-pill" style={{ fontSize: "0.72rem", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "inline-block" }}>
+                                  {c.articleSlug || "general"}
+                                </span>
+                              </td>
+                              <td style={{ maxWidth: "300px" }}>
+                                <p style={{ margin: 0, fontSize: "0.82rem", color: "#1e293b", lineHeight: 1.4 }}>
+                                  "{c.message}"
+                                </p>
+                              </td>
+                              <td>
+                                <span
+                                  style={{
+                                    display: "inline-block",
+                                    padding: "3px 8px",
+                                    borderRadius: "12px",
+                                    fontSize: "0.7rem",
+                                    fontWeight: 800,
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.04em",
+                                    background:
+                                      c.status === "approved"
+                                        ? "#dcfce7"
+                                        : c.status === "pending"
+                                        ? "#fef9c3"
+                                        : c.status === "spam"
+                                        ? "#fee2e2"
+                                        : "#f1f5f9",
+                                    color:
+                                      c.status === "approved"
+                                        ? "#15803d"
+                                        : c.status === "pending"
+                                        ? "#a16207"
+                                        : c.status === "spam"
+                                        ? "#b91c1c"
+                                        : "#475569"
+                                  }}
+                                >
+                                  {c.status}
+                                </span>
+                              </td>
+                              <td>
+                                <small style={{ color: "#64748b" }}>
+                                  {new Date(c.createdAt || Date.now()).toLocaleDateString()}
+                                </small>
+                              </td>
+                              <td>
+                                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                                  {c.status !== "approved" && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleUpdateCommentStatus(c.id, "approved")}
+                                      style={{
+                                        background: "#16a34a",
+                                        color: "#fff",
+                                        border: "none",
+                                        padding: "4px 8px",
+                                        borderRadius: "6px",
+                                        fontSize: "0.72rem",
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                        display: "inline-flex",
+                                        itemsCenter: "center",
+                                        gap: "4px"
+                                      }}
+                                    >
+                                      ✓ Approve
+                                    </button>
+                                  )}
+                                  {c.status !== "rejected" && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleUpdateCommentStatus(c.id, "rejected")}
+                                      style={{
+                                        background: "#64748b",
+                                        color: "#fff",
+                                        border: "none",
+                                        padding: "4px 8px",
+                                        borderRadius: "6px",
+                                        fontSize: "0.72rem",
+                                        fontWeight: 700,
+                                        cursor: "pointer"
+                                      }}
+                                    >
+                                      Reject
+                                    </button>
+                                  )}
+                                  {c.status !== "spam" && (
+                                    <button
+                                      type="button"
+                                      onClick={() => handleUpdateCommentStatus(c.id, "spam")}
+                                      style={{
+                                        background: "#ef4444",
+                                        color: "#fff",
+                                        border: "none",
+                                        padding: "4px 8px",
+                                        borderRadius: "6px",
+                                        fontSize: "0.72rem",
+                                        fontWeight: 700,
+                                        cursor: "pointer"
+                                      }}
+                                    >
+                                      Spam
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteComment(c.id)}
+                                    style={{
+                                      background: "transparent",
+                                      border: "1px solid #cbd5e1",
+                                      color: "#94a3b8",
+                                      padding: "4px 6px",
+                                      borderRadius: "6px",
+                                      fontSize: "0.72rem",
+                                      cursor: "pointer"
+                                    }}
+                                    title="Delete"
+                                  >
+                                    <Trash2 size={12} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    );
+                  })()}
                 </div>
               ) : tab === "applications" ? (
                 /* JOB CANDIDATE APPLICATIONS */
