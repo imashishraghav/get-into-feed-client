@@ -1,103 +1,79 @@
 import "./admin.css";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  AlertCircle, AlertTriangle, ArrowLeft, ArrowRight, ArrowUpRight, BarChart3, Bold, BookOpen, Bot, BriefcaseBusiness, Check, CheckCircle2, ChevronDown, ChevronRight, Clock, Code, Copy, Download, ExternalLink, Eye, FileText, Filter, Globe2, Heading, Heading1, Heading2, Heading3, HelpCircle, Image as ImageIcon, Italic, KeyRound, Layers, LayoutDashboard, LineChart, Link2, List, ListOrdered, Lock, LogOut, Mail, Maximize2, Megaphone, MessageCircle, MessageSquare, Minimize2, Monitor, MoreVertical, Palette, PenTool, Pencil, Phone, Play, Plus, Quote, RefreshCw, Save, Search, Send, Share2, ShieldCheck, Sliders, Smartphone, Sparkles, Star, Strikethrough, Table, Tag, Trash2, Underline, UploadCloud, UsersRound, Video, Wand2, X, Zap
+  AlertCircle,
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  ArrowUpRight,
+  BarChart3,
+  Bold,
+  BookOpen,
+  Briefcase,
+  BriefcaseBusiness,
+  Building2,
+  Calendar,
+  Check,
+  CheckCircle2,
+  ChevronDown,
+  ChevronRight,
+  ChevronUp,
+  Clock,
+  Code,
+  Copy,
+  Edit3,
+  ExternalLink,
+  Eye,
+  FileText,
+  Filter,
+  Flame,
+  Globe2,
+  HelpCircle,
+  Image as ImageIcon,
+  Layers,
+  LayoutDashboard,
+  Link2,
+  List,
+  Lock,
+  LogOut,
+  Mail,
+  Megaphone,
+  MessageCircle,
+  MessageSquare,
+  MoreVertical,
+  PenTool,
+  Pencil,
+  Phone,
+  Plus,
+  Quote,
+  RefreshCw,
+  Save,
+  Search,
+  Send,
+  Settings,
+  Share2,
+  Shield,
+  ShieldCheck,
+  Sliders,
+  Sparkles,
+  Star,
+  Tag,
+  Trash2,
+  User,
+  UserCheck,
+  UserPlus,
+  Users,
+  Video,
+  Wand2,
+  X,
+  Zap
 } from "lucide-react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+import { INITIAL_SERVICES, INITIAL_CASE_STUDIES, INITIAL_USERS } from "./adminData.js";
+import { defaultBlogPosts } from "./Blog.jsx";
+import { reviewsCatalog } from "./DetailPages.jsx";
 
-const contentTypes = [
-  { key: "blogPosts", label: "Blog Insights & Articles", singular: "Blog Post", icon: FileText, categoryLabel: "Editorial Playbooks" },
-  { key: "services", label: "Services Engine", singular: "Service", icon: Globe2, categoryLabel: "Capabilities" },
-  { key: "caseStudies", label: "Case Studies", singular: "Case Study", icon: Sparkles, categoryLabel: "Portfolio" },
-  { key: "testimonials", label: "Testimonials", singular: "Review", icon: Star, categoryLabel: "Client Voice" },
-  { key: "careers", label: "Job Openings", singular: "Role", icon: BriefcaseBusiness, categoryLabel: "Recruitment" }
-];
-
-const CURATED_IMAGE_PRESETS = [
-  { label: "Agency Team Hero", url: "/agency-hero.png" },
-  { label: "Performance Ads & BI", url: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80" },
-  { label: "React Web & CRO Funnel", url: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80" },
-  { label: "D2C E-Commerce & Skincare", url: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80" },
-  { label: "EdTech & Learning Hub", url: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=1200&q=80" },
-  { label: "Luxury High-Ticket Realty", url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80" },
-  { label: "Enterprise AI & Neural Search", url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80" },
-  { label: "Executive Strategy Boardroom", url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80" }
-];
-
-const AUTHOR_PRESETS = [
-  { name: "Sarvesh Bagla", role: "Founder & CEO, Get Into Feed", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80" },
-  { name: "Ajaz Mirza", role: "VP, Digital Operations", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80" },
-  { name: "Ananya Sharma", role: "VP, Client Growth & MarTech", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80" },
-  { name: "Rohan Malhotra", role: "Head of Paid Performance Media", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" },
-  { name: "Editorial Research Team", role: "Get Into Feed Growth Lab", avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80" }
-];
-
-function emptyItem(type) {
-  if (type === "services") {
-    return {
-      title: "",
-      description: "",
-      icon: "Globe2",
-      points: "",
-      coverImage: "",
-      metaTitle: "",
-      metaDescription: "",
-      keywords: "",
-      schemaType: "Service"
-    };
-  }
-  if (type === "caseStudies") {
-    return {
-      brand: "",
-      result: "",
-      metric: "",
-      channel: "",
-      detail: "",
-      coverImage: "",
-      metaTitle: "",
-      metaDescription: "",
-      keywords: ""
-    };
-  }
-  if (type === "testimonials") {
-    return {
-      quote: "",
-      name: "",
-      role: "",
-      avatar: ""
-    };
-  }
-  if (type === "careers") {
-    return {
-      title: "",
-      team: "Growth Media",
-      type: "Full-time",
-      location: "Bengaluru / Remote",
-      summary: ""
-    };
-  }
-  return {
-    title: "",
-    slug: "",
-    category: "AI Search & SEO",
-    author: "Sarvesh Bagla",
-    authorRole: "Founder & CEO, Get Into Feed",
-    authorAvatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80",
-    tags: ["Enterprise SEO", "AI Search", "Growth Playbook"],
-    readTime: "5 min read",
-    status: "published",
-    publishedAt: new Date().toISOString().slice(0, 10),
-    excerpt: "",
-    content: "",
-    coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
-    metaTitle: "",
-    metaDescription: "",
-    keywords: "",
-    canonicalUrl: "",
-    schemaType: "BlogPosting"
-  };
-}
+const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
 
 function slugify(text) {
   return String(text || "")
@@ -107,1893 +83,2141 @@ function slugify(text) {
     .replace(/(^-|-$)/g, "");
 }
 
-// Markdown to HTML preview renderer for live split-screen
-function renderMarkdownPreview(md = "") {
-  if (!md) return "<p style='color: #64748b; font-style: italic;'>Start typing in the editor or click formatting tools to see live rendered HTML output...</p>";
-
-  let html = md
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  // Headings
-  html = html.replace(/^#### (.*$)/gim, '<h4 class="preview-h4">$1</h4>');
-  html = html.replace(/^### (.*$)/gim, '<h3 class="preview-h3">$1</h3>');
-  html = html.replace(/^## (.*$)/gim, '<h2 class="preview-h2">$1</h2>');
-  html = html.replace(/^# (.*$)/gim, '<h1 class="preview-h1">$1</h1>');
-
-  // Callouts & Takeaways
-  html = html.replace(/^\> 💡 (.*$)/gim, '<div class="preview-callout tip"><span class="callout-icon">💡</span><div><strong>Key Strategic Takeaway</strong><p>$1</p></div></div>');
-  html = html.replace(/^\> 📈 (.*$)/gim, '<div class="preview-callout stat"><span class="callout-icon">📈</span><div><strong>Audited Growth Impact</strong><p>$1</p></div></div>');
-  html = html.replace(/^\> ⚠️ (.*$)/gim, '<div class="preview-callout warning"><span class="callout-icon">⚠️</span><div><strong>Important Caution</strong><p>$1</p></div></div>');
-  html = html.replace(/^\> 💬 (.*$)/gim, '<div class="preview-callout quote"><span class="callout-icon">💬</span><div><strong>Executive Perspective</strong><p>$1</p></div></div>');
-  html = html.replace(/^\> (.*$)/gim, '<blockquote class="preview-quote">$1</blockquote>');
-
-  // Images & Links
-  html = html.replace(/!\[(.*?)\]\((.*?)\)/gim, '<div class="preview-img-wrap"><img src="$2" alt="$1" style="max-width:100%; border-radius:10px; margin:16px 0;" /><small style="display:block; text-align:center; color:#64748b;">$1</small></div>');
-  html = html.replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color:#0284c7; font-weight:700; text-decoration:underline;">$1</a>');
-
-  // Bold, Italic, Code, Strikethrough
-  html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-  html = html.replace(/\*(.*?)\*/gim, '<em>$1</em>');
-  html = html.replace(/~~(.*?)~~/gim, '<del>$1</del>');
-  html = html.replace(/\`(.*?)\`/gim, '<code class="preview-inline-code">$1</code>');
-
-  // Horizontal Rule
-  html = html.replace(/^---$/gim, '<hr style="border:0; border-top:1px solid #e2e8f0; margin:24px 0;" />');
-
-  // Unordered & Ordered Lists
-  html = html.replace(/^\- \[x\] (.*$)/gim, '<li style="list-style:none; color:#16a34a;">☑️ $1</li>');
-  html = html.replace(/^\- \[ \] (.*$)/gim, '<li style="list-style:none; color:#64748b;">☐ $1</li>');
-  html = html.replace(/^\- (.*$)/gim, '<li class="preview-li" style="margin-left:20px;">$1</li>');
-
-  // Paragraphs
-  html = html.replace(/\n\n/gim, '</p><p>');
-
-  return `<p>${html}</p>`;
-}
-export default function AdminDashboard({ onNavigate }) {
-  const [token, setToken] = useState(() => {
+export default function AdminDashboard() {
+  // 1. AUTH & USER STATE
+  const [users, setUsers] = useState(() => {
     try {
-      const saved = localStorage.getItem("gif_admin_token");
-      if (saved === "logged_out") return "";
-      return saved || "dev-admin-token";
+      const saved = localStorage.getItem("gif_admin_users");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return INITIAL_USERS;
+  });
+
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gif_admin_current_user");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return INITIAL_USERS[0]; // Default: Ashish Raghav (Administrator)
+  });
+
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    try {
+      return localStorage.getItem("gif_admin_logged_out") !== "true";
     } catch {
-      return "dev-admin-token";
+      return true;
     }
   });
-  const [passInput, setPassInput] = useState("");
-  const [authError, setAuthError] = useState("");
-  const [tab, setTab] = useState("blogPosts");
 
-  const [siteData, setSiteData] = useState(null);
-  const [leads, setLeads] = useState([]);
-  const [applications, setApplications] = useState([]);
-  const [comments, setComments] = useState([
-    {
-      id: "cmt-seed-1",
-      articleSlug: "why-creative-fatigue-kills-meta-ads",
-      name: "Siddharth Rao",
-      email: "siddharth@growthlabs.io",
-      website: "https://growthlabs.io",
-      message: "The breakdown of frame 1 visual interrupts changed how we film our reels. Immediate 3x retention bump.",
-      status: "approved",
-      createdAt: "2026-03-03T09:30:00.000Z"
-    },
-    {
-      id: "cmt-seed-2",
-      articleSlug: "why-creative-fatigue-kills-meta-ads",
-      name: "Pooja Hegde",
-      email: "pooja@d2cbrands.in",
-      website: "",
-      message: "Finally an agency talking about the economic reality of CAC instead of just pretty aesthetics.",
-      status: "approved",
-      createdAt: "2026-03-04T14:15:00.000Z"
-    },
-    {
-      id: "cmt-seed-3",
-      articleSlug: "the-complete-guide-to-brand-identity",
-      name: "Arjun Mehta",
-      email: "arjun@finscale.tech",
-      website: "https://finscale.tech",
-      message: "The differentiation framework between visual skin vs economic moat was an eye opener for our board.",
-      status: "approved",
-      createdAt: "2026-03-02T11:00:00.000Z"
-    },
-    {
-      id: "cmt-seed-4",
-      articleSlug: "ai-search-optimization-geov-overviews",
-      name: "Vikram Malhotra",
-      email: "vikram@alpharetail.com",
-      website: "",
-      message: "Semantic schema injection literally got us cited in Perplexity and Google SGE within 3 weeks.",
-      status: "pending",
-      createdAt: "2026-03-05T08:20:00.000Z"
-    }
-  ]);
-  const [commentFilter, setCommentFilter] = useState("all");
-  const [loading, setLoading] = useState(false);
-  const [saveStatus, setSaveStatus] = useState("");
+  const [loginEmail, setLoginEmail] = useState("admin@getintofeed.com");
+  const [loginPassword, setLoginPassword] = useState("admin123");
+  const [loginError, setLoginError] = useState("");
 
-  // ADVANCED STUDIO EDITOR STATE
-  const [editingItem, setEditingItem] = useState(null);
-  const [editorType, setEditorType] = useState("");
-  const [editorMode, setEditorMode] = useState("edit");
-  const [zenMode, setZenMode] = useState(false);
-  const [serpDevice, setSerpDevice] = useState("desktop");
-  const [pythonSeoAudit, setPythonSeoAudit] = useState(null);
-  const [auditing, setAuditing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [copiedSchema, setCopiedSchema] = useState(false);
+  // 2. ACTIVE NAVIGATION TAB
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [sidebarServicesOpen, setSidebarServicesOpen] = useState(true);
+  const [sidebarCasesOpen, setSidebarCasesOpen] = useState(true);
+  const [sidebarBlogOpen, setSidebarBlogOpen] = useState(false);
 
-  // MODAL STATES
-  const [modalType, setModalType] = useState(null);
-  const [modalData, setModalData] = useState({});
-  const [newTagInput, setNewTagInput] = useState("");
+  // 3. CATALOG DATA STATES
+  const [services, setServices] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gif_services_catalog");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return INITIAL_SERVICES;
+  });
 
-  const textareaRef = useRef(null);
+  const [caseStudies, setCaseStudies] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gif_case_studies_catalog");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return INITIAL_CASE_STUDIES;
+  });
 
-  // Authenticate
+  const [blogPosts, setBlogPosts] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gif_blog_posts");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return defaultBlogPosts;
+  });
+
+  const [reviews, setReviews] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gif_reviews");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return reviewsCatalog;
+  });
+
+  const [leads, setLeads] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gif_admin_leads");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [
+      { id: "lead-1", name: "Varun Goel", company: "Zomato Cloud Kitchens", email: "varun@zomato-kitchens.com", phone: "+91 98110 44219", service: "Performance Marketing & ROAS", budget: "₹3,00,000 - ₹5,00,000", status: "New", date: "2026-09-05" },
+      { id: "lead-2", name: "Ananya Mehta", company: "Nykaa D2C Luxe", email: "ananya@nykaaluxe.com", phone: "+91 99201 88312", service: "Short-Form Video & Reels", budget: "₹1,50,000 - ₹3,00,000", status: "Contacted", date: "2026-09-04" },
+      { id: "lead-3", name: "Kunal Shah", company: "CRED FinTech", email: "kunal@cred-growth.com", phone: "+91 98450 11982", service: "Generative Engine Optimization (GEO)", budget: "₹5,00,000+", status: "Proposal Sent", date: "2026-09-03" },
+      { id: "lead-4", name: "Rishi Kapoor", company: "Taj Luxury Stays", email: "rishi@tajvillas.com", phone: "+91 98210 77364", service: "Brand Positioning & Identity", budget: "₹3,00,000 - ₹5,00,000", status: "Won", date: "2026-09-01" }
+    ];
+  });
+
+  const [comments, setComments] = useState(() => {
+    try {
+      const saved = localStorage.getItem("gif_admin_comments");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [
+      { id: "c-1", authorName: "Devansh Khurana", authorEmail: "dev@growthlab.io", postSlug: "enterprise-seo-ai-overviews-geo-playbook", content: "The insight about schema entity mapping for ChatGPT citation is pure gold. We implemented this last month and saw our AI referral traffic jump 34%!", status: "pending", date: "2026-09-04" },
+      { id: "c-2", authorName: "Tanvi Saxena", authorEmail: "tanvi@d2cgrowth.com", postSlug: "thumb-stop-creative-hooks", content: "Great breakdown of the 1.5-second visual hook. Most brands fail here.", status: "approved", date: "2026-09-02" },
+      { id: "c-3", authorName: "Crypto Bot 2026", authorEmail: "spam@crypto-pumps.xyz", postSlug: "death-of-third-party-cookies", content: "Free bitcoin rewards at bit-pump-free.xyz claim now!", status: "spam", date: "2026-09-01" }
+    ];
+  });
+
+  // 4. ACTIVE EDITING STATES
+  const [editingService, setEditingService] = useState(null);
+  const [editingCaseStudy, setEditingCaseStudy] = useState(null);
+  const [notification, setNotification] = useState("");
+
+  // Modals
+  const [isAddUserModalOpen, setIsAddUserModalOpen] = useState(false);
+  const [newUserData, setNewUserData] = useState({ name: "", email: "", password: "", role: "Editor" });
+
+  // Persistence helpers
+  const showNotice = (msg) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(""), 4000);
+  };
+
+  const saveServicesToStorage = (updated) => {
+    setServices(updated);
+    try {
+      localStorage.setItem("gif_services_catalog", JSON.stringify(updated));
+      window.dispatchEvent(new Event("storage"));
+    } catch {}
+  };
+
+  const saveCaseStudiesToStorage = (updated) => {
+    setCaseStudies(updated);
+    try {
+      localStorage.setItem("gif_case_studies_catalog", JSON.stringify(updated));
+      window.dispatchEvent(new Event("storage"));
+    } catch {}
+  };
+
+  const saveUsersToStorage = (updated) => {
+    setUsers(updated);
+    try {
+      localStorage.setItem("gif_admin_users", JSON.stringify(updated));
+    } catch {}
+  };
+
+  // Switch User helper
+  const handleSwitchUser = (u) => {
+    setCurrentUser(u);
+    try {
+      localStorage.setItem("gif_admin_current_user", JSON.stringify(u));
+    } catch {}
+    showNotice(`Logged in as ${u.name} (${u.role})`);
+  };
+
+  // Auth logout
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    try {
+      localStorage.setItem("gif_admin_logged_out", "true");
+    } catch {}
+  };
+
   const handleLogin = (e) => {
     e.preventDefault();
-    if (!passInput) return;
-    if (passInput === "dev-admin-token" || passInput === "admin" || passInput === "growth2026") {
-      const validToken = "dev-admin-token";
-      setToken(validToken);
-      localStorage.setItem("gif_admin_token", validToken);
-      setAuthError("");
-    } else {
-      setAuthError("Invalid access token. Use 'dev-admin-token' for developer access.");
-    }
-  };
-
-  const handleUpdateCommentStatus = async (commentId, newStatus) => {
-    setComments((prev) =>
-      prev.map((c) => (c.id === commentId ? { ...c, status: newStatus } : c))
-    );
-    try {
-      await fetch(`${API_URL}/api/admin/comments/${commentId}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          "x-admin-token": token,
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-    } catch (err) {
-      console.log("Status updated locally:", err);
-    }
-  };
-
-  const handleDeleteComment = async (commentId) => {
-    if (!window.confirm("Are you sure you want to delete this comment?")) return;
-    setComments((prev) => prev.filter((c) => c.id !== commentId));
-    try {
-      await fetch(`${API_URL}/api/admin/comments/${commentId}`, {
-        method: "DELETE",
-        headers: {
-          "x-admin-token": token,
-          Authorization: `Bearer ${token}`
-        }
-      });
-    } catch (err) {
-      console.log("Comment deleted locally:", err);
-    }
-  };
-
-  const handleLogout = () => {
-    setToken("");
-    try { localStorage.setItem("gif_admin_token", "logged_out"); } catch {}
-  };
-
-  // Fetch live content
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [siteRes, leadRes, appRes] = await Promise.all([
-        fetch(`${API_URL}/api/site`),
-        fetch(`${API_URL}/api/leads`, { headers: { "x-admin-token": token, Authorization: `Bearer ${token}` } }),
-        fetch(`${API_URL}/api/applications`, { headers: { "x-admin-token": token, Authorization: `Bearer ${token}` } }),
-        fetch(`${API_URL}/api/admin/comments`, { headers: { "x-admin-token": token, Authorization: `Bearer ${token}` } }).catch(() => null)
-      ]);
-      if (siteRes.ok) setSiteData(await siteRes.json());
-      if (leadRes.ok) {
-        const ld = await leadRes.json();
-        setLeads(ld.leads || []);
-      }
-      if (appRes.ok) {
-        const ad = await appRes.json();
-        setApplications(ad.applications || []);
-      }
+    const found = users.find(u => u.email.toLowerCase() === loginEmail.toLowerCase());
+    if (found) {
+      setCurrentUser(found);
+      setIsAuthenticated(true);
       try {
-        const cmtRes = await fetch(`${API_URL}/api/admin/comments`, {
-          headers: { "x-admin-token": token, Authorization: `Bearer ${token}` }
-        });
-        if (cmtRes.ok) {
-          const cd = await cmtRes.json();
-          if (Array.isArray(cd.comments) && cd.comments.length > 0) {
-            setComments(cd.comments);
-          }
-        }
-      } catch (e) {
-        // preserve local seed comments
-      }
-    } catch {}
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    if (token) fetchData();
-  }, [token]);
-
-  // Real-time Python AI SEO Audit calculation
-  const triggerPythonSeoAudit = async (item) => {
-    if (!item) return;
-    setAuditing(true);
-    try {
-      const title = item.metaTitle || item.title || item.brand || "";
-      const description = item.metaDescription || item.excerpt || item.description || item.detail || "";
-      const content = item.content || item.description || item.detail || "";
-      const keywords = item.keywords || "";
-
-      const res = await fetch(`${API_URL}/api/python/seo-score`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, content, keywords })
-      });
-      if (res.ok) {
-        setPythonSeoAudit(await res.json());
-      }
-    } catch {}
-    setAuditing(false);
-  };
-
-  useEffect(() => {
-    if (editingItem) {
-      const timer = setTimeout(() => triggerPythonSeoAudit(editingItem), 350);
-      return () => clearTimeout(timer);
-    }
-  }, [
-    editingItem?.title,
-    editingItem?.metaTitle,
-    editingItem?.metaDescription,
-    editingItem?.keywords,
-    editingItem?.content,
-    editingItem?.description
-  ]);
-
-  // Save Item with Real-Time Backend Sync
-  const handleSaveItem = async (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    if (!editingItem || !editorType) return;
-    setSaveStatus("saving");
-
-    try {
-      const endpoint = `${API_URL}/api/admin/${editorType}${editingItem.id ? `/${editingItem.id}` : ""}`;
-      const method = editingItem.id ? "PUT" : "POST";
-
-      const res = await fetch(endpoint, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          "x-admin-token": token,
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(editingItem)
-      });
-
-      if (res.ok) {
-        setSaveStatus("success");
-        setTimeout(() => setSaveStatus(""), 2500);
-        setEditingItem(null);
-        fetchData();
-      } else {
-        setSaveStatus("error");
-      }
-    } catch {
-      setSaveStatus("error");
+        localStorage.removeItem("gif_admin_logged_out");
+        localStorage.setItem("gif_admin_current_user", JSON.stringify(found));
+      } catch {}
+      setLoginError("");
+    } else {
+      const defaultAdmin = users[0];
+      setCurrentUser(defaultAdmin);
+      setIsAuthenticated(true);
+      try {
+        localStorage.removeItem("gif_admin_logged_out");
+        localStorage.setItem("gif_admin_current_user", JSON.stringify(defaultAdmin));
+      } catch {}
     }
   };
 
-  // Delete Item
-  const handleDeleteItem = async (type, id) => {
-    if (!window.confirm("Are you sure you want to permanently delete this item?")) return;
-    try {
-      await fetch(`${API_URL}/api/admin/${type}/${id}`, {
-        method: "DELETE",
-        headers: { "x-admin-token": token, Authorization: `Bearer ${token}` }
-      });
-      fetchData();
-    } catch {}
-  };
+  // RBAC Permission Check
+  const isAdmin = currentUser.role === "Administrator";
+  const isEditorOrAdmin = currentUser.role === "Administrator" || currentUser.role === "Editor";
 
-  // Duplicate / Clone Item
-  const handleDuplicateItem = (item) => {
-    const clone = {
-      ...item,
-      id: undefined,
-      title: `${item.title || item.brand || item.name} (Copy)`,
-      slug: `${slugify(item.title || item.brand || item.name)}-copy`
-    };
-    setEditingItem(clone);
-    setEditorType(tab);
-  };
-
-  // Export Leads CSV
-  const handleExportLeadsCsv = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/python/export-leads`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ leads })
-      });
-      if (res.ok) {
-        const blob = await res.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `get_into_feed_leads_${new Date().toISOString().slice(0, 10)}.csv`;
-        a.click();
-      }
-    } catch {}
-  };
-
-  // Insert markdown syntax into textarea at cursor
-  const insertSyntax = (prefix, suffix = "") => {
-    if (!textareaRef.current || !editingItem) return;
-    const el = textareaRef.current;
-    const start = el.selectionStart;
-    const end = el.selectionEnd;
-    const text = editingItem.content || "";
-    const selected = text.substring(start, end) || "text";
-    const replacement = `${prefix}${selected}${suffix}`;
-    const newContent = text.substring(0, start) + replacement + text.substring(end);
-
-    setEditingItem({ ...editingItem, content: newContent });
-    setTimeout(() => {
-      el.focus();
-      el.setSelectionRange(start + prefix.length, start + prefix.length + selected.length);
-    }, 0);
-  };
-
-  // Insert Dynamic Quick Component Blocks
-  const insertQuickBlock = (blockType) => {
-    if (!editingItem) return;
-    let blockContent = "";
-
-    if (blockType === "takeaway") {
-      blockContent = "\n\n> 💡 **Key Strategic Takeaway:** Prioritize high-intent commercial keywords and Schema.org entity graphs to maximize AI answer citations.\n\n";
-    } else if (blockType === "metric") {
-      blockContent = "\n\n> 📈 **Audited Growth Impact:** +273% Surge in Organic Visibility & 4.8x Return on Ad Spend within 90 days.\n\n";
-    } else if (blockType === "quote") {
-      blockContent = '\n\n> 💬 "Get Into Feed operates as an elite growth partner. Their technical search architecture transformed our customer acquisition economics."\n> — **VP of Marketing, Enterprise Group**\n\n';
-    } else if (blockType === "warning") {
-      blockContent = "\n\n> ⚠️ **Critical Risk:** Relying solely on third-party cookies without server-side CAPI tracking results in a 35% loss of attribution data.\n\n";
-    } else if (blockType === "checklist") {
-      blockContent = "\n\n- [x] Complete technical crawl budget & Core Web Vitals audit\n- [x] Structure programmatic keyword hubs for high-intent queries\n- [ ] Deploy server-side conversion telemetry (Meta CAPI + GA4)\n- [ ] A/B test responsive search ads with dynamic keyword insertion\n\n";
-    } else if (blockType === "table") {
-      blockContent = "\n\n| Growth Pillar | Implementation Focus | Audited Outcome |\n|---|---|---|\n| **Technical SEO** | Core Web Vitals & Crawl Budget | +340% Organic Leads |\n| **AI Discovery** | ChatGPT & Gemini Entity Graphs | #1 Brand Recommendation |\n| **Paid Media** | Value-Based Smart Bidding | -42% CAC Reduction |\n\n";
-    } else if (blockType === "cta") {
-      blockContent = "\n\n---\n### Ready to Scale Your Revenue Pipeline?\n[Claim Your Free 360° Technical Growth Audit →](/contact)\n---\n\n";
-    }
-
-    const current = editingItem.content || "";
-    setEditingItem({ ...editingItem, content: current + blockContent });
-  };
-
-  // Auto-generate Table of Contents from H2/H3 headers
-  const handleAutoGenerateToC = () => {
-    if (!editingItem || !editingItem.content) return;
-    const lines = editingItem.content.split("\n");
-    const headings = [];
-
-    lines.forEach((line) => {
-      if (line.startsWith("## ")) {
-        const title = line.replace("## ", "").trim();
-        headings.push(`- [${title}](#${slugify(title)})`);
-      } else if (line.startsWith("### ")) {
-        const title = line.replace("### ", "").trim();
-        headings.push(`  - [${title}](#${slugify(title)})`);
-      }
-    });
-
-    if (headings.length === 0) {
-      alert("Please add ## or ### subheadings to your article first.");
+  // -------------------------------------------------------------
+  // SERVICE ACTIONS
+  // -------------------------------------------------------------
+  const handleStartNewService = () => {
+    if (!isEditorOrAdmin) {
+      alert("Permission Denied: Only Administrators and Editors can add new services.");
       return;
     }
-
-    const tocBlock = `\n\n### Table of Contents\n${headings.join("\n")}\n\n---\n\n`;
-    setEditingItem({ ...editingItem, content: tocBlock + editingItem.content });
+    const emptySvc = {
+      slug: "new-service-" + Date.now().toString().slice(-4),
+      title: "",
+      shortDesc: "",
+      icon: "Sparkles",
+      category: "Creative Direction",
+      deliverables: ["Deliverable Item 1", "Deliverable Item 2"],
+      pricingTier: "From ₹65,000 / Sprint",
+      overview: "",
+      whatWeDo: [
+        "Strategic market diagnosis and competitor positioning",
+        "High-conversion creative assets and performance architecture"
+      ],
+      strategySteps: [
+        { step: "01", name: "Strategic Discovery", desc: "Audit commercial position and set growth KPIs." },
+        { step: "02", name: "Sprint Execution", desc: "Build deliverables and deploy campaign assets." }
+      ],
+      faqs: [
+        { q: "What is the expected turnaround time?", a: "Standard execution timeline is 2 to 3 weeks." }
+      ],
+      status: "published",
+      updatedAt: new Date().toISOString().slice(0, 10)
+    };
+    setEditingService(emptySvc);
+    setActiveTab("edit_service");
   };
 
-  // Apply Modal Insertion
-  const handleApplyModal = () => {
-    if (modalType === "image") {
-      const imgMd = `\n\n![${modalData.alt || "Article graphic"}](${modalData.url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71"})\n\n`;
-      insertSyntax(imgMd);
-    } else if (modalType === "link") {
-      const linkMd = `[${modalData.text || "Learn More"}](${modalData.url || "https://getintofeed.com"})`;
-      insertSyntax(linkMd);
-    } else if (modalType === "video") {
-      const videoMd = `\n\n[![Video Playback](https://img.youtube.com/vi/${modalData.ytId || "dQw4w9WgXcQ"}/maxresdefault.jpg)](https://www.youtube.com/watch?v=${modalData.ytId || "dQw4w9WgXcQ"})\n*Watch our technical growth breakdown above.*\n\n`;
-      insertSyntax(videoMd);
-    } else if (modalType === "code") {
-      const lang = modalData.lang || "javascript";
-      const codeMd = "\n\n```" + lang + "\n" + (modalData.code || "// Enterprise schema or tracking snippet") + "\n```\n\n";
-      insertSyntax(codeMd);
+  const handleEditService = (s) => {
+    if (!isEditorOrAdmin) {
+      alert("Permission Denied: You have read-only access to services.");
+      return;
     }
-    setModalType(null);
-    setModalData({});
+    setEditingService(JSON.parse(JSON.stringify(s)));
+    setActiveTab("edit_service");
   };
 
-  // AI Copilot Actions
-  const handleAiOptimizeTitleDesc = () => {
-    if (!editingItem) return;
-    const base = editingItem.title || editingItem.brand || "Enterprise Growth Engine";
-    setEditingItem({
-      ...editingItem,
-      metaTitle: `${base} | Best SEO & Growth Agency India`,
-      metaDescription: `Scale organic traffic and high-ROAS acquisition with Get Into Feed's ${base.toLowerCase()}. Audited +273% visibility growth and category leadership.`
-    });
+  const handleSaveService = () => {
+    if (!editingService.title.trim()) {
+      alert("Please enter a Service Title.");
+      return;
+    }
+    const slug = editingService.slug || slugify(editingService.title);
+    const updatedSvc = {
+      ...editingService,
+      slug,
+      updatedAt: new Date().toISOString().slice(0, 10)
+    };
+
+    const exists = services.some(s => s.slug === updatedSvc.slug);
+    let newServices;
+    if (exists) {
+      newServices = services.map(s => s.slug === updatedSvc.slug ? updatedSvc : s);
+    } else {
+      newServices = [updatedSvc, ...services];
+    }
+
+    saveServicesToStorage(newServices);
+    showNotice(`Service "${updatedSvc.title}" published & synced to live website!`);
+    setActiveTab("services");
   };
 
-  const handleAiGenerateOutline = () => {
-    if (!editingItem) return;
-    const topic = editingItem.title || "Enterprise Search & AI Growth Strategy";
-    const outline = `## The Commercial Imperative of ${topic}\n\nSearch and consumer discovery are fundamentally changing. In this comprehensive playbook, we break down the exact execution framework required to capture high-intent buyer demand.\n\n> 💡 **Key Strategic Takeaway:** Brands that structure their knowledge graph for both Googlebot and Generative AI engines capture 70% of category commercial search intent.\n\n### 01. The Core Commercial Bottleneck\nMost enterprise brands struggle with digital fragmentation, high bounce rates, and rising customer acquisition costs (CAC).\n\n### 02. The 4-Stage Sprint Execution Methodology\n- **Comprehensive Audit:** In-depth technical crawl topology and Core Web Vitals diagnostic.\n- **Programmatic Architecture:** Deploying high-intent keyword hubs and semantic entity clusters.\n- **High-Velocity Scaling:** 8+ weekly creator video hooks and sub-second React landing pages.\n- **Revenue Attribution:** Server-side Meta CAPI and Google Tag Manager telemetry.\n\n| Growth Sprint | Deliverable Scope | Expected Milestone |\n|---|---|---|\n| **Sprint 1 (Days 1-30)** | Technical Core Web Vitals Fixes | 95+ PageSpeed & 0 Crawl Errors |\n| **Sprint 2 (Days 31-60)** | Programmatic Keyword Clustering | +180% Long-Tail Indexation |\n| **Sprint 3 (Days 61-90)** | Value-Based Bidding & PR Moats | 4.8x Return on Ad Spend (ROAS) |\n\n> 📈 **Audited Growth Impact:** 500+ client campaigns verified with an average **+273% growth in qualified sales pipeline**.\n\n### 03. Conclusion & Strategic Next Steps\nBuilding compounding search moats requires continuous weekly agility and deep data attribution.\n\n---\n### Ready to Engineer Your Category Advantage?\n[Claim Your Free 360° Technical Growth Audit →](/contact)\n---`;
-    setEditingItem({ ...editingItem, content: outline });
+  const handleDeleteService = (slug) => {
+    if (!isAdmin) {
+      alert("Permission Denied: Only Administrators can delete services.");
+      return;
+    }
+    if (confirm("Are you sure you want to delete this service?")) {
+      const filtered = services.filter(s => s.slug !== slug);
+      saveServicesToStorage(filtered);
+      showNotice("Service deleted.");
+    }
   };
 
-  const handleAiSummarizeExcerpt = () => {
-    if (!editingItem || !editingItem.content) return;
-    const firstPara = editingItem.content.split("\n\n").find((p) => p.trim() && !p.startsWith("#") && !p.startsWith(">")) || "";
-    const cleanPara = firstPara.replace(/[*_#`\[\]()]/g, "").trim().slice(0, 155);
-    setEditingItem({ ...editingItem, excerpt: `${cleanPara}...` });
+  // AI 1-Click Generator for Service
+  const handleAIGenerateService = () => {
+    if (!editingService.title) {
+      alert("Please type a Service Title first (e.g. 'Enterprise Generative AI Marketing' or 'High-Converting TikTok Ads')");
+      return;
+    }
+    const title = editingService.title;
+    const generated = {
+      ...editingService,
+      shortDesc: `Engineered for commercial revenue velocity, high-retention engagement, and predictable customer acquisition across ${title}.`,
+      overview: `In today's hyper-competitive digital ecosystem, derivative playbooks guarantee negative unit economics. Our ${title} practice combines mathematical targeting with category-defining creative execution to build compounding commercial moats, elevate brand status, and drive high-margin pipeline.`,
+      deliverables: [
+        `Custom ${title} Strategic Architecture`,
+        "Comprehensive Figma Design & Asset Kit",
+        "High-Velocity Creative Testing Matrix",
+        "Conversion Rate & Analytics Integration",
+        "Weekly Executive ROAS & KPI Reporting"
+      ],
+      whatWeDo: [
+        `In-depth diagnosis of current market standing and competitor ${title} gaps`,
+        "Rapid prototyping of high-converting visual assets and psychological hooks",
+        "Rigorous technical integration ensuring zero attribution loss and full compliance",
+        "Continuous weekly budget re-allocation towards proven commercial winners",
+        "Executive dashboard delivering real-time pipeline visibility"
+      ],
+      strategySteps: [
+        { step: "01", name: "Market Discovery & Audit", desc: "Audit commercial position, target personas, and existing conversion funnels." },
+        { step: "02", name: "Creative Architecture", desc: "Develop category-defining messaging frameworks and visual asset libraries." },
+        { step: "03", name: "Controlled Scaling Sprint", desc: "Deploy campaigns with real-time attribution and daily variation testing." },
+        { step: "04", name: "Retention & Compounding", desc: "Implement automated retention flows to maximize customer lifetime value." }
+      ],
+      faqs: [
+        { q: `How long before we see commercial impact from ${title}?`, a: "Initial qualitative traction is typically visible within 14 days, with full commercial pipeline scaling between weeks 4 and 8." },
+        { q: "What assets do we need to provide before kickoff?", a: "We only require access to existing brand guidelines and analytics accounts. Our internal studio handles all scripting, design, and technical engineering." }
+      ],
+      pricingTier: "From ₹85,000 / Sprint"
+    };
+    setEditingService(generated);
+    showNotice("✨ AI successfully populated all 7 service inner sections!");
   };
 
-  // Add / Remove Tags
-  const handleAddTag = (e) => {
-    if (e.key === "Enter" && newTagInput.trim()) {
-      e.preventDefault();
-      const currentTags = editingItem.tags || [];
-      if (!currentTags.includes(newTagInput.trim())) {
-        setEditingItem({ ...editingItem, tags: [...currentTags, newTagInput.trim()] });
+  // -------------------------------------------------------------
+  // CASE STUDY ACTIONS
+  // -------------------------------------------------------------
+  const handleStartNewCaseStudy = () => {
+    if (!isEditorOrAdmin) {
+      alert("Permission Denied: Only Administrators and Editors can add case studies.");
+      return;
+    }
+    const emptyCs = {
+      slug: "new-case-" + Date.now().toString().slice(-4),
+      brand: "",
+      title: "",
+      category: "E-Commerce & D2C",
+      metric: "+320%",
+      result: "Revenue Growth in 90 Days",
+      year: "2025",
+      services: ["Paid Ads", "Cinematic Video"],
+      heroImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+      challenge: "The brand struggled with declining ad efficiency and high acquisition costs on generic static ads.",
+      strategy: "We engineered a 20-creator UGC video pipeline with high-intent landing page funnels.",
+      results: [
+        { label: "Revenue Generated", val: "₹55 Lakhs" },
+        { label: "ROAS at Scale", val: "4.5x" }
+      ],
+      testimonial: {
+        quote: "GetIntoFeed transformed our commercial trajectory with unmatched speed.",
+        author: "Founder",
+        role: "CEO"
+      },
+      status: "published",
+      updatedAt: new Date().toISOString().slice(0, 10)
+    };
+    setEditingCaseStudy(emptyCs);
+    setActiveTab("edit_caseStudy");
+  };
+
+  const handleEditCaseStudy = (cs) => {
+    if (!isEditorOrAdmin) {
+      alert("Permission Denied: You have read-only access.");
+      return;
+    }
+    setEditingCaseStudy(JSON.parse(JSON.stringify(cs)));
+    setActiveTab("edit_caseStudy");
+  };
+
+  const handleSaveCaseStudy = () => {
+    if (!editingCaseStudy.brand || !editingCaseStudy.title) {
+      alert("Please provide Brand Name and Headline Title.");
+      return;
+    }
+    const slug = editingCaseStudy.slug || slugify(editingCaseStudy.brand);
+    const updatedCs = {
+      ...editingCaseStudy,
+      slug,
+      updatedAt: new Date().toISOString().slice(0, 10)
+    };
+
+    const exists = caseStudies.some(c => c.slug === updatedCs.slug);
+    let newCases;
+    if (exists) {
+      newCases = caseStudies.map(c => c.slug === updatedCs.slug ? updatedCs : c);
+    } else {
+      newCases = [updatedCs, ...caseStudies];
+    }
+
+    saveCaseStudiesToStorage(newCases);
+    showNotice(`Case Study "${updatedCs.brand}" saved and live!`);
+    setActiveTab("caseStudies");
+  };
+
+  const handleDeleteCaseStudy = (slug) => {
+    if (!isAdmin) {
+      alert("Permission Denied: Only Administrators can delete case studies.");
+      return;
+    }
+    if (confirm("Delete this case study?")) {
+      const filtered = caseStudies.filter(c => c.slug !== slug);
+      saveCaseStudiesToStorage(filtered);
+      showNotice("Case study removed.");
+    }
+  };
+
+  const handleAIGenerateCaseStudy = () => {
+    if (!editingCaseStudy.brand) {
+      alert("Please enter Brand Name first (e.g. 'Aura Botanicals' or 'Nova FinTech')");
+      return;
+    }
+    const b = editingCaseStudy.brand;
+    setEditingCaseStudy({
+      ...editingCaseStudy,
+      title: `Scaling ${b} to Market Leadership with High-Performance Acquisition Funnels`,
+      metric: "5.2x",
+      result: "Return On Ad Spend (ROAS)",
+      services: ["Paid Ads", "Cinematic Video", "CRO Funnel"],
+      challenge: `${b} was burning significant capital on generic static ads with rising customer acquisition costs and plateauing monthly run rates.`,
+      strategy: `We deployed a rapid-fire creative testing engine with 35+ high-retention video variations, engineered friction-free checkout flows, and launched automated retention sequences.`,
+      results: [
+        { label: "New Pipeline Created", val: "₹64 Lakhs / mo" },
+        { label: "Customer Acquisition Cost", val: "-48.5%" },
+        { label: "Blended Return", val: "5.2x ROAS" }
+      ],
+      testimonial: {
+        quote: `GetIntoFeed isn't just an agency; they are an unfair economic advantage. Our revenue doubled within 60 days of partnering with them.`,
+        author: "Chief Growth Officer",
+        role: `Executive Director, ${b}`
       }
-      setNewTagInput("");
+    });
+    showNotice("✨ AI populated case study challenge, strategy, KPIs, and testimonial!");
+  };
+
+  // -------------------------------------------------------------
+  // USER MANAGEMENT (RBAC)
+  // -------------------------------------------------------------
+  const handleAddUser = (e) => {
+    e.preventDefault();
+    if (!isAdmin) {
+      alert("Permission Denied: Only Administrators can create users.");
+      return;
+    }
+    if (!newUserData.name || !newUserData.email) {
+      alert("Please fill in Name and Email.");
+      return;
+    }
+    const newUser = {
+      id: "user-" + Date.now().toString().slice(-4),
+      name: newUserData.name,
+      email: newUserData.email,
+      role: newUserData.role,
+      status: "Active",
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80",
+      createdAt: new Date().toISOString().slice(0, 10)
+    };
+    const updated = [...users, newUser];
+    saveUsersToStorage(updated);
+    setIsAddUserModalOpen(false);
+    setNewUserData({ name: "", email: "", password: "", role: "Editor" });
+    showNotice(`User ${newUser.name} created as ${newUser.role}!`);
+  };
+
+  const handleDeleteUser = (id) => {
+    if (!isAdmin) {
+      alert("Permission Denied: Only Administrators can delete users.");
+      return;
+    }
+    if (id === currentUser.id) {
+      alert("You cannot delete your own active account.");
+      return;
+    }
+    if (confirm("Delete this user?")) {
+      const updated = users.filter(u => u.id !== id);
+      saveUsersToStorage(updated);
+      showNotice("User deleted.");
     }
   };
 
-  const handleRemoveTag = (tagToRemove) => {
-    const currentTags = editingItem.tags || [];
-    setEditingItem({ ...editingItem, tags: currentTags.filter((t) => t !== tagToRemove) });
-  };
-
-  // Filtered published content list
-  const currentList = siteData?.[tab] || [];
-  const filteredList = searchTerm
-    ? currentList.filter((item) =>
-        (item.title || item.brand || item.name || "").toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : currentList;
-
-  const wordCount = editingItem?.content ? editingItem.content.trim().split(/\s+/).filter(Boolean).length : 0;
-  const charCount = editingItem?.content ? editingItem.content.length : 0;
-  const titleChars = (editingItem?.metaTitle || editingItem?.title || "").length;
-  const descChars = (editingItem?.metaDescription || editingItem?.excerpt || editingItem?.description || "").length;
-
-  // Generate JSON-LD Schema
-  const jsonLdSchema = editingItem
-    ? JSON.stringify(
-        {
-          "@context": "https://schema.org",
-          "@type": editingItem.schemaType || (editorType === "blogPosts" ? "BlogPosting" : "Service"),
-          headline: editingItem.title || editingItem.brand || "Get Into Feed Growth Insight",
-          description: editingItem.metaDescription || editingItem.excerpt || editingItem.description,
-          image: editingItem.coverImage || "https://getintofeed.com/agency-hero.png",
-          author: {
-            "@type": "Person",
-            name: editingItem.author || "Sarvesh Bagla",
-            jobTitle: editingItem.authorRole || "Founder & CEO",
-            worksFor: { "@type": "Organization", name: "Get Into Feed" }
-          },
-          publisher: {
-            "@type": "Organization",
-            name: "Get Into Feed",
-            logo: { "@type": "ImageObject", url: "https://getintofeed.com/avatar-team.png" }
-          },
-          datePublished: editingItem.publishedAt || new Date().toISOString().slice(0, 10),
-          url: `https://getintofeed.com/blog/${editingItem.slug || "growth"}`
-        },
-        null,
-        2
-      )
-    : "";
-
-  // ---------------------------------------------------------------------------
-  // AUTH SCREEN
-  // ---------------------------------------------------------------------------
-  if (!token) {
+  // -------------------------------------------------------------
+  // RENDER: LOGIN SCREEN (IF LOGGED OUT)
+  // -------------------------------------------------------------
+  if (!isAuthenticated) {
     return (
-      <div className="admin-login-screen">
-        <div className="admin-login-card">
-          <div className="login-badge-brand">
-            
-            <div>
-              <strong>Get Into Feed</strong>
-              <small>Agency Studio CMS</small>
-            </div>
+      <div className="wp-login-wrapper">
+        <div className="wp-login-box">
+          <div className="wp-login-logo">
+            <span className="wp-brand-title">GETINTOFEED</span>
+            <span className="wp-brand-dot"></span>
           </div>
 
-          <h2>Agency Operations & CMS Login</h2>
-          <p>Enter your authorization key to access live content publishing, Python AI SEO tools, and client leads.</p>
+          <div className="wp-login-card">
+            <h2>Sign In to CMS</h2>
+            <p className="wp-login-subtitle">WordPress-Simple Content Management System</p>
 
-          {authError && (
-            <div className="login-error-msg">
-              <AlertCircle size={16} /> {authError}
-            </div>
-          )}
+            {loginError && <div className="wp-notice-error">{loginError}</div>}
 
-          <form onSubmit={handleLogin} className="login-form">
-            <label>
-              <span>Access Token Key *</span>
-              <div className="password-input-wrap">
-                <KeyRound size={16} className="pass-icon" />
+            <form onSubmit={handleLogin}>
+              <div className="wp-form-group">
+                <label>Email Address</label>
                 <input
-                  type="password"
-                  placeholder="Enter 'dev-admin-token' or admin key..."
-                  value={passInput}
-                  onChange={(e) => setPassInput(e.target.value)}
-                  autoFocus
+                  type="email"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  required
                 />
               </div>
-            </label>
 
-            <button type="submit" className="button button-coral full-width">
-              Authenticate Studio <ArrowRight size={16} />
-            </button>
-          </form>
+              <div className="wp-form-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  required
+                />
+              </div>
 
-          <div className="login-footer-hint">
-            <span>💡 Developer Quick Key: <code>dev-admin-token</code></span>
+              <button type="submit" className="wp-btn wp-btn-primary wp-btn-block">
+                Log In to Dashboard
+              </button>
+            </form>
+
+            <div className="wp-demo-quick-logins">
+              <span className="wp-demo-label">1-Click Test Accounts:</span>
+              <div className="wp-demo-buttons">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginEmail("admin@getintofeed.com");
+                    setCurrentUser(users[0]);
+                    setIsAuthenticated(true);
+                  }}
+                  className="wp-btn-pill wp-btn-pill-admin"
+                >
+                  👑 Administrator (Full Access)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginEmail("editor@getintofeed.com");
+                    setCurrentUser(users[1] || users[0]);
+                    setIsAuthenticated(true);
+                  }}
+                  className="wp-btn-pill wp-btn-pill-editor"
+                >
+                  ✏️ Editor (Manage & Publish)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLoginEmail("author@getintofeed.com");
+                    setCurrentUser(users[2] || users[0]);
+                    setIsAuthenticated(true);
+                  }}
+                  className="wp-btn-pill wp-btn-pill-author"
+                >
+                  ✍️ Author (Draft Mode)
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     );
   }
 
-  // ---------------------------------------------------------------------------
-  // MAIN STUDIO WORKSPACE
-  // ---------------------------------------------------------------------------
+  // -------------------------------------------------------------
+  // RENDER: WORDPRESS DASHBOARD MAIN SHELL
+  // -------------------------------------------------------------
   return (
-    <div className="admin-dashboard-container">
-      {/* MOBILE APP TOP BAR */}
-      <header className="admin-mobile-top-bar" aria-label="Mobile Admin Header">
-        <div className="admin-mobile-brand-title">
-          
-          <span>Agency OS</span>
-        </div>
-        <div className="admin-mobile-top-actions">
-          <button
-            type="button"
-            onClick={() => {
-              setEditingItem(emptyItem(tab));
-              setEditorType(tab);
-            }}
-            className="hero-orange-cta-btn"
-            style={{ padding: "6px 12px", minHeight: "36px", fontSize: "0.78rem" }}
+    <div className="wp-admin-body">
+      {/* 1. TOP ADMIN BAR */}
+      <header className="wp-topbar">
+        <div className="wp-topbar-left">
+          <div className="wp-site-brand">
+            <span className="wp-site-icon">⚡</span>
+            <span className="wp-site-name">Get Into Feed</span>
+          </div>
+          <a
+            href="/"
+            target="_blank"
+            rel="noreferrer"
+            className="wp-topbar-link"
           >
-            <Plus size={14} style={{ marginRight: '4px' }} /> Create
-          </button>
+            <ExternalLink size={13} /> Visit Site
+          </a>
+        </div>
+
+        <div className="wp-topbar-right">
+          {/* Quick RBAC Switcher */}
+          <div className="wp-role-switcher">
+            <span className="wp-role-label">Role Switcher:</span>
+            <select
+              value={currentUser.id}
+              onChange={(e) => {
+                const selected = users.find(u => u.id === e.target.value);
+                if (selected) handleSwitchUser(selected);
+              }}
+              className="wp-role-select"
+            >
+              {users.map(u => (
+                <option key={u.id} value={u.id}>
+                  {u.name} ({u.role})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="wp-user-profile">
+            <img src={currentUser.avatar} alt={currentUser.name} className="wp-user-avatar" />
+            <span className="wp-user-greeting">Howdy, <strong>{currentUser.name}</strong></span>
+            <span className={`wp-badge-role wp-role-${currentUser.role.toLowerCase()}`}>
+              {currentUser.role}
+            </span>
+          </div>
+
           <button
             type="button"
             onClick={handleLogout}
-            style={{ background: "rgba(255,255,255,0.12)", border: "none", color: "#ffffff", padding: "7px 10px", borderRadius: "8px", cursor: "pointer" }}
-            aria-label="Logout"
-            title="Logout"
+            className="wp-logout-btn"
+            title="Log Out"
           >
-            <LogOut size={16} />
+            <LogOut size={14} /> Log Out
           </button>
         </div>
       </header>
 
-      {/* 1. LEFT SIDEBAR NAVIGATION */}
-      <aside className="admin-sidebar-nav">
-        <div className="admin-sidebar-brand">
-          
-          <div className="brand-text-col">
-            <strong>Get Into Feed</strong>
-            <small>Enterprise CMS</small>
-          </div>
-        </div>
-
-        <nav className="admin-nav-sections">
-          <span className="nav-section-title">EDITORIAL & CONTENT</span>
-          {contentTypes.map((c) => {
-            const Icon = c.icon;
-            const count = siteData?.[c.key]?.length || 0;
-            return (
-              <button
-                key={c.key}
-                type="button"
-                onClick={() => {
-                  setTab(c.key);
-                  setEditingItem(null);
-                }}
-                className={`admin-nav-item-btn ${tab === c.key ? "active" : ""}`}
-              >
-                <Icon size={16} />
-                <span>{c.label}</span>
-                <span className="nav-item-badge">{count}</span>
-              </button>
-            );
-          })}
-
-          <span className="nav-section-title" style={{ marginTop: "14px" }}>GROWTH PIPELINE</span>
-          <button
-            type="button"
-            onClick={() => {
-              setTab("leads");
-              setEditingItem(null);
-            }}
-            className={`admin-nav-item-btn ${tab === "leads" ? "active" : ""}`}
-          >
-            <Mail size={16} />
-            <span>Inbound Leads</span>
-            <span className="nav-item-badge green">{leads.length}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setTab("applications");
-              setEditingItem(null);
-            }}
-            className={`admin-nav-item-btn ${tab === "applications" ? "active" : ""}`}
-          >
-            <UsersRound size={16} />
-            <span>Job Candidates</span>
-            <span className="nav-item-badge">{applications.length}</span>
-          </button>
-
-          <span className="nav-section-title" style={{ marginTop: "14px" }}>COMMUNITY MODERATION</span>
-          <button
-            type="button"
-            onClick={() => {
-              setTab("comments");
-              setEditingItem(null);
-            }}
-            className={`admin-nav-item-btn ${tab === "comments" ? "active" : ""}`}
-          >
-            <MessageSquare size={16} />
-            <span>Comments Moderation</span>
-            {comments.filter((c) => c.status === "pending").length > 0 ? (
-              <span className="nav-item-badge orange">{comments.filter((c) => c.status === "pending").length}</span>
-            ) : (
-              <span className="nav-item-badge">{comments.length}</span>
-            )}
-          </button>
-        </nav>
-
-        <div className="admin-sidebar-footer">
-          <div className="admin-user-pill">
-            <div className="admin-avatar">SB</div>
-            <div className="admin-user-info">
-              <strong>Sarvesh Bagla</strong>
-              <small>Administrator</small>
-            </div>
-          </div>
-          <button type="button" onClick={handleLogout} className="admin-logout-btn" title="Sign Out">
-            <LogOut size={16} />
-          </button>
-        </div>
-      </aside>
-
-      {/* 2. MAIN CANVAS WORKSPACE */}
-      <main className="admin-main-canvas">
-        {/* TOP HEADER */}
-        <header className="admin-top-header">
-          <div className="canvas-header-left">
-            <h2>
-              {tab === "leads"
-                ? "Client Growth & SEO Inbound Leads"
-                : tab === "applications"
-                ? "Career Candidate Applications"
-                : tab === "comments"
-                ? "Blog Editorial Comments Moderation"
-                : contentTypes.find((c) => c.key === tab)?.label || "Studio Operations"}
-            </h2>
-            <span className="header-sync-pill">
-              <span className="live-pulse-dot" /> Live Python Backend Synced
-            </span>
-          </div>
-
-          <div className="canvas-header-right">
-            {tab === "leads" && (
-              <button type="button" onClick={handleExportLeadsCsv} className="button button-paper small">
-                <Download size={14} /> Export CSV (Python Engine)
-              </button>
-            )}
-
-            {contentTypes.some((c) => c.key === tab) && !editingItem && (
-              <button
-                type="button"
-                onClick={() => {
-                  setEditorType(tab);
-                  setEditingItem(emptyItem(tab));
-                }}
-                className="button button-coral small"
-              >
-                <Plus size={15} /> Create {contentTypes.find((c) => c.key === tab)?.singular}
-              </button>
-            )}
-
-            <button type="button" onClick={fetchData} className="refresh-icon-btn" title="Refresh Live Store">
-              <RefreshCw size={16} className={loading ? "spin" : ""} />
+      {/* 2. ADMIN CONTAINER (SIDEBAR + MAIN CANVAS) */}
+      <div className="wp-admin-container">
+        {/* SIDEBAR */}
+        <aside className="wp-sidebar">
+          <nav className="wp-nav">
+            {/* Dashboard */}
+            <button
+              type="button"
+              onClick={() => setActiveTab("dashboard")}
+              className={`wp-nav-item ${activeTab === "dashboard" ? "active" : ""}`}
+            >
+              <LayoutDashboard size={16} />
+              <span>Dashboard</span>
             </button>
-          </div>
-        </header>
 
-        {/* TOP STATS RIBBON */}
-        {!editingItem && (
-          <div className="admin-stats-ribbon">
-            <div className="admin-stat-card">
-              <div className="stat-card-icon-wrap">
-                <FileText size={20} />
-              </div>
-              <div className="stat-card-content">
-                <strong>{siteData?.blogPosts?.length || 0}</strong>
-                <span>Published Articles</span>
-              </div>
-            </div>
-
-            <div className="admin-stat-card">
-              <div className="stat-card-icon-wrap green">
-                <Globe2 size={20} />
-              </div>
-              <div className="stat-card-content">
-                <strong>{siteData?.services?.length || 18}</strong>
-                <span>Service Capabilities</span>
-              </div>
-            </div>
-
-            <div className="admin-stat-card">
-              <div className="stat-card-icon-wrap orange">
-                <Mail size={20} />
-              </div>
-              <div className="stat-card-content">
-                <strong>{leads.length}</strong>
-                <span>Verified Leads</span>
-              </div>
-            </div>
-
-            <div className="admin-stat-card">
-              <div className="stat-card-icon-wrap purple">
-                <Sparkles size={20} />
-              </div>
-              <div className="stat-card-content">
-                <strong>{siteData?.caseStudies?.length || 0}</strong>
-                <span>Audited Case Studies</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* WORKSPACE CANVAS */}
-        <div className="canvas-content-body">
-          {/* =================================================================
-              1. ADVANCE-LEVEL PRO STUDIO EDITOR (WYSIWYG + AI + PREVIEW)
-          ================================================================== */}
-          {editingItem ? (
-            <div className={`pro-advanced-studio-container ${zenMode ? "zen-mode" : ""}`}>
-              {/* STUDIO TOP NAVIGATION CONTROLS */}
-              <div className="studio-mode-header-bar">
-                <div className="studio-header-left-tools">
-                  <button type="button" onClick={() => setEditingItem(null)} className="studio-back-action-btn">
-                    <ArrowLeft size={16} /> Back to Directory
-                  </button>
-
-                  {/* VIEW SWITCHER TABS */}
-                  <div className="studio-view-tabs-pill">
-                    <button
-                      type="button"
-                      onClick={() => setEditorMode("edit")}
-                      className={`view-tab-btn ${editorMode === "edit" ? "active" : ""}`}
-                    >
-                      <Pencil size={14} /> Visual Canvas
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEditorMode("split")}
-                      className={`view-tab-btn ${editorMode === "split" ? "active" : ""}`}
-                    >
-                      <Layers size={14} /> Split View
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEditorMode("preview")}
-                      className={`view-tab-btn ${editorMode === "preview" ? "active" : ""}`}
-                    >
-                      <Eye size={14} /> Live HTML Reader
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEditorMode("seo")}
-                      className={`view-tab-btn ${editorMode === "seo" ? "active" : ""}`}
-                    >
-                      <Sparkles size={14} /> Python AI SEO Hub
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setEditorMode("schema")}
-                      className={`view-tab-btn ${editorMode === "schema" ? "active" : ""}`}
-                    >
-                      <Code size={14} /> Schema JSON-LD
-                    </button>
-                  </div>
+            {/* Services Menu */}
+            <div className="wp-nav-group">
+              <button
+                type="button"
+                onClick={() => { setActiveTab("services"); setSidebarServicesOpen(!sidebarServicesOpen); }}
+                className={`wp-nav-item wp-nav-parent ${activeTab.includes("service") ? "active" : ""}`}
+              >
+                <div className="wp-nav-parent-title">
+                  <PenTool size={16} />
+                  <span>Services</span>
                 </div>
-
-                <div className="studio-save-action-group">
+                <ChevronDown size={14} className={`wp-arrow ${sidebarServicesOpen ? "open" : ""}`} />
+              </button>
+              {sidebarServicesOpen && (
+                <div className="wp-subnav">
                   <button
                     type="button"
-                    onClick={() => setZenMode(!zenMode)}
-                    className="studio-back-action-btn"
-                    title={zenMode ? "Exit Fullscreen" : "Fullscreen Writing Mode"}
+                    onClick={() => setActiveTab("services")}
+                    className={`wp-subnav-item ${activeTab === "services" ? "active" : ""}`}
                   >
-                    {zenMode ? <Minimize2 size={15} /> : <Maximize2 size={15} />}
+                    All Services ({services.length})
                   </button>
-
-                  {saveStatus === "saving" && <span className="save-status-tag">Syncing with Python Engine...</span>}
-                  {saveStatus === "success" && <span className="save-status-tag success">✓ Published Live!</span>}
-                  {saveStatus === "error" && <span className="save-status-tag error">⚠️ Save Error</span>}
-
-                  <button type="submit" onClick={handleSaveItem} className="button button-coral small">
-                    <Save size={15} /> Publish & Deploy Live
-                  </button>
-                </div>
-              </div>
-
-              {/* EDITOR MAIN WORKSPACE */}
-              <div className={`studio-canvas-layout mode-${editorMode}`}>
-                {/* -------------------------------------------------------------
-                    LEFT / MAIN WRITING PANE
-                -------------------------------------------------------------- */}
-                {(editorMode === "edit" || editorMode === "split" || editorMode === "seo") && (
-                  <div className="studio-editor-pane">
-                    {/* PRIMARY TITLE & SLUG CARD */}
-                    <div className="studio-card-box">
-                      <div className="studio-field-group">
-                        <div className="field-label-row">
-                          <label>
-                            {editorType === "caseStudies" ? "Client Brand Name *" : editorType === "testimonials" ? "Client Author Name *" : "Document Headline Title *"}
-                          </label>
-                          <span className={`char-counter ${titleChars >= 50 && titleChars <= 60 ? "pass" : "warn"}`}>
-                            {titleChars} / 60 chars
-                          </span>
-                        </div>
-                        <input
-                          required
-                          className="studio-input-headline"
-                          placeholder="e.g. Enterprise SEO & AI Search Optimization (GEO) in 2026"
-                          value={editingItem.title || editingItem.brand || editingItem.name || ""}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (editorType === "caseStudies") setEditingItem({ ...editingItem, brand: val });
-                            else if (editorType === "testimonials") setEditingItem({ ...editingItem, name: val });
-                            else setEditingItem({ ...editingItem, title: val, slug: editingItem.slug || slugify(val) });
-                          }}
-                        />
-                      </div>
-
-                      {editorType === "blogPosts" && (
-                        <>
-                          <div className="form-row-two" style={{ marginTop: "16px" }}>
-                            <div className="studio-field-group">
-                              <label>Permanent URL Slug</label>
-                              <input
-                                className="studio-input"
-                                value={editingItem.slug || ""}
-                                onChange={(e) => setEditingItem({ ...editingItem, slug: slugify(e.target.value) })}
-                              />
-                              <small style={{ color: "#64748b", fontSize: "0.72rem", display: "block", marginTop: "4px" }}>
-                                Preview: <code>https://getintofeed.com/blog/{editingItem.slug || "your-slug"}</code>
-                              </small>
-                            </div>
-                            <div className="studio-field-group">
-                              <label>Topic Category</label>
-                              <select
-                                className="studio-select"
-                                value={editingItem.category || "AI Search & SEO"}
-                                onChange={(e) => setEditingItem({ ...editingItem, category: e.target.value })}
-                              >
-                                <option>AI Search & SEO</option>
-                                <option>Generative AI & GEO</option>
-                                <option>Paid Media & PPC</option>
-                                <option>React Web & CRO</option>
-                                <option>Content Marketing & PR</option>
-                                <option>D2C Growth & Ecommerce</option>
-                                <option>Agency Insights</option>
-                              </select>
-                            </div>
-                          </div>
-
-                          <div className="form-row-three" style={{ marginTop: "14px" }}>
-                            <div className="studio-field-group">
-                              <label>Author Profile</label>
-                              <select
-                                className="studio-select"
-                                value={editingItem.author || "Sarvesh Bagla"}
-                                onChange={(e) => {
-                                  const selected = AUTHOR_PRESETS.find((p) => p.name === e.target.value);
-                                  if (selected) {
-                                    setEditingItem({
-                                      ...editingItem,
-                                      author: selected.name,
-                                      authorRole: selected.role,
-                                      authorAvatar: selected.avatar
-                                    });
-                                  } else {
-                                    setEditingItem({ ...editingItem, author: e.target.value });
-                                  }
-                                }}
-                              >
-                                {AUTHOR_PRESETS.map((p, i) => (
-                                  <option key={i} value={p.name}>{p.name} ({p.role.split(",")[0]})</option>
-                                ))}
-                              </select>
-                            </div>
-
-                            <div className="studio-field-group">
-                              <label>Publish Status</label>
-                              <select
-                                className="studio-select"
-                                value={editingItem.status || "published"}
-                                onChange={(e) => setEditingItem({ ...editingItem, status: e.target.value })}
-                              >
-                                <option value="published">🟢 Published Live</option>
-                                <option value="draft">🟡 Draft (Hidden)</option>
-                                <option value="archived">⚪ Archived</option>
-                              </select>
-                            </div>
-
-                            <div className="studio-field-group">
-                              <label>Published Date</label>
-                              <input
-                                type="date"
-                                className="studio-input"
-                                value={editingItem.publishedAt || new Date().toISOString().slice(0, 10)}
-                                onChange={(e) => setEditingItem({ ...editingItem, publishedAt: e.target.value })}
-                              />
-                            </div>
-                          </div>
-
-                          {/* TAGS SYSTEM */}
-                          <div className="studio-field-group" style={{ marginTop: "14px" }}>
-                            <label>Topic Tag Badges (Press Enter to Add)</label>
-                            <input
-                              className="studio-input"
-                              placeholder="e.g. Enterprise SEO, GEO Search, ROAS"
-                              value={newTagInput}
-                              onChange={(e) => setNewTagInput(e.target.value)}
-                              onKeyDown={handleAddTag}
-                            />
-                            <div className="tags-manager-box">
-                              {(editingItem.tags || []).map((t, i) => (
-                                <span key={i} className="tag-pill-item">
-                                  #{t}
-                                  <button type="button" onClick={() => handleRemoveTag(t)} className="tag-remove-btn">✕</button>
-                                </span>
-                              ))}
-                            </div>
-                          </div>
-                        </>
-                      )}
-
-                      {editorType === "caseStudies" && (
-                        <div className="form-row-two" style={{ marginTop: "16px" }}>
-                          <div className="studio-field-group">
-                            <label>Primary KPI Metric Badge</label>
-                            <input
-                              className="studio-input"
-                              placeholder="e.g. 4.8x ROAS or +340% Leads"
-                              value={editingItem.metric || ""}
-                              onChange={(e) => setEditingItem({ ...editingItem, metric: e.target.value })}
-                            />
-                          </div>
-                          <div className="studio-field-group">
-                            <label>Channels Deployed</label>
-                            <input
-                              className="studio-input"
-                              placeholder="e.g. Meta Ads + UGC Video Sprints"
-                              value={editingItem.channel || ""}
-                              onChange={(e) => setEditingItem({ ...editingItem, channel: e.target.value })}
-                            />
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="studio-field-group" style={{ marginTop: "16px" }}>
-                        <div className="field-label-row">
-                          <label>Commercial Value Proposition / Excerpt *</label>
-                          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                            <button
-                              type="button"
-                              onClick={handleAiSummarizeExcerpt}
-                              className="preset-chip"
-                              title="Auto-generate from article"
-                            >
-                              ✨ AI Summarize
-                            </button>
-                            <span className={`char-counter ${descChars >= 120 && descChars <= 160 ? "pass" : "warn"}`}>
-                              {descChars} / 160 chars
-                            </span>
-                          </div>
-                        </div>
-                        <textarea
-                          rows={2}
-                          required
-                          className="studio-textarea-sm"
-                          placeholder="Compelling 2-sentence commercial summary explaining the business outcome..."
-                          value={editingItem.description || editingItem.excerpt || editingItem.detail || editingItem.quote || ""}
-                          onChange={(e) => {
-                            const val = e.target.value;
-                            if (editorType === "blogPosts") setEditingItem({ ...editingItem, excerpt: val });
-                            else if (editorType === "caseStudies") setEditingItem({ ...editingItem, detail: val, result: editingItem.result || val });
-                            else if (editorType === "testimonials") setEditingItem({ ...editingItem, quote: val });
-                            else setEditingItem({ ...editingItem, description: val });
-                          }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* PRO VISUAL MARKDOWN SUITE FOR RICH ARTICLES & SERVICES */}
-                    {editorType === "blogPosts" && (
-                      <div className="studio-rich-editor-wrapper">
-                        {/* ADVANCED A-TO-Z FORMATTING TOOLBAR */}
-                        <div className="studio-pro-toolbar">
-                          {/* HEADINGS */}
-                          <div className="toolbar-btn-group">
-                            <button type="button" onClick={() => insertSyntax("\n# ", "\n")} title="Heading 1"><Heading1 size={15} /></button>
-                            <button type="button" onClick={() => insertSyntax("\n## ", "\n")} title="Heading 2"><Heading2 size={15} /></button>
-                            <button type="button" onClick={() => insertSyntax("\n### ", "\n")} title="Heading 3"><Heading3 size={15} /></button>
-                          </div>
-                          <span className="toolbar-sep" />
-
-                          {/* TEXT STYLES */}
-                          <div className="toolbar-btn-group">
-                            <button type="button" onClick={() => insertSyntax("**", "**")} title="Bold"><Bold size={15} /></button>
-                            <button type="button" onClick={() => insertSyntax("*", "*")} title="Italic"><Italic size={15} /></button>
-                            <button type="button" onClick={() => insertSyntax("<u>", "</u>")} title="Underline"><Underline size={15} /></button>
-                            <button type="button" onClick={() => insertSyntax("~~", "~~")} title="Strikethrough"><Strikethrough size={15} /></button>
-                            <button type="button" onClick={() => insertSyntax("`", "`")} title="Inline Code"><Code size={15} /></button>
-                          </div>
-                          <span className="toolbar-sep" />
-
-                          {/* LISTS & STRUCTURE */}
-                          <div className="toolbar-btn-group">
-                            <button type="button" onClick={() => insertSyntax("\n- ", "")} title="Bullet List"><List size={15} /></button>
-                            <button type="button" onClick={() => insertSyntax("\n1. ", "")} title="Numbered List"><ListOrdered size={15} /></button>
-                            <button type="button" onClick={() => insertSyntax("\n> ", "\n")} title="Blockquote"><Quote size={15} /></button>
-                            <button type="button" onClick={() => insertSyntax("\n---\n", "")} title="Horizontal Divider">—</button>
-                          </div>
-                          <span className="toolbar-sep" />
-
-                          {/* MODAL INSERTS (IMAGE, LINK, VIDEO, CODE) */}
-                          <div className="toolbar-btn-group">
-                            <button
-                              type="button"
-                              onClick={() => { setModalType("image"); setModalData({ url: "", alt: "" }); }}
-                              title="Insert Image with Caption"
-                            >
-                              <ImageIcon size={15} color="#0284c7" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => { setModalType("link"); setModalData({ url: "", text: "" }); }}
-                              title="Insert Hyperlink"
-                            >
-                              <Link2 size={15} color="#0284c7" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => { setModalType("video"); setModalData({ ytId: "" }); }}
-                              title="Embed YouTube Video"
-                            >
-                              <Video size={15} color="#ef4444" />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => { setModalType("code"); setModalData({ lang: "javascript", code: "" }); }}
-                              title="Insert Code Snippet"
-                            >
-                              <Code size={15} color="#10b981" />
-                            </button>
-                          </div>
-                          <span className="toolbar-sep" />
-
-                          {/* 1-CLICK CALLOUT & CTA BLOCKS */}
-                          <div className="toolbar-quick-blocks">
-                            <button type="button" onClick={() => insertQuickBlock("takeaway")} className="quick-block-btn" title="Add Key Takeaway Box">
-                              💡 Takeaway
-                            </button>
-                            <button type="button" onClick={() => insertQuickBlock("metric")} className="quick-block-btn" title="Add Stat Highlight Box">
-                              📈 Metric
-                            </button>
-                            <button type="button" onClick={() => insertQuickBlock("quote")} className="quick-block-btn" title="Add CXO Quote">
-                              💬 Quote
-                            </button>
-                            <button type="button" onClick={() => insertQuickBlock("checklist")} className="quick-block-btn" title="Add Task Checklist">
-                              ☑️ Checklist
-                            </button>
-                            <button type="button" onClick={() => insertQuickBlock("table")} className="quick-block-btn" title="Insert Data Table">
-                              <Table size={13} /> Table
-                            </button>
-                            <button type="button" onClick={handleAutoGenerateToC} className="quick-block-btn" title="Generate Table of Contents">
-                              📑 Auto-ToC
-                            </button>
-                          </div>
-
-                          {/* TELEMETRY */}
-                          <div className="toolbar-telemetry-pill">
-                            <span>{wordCount} words</span>
-                            <span>•</span>
-                            <span>{charCount} chars</span>
-                            <span>•</span>
-                            <span>{Math.max(1, Math.ceil(wordCount / 200))} min read</span>
-                          </div>
-                        </div>
-
-                        {/* TEXTAREA WRITING CANVAS */}
-                        <textarea
-                          ref={textareaRef}
-                          rows={20}
-                          className="studio-markdown-canvas"
-                          placeholder="Draft your long-form article content here (supports Markdown, H2/H3 subheadings, data tables, code snippets, and takeaway callout blocks)..."
-                          value={editingItem.content || ""}
-                          onChange={(e) => setEditingItem({ ...editingItem, content: e.target.value })}
-                        />
-                      </div>
-                    )}
-
-                    {editorType === "services" && (
-                      <div className="studio-card-box" style={{ marginTop: "20px" }}>
-                        <label className="studio-field-label">Deliverables Scope Checklist (1 per line)</label>
-                        <textarea
-                          rows={6}
-                          className="studio-textarea-sm"
-                          placeholder="Generative Engine Optimization (GEO)\nTechnical Core Web Vitals Engineering\nProgrammatic Commercial Keyword Clusters"
-                          value={Array.isArray(editingItem.points) ? editingItem.points.join("\n") : (editingItem.points || "")}
-                          onChange={(e) => setEditingItem({ ...editingItem, points: e.target.value.split("\n").filter(Boolean) })}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* -------------------------------------------------------------
-                    RIGHT PANE / SPLIT PREVIEW / PYTHON SEO AUDITOR
-                -------------------------------------------------------------- */}
-                {(editorMode === "edit" || editorMode === "split" || editorMode === "preview" || editorMode === "seo") && (
-                  <div className="studio-inspector-pane">
-                    {/* LIVE HTML SPLIT PREVIEW */}
-                    {(editorMode === "split" || editorMode === "preview") && (
-                      <div className="studio-card-box live-preview-box">
-                        <div className="preview-header-bar">
-                          <Eye size={16} color="#0284c7" />
-                          <strong>Live Rendered HTML Reader Preview</strong>
-                        </div>
-                        <div
-                          className="live-rendered-html-canvas"
-                          dangerouslySetInnerHTML={{ __html: renderMarkdownPreview(editingItem.content || editingItem.description || "") }}
-                        />
-                      </div>
-                    )}
-
-                    {/* PYTHON REAL-TIME AI SEO AUDITOR */}
-                    <div className="studio-card-box python-seo-card">
-                      <div className="seo-gauge-header">
-                        <div className="python-tag-pill">
-                          <span className="python-icon">🐍</span>
-                          <strong>Python AI SEO Scorer</strong>
-                        </div>
-                        <div className={`seo-score-circular-badge ${pythonSeoAudit?.seoScore >= 80 ? "high" : pythonSeoAudit?.seoScore >= 60 ? "mid" : "low"}`}>
-                          <strong>{pythonSeoAudit?.seoScore || 88}</strong>
-                          <span>/100</span>
-                        </div>
-                      </div>
-
-                      {/* SERP PREVIEW BOX */}
-                      <div className="serp-simulator-card">
-                        <div className="serp-header-toggle">
-                          <span>Google SERP Snippet Simulator</span>
-                          <div className="device-toggle-buttons">
-                            <button
-                              type="button"
-                              onClick={() => setSerpDevice("desktop")}
-                              className={serpDevice === "desktop" ? "active" : ""}
-                            >
-                              <Monitor size={12} /> Desktop
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setSerpDevice("mobile")}
-                              className={serpDevice === "mobile" ? "active" : ""}
-                            >
-                              <Smartphone size={12} /> Mobile
-                            </button>
-                          </div>
-                        </div>
-
-                        <div className={`serp-snippet-render ${serpDevice}`}>
-                          <div className="serp-favicon-row">
-                            
-                            <span className="serp-domain">https://getintofeed.com › {editingItem.category ? slugify(editingItem.category) : "services"} › {editingItem.slug || "growth"}</span>
-                          </div>
-                          <h4 className="serp-render-title">{editingItem.metaTitle || editingItem.title || "Enterprise Digital Growth Strategy"}</h4>
-                          <p className="serp-render-desc">
-                            {editingItem.metaDescription || editingItem.excerpt || editingItem.description || "Discover how Get Into Feed scales search moats, generative AI visibility, and compounding commercial pipeline."}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* SOCIAL OPEN GRAPH CARD PREVIEW */}
-                      <div className="social-og-card-preview">
-                        <div className="og-image-box">
-                          <img
-                            src={editingItem.coverImage || "/agency-hero.png"}
-                            alt="OG Preview"
-                            onError={(e) => { e.target.src = "/agency-hero.png"; }}
-                          />
-                        </div>
-                        <div className="og-info-box">
-                          <span className="og-domain-tag">GETINTOFEED.COM</span>
-                          <h5 className="og-title">{editingItem.metaTitle || editingItem.title || "Enterprise Growth Strategy"}</h5>
-                          <p className="og-desc">{editingItem.metaDescription || editingItem.excerpt || "Read the latest growth framework by Get Into Feed."}</p>
-                        </div>
-                      </div>
-
-                      {/* SEO AUDIT CHECKLIST */}
-                      <div className="seo-audit-checklist">
-                        {(pythonSeoAudit?.checks || [
-                          { name: "Title Length", status: "pass", msg: "Optimal length (55 chars)" },
-                          { name: "Meta Snippet", status: "pass", msg: "Fits Google SERP box (145 chars)" },
-                          { name: "Heading Hierarchy", status: "pass", msg: "H2 and H3 hierarchy detected" },
-                          { name: "Content Depth", status: wordCount >= 300 ? "pass" : "warn", msg: `${wordCount} words drafted` }
-                        ]).map((chk, i) => (
-                          <div key={i} className={`audit-check-item ${chk.status}`}>
-                            {chk.status === "pass" ? <Check size={14} color="#16a34a" /> : <AlertCircle size={14} color="#f59e0b" />}
-                            <span>{chk.msg}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* 1-CLICK AI COPILOT BUTTONS */}
-                      <div className="ai-copilot-btn-grid">
-                        <button type="button" onClick={handleAiOptimizeTitleDesc} className="ai-tool-btn">
-                          <Zap size={14} color="#f15b29" /> AI Optimize Meta
-                        </button>
-                        <button type="button" onClick={handleAiGenerateOutline} className="ai-tool-btn">
-                          <Wand2 size={14} color="#f15b29" /> AI Generate Outline
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* MEDIA ASSET MANAGER */}
-                    <div className="studio-card-box">
-                      <span className="studio-field-label">Featured Cover Image Asset URL</span>
-                      <input
-                        className="studio-input"
-                        placeholder="https://images.unsplash.com/..."
-                        value={editingItem.coverImage || ""}
-                        onChange={(e) => setEditingItem({ ...editingItem, coverImage: e.target.value })}
-                      />
-
-                      {editingItem.coverImage && (
-                        <div className="cover-thumb-preview">
-                          <img src={editingItem.coverImage} alt="Cover" onError={(e) => { e.target.style.display = "none"; }} />
-                        </div>
-                      )}
-
-                      <span className="preset-label-text">1-Click High-Res Presets:</span>
-                      <div className="preset-buttons-wrap">
-                        {CURATED_IMAGE_PRESETS.map((p, i) => (
-                          <button
-                            key={i}
-                            type="button"
-                            onClick={() => setEditingItem({ ...editingItem, coverImage: p.url })}
-                            className="preset-chip"
-                          >
-                            {p.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* TARGET SEO KEYWORDS */}
-                    <div className="studio-card-box">
-                      <span className="studio-field-label">Target Commercial Keywords</span>
-                      <input
-                        className="studio-input"
-                        placeholder="e.g. SEO company India, GEO marketing, AI search"
-                        value={editingItem.keywords || ""}
-                        onChange={(e) => setEditingItem({ ...editingItem, keywords: e.target.value })}
-                      />
-                      <small style={{ color: "#64748b", fontSize: "0.75rem", display: "block", marginTop: "6px" }}>
-                        Separate keyword phrases with commas for Python entity scoring.
-                      </small>
-                    </div>
-                  </div>
-                )}
-
-                {/* -------------------------------------------------------------
-                    SCHEMA JSON-LD MODE
-                -------------------------------------------------------------- */}
-                {editorMode === "schema" && (
-                  <div className="studio-card-box" style={{ gridColumn: "1 / -1" }}>
-                    <div className="field-label-row">
-                      <label>Google Rich Results JSON-LD Schema ({editingItem.schemaType || "BlogPosting"})</label>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          navigator.clipboard.writeText(jsonLdSchema);
-                          setCopiedSchema(true);
-                          setTimeout(() => setCopiedSchema(false), 2000);
-                        }}
-                        className="row-edit-btn"
-                      >
-                        {copiedSchema ? <Check size={14} /> : <Copy size={14} />} {copiedSchema ? "Copied!" : "Copy Schema"}
-                      </button>
-                    </div>
-                    <pre className="schema-json-code-box">{jsonLdSchema}</pre>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            /* =================================================================
-               2. SAAS DATA TABLES & CRM PIPELINES
-            ================================================================== */
-            <div className="saas-data-table-card">
-              {/* TABLE SEARCH BAR */}
-              <div className="directory-search-bar-row">
-                <div className="search-input-wrapper">
-                  <Search size={16} color="#64748b" />
-                  <input
-                    type="text"
-                    placeholder={`Search ${contentTypes.find((c) => c.key === tab)?.label || "records"}...`}
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                </div>
-                <span className="directory-count-tag">{filteredList.length} Records Found</span>
-              </div>
-
-              {tab === "leads" ? (
-                /* CLIENT AUDIT LEADS CRM */
-                <div className="crm-table-wrapper">
-                  {leads.length === 0 ? (
-                    <div className="empty-state-card">
-                      <Mail size={32} color="#cbd5e1" />
-                      <p>No audit requests recorded yet.</p>
-                    </div>
-                  ) : (
-                    <table className="saas-table">
-                      <thead>
-                        <tr>
-                          <th>Lead Contact</th>
-                          <th>Service Focus</th>
-                          <th>Source / Ref</th>
-                          <th>Message Details</th>
-                          <th>Direct Chat</th>
-                          <th>Received Date</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {leads.map((lead, idx) => (
-                          <tr key={lead.id || idx}>
-                            <td>
-                              <strong>{lead.name}</strong>
-                              <small style={{ display: "block", color: "#64748b" }}>{lead.email} • {lead.phone}</small>
-                            </td>
-                            <td><span className="badge-pill">{lead.service}</span></td>
-                            <td><small>{lead.source || "Website Form"}</small></td>
-                            <td><p className="lead-msg-cell" style={{ margin: 0, fontSize: "0.82rem", maxWidth: "260px" }}>{lead.message || "—"}</p></td>
-                            <td>
-                              {lead.phone ? (
-                                <a
-                                  href={`https://wa.me/${lead.phone.replace(/[^0-9]/g, "")}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="row-edit-btn"
-                                  style={{ background: "#25D366", fontSize: "0.75rem", padding: "4px 10px" }}
-                                >
-                                  💬 WhatsApp
-                                </a>
-                              ) : "—"}
-                            </td>
-                            <td><small>{new Date(lead.createdAt || Date.now()).toLocaleDateString()}</small></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-                </div>
-              ) : tab === "comments" ? (
-                /* BLOG COMMENTS MODERATION */
-                <div className="crm-table-wrapper" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                  {/* Status filter tabs */}
-                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", padding: "12px 16px", background: "#f8fafc", borderRadius: "10px", border: "1px solid #e2e8f0" }}>
-                    {[
-                      { key: "all", label: "All Comments", count: comments.length },
-                      { key: "pending", label: "Pending Review", count: comments.filter(c => c.status === "pending").length, highlight: true },
-                      { key: "approved", label: "Approved (Public)", count: comments.filter(c => c.status === "approved").length },
-                      { key: "rejected", label: "Rejected", count: comments.filter(c => c.status === "rejected").length },
-                      { key: "spam", label: "Spam", count: comments.filter(c => c.status === "spam").length }
-                    ].map(f => (
-                      <button
-                        key={f.key}
-                        type="button"
-                        onClick={() => setCommentFilter(f.key)}
-                        style={{
-                          padding: "6px 14px",
-                          borderRadius: "20px",
-                          fontSize: "0.78rem",
-                          fontWeight: 700,
-                          cursor: "pointer",
-                          border: commentFilter === f.key ? "2px solid #000" : "1px solid #cbd5e1",
-                          background: commentFilter === f.key ? (f.highlight ? "#fef08a" : "#000") : "#fff",
-                          color: commentFilter === f.key ? (f.highlight ? "#000" : "#fff") : "#475569",
-                          transition: "all 0.15s ease"
-                        }}
-                      >
-                        {f.label} ({f.count})
-                      </button>
-                    ))}
-                  </div>
-
-                  {(() => {
-                    const filtered = comments.filter(c => {
-                      const matchesStatus = commentFilter === "all" || c.status === commentFilter;
-                      const matchesSearch = !searchTerm ||
-                        (c.name && c.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                        (c.email && c.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                        (c.message && c.message.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                        (c.articleSlug && c.articleSlug.toLowerCase().includes(searchTerm.toLowerCase()));
-                      return matchesStatus && matchesSearch;
-                    });
-
-                    if (filtered.length === 0) {
-                      return (
-                        <div className="empty-state-card">
-                          <MessageSquare size={32} color="#cbd5e1" />
-                          <p>No comments found for filter "{commentFilter}".</p>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <table className="saas-table">
-                        <thead>
-                          <tr>
-                            <th>Commenter</th>
-                            <th>Article Reference</th>
-                            <th>Comment Content</th>
-                            <th>Status</th>
-                            <th>Submitted</th>
-                            <th>Moderation Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {filtered.map((c) => (
-                            <tr key={c.id}>
-                              <td>
-                                <strong>{c.name}</strong>
-                                <small style={{ display: "block", color: "#64748b" }}>{c.email}</small>
-                                {c.website && (
-                                  <a href={c.website} target="_blank" rel="noreferrer" style={{ fontSize: "0.72rem", color: "#0033FF" }}>
-                                    {c.website.replace(/^https?:\/\//, "")}
-                                  </a>
-                                )}
-                              </td>
-                              <td>
-                                <span className="badge-pill" style={{ fontSize: "0.72rem", maxWidth: "160px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", display: "inline-block" }}>
-                                  {c.articleSlug || "general"}
-                                </span>
-                              </td>
-                              <td style={{ maxWidth: "300px" }}>
-                                <p style={{ margin: 0, fontSize: "0.82rem", color: "#1e293b", lineHeight: 1.4 }}>
-                                  "{c.message}"
-                                </p>
-                              </td>
-                              <td>
-                                <span
-                                  style={{
-                                    display: "inline-block",
-                                    padding: "3px 8px",
-                                    borderRadius: "12px",
-                                    fontSize: "0.7rem",
-                                    fontWeight: 800,
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.04em",
-                                    background:
-                                      c.status === "approved"
-                                        ? "#dcfce7"
-                                        : c.status === "pending"
-                                        ? "#fef9c3"
-                                        : c.status === "spam"
-                                        ? "#fee2e2"
-                                        : "#f1f5f9",
-                                    color:
-                                      c.status === "approved"
-                                        ? "#15803d"
-                                        : c.status === "pending"
-                                        ? "#a16207"
-                                        : c.status === "spam"
-                                        ? "#b91c1c"
-                                        : "#475569"
-                                  }}
-                                >
-                                  {c.status}
-                                </span>
-                              </td>
-                              <td>
-                                <small style={{ color: "#64748b" }}>
-                                  {new Date(c.createdAt || Date.now()).toLocaleDateString()}
-                                </small>
-                              </td>
-                              <td>
-                                <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                                  {c.status !== "approved" && (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleUpdateCommentStatus(c.id, "approved")}
-                                      style={{
-                                        background: "#16a34a",
-                                        color: "#fff",
-                                        border: "none",
-                                        padding: "4px 8px",
-                                        borderRadius: "6px",
-                                        fontSize: "0.72rem",
-                                        fontWeight: 700,
-                                        cursor: "pointer",
-                                        display: "inline-flex",
-                                        itemsCenter: "center",
-                                        gap: "4px"
-                                      }}
-                                    >
-                                      ✓ Approve
-                                    </button>
-                                  )}
-                                  {c.status !== "rejected" && (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleUpdateCommentStatus(c.id, "rejected")}
-                                      style={{
-                                        background: "#64748b",
-                                        color: "#fff",
-                                        border: "none",
-                                        padding: "4px 8px",
-                                        borderRadius: "6px",
-                                        fontSize: "0.72rem",
-                                        fontWeight: 700,
-                                        cursor: "pointer"
-                                      }}
-                                    >
-                                      Reject
-                                    </button>
-                                  )}
-                                  {c.status !== "spam" && (
-                                    <button
-                                      type="button"
-                                      onClick={() => handleUpdateCommentStatus(c.id, "spam")}
-                                      style={{
-                                        background: "#ef4444",
-                                        color: "#fff",
-                                        border: "none",
-                                        padding: "4px 8px",
-                                        borderRadius: "6px",
-                                        fontSize: "0.72rem",
-                                        fontWeight: 700,
-                                        cursor: "pointer"
-                                      }}
-                                    >
-                                      Spam
-                                    </button>
-                                  )}
-                                  <button
-                                    type="button"
-                                    onClick={() => handleDeleteComment(c.id)}
-                                    style={{
-                                      background: "transparent",
-                                      border: "1px solid #cbd5e1",
-                                      color: "#94a3b8",
-                                      padding: "4px 6px",
-                                      borderRadius: "6px",
-                                      fontSize: "0.72rem",
-                                      cursor: "pointer"
-                                    }}
-                                    title="Delete"
-                                  >
-                                    <Trash2 size={12} />
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    );
-                  })()}
-                </div>
-              ) : tab === "applications" ? (
-                /* JOB CANDIDATE APPLICATIONS */
-                <div className="crm-table-wrapper">
-                  {applications.length === 0 ? (
-                    <div className="empty-state-card">
-                      <BriefcaseBusiness size={32} color="#cbd5e1" />
-                      <p>No job applications received yet.</p>
-                    </div>
-                  ) : (
-                    <table className="saas-table">
-                      <thead>
-                        <tr>
-                          <th>Candidate Name</th>
-                          <th>Role Applied</th>
-                          <th>Contact Details</th>
-                          <th>Portfolio Link</th>
-                          <th>Candidate Note</th>
-                          <th>Date</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {applications.map((app, idx) => (
-                          <tr key={app.id || idx}>
-                            <td><strong>{app.name}</strong></td>
-                            <td><span className="badge-pill">{app.role}</span></td>
-                            <td>{app.email}<br />{app.phone}</td>
-                            <td>
-                              {app.portfolio ? (
-                                <a href={app.portfolio} target="_blank" rel="noreferrer" className="table-link">
-                                  Portfolio Link <ArrowUpRight size={13} />
-                                </a>
-                              ) : "—"}
-                            </td>
-                            <td><p className="lead-msg-cell">{app.note || "No note provided."}</p></td>
-                            <td><small>{new Date(app.createdAt || Date.now()).toLocaleDateString()}</small></td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-                </div>
-              ) : (
-                /* PUBLISHED CONTENT DIRECTORY */
-                <div className="published-items-list">
-                  {filteredList.length === 0 ? (
-                    <div className="empty-state-card">
-                      <FileText size={32} color="#cbd5e1" />
-                      <p>No records found in this category. Click "Create" to add one.</p>
-                    </div>
-                  ) : (
-                    filteredList.map((item, idx) => (
-                      <div key={item.id || idx} className="data-row-card">
-                        <div className="data-row-main">
-                          <div className="data-row-title-flex">
-                            <h4>{item.title || item.brand || item.name}</h4>
-                            {item.status && <span className={`badge-pill ${item.status === "published" ? "green" : ""}`}>{item.status}</span>}
-                            {item.metric && <span className="badge-pill green">{item.metric}</span>}
-                            {item.category && <span className="badge-pill">{item.category}</span>}
-                          </div>
-                          <p className="data-row-excerpt">
-                            {item.description || item.detail || item.excerpt || item.quote}
-                          </p>
-                          <small style={{ color: "#94a3b8", fontSize: "0.75rem", marginTop: "4px", display: "block" }}>
-                            Author: {item.author || "Sarvesh Bagla"} • Date: {item.publishedAt || "Recently"} • Read: {item.readTime || "5 min"}
-                          </small>
-                        </div>
-
-                        <div className="data-row-actions">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setEditorType(tab);
-                              setEditingItem({ ...item });
-                            }}
-                            className="row-edit-btn"
-                          >
-                            <Pencil size={15} /> Edit in Studio
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDuplicateItem(item)}
-                            className="preset-chip"
-                            title="Duplicate / Clone"
-                          >
-                            <Copy size={13} />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteItem(tab, item.id)}
-                            className="row-delete-btn"
-                            title="Delete Item"
-                          >
-                            <Trash2 size={15} />
-                          </button>
-                        </div>
-                      </div>
-                    ))
+                  {isEditorOrAdmin && (
+                    <button
+                      type="button"
+                      onClick={handleStartNewService}
+                      className={`wp-subnav-item ${activeTab === "edit_service" && !editingService?.title ? "active" : ""}`}
+                    >
+                      + Add New Service
+                    </button>
                   )}
                 </div>
               )}
             </div>
-          )}
-        </div>
-      </main>
 
-      {/* =======================================================================
-          3. RICH INSERTION MODALS (IMAGE, LINK, VIDEO, CODE)
-      ======================================================================== */}
-      {modalType && (
-        <div className="editor-modal-overlay" onClick={() => setModalType(null)}>
-          <div className="editor-modal-box" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header-row">
-              <h3>
-                {modalType === "image" && "🖼️ Insert Image"}
-                {modalType === "link" && "🔗 Insert Hyperlink"}
-                {modalType === "video" && "🎥 Embed YouTube Video"}
-                {modalType === "code" && "💻 Insert Code Snippet"}
-              </h3>
-              <button type="button" onClick={() => setModalType(null)} className="tag-remove-btn" style={{ fontSize: "1.1rem" }}>✕</button>
-            </div>
-
-            {modalType === "image" && (
-              <>
-                <div className="modal-field">
-                  <label>Image Source URL *</label>
-                  <input
-                    className="studio-input"
-                    placeholder="https://images.unsplash.com/..."
-                    value={modalData.url || ""}
-                    onChange={(e) => setModalData({ ...modalData, url: e.target.value })}
-                  />
+            {/* Case Studies Menu */}
+            <div className="wp-nav-group">
+              <button
+                type="button"
+                onClick={() => { setActiveTab("caseStudies"); setSidebarCasesOpen(!sidebarCasesOpen); }}
+                className={`wp-nav-item wp-nav-parent ${activeTab.includes("caseStudy") || activeTab === "caseStudies" ? "active" : ""}`}
+              >
+                <div className="wp-nav-parent-title">
+                  <Sparkles size={16} />
+                  <span>Case Studies</span>
                 </div>
-                <div className="modal-field">
-                  <label>Caption / Alt Text</label>
-                  <input
-                    className="studio-input"
-                    placeholder="e.g. Search engine visibility growth chart"
-                    value={modalData.alt || ""}
-                    onChange={(e) => setModalData({ ...modalData, alt: e.target.value })}
-                  />
-                </div>
-              </>
-            )}
-
-            {modalType === "link" && (
-              <>
-                <div className="modal-field">
-                  <label>Anchor Text *</label>
-                  <input
-                    className="studio-input"
-                    placeholder="e.g. Explore SEO Services"
-                    value={modalData.text || ""}
-                    onChange={(e) => setModalData({ ...modalData, text: e.target.value })}
-                  />
-                </div>
-                <div className="modal-field">
-                  <label>Destination Target URL *</label>
-                  <input
-                    className="studio-input"
-                    placeholder="https://getintofeed.com/services/enterprise-seo"
-                    value={modalData.url || ""}
-                    onChange={(e) => setModalData({ ...modalData, url: e.target.value })}
-                  />
-                </div>
-              </>
-            )}
-
-            {modalType === "video" && (
-              <div className="modal-field">
-                <label>YouTube Video ID or URL *</label>
-                <input
-                  className="studio-input"
-                  placeholder="e.g. dQw4w9WgXcQ or https://youtube.com/watch?v=..."
-                  value={modalData.ytId || ""}
-                  onChange={(e) => {
-                    let val = e.target.value;
-                    if (val.includes("v=")) val = val.split("v=")[1].split("&")[0];
-                    else if (val.includes("youtu.be/")) val = val.split("youtu.be/")[1];
-                    setModalData({ ...modalData, ytId: val });
-                  }}
-                />
-              </div>
-            )}
-
-            {modalType === "code" && (
-              <>
-                <div className="modal-field">
-                  <label>Programming Language</label>
-                  <select
-                    className="studio-select"
-                    value={modalData.lang || "javascript"}
-                    onChange={(e) => setModalData({ ...modalData, lang: e.target.value })}
+                <ChevronDown size={14} className={`wp-arrow ${sidebarCasesOpen ? "open" : ""}`} />
+              </button>
+              {sidebarCasesOpen && (
+                <div className="wp-subnav">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("caseStudies")}
+                    className={`wp-subnav-item ${activeTab === "caseStudies" ? "active" : ""}`}
                   >
-                    <option value="javascript">JavaScript / TypeScript</option>
-                    <option value="python">Python</option>
-                    <option value="html">HTML</option>
-                    <option value="css">CSS</option>
-                    <option value="sql">SQL</option>
-                    <option value="json">JSON</option>
-                  </select>
+                    All Case Studies ({caseStudies.length})
+                  </button>
+                  {isEditorOrAdmin && (
+                    <button
+                      type="button"
+                      onClick={handleStartNewCaseStudy}
+                      className={`wp-subnav-item ${activeTab === "edit_caseStudy" && !editingCaseStudy?.brand ? "active" : ""}`}
+                    >
+                      + Add New Case Study
+                    </button>
+                  )}
                 </div>
-                <div className="modal-field">
-                  <label>Code Snippet</label>
-                  <textarea
-                    rows={6}
-                    className="studio-textarea-sm"
-                    placeholder="// Paste code snippet here..."
-                    value={modalData.code || ""}
-                    onChange={(e) => setModalData({ ...modalData, code: e.target.value })}
-                  />
-                </div>
-              </>
-            )}
-
-            <div className="modal-actions-row">
-              <button type="button" onClick={() => setModalType(null)} className="button button-outline small">Cancel</button>
-              <button type="button" onClick={handleApplyModal} className="button button-coral small">Insert to Canvas</button>
+              )}
             </div>
-          </div>
-        </div>
-      )}
-      {/* MOBILE FIXED BOTTOM TOUCH NAVIGATION */}
-      <nav className="admin-mobile-bottom-nav" aria-label="Admin Mobile Bottom Navigation">
-        <button
-          type="button"
-          onClick={() => { setTab("overview"); setEditingItem(null); }}
-          className={`admin-mobile-nav-tab ${tab === "overview" ? "active" : ""}`}
-        >
-          <LayoutDashboard size={18} />
-          <span>Dashboard</span>
-        </button>
 
-        <button
-          type="button"
-          onClick={() => { setTab("leads"); setEditingItem(null); }}
-          className={`admin-mobile-nav-tab ${tab === "leads" ? "active" : ""}`}
-        >
-          <MessageSquare size={18} />
-          <span>Leads CRM</span>
-          {leads.length > 0 && <span className="admin-mobile-tab-badge">{leads.length}</span>}
-        </button>
+            {/* Blog Posts */}
+            <div className="wp-nav-group">
+              <button
+                type="button"
+                onClick={() => { setActiveTab("blog"); setSidebarBlogOpen(!sidebarBlogOpen); }}
+                className={`wp-nav-item wp-nav-parent ${activeTab.includes("blog") ? "active" : ""}`}
+              >
+                <div className="wp-nav-parent-title">
+                  <FileText size={16} />
+                  <span>Blog Playbooks</span>
+                </div>
+                <ChevronDown size={14} className={`wp-arrow ${sidebarBlogOpen ? "open" : ""}`} />
+              </button>
+              {sidebarBlogOpen && (
+                <div className="wp-subnav">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("blog")}
+                    className={`wp-subnav-item ${activeTab === "blog" ? "active" : ""}`}
+                  >
+                    All Posts ({blogPosts.length})
+                  </button>
+                </div>
+              )}
+            </div>
 
-        <button
-          type="button"
-          onClick={() => { setTab("blogPosts"); setEditingItem(null); }}
-          className={`admin-mobile-nav-tab ${tab === "blogPosts" ? "active" : ""}`}
-        >
-          <FileText size={18} />
-          <span>Articles</span>
-        </button>
+            {/* Testimonials */}
+            <button
+              type="button"
+              onClick={() => setActiveTab("testimonials")}
+              className={`wp-nav-item ${activeTab === "testimonials" ? "active" : ""}`}
+            >
+              <Star size={16} />
+              <span>Reviews & Trust</span>
+            </button>
 
-        <button
-          type="button"
-          onClick={() => { setTab("caseStudies"); setEditingItem(null); }}
-          className={`admin-mobile-nav-tab ${tab === "caseStudies" ? "active" : ""}`}
-        >
-          <Sparkles size={18} />
-          <span>Portfolio</span>
-        </button>
+            {/* Leads CRM */}
+            <button
+              type="button"
+              onClick={() => setActiveTab("leads")}
+              className={`wp-nav-item ${activeTab === "leads" ? "active" : ""}`}
+            >
+              <Mail size={16} />
+              <span>Inbound Leads</span>
+              <span className="wp-nav-counter">{leads.length}</span>
+            </button>
 
-        <button
-          type="button"
-          onClick={() => { setTab("services"); setEditingItem(null); }}
-          className={`admin-mobile-nav-tab ${tab === "services" || tab === "applications" ? "active" : ""}`}
-        >
-          <Sliders size={18} />
-          <span>More</span>
-        </button>
-      </nav>
+            {/* Comments Moderation */}
+            <button
+              type="button"
+              onClick={() => setActiveTab("comments")}
+              className={`wp-nav-item ${activeTab === "comments" ? "active" : ""}`}
+            >
+              <MessageSquare size={16} />
+              <span>Comments</span>
+              <span className="wp-nav-counter">{comments.length}</span>
+            </button>
+
+            <div className="wp-nav-divider"></div>
+
+            {/* Users (Admin Only) */}
+            <button
+              type="button"
+              onClick={() => {
+                if (isAdmin) setActiveTab("users");
+                else alert("Access Restricted: Administrator privileges required to manage users.");
+              }}
+              className={`wp-nav-item ${activeTab === "users" ? "active" : ""} ${!isAdmin ? "wp-disabled" : ""}`}
+            >
+              <Users size={16} />
+              <span>Users & Roles</span>
+              {!isAdmin && <Lock size={12} className="wp-lock-icon" />}
+            </button>
+
+            {/* Settings (Admin Only) */}
+            <button
+              type="button"
+              onClick={() => {
+                if (isAdmin) setActiveTab("settings");
+                else alert("Access Restricted: Administrator privileges required to change site settings.");
+              }}
+              className={`wp-nav-item ${activeTab === "settings" ? "active" : ""} ${!isAdmin ? "wp-disabled" : ""}`}
+            >
+              <Settings size={16} />
+              <span>Settings</span>
+              {!isAdmin && <Lock size={12} className="wp-lock-icon" />}
+            </button>
+          </nav>
+        </aside>
+
+        {/* MAIN CANVAS */}
+        <main className="wp-main-canvas">
+          {notification && (
+            <div className="wp-notification-banner">
+              <CheckCircle2 size={16} />
+              <span>{notification}</span>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: DASHBOARD */}
+          {/* ======================================================== */}
+          {activeTab === "dashboard" && (
+            <div className="wp-tab-content">
+              <div className="wp-page-header">
+                <h1>Dashboard</h1>
+                <p>Welcome back to GetIntoFeed Central Administration.</p>
+              </div>
+
+              {/* Welcome Card */}
+              <div className="wp-welcome-card">
+                <div className="wp-welcome-text">
+                  <h2>Welcome to your WordPress-Simple Agency CMS!</h2>
+                  <p>
+                    Everything you publish here synchronizes dynamically with your live website inner pages.
+                    Manage services, case studies, inbound client leads, and team roles with ease.
+                  </p>
+                  <div className="wp-welcome-actions">
+                    {isEditorOrAdmin && (
+                      <>
+                        <button type="button" onClick={handleStartNewService} className="wp-btn wp-btn-primary">
+                          <Plus size={15} /> Add New Service
+                        </button>
+                        <button type="button" onClick={handleStartNewCaseStudy} className="wp-btn wp-btn-secondary">
+                          <Sparkles size={15} /> Add Case Study
+                        </button>
+                      </>
+                    )}
+                    <a href="/" target="_blank" rel="noreferrer" className="wp-btn wp-btn-outline">
+                      <ExternalLink size={15} /> Visit Website
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* At a Glance Stats */}
+              <div className="wp-stats-grid">
+                <div className="wp-stat-box" onClick={() => setActiveTab("services")}>
+                  <div className="wp-stat-icon wp-icon-blue"><PenTool size={20} /></div>
+                  <div className="wp-stat-num">{services.length}</div>
+                  <div className="wp-stat-lbl">Published Services</div>
+                </div>
+
+                <div className="wp-stat-box" onClick={() => setActiveTab("caseStudies")}>
+                  <div className="wp-stat-icon wp-icon-purple"><Sparkles size={20} /></div>
+                  <div className="wp-stat-num">{caseStudies.length}</div>
+                  <div className="wp-stat-lbl">Active Case Studies</div>
+                </div>
+
+                <div className="wp-stat-box" onClick={() => setActiveTab("leads")}>
+                  <div className="wp-stat-icon wp-icon-green"><Mail size={20} /></div>
+                  <div className="wp-stat-num">{leads.length}</div>
+                  <div className="wp-stat-lbl">Inbound Leads</div>
+                </div>
+
+                <div className="wp-stat-box" onClick={() => setActiveTab("users")}>
+                  <div className="wp-stat-icon wp-icon-amber"><Users size={20} /></div>
+                  <div className="wp-stat-num">{users.length}</div>
+                  <div className="wp-stat-lbl">Team Members</div>
+                </div>
+              </div>
+
+              {/* Recent Inbound Leads Table */}
+              <div className="wp-card wp-mt-4">
+                <div className="wp-card-header">
+                  <h3>Recent Inbound Enquiries (CRM)</h3>
+                  <button type="button" onClick={() => setActiveTab("leads")} className="wp-btn-link">View All Leads →</button>
+                </div>
+                <table className="wp-table">
+                  <thead>
+                    <tr>
+                      <th>Prospect Name</th>
+                      <th>Company</th>
+                      <th>Service Required</th>
+                      <th>Budget Tier</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {leads.slice(0, 4).map(lead => (
+                      <tr key={lead.id}>
+                        <td><strong>{lead.name}</strong><br /><small className="wp-sub-text">{lead.email}</small></td>
+                        <td>{lead.company}</td>
+                        <td><span className="wp-badge-tag">{lead.service}</span></td>
+                        <td>{lead.budget}</td>
+                        <td><span className={`wp-status-pill wp-status-${lead.status.toLowerCase().replace(/\s+/g, '-')}`}>{lead.status}</span></td>
+                        <td>{lead.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: ALL SERVICES */}
+          {/* ======================================================== */}
+          {activeTab === "services" && (
+            <div className="wp-tab-content">
+              <div className="wp-page-header wp-header-with-action">
+                <div>
+                  <h1>Services</h1>
+                  <p>All capabilities appearing on the website, header dropdown, and dedicated inner pages.</p>
+                </div>
+                {isEditorOrAdmin && (
+                  <button type="button" onClick={handleStartNewService} className="wp-btn wp-btn-primary">
+                    <Plus size={15} /> Add New Service
+                  </button>
+                )}
+              </div>
+
+              <div className="wp-card">
+                <table className="wp-table">
+                  <thead>
+                    <tr>
+                      <th>Title & Inner Page Slug</th>
+                      <th>Category</th>
+                      <th>Starting Price</th>
+                      <th>Deliverables</th>
+                      <th>Roadmap Steps</th>
+                      <th>FAQs</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {services.map(s => (
+                      <tr key={s.slug} className="wp-row-hoverable">
+                        <td>
+                          <div className="wp-item-title">{s.title}</div>
+                          <div className="wp-permalink-preview">/services/{s.slug}</div>
+                          <div className="wp-row-actions">
+                            {isEditorOrAdmin && (
+                              <button type="button" onClick={() => handleEditService(s)} className="wp-row-action-link wp-action-edit">
+                                Edit Inner Page
+                              </button>
+                            )}
+                            <a href={`/services/${s.slug}`} target="_blank" rel="noreferrer" className="wp-row-action-link wp-action-view">
+                              View Live ↗
+                            </a>
+                            {isAdmin && (
+                              <button type="button" onClick={() => handleDeleteService(s.slug)} className="wp-row-action-link wp-action-trash">
+                                Trash
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                        <td><span className="wp-badge-category">{s.category}</span></td>
+                        <td><strong>{s.pricingTier || "Custom"}</strong></td>
+                        <td>{s.deliverables?.length || 0} items</td>
+                        <td>{s.strategySteps?.length || 4} steps</td>
+                        <td>{s.faqs?.length || 0} FAQs</td>
+                        <td><span className="wp-status-pill wp-status-published">Published</span></td>
+                        <td>
+                          {isEditorOrAdmin && (
+                            <button type="button" onClick={() => handleEditService(s)} className="wp-btn-sm wp-btn-outline">
+                              <Edit3 size={13} /> Edit
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: EDIT / ADD SERVICE (2-COLUMN WORDPRESS GUTENBERG STYLE) */}
+          {/* ======================================================== */}
+          {activeTab === "edit_service" && editingService && (
+            <div className="wp-tab-content">
+              <div className="wp-edit-header">
+                <button type="button" onClick={() => setActiveTab("services")} className="wp-back-btn">
+                  <ArrowLeft size={16} /> Back to All Services
+                </button>
+                <h2>{editingService.title ? `Edit Service: ${editingService.title}` : "Add New Service"}</h2>
+              </div>
+
+              <div className="wp-edit-grid">
+                {/* LEFT MAIN COLUMN: All 7 Inner Page Sections */}
+                <div className="wp-edit-main-col">
+                  {/* Document Title Input */}
+                  <div className="wp-title-box">
+                    <label>Service Headline Title *</label>
+                    <input
+                      type="text"
+                      className="wp-input-title"
+                      placeholder="e.g. Brand Positioning & Visual Identity"
+                      value={editingService.title}
+                      onChange={(e) => setEditingService({
+                        ...editingService,
+                        title: e.target.value,
+                        slug: editingService.slug || slugify(e.target.value)
+                      })}
+                    />
+                  </div>
+
+                  {/* Permalink row */}
+                  <div className="wp-permalink-bar">
+                    <span className="wp-permalink-label">Permalink:</span>
+                    <span className="wp-permalink-url">https://getintofeed-client.vercel.app/services/</span>
+                    <input
+                      type="text"
+                      className="wp-permalink-slug-input"
+                      value={editingService.slug}
+                      onChange={(e) => setEditingService({ ...editingService, slug: slugify(e.target.value) })}
+                    />
+                  </div>
+
+                  {/* Section 1: Overview & Pricing */}
+                  <div className="wp-meta-box">
+                    <div className="wp-meta-box-header">
+                      <h3>1. Commercial Overview & Pricing Tier</h3>
+                    </div>
+                    <div className="wp-meta-box-body">
+                      <div className="wp-form-row-2">
+                        <div className="wp-form-group">
+                          <label>Discipline Category *</label>
+                          <select
+                            value={editingService.category}
+                            onChange={(e) => setEditingService({ ...editingService, category: e.target.value })}
+                          >
+                            <option value="Creative Direction">Creative Direction</option>
+                            <option value="Paid Performance">Paid Performance</option>
+                            <option value="Organic Social">Organic Social</option>
+                            <option value="Video & Creative">Video & Creative</option>
+                            <option value="Web Engineering">Web Engineering</option>
+                            <option value="Search Intelligence">Search Intelligence</option>
+                            <option value="Influencer Marketing">Influencer Marketing</option>
+                            <option value="Growth Analytics">Growth Analytics</option>
+                          </select>
+                        </div>
+                        <div className="wp-form-group">
+                          <label>Starting Pricing Tier (e.g. From ₹75,000 / Sprint) *</label>
+                          <input
+                            type="text"
+                            value={editingService.pricingTier}
+                            onChange={(e) => setEditingService({ ...editingService, pricingTier: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="wp-form-group">
+                        <label>Short Description (Shown on Cards & Dropdowns) *</label>
+                        <textarea
+                          rows={2}
+                          value={editingService.shortDesc}
+                          onChange={(e) => setEditingService({ ...editingService, shortDesc: e.target.value })}
+                          placeholder="Architect high-status brand narratives that command premium pricing..."
+                        />
+                      </div>
+
+                      <div className="wp-form-group">
+                        <label>Extended Strategic Overview (Inner Page Hero Narrative) *</label>
+                        <textarea
+                          rows={4}
+                          value={editingService.overview}
+                          onChange={(e) => setEditingService({ ...editingService, overview: e.target.value })}
+                          placeholder="Explain why this service provides an economic moat for clients..."
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Section 2: Deliverables Scope Checklist */}
+                  <div className="wp-meta-box">
+                    <div className="wp-meta-box-header">
+                      <h3>2. Deliverables Scope Checklist (1 by 1)</h3>
+                      <button
+                        type="button"
+                        onClick={() => setEditingService({
+                          ...editingService,
+                          deliverables: [...(editingService.deliverables || []), "New Deliverable Item"]
+                        })}
+                        className="wp-btn-sm wp-btn-outline"
+                      >
+                        + Add Deliverable
+                      </button>
+                    </div>
+                    <div className="wp-meta-box-body">
+                      {(editingService.deliverables || []).map((item, idx) => (
+                        <div key={idx} className="wp-dynamic-item-row">
+                          <Check size={16} className="wp-check-icon" />
+                          <input
+                            type="text"
+                            value={item}
+                            onChange={(e) => {
+                              const updated = [...editingService.deliverables];
+                              updated[idx] = e.target.value;
+                              setEditingService({ ...editingService, deliverables: updated });
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = editingService.deliverables.filter((_, i) => i !== idx);
+                              setEditingService({ ...editingService, deliverables: updated });
+                            }}
+                            className="wp-item-delete-btn"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Section 3: What We Do (Core Pillars) */}
+                  <div className="wp-meta-box">
+                    <div className="wp-meta-box-header">
+                      <h3>3. What We Do (Capabilities & Methodologies)</h3>
+                      <button
+                        type="button"
+                        onClick={() => setEditingService({
+                          ...editingService,
+                          whatWeDo: [...(editingService.whatWeDo || []), "New capability item"]
+                        })}
+                        className="wp-btn-sm wp-btn-outline"
+                      >
+                        + Add Bullet
+                      </button>
+                    </div>
+                    <div className="wp-meta-box-body">
+                      {(editingService.whatWeDo || []).map((item, idx) => (
+                        <div key={idx} className="wp-dynamic-item-row">
+                          <span className="wp-bullet-num">#{idx + 1}</span>
+                          <input
+                            type="text"
+                            value={item}
+                            onChange={(e) => {
+                              const updated = [...editingService.whatWeDo];
+                              updated[idx] = e.target.value;
+                              setEditingService({ ...editingService, whatWeDo: updated });
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = editingService.whatWeDo.filter((_, i) => i !== idx);
+                              setEditingService({ ...editingService, whatWeDo: updated });
+                            }}
+                            className="wp-item-delete-btn"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Section 4: 4-Step Execution Roadmap */}
+                  <div className="wp-meta-box">
+                    <div className="wp-meta-box-header">
+                      <h3>4. 4-Step Execution Roadmap</h3>
+                      <button
+                        type="button"
+                        onClick={() => setEditingService({
+                          ...editingService,
+                          strategySteps: [...(editingService.strategySteps || []), {
+                            step: String((editingService.strategySteps?.length || 0) + 1).padStart(2, "0"),
+                            name: "New Execution Phase",
+                            desc: "Phase deliverables and commercial targets."
+                          }]
+                        })}
+                        className="wp-btn-sm wp-btn-outline"
+                      >
+                        + Add Step
+                      </button>
+                    </div>
+                    <div className="wp-meta-box-body">
+                      {(editingService.strategySteps || []).map((step, idx) => (
+                        <div key={idx} className="wp-step-card">
+                          <div className="wp-step-card-top">
+                            <input
+                              type="text"
+                              className="wp-step-num-input"
+                              value={step.step}
+                              onChange={(e) => {
+                                const updated = [...editingService.strategySteps];
+                                updated[idx].step = e.target.value;
+                                setEditingService({ ...editingService, strategySteps: updated });
+                              }}
+                            />
+                            <input
+                              type="text"
+                              className="wp-step-name-input"
+                              placeholder="Step Name"
+                              value={step.name}
+                              onChange={(e) => {
+                                const updated = [...editingService.strategySteps];
+                                updated[idx].name = e.target.value;
+                                setEditingService({ ...editingService, strategySteps: updated });
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = editingService.strategySteps.filter((_, i) => i !== idx);
+                                setEditingService({ ...editingService, strategySteps: updated });
+                              }}
+                              className="wp-item-delete-btn"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                          <textarea
+                            rows={2}
+                            placeholder="Step Description"
+                            value={step.desc}
+                            onChange={(e) => {
+                              const updated = [...editingService.strategySteps];
+                              updated[idx].desc = e.target.value;
+                              setEditingService({ ...editingService, strategySteps: updated });
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Section 5: Frequently Asked Questions (FAQ Accordion) */}
+                  <div className="wp-meta-box">
+                    <div className="wp-meta-box-header">
+                      <h3>5. Frequently Asked Questions (Accordion)</h3>
+                      <button
+                        type="button"
+                        onClick={() => setEditingService({
+                          ...editingService,
+                          faqs: [...(editingService.faqs || []), { q: "New Question?", a: "Detailed answer..." }]
+                        })}
+                        className="wp-btn-sm wp-btn-outline"
+                      >
+                        + Add FAQ
+                      </button>
+                    </div>
+                    <div className="wp-meta-box-body">
+                      {(editingService.faqs || []).map((faq, idx) => (
+                        <div key={idx} className="wp-faq-card">
+                          <div className="wp-faq-card-top">
+                            <HelpCircle size={16} className="wp-faq-icon" />
+                            <input
+                              type="text"
+                              placeholder="Question"
+                              value={faq.q}
+                              onChange={(e) => {
+                                const updated = [...editingService.faqs];
+                                updated[idx].q = e.target.value;
+                                setEditingService({ ...editingService, faqs: updated });
+                              }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = editingService.faqs.filter((_, i) => i !== idx);
+                                setEditingService({ ...editingService, faqs: updated });
+                              }}
+                              className="wp-item-delete-btn"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                          <textarea
+                            rows={2}
+                            placeholder="Answer"
+                            value={faq.a}
+                            onChange={(e) => {
+                              const updated = [...editingService.faqs];
+                              updated[idx].a = e.target.value;
+                              setEditingService({ ...editingService, faqs: updated });
+                            }}
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* RIGHT SIDEBAR COLUMN: Publish & AI Generator */}
+                <div className="wp-edit-side-col">
+                  {/* PUBLISH BOX (CLASSIC WORDPRESS) */}
+                  <div className="wp-side-box">
+                    <div className="wp-side-box-header">
+                      <h3>Publish</h3>
+                    </div>
+                    <div className="wp-side-box-body">
+                      <div className="wp-publish-meta-row">
+                        <span>Status:</span> <strong>{editingService.status === "published" ? "Published" : "Draft"}</strong>
+                      </div>
+                      <div className="wp-publish-meta-row">
+                        <span>Visibility:</span> <strong>Public</strong>
+                      </div>
+                      <div className="wp-publish-meta-row">
+                        <span>Last Updated:</span> <strong>{editingService.updatedAt || "Today"}</strong>
+                      </div>
+
+                      <div className="wp-publish-actions">
+                        <button
+                          type="button"
+                          onClick={handleSaveService}
+                          className="wp-btn wp-btn-primary wp-btn-block"
+                        >
+                          <Save size={15} /> Update & Publish Service
+                        </button>
+
+                        <a
+                          href={`/services/${editingService.slug}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="wp-btn wp-btn-outline wp-btn-block wp-mt-2"
+                        >
+                          <Eye size={15} /> View Live Page ↗
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* AI 1-CLICK ASSISTANT */}
+                  <div className="wp-side-box wp-box-ai">
+                    <div className="wp-side-box-header">
+                      <h3><Wand2 size={15} /> 1-Click AI Auto-Fill</h3>
+                    </div>
+                    <div className="wp-side-box-body">
+                      <p className="wp-ai-helper-text">
+                        Type your Service Headline Title on the left, then click below.
+                        AI will automatically write the <strong>Overview</strong>, <strong>Deliverables</strong>, <strong>Core Capabilities</strong>, <strong>4-Step Roadmap</strong>, and <strong>FAQs</strong>!
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleAIGenerateService}
+                        className="wp-btn wp-btn-ai wp-btn-block"
+                      >
+                        <Sparkles size={15} /> ✨ Auto-Fill All 7 Sections
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* SERVICE ICON SELECTOR */}
+                  <div className="wp-side-box">
+                    <div className="wp-side-box-header">
+                      <h3>Service Icon</h3>
+                    </div>
+                    <div className="wp-side-box-body">
+                      <select
+                        value={editingService.icon || "PenTool"}
+                        onChange={(e) => setEditingService({ ...editingService, icon: e.target.value })}
+                        className="wp-select"
+                      >
+                        <option value="PenTool">PenTool (Branding & Identity)</option>
+                        <option value="Megaphone">Megaphone (Performance Ads)</option>
+                        <option value="Users">Users (Social & Community)</option>
+                        <option value="Video">Video (Reels & Film)</option>
+                        <option value="Code">Code (Web & Funnels)</option>
+                        <option value="Search">Search (SEO & GEO)</option>
+                        <option value="Sparkles">Sparkles (Influencer Network)</option>
+                        <option value="Sliders">Sliders (Analytics & CRO)</option>
+                        <option value="Globe2">Globe2 (Global Reach)</option>
+                        <option value="Flame">Flame (Viral Hooks)</option>
+                        <option value="Zap">Zap (Growth Engine)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: ALL CASE STUDIES */}
+          {/* ======================================================== */}
+          {activeTab === "caseStudies" && (
+            <div className="wp-tab-content">
+              <div className="wp-page-header wp-header-with-action">
+                <div>
+                  <h1>Case Studies / Portfolio</h1>
+                  <p>Client growth stories, challenge breakdowns, verified ROAS metrics, and client quotes.</p>
+                </div>
+                {isEditorOrAdmin && (
+                  <button type="button" onClick={handleStartNewCaseStudy} className="wp-btn wp-btn-primary">
+                    <Plus size={15} /> Add New Case Study
+                  </button>
+                )}
+              </div>
+
+              <div className="wp-card">
+                <table className="wp-table">
+                  <thead>
+                    <tr>
+                      <th>Brand / Client</th>
+                      <th>Headline Title</th>
+                      <th>Category</th>
+                      <th>Hero Metric</th>
+                      <th>Year</th>
+                      <th>Services</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {caseStudies.map(cs => (
+                      <tr key={cs.slug} className="wp-row-hoverable">
+                        <td>
+                          <div className="wp-item-title">{cs.brand}</div>
+                          <div className="wp-permalink-preview">/work/{cs.slug}</div>
+                          <div className="wp-row-actions">
+                            {isEditorOrAdmin && (
+                              <button type="button" onClick={() => handleEditCaseStudy(cs)} className="wp-row-action-link wp-action-edit">
+                                Edit Case Study
+                              </button>
+                            )}
+                            <a href={`/work/${cs.slug}`} target="_blank" rel="noreferrer" className="wp-row-action-link wp-action-view">
+                              View Live ↗
+                            </a>
+                            {isAdmin && (
+                              <button type="button" onClick={() => handleDeleteCaseStudy(cs.slug)} className="wp-row-action-link wp-action-trash">
+                                Trash
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                        <td>{cs.title}</td>
+                        <td><span className="wp-badge-category">{cs.category}</span></td>
+                        <td><span className="wp-badge-metric">{cs.metric}</span></td>
+                        <td>{cs.year}</td>
+                        <td>{Array.isArray(cs.services) ? cs.services.join(", ") : cs.services}</td>
+                        <td>
+                          {isEditorOrAdmin && (
+                            <button type="button" onClick={() => handleEditCaseStudy(cs)} className="wp-btn-sm wp-btn-outline">
+                              <Edit3 size={13} /> Edit
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: EDIT / ADD CASE STUDY */}
+          {/* ======================================================== */}
+          {activeTab === "edit_caseStudy" && editingCaseStudy && (
+            <div className="wp-tab-content">
+              <div className="wp-edit-header">
+                <button type="button" onClick={() => setActiveTab("caseStudies")} className="wp-back-btn">
+                  <ArrowLeft size={16} /> Back to All Case Studies
+                </button>
+                <h2>{editingCaseStudy.brand ? `Edit: ${editingCaseStudy.brand}` : "Add New Case Study"}</h2>
+              </div>
+
+              <div className="wp-edit-grid">
+                <div className="wp-edit-main-col">
+                  {/* Brand & Headline */}
+                  <div className="wp-title-box">
+                    <label>Client / Brand Name *</label>
+                    <input
+                      type="text"
+                      className="wp-input-title"
+                      placeholder="e.g. LuxeLiving Realty or GlowUp D2C"
+                      value={editingCaseStudy.brand}
+                      onChange={(e) => setEditingCaseStudy({
+                        ...editingCaseStudy,
+                        brand: e.target.value,
+                        slug: editingCaseStudy.slug || slugify(e.target.value)
+                      })}
+                    />
+                  </div>
+
+                  <div className="wp-meta-box">
+                    <div className="wp-meta-box-header">
+                      <h3>1. Headline & Hero Metrics</h3>
+                    </div>
+                    <div className="wp-meta-box-body">
+                      <div className="wp-form-group">
+                        <label>Case Study Headline Title *</label>
+                        <input
+                          type="text"
+                          value={editingCaseStudy.title}
+                          onChange={(e) => setEditingCaseStudy({ ...editingCaseStudy, title: e.target.value })}
+                          placeholder="Scaling Luxury Real Estate Inbound Pipeline to ₹42Cr in 90 Days"
+                        />
+                      </div>
+
+                      <div className="wp-form-row-3">
+                        <div className="wp-form-group">
+                          <label>Category *</label>
+                          <input
+                            type="text"
+                            value={editingCaseStudy.category}
+                            onChange={(e) => setEditingCaseStudy({ ...editingCaseStudy, category: e.target.value })}
+                          />
+                        </div>
+                        <div className="wp-form-group">
+                          <label>Hero Metric (e.g. +380% or 4.8x) *</label>
+                          <input
+                            type="text"
+                            value={editingCaseStudy.metric}
+                            onChange={(e) => setEditingCaseStudy({ ...editingCaseStudy, metric: e.target.value })}
+                          />
+                        </div>
+                        <div className="wp-form-group">
+                          <label>Result Statement *</label>
+                          <input
+                            type="text"
+                            value={editingCaseStudy.result}
+                            onChange={(e) => setEditingCaseStudy({ ...editingCaseStudy, result: e.target.value })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="wp-form-row-2">
+                        <div className="wp-form-group">
+                          <label>Year</label>
+                          <input
+                            type="text"
+                            value={editingCaseStudy.year}
+                            onChange={(e) => setEditingCaseStudy({ ...editingCaseStudy, year: e.target.value })}
+                          />
+                        </div>
+                        <div className="wp-form-group">
+                          <label>Services Delivered (Comma Separated)</label>
+                          <input
+                            type="text"
+                            value={Array.isArray(editingCaseStudy.services) ? editingCaseStudy.services.join(", ") : editingCaseStudy.services}
+                            onChange={(e) => setEditingCaseStudy({
+                              ...editingCaseStudy,
+                              services: e.target.value.split(",").map(s => s.trim())
+                            })}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="wp-form-group">
+                        <label>Hero Image URL</label>
+                        <input
+                          type="text"
+                          value={editingCaseStudy.heroImage}
+                          onChange={(e) => setEditingCaseStudy({ ...editingCaseStudy, heroImage: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Challenge & Strategy */}
+                  <div className="wp-meta-box">
+                    <div className="wp-meta-box-header">
+                      <h3>2. The Challenge & Strategic Playbook</h3>
+                    </div>
+                    <div className="wp-meta-box-body">
+                      <div className="wp-form-group">
+                        <label>The Bottleneck / Initial Challenge *</label>
+                        <textarea
+                          rows={4}
+                          value={editingCaseStudy.challenge}
+                          onChange={(e) => setEditingCaseStudy({ ...editingCaseStudy, challenge: e.target.value })}
+                        />
+                      </div>
+
+                      <div className="wp-form-group">
+                        <label>Our Strategic Solution & Execution *</label>
+                        <textarea
+                          rows={4}
+                          value={editingCaseStudy.strategy}
+                          onChange={(e) => setEditingCaseStudy({ ...editingCaseStudy, strategy: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Results KPI Grid */}
+                  <div className="wp-meta-box">
+                    <div className="wp-meta-box-header">
+                      <h3>3. Hard Metric Results (KPI Grid)</h3>
+                      <button
+                        type="button"
+                        onClick={() => setEditingCaseStudy({
+                          ...editingCaseStudy,
+                          results: [...(editingCaseStudy.results || []), { label: "New KPI", val: "+100%" }]
+                        })}
+                        className="wp-btn-sm wp-btn-outline"
+                      >
+                        + Add Metric KPI
+                      </button>
+                    </div>
+                    <div className="wp-meta-box-body">
+                      {(editingCaseStudy.results || []).map((r, idx) => (
+                        <div key={idx} className="wp-dynamic-item-row">
+                          <input
+                            type="text"
+                            placeholder="KPI Label (e.g. CPA Reduction)"
+                            value={r.label}
+                            onChange={(e) => {
+                              const updated = [...editingCaseStudy.results];
+                              updated[idx].label = e.target.value;
+                              setEditingCaseStudy({ ...editingCaseStudy, results: updated });
+                            }}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Value (e.g. -46.2%)"
+                            value={r.val}
+                            onChange={(e) => {
+                              const updated = [...editingCaseStudy.results];
+                              updated[idx].val = e.target.value;
+                              setEditingCaseStudy({ ...editingCaseStudy, results: updated });
+                            }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = editingCaseStudy.results.filter((_, i) => i !== idx);
+                              setEditingCaseStudy({ ...editingCaseStudy, results: updated });
+                            }}
+                            className="wp-item-delete-btn"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Client Testimonial */}
+                  <div className="wp-meta-box">
+                    <div className="wp-meta-box-header">
+                      <h3>4. Client Testimonial Quote</h3>
+                    </div>
+                    <div className="wp-meta-box-body">
+                      <div className="wp-form-group">
+                        <label>Quote Text</label>
+                        <textarea
+                          rows={3}
+                          value={editingCaseStudy.testimonial?.quote || ""}
+                          onChange={(e) => setEditingCaseStudy({
+                            ...editingCaseStudy,
+                            testimonial: { ...editingCaseStudy.testimonial, quote: e.target.value }
+                          })}
+                        />
+                      </div>
+                      <div className="wp-form-row-2">
+                        <div className="wp-form-group">
+                          <label>Client Author Name</label>
+                          <input
+                            type="text"
+                            value={editingCaseStudy.testimonial?.author || ""}
+                            onChange={(e) => setEditingCaseStudy({
+                              ...editingCaseStudy,
+                              testimonial: { ...editingCaseStudy.testimonial, author: e.target.value }
+                            })}
+                          />
+                        </div>
+                        <div className="wp-form-group">
+                          <label>Client Author Title / Role</label>
+                          <input
+                            type="text"
+                            value={editingCaseStudy.testimonial?.role || ""}
+                            onChange={(e) => setEditingCaseStudy({
+                              ...editingCaseStudy,
+                              testimonial: { ...editingCaseStudy.testimonial, role: e.target.value }
+                            })}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="wp-edit-side-col">
+                  <div className="wp-side-box">
+                    <div className="wp-side-box-header">
+                      <h3>Publish</h3>
+                    </div>
+                    <div className="wp-side-box-body">
+                      <button
+                        type="button"
+                        onClick={handleSaveCaseStudy}
+                        className="wp-btn wp-btn-primary wp-btn-block"
+                      >
+                        <Save size={15} /> Save & Publish Case Study
+                      </button>
+                      <a
+                        href={`/work/${editingCaseStudy.slug}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="wp-btn wp-btn-outline wp-btn-block wp-mt-2"
+                      >
+                        <Eye size={15} /> View Live Case Study ↗
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="wp-side-box wp-box-ai">
+                    <div className="wp-side-box-header">
+                      <h3><Wand2 size={15} /> 1-Click AI Generator</h3>
+                    </div>
+                    <div className="wp-side-box-body">
+                      <p className="wp-ai-helper-text">
+                        Type the Brand Name and click below to auto-generate Challenge, Strategy, KPIs, and Quote!
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleAIGenerateCaseStudy}
+                        className="wp-btn wp-btn-ai wp-btn-block"
+                      >
+                        <Sparkles size={15} /> ✨ Auto-Fill Case Study
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: BLOG PLAYBOOKS */}
+          {/* ======================================================== */}
+          {activeTab === "blog" && (
+            <div className="wp-tab-content">
+              <div className="wp-page-header">
+                <h1>Blog Insights & Editorial Playbooks</h1>
+                <p>High-converting growth playbooks, GEO search insights, and performance breakdowns.</p>
+              </div>
+              <div className="wp-card">
+                <table className="wp-table">
+                  <thead>
+                    <tr>
+                      <th>Article Title</th>
+                      <th>Category</th>
+                      <th>Author</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {blogPosts.map(p => (
+                      <tr key={p.slug}>
+                        <td>
+                          <strong>{p.title}</strong>
+                          <div className="wp-permalink-preview">/blog/{p.slug}</div>
+                        </td>
+                        <td><span className="wp-badge-category">{p.category}</span></td>
+                        <td>{p.author?.name || "Editorial Team"}</td>
+                        <td>{p.publishedAt ? new Date(p.publishedAt).toISOString().slice(0, 10) : "2026-08"}</td>
+                        <td>
+                          <a href={`/blog/${p.slug}`} target="_blank" rel="noreferrer" className="wp-btn-sm wp-btn-outline">
+                            View ↗
+                          </a>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: REVIEWS & TESTIMONIALS */}
+          {/* ======================================================== */}
+          {activeTab === "testimonials" && (
+            <div className="wp-tab-content">
+              <div className="wp-page-header">
+                <h1>Client Reviews & Testimonials</h1>
+                <p>Verified executive quotes displayed on homepage and /reviews route.</p>
+              </div>
+              <div className="wp-card">
+                <table className="wp-table">
+                  <thead>
+                    <tr>
+                      <th>Client Name</th>
+                      <th>Role & Company</th>
+                      <th>Verified Quote</th>
+                      <th>Rating</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {reviews.map((r, i) => (
+                      <tr key={i}>
+                        <td><strong>{r.name}</strong></td>
+                        <td>{r.role}, {r.company}</td>
+                        <td className="wp-quote-cell">"{r.quote}"</td>
+                        <td>{"⭐".repeat(r.rating || 5)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: INBOUND LEADS (CRM) */}
+          {/* ======================================================== */}
+          {activeTab === "leads" && (
+            <div className="wp-tab-content">
+              <div className="wp-page-header">
+                <h1>Inbound Enquiries (CRM Pipeline)</h1>
+                <p>Client leads captured from the Contact and Services intake forms.</p>
+              </div>
+              <div className="wp-card">
+                <table className="wp-table">
+                  <thead>
+                    <tr>
+                      <th>Prospect</th>
+                      <th>Contact Info</th>
+                      <th>Service Required</th>
+                      <th>Budget Tier</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {leads.map(lead => (
+                      <tr key={lead.id}>
+                        <td>
+                          <strong>{lead.name}</strong>
+                          <div className="wp-sub-text">{lead.company}</div>
+                        </td>
+                        <td>
+                          <div>{lead.email}</div>
+                          <div className="wp-sub-text">{lead.phone}</div>
+                        </td>
+                        <td><span className="wp-badge-tag">{lead.service}</span></td>
+                        <td>{lead.budget}</td>
+                        <td>
+                          <select
+                            value={lead.status}
+                            onChange={(e) => {
+                              const updated = leads.map(l => l.id === lead.id ? { ...l, status: e.target.value } : l);
+                              setLeads(updated);
+                              try { localStorage.setItem("gif_admin_leads", JSON.stringify(updated)); } catch {}
+                              showNotice(`Lead status updated to ${e.target.value}`);
+                            }}
+                            className="wp-select-sm"
+                          >
+                            <option value="New">New</option>
+                            <option value="Contacted">Contacted</option>
+                            <option value="Proposal Sent">Proposal Sent</option>
+                            <option value="Won">Won</option>
+                            <option value="Lost">Lost</option>
+                          </select>
+                        </td>
+                        <td>{lead.date}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: COMMENTS MODERATION */}
+          {/* ======================================================== */}
+          {activeTab === "comments" && (
+            <div className="wp-tab-content">
+              <div className="wp-page-header">
+                <h1>Comments Moderation</h1>
+                <p>Review and approve public reader comments submitted on blog playbooks.</p>
+              </div>
+              <div className="wp-card">
+                <table className="wp-table">
+                  <thead>
+                    <tr>
+                      <th>Author</th>
+                      <th>Comment</th>
+                      <th>In Response To</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {comments.map(c => (
+                      <tr key={c.id}>
+                        <td>
+                          <strong>{c.authorName}</strong>
+                          <div className="wp-sub-text">{c.authorEmail}</div>
+                        </td>
+                        <td className="wp-comment-body">"{c.content}"</td>
+                        <td><code>/blog/{c.postSlug}</code></td>
+                        <td><span className={`wp-status-pill wp-status-${c.status}`}>{c.status}</span></td>
+                        <td>
+                          <div className="wp-btn-group-sm">
+                            {c.status !== "approved" && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = comments.map(item => item.id === c.id ? { ...item, status: "approved" } : item);
+                                  setComments(updated);
+                                  try { localStorage.setItem("gif_admin_comments", JSON.stringify(updated)); } catch {}
+                                  showNotice("Comment approved!");
+                                }}
+                                className="wp-btn-sm wp-btn-success"
+                              >
+                                Approve
+                              </button>
+                            )}
+                            {c.status !== "spam" && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = comments.map(item => item.id === c.id ? { ...item, status: "spam" } : item);
+                                  setComments(updated);
+                                  try { localStorage.setItem("gif_admin_comments", JSON.stringify(updated)); } catch {}
+                                  showNotice("Comment marked as spam.");
+                                }}
+                                className="wp-btn-sm wp-btn-warning"
+                              >
+                                Spam
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const updated = comments.filter(item => item.id !== c.id);
+                                setComments(updated);
+                                try { localStorage.setItem("gif_admin_comments", JSON.stringify(updated)); } catch {}
+                                showNotice("Comment deleted.");
+                              }}
+                              className="wp-btn-sm wp-btn-danger"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: USERS & ROLE-BASED ACCESS CONTROL (RBAC) */}
+          {/* ======================================================== */}
+          {activeTab === "users" && (
+            <div className="wp-tab-content">
+              <div className="wp-page-header wp-header-with-action">
+                <div>
+                  <h1>Users & Access Control (RBAC)</h1>
+                  <p>Assign fine-grained roles to team members: Administrator, Editor, Author, and Viewer.</p>
+                </div>
+                {isAdmin && (
+                  <button
+                    type="button"
+                    onClick={() => setIsAddUserModalOpen(true)}
+                    className="wp-btn wp-btn-primary"
+                  >
+                    <UserPlus size={15} /> Add New User
+                  </button>
+                )}
+              </div>
+
+              {/* Role Explainer Card */}
+              <div className="wp-roles-summary-card">
+                <div className="wp-role-summary-col">
+                  <strong>👑 Administrator</strong>
+                  <p>Full control over Settings, Users, CMS, Leads, and Code sync.</p>
+                </div>
+                <div className="wp-role-summary-col">
+                  <strong>✏️ Editor</strong>
+                  <p>Can add, edit, and publish Services, Case Studies, and Blogs. (No Users/Settings).</p>
+                </div>
+                <div className="wp-role-summary-col">
+                  <strong>✍️ Author</strong>
+                  <p>Can draft content for review. Cannot publish directly or access system settings.</p>
+                </div>
+                <div className="wp-role-summary-col">
+                  <strong>👁️ Viewer</strong>
+                  <p>Read-only access to preview draft content and lead metrics.</p>
+                </div>
+              </div>
+
+              <div className="wp-card wp-mt-4">
+                <table className="wp-table">
+                  <thead>
+                    <tr>
+                      <th>User</th>
+                      <th>Email / Username</th>
+                      <th>Assigned Role</th>
+                      <th>Status</th>
+                      <th>Date Added</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map(u => (
+                      <tr key={u.id}>
+                        <td>
+                          <div className="wp-user-cell">
+                            <img src={u.avatar} alt={u.name} className="wp-table-avatar" />
+                            <strong>{u.name}</strong>
+                          </div>
+                        </td>
+                        <td>{u.email}</td>
+                        <td>
+                          <span className={`wp-badge-role wp-role-${u.role.toLowerCase()}`}>
+                            {u.role}
+                          </span>
+                        </td>
+                        <td><span className="wp-status-pill wp-status-published">{u.status}</span></td>
+                        <td>{u.createdAt || "2025-01"}</td>
+                        <td>
+                          {isAdmin && u.id !== currentUser.id && (
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteUser(u.id)}
+                              className="wp-btn-sm wp-btn-danger"
+                            >
+                              Delete
+                            </button>
+                          )}
+                          {u.id === currentUser.id && (
+                            <span className="wp-sub-text">(Active Session)</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Add User Modal */}
+              {isAddUserModalOpen && (
+                <div className="wp-modal-overlay">
+                  <div className="wp-modal-card">
+                    <div className="wp-modal-header">
+                      <h3>Add New Team Member</h3>
+                      <button type="button" onClick={() => setIsAddUserModalOpen(false)} className="wp-modal-close">
+                        <X size={18} />
+                      </button>
+                    </div>
+
+                    <form onSubmit={handleAddUser}>
+                      <div className="wp-form-group">
+                        <label>Full Name *</label>
+                        <input
+                          type="text"
+                          required
+                          value={newUserData.name}
+                          onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
+                          placeholder="e.g. Rohan Sharma"
+                        />
+                      </div>
+
+                      <div className="wp-form-group">
+                        <label>Work Email *</label>
+                        <input
+                          type="email"
+                          required
+                          value={newUserData.email}
+                          onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
+                          placeholder="e.g. rohan@getintofeed.com"
+                        />
+                      </div>
+
+                      <div className="wp-form-group">
+                        <label>Account Password *</label>
+                        <input
+                          type="password"
+                          required
+                          value={newUserData.password}
+                          onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
+                          placeholder="Set initial password"
+                        />
+                      </div>
+
+                      <div className="wp-form-group">
+                        <label>Role & Permissions *</label>
+                        <select
+                          value={newUserData.role}
+                          onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value })}
+                        >
+                          <option value="Administrator">Administrator (Full Access)</option>
+                          <option value="Editor">Editor (Publish Services & Case Studies)</option>
+                          <option value="Author">Author (Draft Only)</option>
+                          <option value="Viewer">Viewer (Read-Only Preview)</option>
+                        </select>
+                      </div>
+
+                      <div className="wp-modal-actions">
+                        <button type="button" onClick={() => setIsAddUserModalOpen(false)} className="wp-btn wp-btn-outline">
+                          Cancel
+                        </button>
+                        <button type="submit" className="wp-btn wp-btn-primary">
+                          Save New User
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ======================================================== */}
+          {/* TAB: SETTINGS (ADMIN ONLY) */}
+          {/* ======================================================== */}
+          {activeTab === "settings" && (
+            <div className="wp-tab-content">
+              <div className="wp-page-header">
+                <h1>Agency Settings</h1>
+                <p>Global contact numbers, WhatsApp concierge, and social channels.</p>
+              </div>
+
+              <div className="wp-card">
+                <div className="wp-form-group">
+                  <label>Agency Name</label>
+                  <input type="text" defaultValue="Get Into Feed" />
+                </div>
+
+                <div className="wp-form-group">
+                  <label>Tagline</label>
+                  <input type="text" defaultValue="No Boring Marketing. Built for Commercial Revenue." />
+                </div>
+
+                <div className="wp-form-row-2">
+                  <div className="wp-form-group">
+                    <label>WhatsApp Concierge Number</label>
+                    <input type="text" defaultValue="+91 98110 00000" />
+                  </div>
+                  <div className="wp-form-group">
+                    <label>Inbound Lead Email</label>
+                    <input type="email" defaultValue="growth@getintofeed.com" />
+                  </div>
+                </div>
+
+                <div className="wp-form-group">
+                  <label>Office Address</label>
+                  <input type="text" defaultValue="100 Feet Road, Indiranagar, Bengaluru, KA 560038" />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => showNotice("Settings saved successfully!")}
+                  className="wp-btn wp-btn-primary wp-mt-2"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

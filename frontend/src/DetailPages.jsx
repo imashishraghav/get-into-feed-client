@@ -41,6 +41,7 @@ import {
   Shield,
   ShieldCheck,
   Smile,
+  Sliders,
   Sparkles,
   Star,
   Tag,
@@ -405,6 +406,56 @@ export const caseStudiesCatalog = [
   }
 ];
 
+export const ICON_MAP = {
+  PenTool,
+  Megaphone,
+  Users,
+  Video,
+  Code,
+  Search,
+  Sparkles,
+  Sliders,
+  Globe2,
+  Flame,
+  Zap
+};
+
+export function getStoredServices() {
+  if (typeof window === "undefined") return servicesCatalog;
+  try {
+    const raw = localStorage.getItem("gif_services_catalog");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed.map((s) => {
+          let IconComp = Sparkles;
+          if (typeof s.icon === "string") {
+            IconComp = ICON_MAP[s.icon] || Sparkles;
+          } else if (s.icon) {
+            IconComp = s.icon;
+          }
+          return { ...s, icon: IconComp };
+        });
+      }
+    }
+  } catch {}
+  return servicesCatalog;
+}
+
+export function getStoredCaseStudies() {
+  if (typeof window === "undefined") return caseStudiesCatalog;
+  try {
+    const raw = localStorage.getItem("gif_case_studies_catalog");
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch {}
+  return caseStudiesCatalog;
+}
+
 // =========================================================================
 // REVIEWS & TESTIMONIALS CATALOG
 // =========================================================================
@@ -743,32 +794,34 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
               </button>
 
               {servicesDropdownOpen && (
-                <div className="absolute top-full left-0 w-80 bg-white border-2 border-black rounded-xl p-3 shadow-2xl z-50 grid grid-cols-1 gap-1">
-                  {servicesCatalog.map((s) => (
-                    <button
-                      key={s.slug}
-                      type="button"
-                      onClick={() => { setServicesDropdownOpen(false); onNavigate(`/services/${s.slug}`); }}
-                      className="text-left p-2.5 rounded-lg hover:bg-brand-light-gray transition-all flex items-start gap-3 group/item border-none bg-transparent cursor-pointer w-full"
-                    >
-                      <s.icon className="w-4 h-4 text-brand-dark group-hover/item:text-brand-blue shrink-0 mt-0.5" />
-                      <div>
-                        <div className="font-space font-bold text-xs uppercase text-brand-dark group-hover/item:text-brand-blue">
-                          {s.title}
+                <div className="absolute top-full left-0 w-[620px] bg-white border-2 border-black rounded-xl p-3.5 shadow-2xl z-50">
+                  <div className="grid grid-cols-2 gap-2">
+                    {getStoredServices().map((s) => (
+                      <button
+                        key={s.slug}
+                        type="button"
+                        onClick={() => { setServicesDropdownOpen(false); onNavigate(`/services/${s.slug}`); }}
+                        className="text-left p-2.5 rounded-lg hover:bg-brand-light-gray transition-all flex items-start gap-2.5 group/item border border-transparent hover:border-black/10 bg-transparent cursor-pointer w-full"
+                      >
+                        <s.icon className="w-4 h-4 text-brand-dark group-hover/item:text-brand-blue shrink-0 mt-0.5" />
+                        <div>
+                          <div className="font-space font-bold text-[11px] uppercase text-brand-dark group-hover/item:text-brand-blue leading-tight">
+                            {s.title}
+                          </div>
+                          <div className="text-[10px] text-gray-500 line-clamp-1 font-inter mt-0.5">
+                            {s.shortDesc}
+                          </div>
                         </div>
-                        <div className="text-[11px] text-gray-500 line-clamp-1 font-inter">
-                          {s.shortDesc}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                  <div className="pt-2 border-t border-black/10 mt-1">
+                      </button>
+                    ))}
+                  </div>
+                  <div className="pt-2.5 border-t border-black/10 mt-2">
                     <button
                       type="button"
                       onClick={() => { setServicesDropdownOpen(false); onNavigate("/services"); }}
-                      className="w-full text-center py-2 bg-brand-lime text-brand-dark font-space font-bold text-[11px] uppercase rounded-md hover:bg-[#E2FF4D] transition-colors border-none cursor-pointer"
+                      className="w-full text-center py-2 bg-brand-lime text-brand-dark font-space font-bold text-xs uppercase tracking-wider rounded-md hover:bg-[#E2FF4D] transition-colors border-none cursor-pointer"
                     >
-                      Explore All 8 Services →
+                      Explore All {getStoredServices().length} Services →
                     </button>
                   </div>
                 </div>
@@ -1432,7 +1485,7 @@ export function ServicesHubPage({ onNavigate }) {
 
         {/* 8 Services Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {servicesCatalog.map((svc) => (
+          {getStoredServices().map((svc) => (
             <div
               key={svc.slug}
               className="bg-white border-2 border-black rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
@@ -1456,7 +1509,7 @@ export function ServicesHubPage({ onNavigate }) {
 
                 <div className="space-y-2 pt-4 border-t border-black/10 mb-8">
                   <div className="font-space font-bold text-[11px] uppercase text-gray-500 mb-2">Key Deliverables:</div>
-                  {svc.deliverables.map((item, idx) => (
+                  {(svc.deliverables || []).map((item, idx) => (
                     <div key={idx} className="flex items-center gap-2 text-xs font-inter text-gray-700">
                       <Check className="w-3.5 h-3.5 text-brand-blue shrink-0" />
                       <span>{item}</span>
@@ -1489,7 +1542,8 @@ export function ServicesHubPage({ onNavigate }) {
 // SERVICE DETAIL PAGE (/services/:slug) — 2-COLUMN DESKTOP STICKY FORM
 // =========================================================================
 export function ServiceDetailPage({ slug, onNavigate }) {
-  const service = servicesCatalog.find((s) => s.slug === slug) || servicesCatalog[0];
+  const currentServices = getStoredServices();
+  const service = currentServices.find((s) => s.slug === slug) || currentServices[0];
 
   const [formData, setFormData] = useState({
     name: "",
@@ -1806,9 +1860,10 @@ export function WorkPage({ onNavigate }) {
   const [filter, setFilter] = useState("All");
   const categories = ["All", "High-Ticket Real Estate", "E-Commerce & D2C", "B2B & FinTech"];
 
+  const currentCases = getStoredCaseStudies();
   const filtered = filter === "All"
-    ? caseStudiesCatalog
-    : caseStudiesCatalog.filter((c) => c.category === filter);
+    ? currentCases
+    : currentCases.filter((c) => c.category === filter);
 
   return (
     <PageLayout onNavigate={onNavigate} activeNav="work">
@@ -1899,7 +1954,8 @@ export function WorkPage({ onNavigate }) {
 // CASE STUDY DETAIL PAGE (/work/:slug)
 // =========================================================================
 export function CaseStudyDetailPage({ slug, onNavigate }) {
-  const cs = caseStudiesCatalog.find((c) => c.slug === slug) || caseStudiesCatalog[0];
+  const currentCases = getStoredCaseStudies();
+  const cs = currentCases.find((c) => c.slug === slug) || currentCases[0];
 
   return (
     <PageLayout onNavigate={onNavigate} activeNav="work">
