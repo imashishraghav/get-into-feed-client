@@ -1162,3 +1162,39 @@ h1, h2, h3, h4, h5, h6, .font-space {
     display: flex !important;
   }
 }
+
+
+/* ==========================================================================
+   SAFETY GUARDS: NEVER ALLOW SVGS TO BLOW UP OR UNSTYLE
+   ========================================================================== */
+svg:not([width]) {
+  max-width: 100%;
+}
+.decorative-circle {
+  width: 64px !important;
+  height: 64px !important;
+}
+.decorative-diamond {
+  width: 48px !important;
+  height: 48px !important;
+}
+.decorative-star {
+  width: 128px !important;
+  height: 128px !important;
+}
+.decorative-rect {
+  width: 96px !important;
+  height: 96px !important;
+}
+.decorative-star-big {
+  width: 160px !important;
+  height: 160px !important;
+}
+.trend-svg {
+  width: 100% !important;
+  height: 32px !important;
+}
+.squiggle-svg {
+  width: 220px !important;
+  height: 24px !important;
+}
