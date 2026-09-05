@@ -36,7 +36,6 @@ import {
   X,
   Zap
 } from "lucide-react";
-import FloatingNavControl from "./components/FloatingNavControl";
 import AdminDashboard from "./Admin";
 import {
   ServicesHubPage,
@@ -962,14 +961,14 @@ export default function App() {
         </div>
 
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-10 lg:gap-16 items-start relative z-10">
-          <div className="text-left">
+          <div className="text-left lg:sticky lg:top-24 self-start">
             <h2 className="font-space font-bold text-xs tracking-widest uppercase text-brand-blue mb-4">Philosophy</h2>
             <h3 className="font-space font-bold text-[38px] sm:text-[55px] md:text-[70px] xl:text-[80px] leading-[0.85] tracking-tighter uppercase text-brand-dark">
               NO <br /> BORING <br /> MARKETING.
             </h3>
           </div>
 
-          <div className="space-y-8 lg:space-y-10 mt-4 lg:mt-0 text-left">
+          <div className="space-y-8 lg:space-y-12 mt-4 lg:mt-0 text-left">
             <div className="border-t border-brand-dark/20 pt-6 group hover:border-brand-dark hover:pl-2 transition-all duration-300 cursor-default">
               <h4 className="font-space font-bold text-lg md:text-xl xl:text-2xl mb-2 tracking-tight uppercase group-hover:text-brand-blue transition-colors">NO RANDOM POSTING.</h4>
               <p className="text-sm md:text-base xl:text-lg font-medium opacity-80 leading-relaxed font-inter">Every single piece of content has a strategic reason for existing. Hope is not a strategy.</p>
@@ -1221,9 +1220,6 @@ export default function App() {
           </div>
         </div>
       )}
-
-      {/* Floating WhatsApp Quick Connect */}
-            <FloatingNavControl />
     </div>
   );
 }
