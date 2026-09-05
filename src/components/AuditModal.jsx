@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ArrowRight, Check, CheckCircle2, ChevronRight, Loader2, Sparkles, X, Zap } from "lucide-react";
+import { trackLeadConversion } from "../utils/analytics.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
@@ -93,6 +94,13 @@ export default function AuditModal({ isOpen, onClose, initialData = {} }) {
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to submit audit request.");
+
+      trackLeadConversion({
+        id: data.leadId || ("AUDIT-" + Date.now()),
+        service: formData.service || "360° Growth Audit",
+        source: "audit_modal",
+        company: formData.company
+      });
 
       setSubmitted(true);
     } catch (err) {

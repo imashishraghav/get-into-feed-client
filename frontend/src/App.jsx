@@ -63,6 +63,7 @@ import {
   CookiePolicyPage,
   NotFoundPage
 } from "./DetailPages";
+import { trackLeadConversion, trackEvent } from "./utils/analytics.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
 
@@ -242,6 +243,12 @@ export default function App() {
         })
       });
       if (res.ok) {
+        trackLeadConversion({
+          id: "HOMEPAGE-" + Date.now(),
+          service: selectedService || formData.service,
+          source: "homepage_contact_modal",
+          company: formData.website
+        });
         setSubmitSuccess(true);
         setTimeout(() => {
           setSubmitSuccess(false);

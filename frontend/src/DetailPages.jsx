@@ -52,6 +52,7 @@ import {
   X,
   Zap
 } from "lucide-react";
+import { trackLeadConversion, trackEvent } from "./utils/analytics.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
 
@@ -1203,6 +1204,13 @@ export function GrowthAuditPopup({ isOpen, onClose, onNavigate }) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newLead)
+      });
+
+      trackLeadConversion({
+        id: newLead.id,
+        service: newLead.service,
+        source: "growth_audit_popup",
+        company: newLead.company
       });
 
       setSubmitted(true);
