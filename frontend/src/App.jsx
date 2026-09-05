@@ -40,6 +40,10 @@ import FloatingNavControl from "./components/FloatingNavControl";
 import React, { useState, useEffect } from "react";
 import AdminDashboard from "./Admin";
 import {
+  PageHeader,
+  PageFooter,
+  CookieConsentBanner,
+  GrowthAuditPopup,
   ServicesHubPage,
   ServiceDetailPage,
   AboutUsPage,
@@ -67,6 +71,26 @@ export default function App() {
   const [showTopBar, setShowTopBar] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [auditPopupOpen, setAuditPopupOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      const closedTime = localStorage.getItem("gif_audit_popup_closed");
+      if (!closedTime || (Date.now() - parseInt(closedTime, 10)) > 24 * 60 * 60 * 1000) {
+        const timer = setTimeout(() => {
+          setAuditPopupOpen(true);
+        }, 5000);
+        return () => clearTimeout(timer);
+      }
+    } catch {}
+  }, []);
+
+  const handleCloseAuditPopup = () => {
+    try {
+      localStorage.setItem("gif_audit_popup_closed", Date.now().toString());
+    } catch {}
+    setAuditPopupOpen(false);
+  };
   const [selectedService, setSelectedService] = useState("General Inbound");
   const [scrollProgress, setScrollProgress] = useState(0);
   useEffect(() => {
@@ -310,108 +334,13 @@ export default function App() {
         id="scroll-progress"
       ></div>
 
-      {/* Top Bar */}
-      {showTopBar && (
-        <div className="bg-brand-lime text-brand-dark text-[10px] sm:text-xs py-2 px-4 flex items-center justify-center gap-1 sm:gap-2 font-bold font-space uppercase tracking-wider z-50 relative w-full shadow-sm">
-          <Zap className="w-3.5 h-3.5 fill-brand-dark shrink-0 animate-pulse-slow" style={{ width: "14px", height: "14px" }} />
-          <p className="text-center line-clamp-1 sm:line-clamp-none flex-1 sm:flex-none">
-            NOW TAKING ON 3 NEW BRANDS THIS MONTH — LET'S BUILD SOMETHING PEOPLE CAN'T SCROLL PAST.
-          </p>
-          <a
-            href="#contact"
-            onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-            className="inline-flex bg-brand-dark text-white px-2 py-1 sm:px-3 sm:py-1 rounded text-[9px] sm:text-[10px] ml-1 sm:ml-2 hover:bg-black shrink-0 items-center gap-1 transition-colors group text-decoration-none"
-          >
-            LET'S TALK <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-          </a>
-          <button
-            type="button"
-            onClick={() => setShowTopBar(false)}
-            className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 shrink-0 opacity-70 hover:opacity-100 transition-opacity bg-transparent border-none text-brand-dark cursor-pointer"
-            id="close-banner"
-            aria-label="Close Announcement"
-          >
-            <X className="w-3 h-3 sm:w-4 sm:h-4" style={{ width: "16px", height: "16px" }} />
-          </button>
-        </div>
-      )}
-
-      {/* Navbar */}
-      <nav className="w-full z-50 bg-brand-dark border-b border-white/10 relative" id="navbar">
-        <div className="max-w-[1280px] mx-auto px-6 md:px-12 lg:px-16 py-4 md:py-5 flex justify-between items-center">
-          <a
-            href="/"
-            onClick={(e) => { e.preventDefault(); navigate("/"); }}
-            className="font-space font-bold text-xl md:text-2xl tracking-tighter text-white hover:text-brand-lime transition-colors text-decoration-none"
-          >
-            getintofeed.
-          </a>
-
-          <div className="hidden lg:flex items-center gap-7 xl:gap-8 font-bold font-space text-xs tracking-widest text-white uppercase">
-            <button type="button" onClick={() => navigate("/services")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Services</button>
-            <button type="button" onClick={() => navigate("/work")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Work</button>
-            <button type="button" onClick={() => navigate("/reviews")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Reviews</button>
-            <button type="button" onClick={() => navigate("/about")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">About Us</button>
-            <button type="button" onClick={() => navigate("/pricing")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Pricing</button>
-            <button type="button" onClick={() => navigate("/blog")} className="hover:text-brand-lime transition-colors bg-transparent border-none p-0 cursor-pointer text-white font-space font-bold text-xs uppercase tracking-widest">Feed Notes</button>
-          </div>
-
-          <div className="hidden md:flex items-center gap-4">
-            <a
-              href="tel:+919876543210"
-              className="text-white hover:text-brand-lime font-space font-bold text-xs uppercase tracking-wider transition-colors flex items-center gap-1.5 text-decoration-none"
-            >
-              <Phone className="w-3.5 h-3.5 text-brand-lime" /> +91 98765 43210
-            </a>
-            <button
-              type="button"
-              onClick={() => { setSelectedService("Start a Project"); setLeadModalOpen(true); }}
-              className="bg-brand-blue text-white px-6 py-3 rounded-lg text-xs font-bold font-space uppercase tracking-wider hover:bg-blue-600 hover:shadow-[0_0_20px_rgba(0,51,255,0.4)] transition-all items-center gap-2 group cursor-pointer border-none flex"
-            >
-              Start a project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
-            </button>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            id="mobile-menu-btn"
-            className="lg:hidden text-white p-1 bg-transparent border-none cursor-pointer"
-            aria-label="Toggle Menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" style={{ width: "24px", height: "24px" }} /> : <Menu className="w-6 h-6" style={{ width: "24px", height: "24px" }} />}
-          </button>
-        </div>
-
-        {/* Mobile Menu Dropdown */}
-        {mobileMenuOpen && (
-          <div id="mobile-menu" className="flex flex-col bg-brand-dark px-6 py-6 border-b border-white/10 gap-4 absolute w-full z-40 left-0 top-full lg:hidden shadow-2xl animate-in slide-in-from-top duration-200">
-            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/services"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Services</button>
-            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/work"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Work</button>
-            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/reviews"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Reviews</button>
-            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/about"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">About Us</button>
-            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/pricing"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Pricing</button>
-            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/blog"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Feed Notes</button>
-            <button type="button" onClick={() => { setMobileMenuOpen(false); navigate("/contact"); }} className="mobile-link text-white font-space font-bold text-sm tracking-widest uppercase hover:text-brand-lime transition-colors text-left bg-transparent border-none p-0">Contact Desk</button>
-
-            <div className="pt-3 border-t border-white/10 flex flex-col gap-3">
-              <a
-                href="tel:+919876543210"
-                className="text-white hover:text-brand-lime text-xs font-space font-bold uppercase tracking-wider py-1 flex items-center gap-2 text-decoration-none"
-              >
-                <Phone className="w-4 h-4 text-brand-lime" /> Call +91 98765 43210
-              </a>
-              <button
-                type="button"
-                onClick={() => { setMobileMenuOpen(false); setSelectedService("Start a Project"); setLeadModalOpen(true); }}
-                className="mobile-link bg-brand-blue text-white px-6 py-3 rounded-lg text-xs font-bold font-space uppercase tracking-wider hover:bg-blue-600 transition-all flex justify-center items-center gap-2 group w-full cursor-pointer border-none"
-              >
-                Start a project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
-              </button>
-            </div>
-          </div>
-        )}
-      </nav>
+      {/* Universal Branded Header (Exact Same Menu As Inner Pages) */}
+      <PageHeader
+        onNavigate={navigate}
+        activeNav="home"
+        onOpenLeadModal={() => { setSelectedService("Start a Project"); setLeadModalOpen(true); }}
+        onOpenAuditPopup={() => setAuditPopupOpen(true)}
+      />
 
       {/* Hero Section */}
       <section className="relative z-15 pt-6 pb-6 md:pt-12 md:pb-12 px-6 md:px-12 lg:px-16 overflow-hidden flex items-center bg-brand-dark text-white w-full">
@@ -1177,43 +1106,30 @@ export default function App() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-30 bg-brand-dark pt-16 pb-8 px-6 md:px-12 lg:px-16 w-full text-white">
-        <div className="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-10 mb-12">
-          <div>
-            <a href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }} className="font-space font-bold text-3xl tracking-tighter text-white hover:text-brand-lime transition-colors block mb-3 text-decoration-none">
-              getintofeed.
-            </a>
-            <p className="text-xs text-gray-500 font-medium max-w-[250px] leading-relaxed font-inter">A vibrant growth studio that gets brands into the feed — and gets them results.</p>
-          </div>
+      {/* Footer (Synchronized With All Pages) */}
+      <PageFooter onNavigate={navigate} />
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 md:gap-12 w-full md:w-auto">
-            <div className="flex flex-col gap-3 font-space font-bold text-[10px] uppercase tracking-widest text-white">
-              <a href="/services/content-marketing" onClick={(e) => { e.preventDefault(); navigate("/services/content-marketing"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">Content</a>
-              <a href="/services/ads-campaign" onClick={(e) => { e.preventDefault(); navigate("/services/ads-campaign"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">Paid Media</a>
-              <a href="/services/social-media" onClick={(e) => { e.preventDefault(); navigate("/services/social-media"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">Social</a>
-            </div>
-            <div className="flex flex-col gap-3 font-space font-bold text-[10px] uppercase tracking-widest text-white">
-              <a href="/services/graphics-design" onClick={(e) => { e.preventDefault(); navigate("/services/graphics-design"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">Creative</a>
-              <a href="/services/growth" onClick={(e) => { e.preventDefault(); navigate("/services/growth"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">Web Dev</a>
-              <a href="/services/strategy" onClick={(e) => { e.preventDefault(); navigate("/services/strategy"); }} className="hover:text-brand-lime transition-colors text-decoration-none text-white">SEO</a>
-            </div>
-            <div className="flex flex-col gap-3 font-space font-bold text-[10px] uppercase tracking-widest text-white col-span-2 sm:col-span-1">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" className="hover:text-brand-lime transition-colors flex items-center gap-2 text-decoration-none text-white"><Instagram className="w-3 h-3 text-brand-lime" style={{ width: "12px", height: "12px" }} /> Instagram</a>
-              <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="hover:text-brand-blue transition-colors flex items-center gap-2 text-decoration-none text-white"><Linkedin className="w-3 h-3 text-brand-blue" style={{ width: "12px", height: "12px" }} /> LinkedIn</a>
-              <a href="mailto:hello@getintofeed.com" className="hover:text-brand-lime transition-colors flex items-center gap-2 text-decoration-none text-white"><Mail className="w-3 h-3 text-white" style={{ width: "12px", height: "12px" }} /> Email</a>
-            </div>
-          </div>
-        </div>
+      {/* Global Cookie & Privacy Preferences Banner on Homepage */}
+      <CookieConsentBanner onNavigate={navigate} />
 
-        <div className="max-w-[1280px] mx-auto border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-[9px] sm:text-[10px] font-space font-bold tracking-widest uppercase text-gray-600">
-          <p>© 2026 GetIntoFeed Growth Studio.</p>
-          <div className="flex gap-6">
-            <a href="/privacy" onClick={(e) => { e.preventDefault(); navigate("/privacy"); }} className="hover:text-white transition-colors text-decoration-none text-gray-500">Privacy Policy</a>
-            <a href="/terms" onClick={(e) => { e.preventDefault(); navigate("/terms"); }} className="hover:text-white transition-colors text-decoration-none text-gray-500">Terms of Service</a>
-          </div>
-        </div>
-      </footer>
+      {/* Interactive Growth & Creative Audit Pop-up Modal */}
+      <GrowthAuditPopup
+        isOpen={auditPopupOpen}
+        onClose={handleCloseAuditPopup}
+        onNavigate={navigate}
+      />
+
+      {/* Quick Floating Audit Trigger Pill */}
+      <button
+        type="button"
+        onClick={() => setAuditPopupOpen(true)}
+        className="fixed bottom-6 left-6 z-40 bg-brand-lime text-brand-dark px-3.5 py-2 rounded-full font-space font-bold text-xs uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center gap-2 cursor-pointer group"
+        title="Claim Free Growth Audit"
+      >
+        <Sparkles className="w-3.5 h-3.5 text-brand-blue group-hover:rotate-12 transition-transform" />
+        <span className="hidden sm:inline">Free Growth Audit</span>
+        <span className="sm:hidden">Audit</span>
+      </button>
 
       {/* LEAD INTAKE MODAL */}
       {leadModalOpen && (

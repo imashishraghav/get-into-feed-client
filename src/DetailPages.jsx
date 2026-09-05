@@ -685,57 +685,16 @@ Implement comprehensive JSON-LD schemas:
 
 
 // =========================================================================
-// LIGHT-BASE MASTER PAGE LAYOUT (GETINTOFEED BRANDED)
+// UNIVERSAL BRANDED PAGE HEADER (UNIFIED HOMEPAGE + INNER PAGES)
 // =========================================================================
-export function PageLayout({ children, onNavigate, activeNav = "" }) {
+export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpenAuditPopup }) {
   const [showTopBar, setShowTopBar] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
-  const [leadModalOpen, setLeadModalOpen] = useState(false);
-  const [cookieBannerVisible, setCookieBannerVisible] = useState(() => !localStorage.getItem("gif_cookie_consent"));
-  const [cookiePrefsOpen, setCookiePrefsOpen] = useState(false);
-  const [cookiePrefs, setCookiePrefs] = useState({ necessary: true, analytics: true, marketing: true, preferences: true });
-
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", website: "", service: "General Growth Inquiry", message: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleLeadSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert("Please fill in your name, email, and phone number.");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await fetch(`${API_URL}/api/leads`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, source: "Subpage Quick Consultation" })
-      });
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setLeadModalOpen(false);
-        setFormData({ name: "", email: "", phone: "", website: "", service: "General Growth Inquiry", message: "" });
-      }, 2000);
-    } catch (err) {
-      setSubmitted(true);
-      setTimeout(() => { setSubmitted(false); setLeadModalOpen(false); }, 2000);
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const handleAcceptCookies = (all = true) => {
-    localStorage.setItem("gif_cookie_consent", all ? "all" : JSON.stringify(cookiePrefs));
-    setCookieBannerVisible(false);
-    setCookiePrefsOpen(false);
-  };
 
   return (
-    <div className="antialiased selection:bg-brand-lime selection:text-brand-dark bg-[#FAFAFA] font-inter relative min-h-screen text-[#09090B] flex flex-col justify-between">
-      {/* Top Banner */}
+    <>
+      {/* Top Announcement Bar */}
       {showTopBar && (
         <div className="bg-brand-lime text-brand-dark text-[10px] sm:text-xs py-2 px-4 flex items-center justify-between font-bold font-space uppercase tracking-wider z-50 relative w-full shadow-sm border-b border-black/10">
           <div className="flex items-center gap-2 max-w-5xl mx-auto flex-1 justify-center">
@@ -745,10 +704,10 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             </span>
             <button
               type="button"
-              onClick={() => onNavigate("/contact")}
+              onClick={() => onOpenAuditPopup ? onOpenAuditPopup() : onNavigate("/contact")}
               className="inline-flex bg-brand-dark text-white px-2.5 py-1 rounded text-[9px] sm:text-[10px] ml-2 hover:bg-black shrink-0 items-center gap-1 transition-colors cursor-pointer border-none font-bold font-space"
             >
-              LET'S TALK <ArrowRight className="w-3 h-3" />
+              CLAIM AUDIT <ArrowRight className="w-3 h-3" />
             </button>
           </div>
           <button
@@ -763,9 +722,9 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
       )}
 
       {/* Main Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-black/10 transition-all">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-black/10 transition-all text-brand-dark">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-3.5 flex items-center justify-between">
-          {/* Logo */}
+          {/* Brand Logo */}
           <button
             type="button"
             onClick={() => onNavigate("/")}
@@ -779,7 +738,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
 
           {/* Desktop Nav Items */}
           <nav className="hidden lg:flex items-center gap-7">
-            {/* Services Dropdown */}
+            {/* Services Dropdown (2-Column Desktop Grid) */}
             <div
               className="relative"
               onMouseEnter={() => setServicesDropdownOpen(true)}
@@ -788,13 +747,13 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
               <button
                 type="button"
                 onClick={() => onNavigate("/services")}
-                className="font-space font-bold text-xs uppercase tracking-wider text-brand-dark hover:text-brand-blue transition-colors flex items-center gap-1 cursor-pointer bg-transparent border-none py-2"
+                className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "services" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors flex items-center gap-1 cursor-pointer bg-transparent border-none py-2`}
               >
                 SERVICES <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
               {servicesDropdownOpen && (
-                <div className="absolute top-full left-0 w-[620px] bg-white border-2 border-black rounded-xl p-3.5 shadow-2xl z-50">
+                <div className="absolute top-full left-0 w-[620px] bg-white border-2 border-black rounded-xl p-3.5 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   <div className="grid grid-cols-2 gap-2">
                     {getStoredServices().map((s) => (
                       <button
@@ -831,7 +790,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             <button
               type="button"
               onClick={() => onNavigate("/work")}
-              className="font-space font-bold text-xs uppercase tracking-wider text-brand-dark hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none"
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "work" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
             >
               WORK
             </button>
@@ -839,7 +798,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             <button
               type="button"
               onClick={() => onNavigate("/reviews")}
-              className="font-space font-bold text-xs uppercase tracking-wider text-brand-dark hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none"
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "reviews" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
             >
               REVIEWS
             </button>
@@ -847,7 +806,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             <button
               type="button"
               onClick={() => onNavigate("/about")}
-              className="font-space font-bold text-xs uppercase tracking-wider text-brand-dark hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none"
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "about" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
             >
               ABOUT US
             </button>
@@ -855,7 +814,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             <button
               type="button"
               onClick={() => onNavigate("/pricing")}
-              className="font-space font-bold text-xs uppercase tracking-wider text-brand-dark hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none"
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "pricing" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
             >
               PRICING
             </button>
@@ -863,7 +822,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             <button
               type="button"
               onClick={() => onNavigate("/blog")}
-              className="font-space font-bold text-xs uppercase tracking-wider text-brand-dark hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none"
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "blog" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
             >
               FEED NOTES
             </button>
@@ -881,7 +840,7 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
 
             <button
               type="button"
-              onClick={() => setLeadModalOpen(true)}
+              onClick={onOpenLeadModal ? onOpenLeadModal : () => onNavigate("/contact")}
               className="bg-brand-dark text-white px-5 py-2.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-blue hover:text-white transition-all flex items-center gap-1.5 shadow-sm hover:shadow-md cursor-pointer border-none"
             >
               Start a Project <ArrowRight className="w-3.5 h-3.5" />
@@ -946,117 +905,550 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
             </button>
             <button
               type="button"
-              onClick={() => { setMobileMenuOpen(false); onNavigate("/audit"); }}
+              onClick={() => { setMobileMenuOpen(false); if (onOpenAuditPopup) onOpenAuditPopup(); else onNavigate("/audit"); }}
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-blue border-b border-black/10 bg-transparent"
+            >
+              ⚡ FREE 360° AUDIT
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMobileMenuOpen(false); onNavigate("/contact"); }}
               className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-dark border-b border-black/10 bg-transparent"
             >
-              FREE 360° AUDIT
+              CONTACT DESK
             </button>
 
-            <div className="pt-4 flex flex-col gap-3">
+            <div className="pt-2 flex flex-col gap-3">
               <a
                 href="tel:+919876543210"
-                className="text-center py-2.5 border border-black/20 rounded-lg font-space font-bold text-xs uppercase text-brand-dark text-decoration-none"
+                className="text-gray-700 text-xs font-space font-bold uppercase tracking-wider py-1 flex items-center gap-2 text-decoration-none"
               >
-                Call: +91 98765 43210
+                <Phone className="w-4 h-4 text-brand-blue" /> Call +91 98765 43210
               </a>
               <button
                 type="button"
-                onClick={() => { setMobileMenuOpen(false); setLeadModalOpen(true); }}
-                className="w-full bg-brand-dark text-white py-3 rounded-lg font-space font-bold text-xs uppercase hover:bg-brand-blue transition-colors cursor-pointer border-none"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  if (onOpenLeadModal) onOpenLeadModal();
+                  else onNavigate("/contact");
+                }}
+                className="bg-brand-dark text-white px-5 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-blue transition-all flex justify-center items-center gap-2 cursor-pointer border-none w-full"
               >
-                Start a Project →
+                Start a Project <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
         )}
       </header>
+    </>
+  );
+}
 
-      {/* Main Page Slot */}
+// =========================================================================
+// UNIVERSAL BRANDED PAGE FOOTER
+// =========================================================================
+export function PageFooter({ onNavigate }) {
+  return (
+    <footer className="bg-white border-t border-black/10 pt-16 pb-12 px-6 md:px-12 w-full mt-auto text-brand-dark">
+      <div className="max-w-[1280px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+          {/* Brand Column */}
+          <div className="lg:col-span-2 space-y-4">
+            <button
+              type="button"
+              onClick={() => onNavigate("/")}
+              className="flex items-center gap-1.5 text-left bg-transparent border-none cursor-pointer p-0"
+            >
+              <span className="font-space font-extrabold text-2xl tracking-tighter uppercase text-brand-dark">
+                GETINTOFEED
+              </span>
+              <span className="w-2.5 h-2.5 rounded-full bg-brand-lime border border-brand-dark"></span>
+            </button>
+            <p className="text-gray-600 text-xs md:text-sm font-inter max-w-sm leading-relaxed">
+              Full-stack creative marketing and performance agency. We engineer thumb-stopping video, high-converting React funnels, and algorithmic paid media for ambitious brands.
+            </p>
+            <div className="pt-2">
+              <div className="inline-flex items-center gap-2 bg-brand-lime/20 border border-brand-lime/40 text-brand-dark px-3 py-1.5 rounded-full text-xs font-space font-bold uppercase">
+                <span className="w-2 h-2 rounded-full bg-[#16a34a] animate-pulse"></span>
+                Accepting 3 New Sprints
+              </div>
+            </div>
+          </div>
+
+          {/* Content Column */}
+          <div className="space-y-3">
+            <h4 className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue">CONTENT</h4>
+            <ul className="space-y-2 text-xs font-inter text-gray-600">
+              <li><button type="button" onClick={() => onNavigate("/blog")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Feed Notes / Blog</button></li>
+              <li><button type="button" onClick={() => onNavigate("/work")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Social Campaigns</button></li>
+              <li><button type="button" onClick={() => onNavigate("/contact")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Contact Growth Desk</button></li>
+              <li><button type="button" onClick={() => onNavigate("/audit")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Free 360° Audit</button></li>
+            </ul>
+          </div>
+
+          {/* Creative Column */}
+          <div className="space-y-3">
+            <h4 className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue">CREATIVE</h4>
+            <ul className="space-y-2 text-xs font-inter text-gray-600">
+              <li><button type="button" onClick={() => onNavigate("/services/branding")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Brand Identity</button></li>
+              <li><button type="button" onClick={() => onNavigate("/services/performance-marketing")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Paid Media Ads</button></li>
+              <li><button type="button" onClick={() => onNavigate("/services/web-development")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Web Development</button></li>
+              <li><button type="button" onClick={() => onNavigate("/services/seo")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">AI Search & SEO</button></li>
+              <li><button type="button" onClick={() => onNavigate("/services/content-creation")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Reels & Video</button></li>
+            </ul>
+          </div>
+
+          {/* Company & Legal Column */}
+          <div className="space-y-3">
+            <h4 className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue">COMPANY & LEGAL</h4>
+            <ul className="space-y-2 text-xs font-inter text-gray-600">
+              <li><button type="button" onClick={() => onNavigate("/about")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">About GetIntoFeed</button></li>
+              <li><button type="button" onClick={() => onNavigate("/reviews")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Reviews & Proof</button></li>
+              <li><button type="button" onClick={() => onNavigate("/awards")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Awards & Honors</button></li>
+              <li><button type="button" onClick={() => onNavigate("/careers")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Careers & Culture</button></li>
+              <li><button type="button" onClick={() => onNavigate("/faqs")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Agency FAQs</button></li>
+              <li><button type="button" onClick={() => onNavigate("/sitemap")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Sitemap</button></li>
+              <li><button type="button" onClick={() => onNavigate("/privacy")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Privacy Policy</button></li>
+              <li><button type="button" onClick={() => onNavigate("/cookie-policy")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Cookie Policy</button></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-8 border-t border-black/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-space uppercase">
+          <p>© {new Date().getFullYear()} GETINTOFEED CREATIVE STUDIO. ALL RIGHTS RESERVED.</p>
+          <div className="flex items-center gap-4">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-brand-dark text-gray-500 transition-colors">Instagram</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-brand-dark text-gray-500 transition-colors">LinkedIn</a>
+            <button type="button" onClick={() => onNavigate("/admin")} className="hover:text-brand-blue text-gray-500 transition-colors bg-transparent border-none p-0 cursor-pointer">Admin CMS</button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+// =========================================================================
+// UNIVERSAL COOKIE & PRIVACY PREFERENCES BANNER (HOMEPAGE + ALL PAGES)
+// =========================================================================
+export function CookieConsentBanner({ onNavigate }) {
+  const [cookieBannerVisible, setCookieBannerVisible] = useState(() => {
+    try {
+      return !localStorage.getItem("gif_cookie_consent");
+    } catch {
+      return true;
+    }
+  });
+  const [cookiePrefsOpen, setCookiePrefsOpen] = useState(false);
+  const [cookiePrefs, setCookiePrefs] = useState({ necessary: true, analytics: true, marketing: true, preferences: true });
+
+  const handleAcceptCookies = (all = true) => {
+    try {
+      localStorage.setItem("gif_cookie_consent", all ? "all" : JSON.stringify(cookiePrefs));
+    } catch {}
+    setCookieBannerVisible(false);
+    setCookiePrefsOpen(false);
+  };
+
+  if (!cookieBannerVisible) return null;
+
+  return (
+    <>
+      <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 bg-white border-2 border-black rounded-2xl p-5 shadow-2xl animate-in slide-in-from-bottom duration-300 text-brand-dark">
+        <div className="flex items-start gap-3">
+          <Shield className="w-5 h-5 text-brand-blue shrink-0 mt-0.5" />
+          <div>
+            <h5 className="font-space font-bold text-xs uppercase tracking-wider text-brand-dark mb-1">
+              COOKIE & PRIVACY PREFERENCES
+            </h5>
+            <p className="text-gray-600 text-xs font-inter mb-4 leading-relaxed">
+              We use necessary cookies for site function and analytics cookies to optimize user experience. Review our{" "}
+              <button
+                type="button"
+                onClick={() => onNavigate("/cookie-policy")}
+                className="underline text-brand-blue bg-transparent border-none p-0 cursor-pointer font-medium"
+              >
+                Cookie Policy
+              </button>.
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => handleAcceptCookies(true)}
+                className="bg-brand-lime text-brand-dark px-4 py-2 rounded-lg font-space font-bold text-xs uppercase hover:bg-[#E2FF4D] cursor-pointer border-none shadow-sm"
+              >
+                Accept All
+              </button>
+              <button
+                type="button"
+                onClick={() => handleAcceptCookies(false)}
+                className="bg-transparent border border-black/20 text-brand-dark px-3 py-2 rounded-lg font-space font-bold text-xs uppercase hover:bg-gray-100 cursor-pointer"
+              >
+                Reject Optional
+              </button>
+              <button
+                type="button"
+                onClick={() => setCookiePrefsOpen(true)}
+                className="text-xs text-gray-500 hover:text-black underline font-space uppercase ml-auto bg-transparent border-none cursor-pointer"
+              >
+                Preferences
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {cookiePrefsOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-black rounded-2xl max-w-md w-full p-6 shadow-2xl text-brand-dark">
+            <div className="flex items-center justify-between pb-3 border-b border-black/10 mb-4">
+              <h4 className="font-space font-bold text-sm uppercase text-brand-dark">Customize Cookie Settings</h4>
+              <button type="button" onClick={() => setCookiePrefsOpen(false)} className="text-gray-500 bg-transparent border-none cursor-pointer">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="space-y-3 text-xs font-inter text-gray-700 mb-6">
+              <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg border border-black/5">
+                <div>
+                  <div className="font-bold text-brand-dark">Strictly Necessary</div>
+                  <div className="text-[11px] text-gray-500">Core navigation, security, and sessions.</div>
+                </div>
+                <input type="checkbox" checked disabled className="cursor-not-allowed" />
+              </div>
+              <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg border border-black/5">
+                <div>
+                  <div className="font-bold text-brand-dark">Analytics & Performance</div>
+                  <div className="text-[11px] text-gray-500">GA4 event tracking and heatmaps.</div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={cookiePrefs.analytics}
+                  onChange={(e) => setCookiePrefs({ ...cookiePrefs, analytics: e.target.checked })}
+                  className="cursor-pointer"
+                />
+              </div>
+              <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg border border-black/5">
+                <div>
+                  <div className="font-bold text-brand-dark">Marketing & Retargeting</div>
+                  <div className="text-[11px] text-gray-500">Meta CAPI and Google Ads conversion pixels.</div>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={cookiePrefs.marketing}
+                  onChange={(e) => setCookiePrefs({ ...cookiePrefs, marketing: e.target.checked })}
+                  className="cursor-pointer"
+                />
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleAcceptCookies(false)}
+              className="w-full bg-brand-dark text-white py-2.5 rounded-lg font-space font-bold text-xs uppercase hover:bg-brand-blue transition-colors cursor-pointer border-none shadow-sm"
+            >
+              Save Preferences
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// =========================================================================
+// HIGH-CONVERTING GROWTH & CREATIVE AUDIT POP-UP (INTERACTIVE POPUP)
+// =========================================================================
+export function GrowthAuditPopup({ isOpen, onClose, onNavigate }) {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    website: "",
+    service: "Paid Performance & Ads ROAS",
+    revenue: "₹5L - ₹20L / month",
+    challenge: ""
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.phone) {
+      alert("Please enter your name, email, and phone number.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const newLead = {
+        id: "lead-" + Date.now(),
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.website || "Private Brand",
+        service: formData.service,
+        budget: formData.revenue,
+        status: "New",
+        date: new Date().toISOString().slice(0, 10),
+        message: formData.challenge ? `Growth Goal: ${formData.service} | Bottleneck: ${formData.challenge}` : "Requested Free 360° Growth & Creative Audit"
+      };
+
+      // 1. Update localStorage CRM store immediately for Admin
+      try {
+        const existingRaw = localStorage.getItem("gif_admin_leads");
+        const existing = existingRaw ? JSON.parse(existingRaw) : [];
+        localStorage.setItem("gif_admin_leads", JSON.stringify([newLead, ...existing]));
+        window.dispatchEvent(new Event("storage"));
+      } catch {}
+
+      // 2. Call backend API
+      await fetch(`${API_URL}/api/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newLead)
+      });
+
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        onClose();
+      }, 3500);
+    } catch {
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        onClose();
+      }, 3500);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[150] bg-black/75 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white border-2 border-black rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-brand-dark overflow-hidden animate-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Top Gradient Banner */}
+        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-brand-lime via-brand-blue to-brand-lime"></div>
+
+        {/* Close Button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute top-5 right-5 w-8 h-8 rounded-full bg-brand-light-gray hover:bg-black hover:text-white transition-colors flex items-center justify-center border border-black/10 cursor-pointer"
+          aria-label="Close Popup"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {submitted ? (
+          <div className="text-center py-10 space-y-4">
+            <div className="w-16 h-16 rounded-2xl bg-brand-lime border-2 border-black flex items-center justify-center mx-auto text-brand-dark shadow-[4px_4px_0px_#000]">
+              <CheckCircle2 className="w-9 h-9" />
+            </div>
+            <h3 className="font-space font-extrabold text-2xl uppercase tracking-tight text-brand-dark">
+              AUDIT DOSSIER QUEUED!
+            </h3>
+            <p className="text-gray-600 text-xs md:text-sm font-inter max-w-sm mx-auto leading-relaxed">
+              Our Senior Growth Architect is reviewing your brand. We will send your custom teardown via WhatsApp/Email within <strong>24 to 48 hours</strong>.
+            </p>
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-light-gray text-xs font-space font-bold text-brand-blue">
+              <Sparkles className="w-3.5 h-3.5" /> Direct WhatsApp Dispatch
+            </div>
+          </div>
+        ) : (
+          <div>
+            {/* Header with Badges */}
+            <div className="mb-5 text-left">
+              <div className="flex flex-wrap items-center gap-2 mb-2.5">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase tracking-wider border border-black">
+                  <Flame className="w-3 h-3 text-brand-dark fill-brand-dark" /> LIMITED TO 5 BRANDS / MONTH
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] font-space font-bold uppercase text-brand-blue bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                  ₹25,000 VALUE — 100% FREE
+                </span>
+              </div>
+              <h2 className="font-space font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-brand-dark leading-tight">
+                CLAIM YOUR FREE 360° GROWTH AUDIT.
+              </h2>
+              <p className="text-gray-600 text-xs font-inter mt-1.5 leading-relaxed">
+                Get a senior strategist teardown of your paid ads ROAS, viral reel hooks, and conversion funnel bottlenecks — with zero sales pressure.
+              </p>
+            </div>
+
+            {/* Audit Form */}
+            <form onSubmit={handleSubmit} className="space-y-3.5 text-left">
+              <div>
+                <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                  Founder / Marketing Lead Name *
+                </label>
+                <input
+                  required
+                  type="text"
+                  placeholder="e.g. Ashish Raghav"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Work Email *
+                  </label>
+                  <input
+                    required
+                    type="email"
+                    placeholder="e.g. ashish@brand.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    WhatsApp / Phone *
+                  </label>
+                  <input
+                    required
+                    type="tel"
+                    placeholder="e.g. +91 98765 43210"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Website / Instagram Link
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. yourbrand.com"
+                    value={formData.website}
+                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Primary Growth Goal
+                  </label>
+                  <select
+                    value={formData.service}
+                    onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none"
+                  >
+                    <option value="Paid Performance & Ads ROAS">Scale Meta & Google ROAS</option>
+                    <option value="Short-Form Video & Reels">Viral Reels & 9:16 Creative</option>
+                    <option value="Brand Positioning & Identity">Brand Identity & Redesign</option>
+                    <option value="Web Engineering & CRO Funnel">High-Converting Web Funnel</option>
+                    <option value="Generative Engine Optimization (GEO)">Search SEO & AI Citation</option>
+                    <option value="Influencer Seeding Network">Creator & Influencer Network</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                  Biggest Marketing Bottleneck (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Ad fatigue, high CAC, low landing page conversion..."
+                  value={formData.challenge}
+                  onChange={(e) => setFormData({ ...formData, challenge: e.target.value })}
+                  className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-brand-lime text-brand-dark py-3.5 rounded-xl font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-black shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50 mt-4"
+              >
+                {submitting ? "Analyzing & Transmitting..." : "Claim Free 360° Growth Audit →"}
+              </button>
+
+              <div className="flex items-center justify-center gap-4 text-[10px] text-gray-500 font-inter pt-1">
+                <span className="flex items-center gap-1">🔒 100% Confidential</span>
+                <span className="flex items-center gap-1">⚡ 48-Hour Turnaround</span>
+                <span className="flex items-center gap-1">🚫 No Spam</span>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+
+export function PageLayout({ children, onNavigate, activeNav = "" }) {
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [auditPopupOpen, setAuditPopupOpen] = useState(false);
+
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", website: "", service: "General Growth Inquiry", message: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleLeadSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.phone) {
+      alert("Please fill in your name, email, and phone number.");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await fetch(`${API_URL}/api/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...formData, source: "Subpage Quick Consultation" })
+      });
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setLeadModalOpen(false);
+        setFormData({ name: "", email: "", phone: "", website: "", service: "General Growth Inquiry", message: "" });
+      }, 2000);
+    } catch (err) {
+      setSubmitted(true);
+      setTimeout(() => { setSubmitted(false); setLeadModalOpen(false); }, 2000);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="antialiased selection:bg-brand-lime selection:text-brand-dark bg-[#FAFAFA] font-inter relative min-h-screen text-[#09090B] flex flex-col justify-between">
+      {/* 1. Universal Branded Header */}
+      <PageHeader
+        onNavigate={onNavigate}
+        activeNav={activeNav}
+        onOpenLeadModal={() => setLeadModalOpen(true)}
+        onOpenAuditPopup={() => setAuditPopupOpen(true)}
+      />
+
+      {/* 2. Main Page Content Slot */}
       <main className="flex-1 w-full max-w-[1280px] mx-auto px-6 md:px-12 py-8 md:py-16">
         {children}
       </main>
 
-      {/* Global Branded Light Footer */}
-      <footer className="bg-white border-t border-black/10 pt-16 pb-12 px-6 md:px-12 w-full mt-auto">
-        <div className="max-w-[1280px] mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
-            {/* Brand Column */}
-            <div className="lg:col-span-2 space-y-4">
-              <button
-                type="button"
-                onClick={() => onNavigate("/")}
-                className="flex items-center gap-1.5 text-left bg-transparent border-none cursor-pointer p-0"
-              >
-                <span className="font-space font-extrabold text-2xl tracking-tighter uppercase text-brand-dark">
-                  GETINTOFEED
-                </span>
-                <span className="w-2.5 h-2.5 rounded-full bg-brand-lime border border-brand-dark"></span>
-              </button>
-              <p className="text-gray-600 text-xs md:text-sm font-inter max-w-sm leading-relaxed">
-                Full-stack creative marketing and performance agency. We engineer thumb-stopping video, high-converting React funnels, and algorithmic paid media for ambitious brands.
-              </p>
-              <div className="pt-2">
-                <div className="inline-flex items-center gap-2 bg-brand-lime/20 border border-brand-lime/40 text-brand-dark px-3 py-1.5 rounded-full text-xs font-space font-bold uppercase">
-                  <span className="w-2 h-2 rounded-full bg-[#16a34a] animate-pulse"></span>
-                  Accepting 3 New Sprints
-                </div>
-              </div>
-            </div>
+      {/* 3. Global Branded Footer */}
+      <PageFooter onNavigate={onNavigate} />
 
-            {/* Content Column */}
-            <div className="space-y-3">
-              <h4 className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue">CONTENT</h4>
-              <ul className="space-y-2 text-xs font-inter text-gray-600">
-                <li><button type="button" onClick={() => onNavigate("/blog")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Feed Notes / Blog</button></li>
-                <li><button type="button" onClick={() => onNavigate("/work")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Social Campaigns</button></li>
-                <li><button type="button" onClick={() => onNavigate("/contact")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Contact Growth Desk</button></li>
-                <li><button type="button" onClick={() => onNavigate("/audit")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Free 360° Audit</button></li>
-              </ul>
-            </div>
-
-            {/* Creative Column */}
-            <div className="space-y-3">
-              <h4 className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue">CREATIVE</h4>
-              <ul className="space-y-2 text-xs font-inter text-gray-600">
-                <li><button type="button" onClick={() => onNavigate("/services/branding")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Brand Identity</button></li>
-                <li><button type="button" onClick={() => onNavigate("/services/performance-marketing")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Paid Media Ads</button></li>
-                <li><button type="button" onClick={() => onNavigate("/services/web-development")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Web Development</button></li>
-                <li><button type="button" onClick={() => onNavigate("/services/seo")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">AI Search & SEO</button></li>
-                <li><button type="button" onClick={() => onNavigate("/services/content-creation")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Reels & Video</button></li>
-              </ul>
-            </div>
-
-            {/* Company & Legal Column */}
-            <div className="space-y-3">
-              <h4 className="font-space font-bold text-xs uppercase tracking-widest text-brand-blue">COMPANY & LEGAL</h4>
-              <ul className="space-y-2 text-xs font-inter text-gray-600">
-                <li><button type="button" onClick={() => onNavigate("/about")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">About GetIntoFeed</button></li>
-                <li><button type="button" onClick={() => onNavigate("/reviews")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Reviews & Proof</button></li>
-                <li><button type="button" onClick={() => onNavigate("/awards")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Awards & Honors</button></li>
-                <li><button type="button" onClick={() => onNavigate("/careers")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Careers & Culture</button></li>
-                <li><button type="button" onClick={() => onNavigate("/faqs")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Agency FAQs</button></li>
-                <li><button type="button" onClick={() => onNavigate("/sitemap")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Sitemap</button></li>
-                <li><button type="button" onClick={() => onNavigate("/privacy")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Privacy Policy</button></li>
-                <li><button type="button" onClick={() => onNavigate("/cookie-policy")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Cookie Policy</button></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-black/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500 font-space uppercase">
-            <p>© {new Date().getFullYear()} GETINTOFEED CREATIVE STUDIO. ALL RIGHTS RESERVED.</p>
-            <div className="flex items-center gap-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-brand-dark text-gray-500 transition-colors">Instagram</a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-brand-dark text-gray-500 transition-colors">LinkedIn</a>
-              <button type="button" onClick={() => onNavigate("/admin")} className="hover:text-brand-blue text-gray-500 transition-colors bg-transparent border-none p-0 cursor-pointer">Admin CMS</button>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Quick Project Lead Modal */}
+      {/* 4. Quick Consultation Modal */}
       {leadModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
-          <div className="bg-white border-2 border-black rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative">
+          <div className="bg-white border-2 border-black rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-brand-dark">
             <button
               type="button"
               onClick={() => setLeadModalOpen(false)}
@@ -1079,31 +1471,36 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
               </div>
             ) : (
               <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-brand-lime border border-black"></span>
-                  <span className="font-space font-bold text-xs uppercase tracking-wider text-brand-blue">Growth Sprint Consultation</span>
+                <div className="mb-6">
+                  <span className="font-space text-[10px] font-bold bg-brand-lime text-brand-dark px-2.5 py-1 rounded-full uppercase border border-black/10">
+                    GET INTO THE FEED
+                  </span>
+                  <h3 className="font-space font-extrabold text-2xl uppercase tracking-tight text-brand-dark mt-2 mb-1">
+                    START YOUR SPRINT
+                  </h3>
+                  <p className="text-xs text-gray-500 font-inter">
+                    Direct access to senior strategists. We reply in under 15 minutes.
+                  </p>
                 </div>
-                <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark mb-4">
-                  LET'S BUILD YOUR SPRINT.
-                </h3>
+
                 <form onSubmit={handleLeadSubmit} className="space-y-3.5 text-left">
                   <div>
                     <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Your Name *</label>
                     <input
                       type="text"
-                      placeholder="e.g. Rahul Sharma"
+                      placeholder="e.g. Ashish Raghav"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
                       className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
                     />
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Email *</label>
+                      <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Work Email *</label>
                       <input
                         type="email"
-                        placeholder="rahul@brand.com"
+                        placeholder="ashish@brand.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         required
@@ -1146,95 +1543,15 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
         </div>
       )}
 
-      {/* Cookie Consent Banner */}
-      {cookieBannerVisible && (
-        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 bg-white border-2 border-black rounded-2xl p-5 shadow-2xl animate-in slide-in-from-bottom duration-300">
-          <div className="flex items-start gap-3">
-            <Shield className="w-5 h-5 text-brand-blue shrink-0 mt-0.5" />
-            <div>
-              <h5 className="font-space font-bold text-xs uppercase tracking-wider text-brand-dark mb-1">
-                COOKIE & PRIVACY PREFERENCES
-              </h5>
-              <p className="text-gray-600 text-xs font-inter mb-4 leading-relaxed">
-                We use necessary cookies for site function and analytics cookies to optimize user experience. Review our <button type="button" onClick={() => onNavigate("/cookie-policy")} className="underline text-brand-blue bg-transparent border-none p-0 cursor-pointer">Cookie Policy</button>.
-              </p>
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleAcceptCookies(true)}
-                  className="bg-brand-lime text-brand-dark px-4 py-2 rounded-lg font-space font-bold text-xs uppercase hover:bg-[#E2FF4D] cursor-pointer border-none"
-                >
-                  Accept All
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleAcceptCookies(false)}
-                  className="bg-transparent border border-black/20 text-brand-dark px-3 py-2 rounded-lg font-space font-bold text-xs uppercase hover:bg-gray-100 cursor-pointer"
-                >
-                  Reject Optional
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCookiePrefsOpen(true)}
-                  className="text-xs text-gray-500 hover:text-black underline font-space uppercase ml-auto bg-transparent border-none cursor-pointer"
-                >
-                  Preferences
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* 5. Global Cookie & Privacy Preferences Banner */}
+      <CookieConsentBanner onNavigate={onNavigate} />
 
-      {/* Cookie Preferences Modal */}
-      {cookiePrefsOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border-2 border-black rounded-2xl max-w-md w-full p-6 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-black/10 mb-4">
-              <h4 className="font-space font-bold text-sm uppercase text-brand-dark">Customize Cookie Settings</h4>
-              <button type="button" onClick={() => setCookiePrefsOpen(false)} className="text-gray-500 bg-transparent border-none cursor-pointer"><X className="w-4 h-4" /></button>
-            </div>
-            <div className="space-y-3 text-xs font-inter text-gray-700 mb-6">
-              <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
-                <div>
-                  <div className="font-bold text-brand-dark">Strictly Necessary</div>
-                  <div className="text-[11px] text-gray-500">Core navigation, security, and sessions.</div>
-                </div>
-                <input type="checkbox" checked disabled className="cursor-not-allowed" />
-              </div>
-              <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
-                <div>
-                  <div className="font-bold text-brand-dark">Analytics & Performance</div>
-                  <div className="text-[11px] text-gray-500">GA4 event tracking and heatmaps.</div>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={cookiePrefs.analytics}
-                  onChange={(e) => setCookiePrefs({ ...cookiePrefs, analytics: e.target.checked })}
-                />
-              </div>
-              <div className="flex items-center justify-between p-2.5 bg-gray-50 rounded-lg">
-                <div>
-                  <div className="font-bold text-brand-dark">Marketing & Retargeting</div>
-                  <div className="text-[11px] text-gray-500">Meta CAPI and Google Ads conversion pixels.</div>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={cookiePrefs.marketing}
-                  onChange={(e) => setCookiePrefs({ ...cookiePrefs, marketing: e.target.checked })}
-                />
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => handleAcceptCookies(false)}
-              className="w-full bg-brand-dark text-white py-2.5 rounded-lg font-space font-bold text-xs uppercase hover:bg-brand-blue transition-colors cursor-pointer border-none"
-            >
-              Save Preferences
-            </button>
-          </div>
-        </div>
-      )}
+      {/* 6. High-Converting Growth Audit Popup */}
+      <GrowthAuditPopup
+        isOpen={auditPopupOpen}
+        onClose={() => setAuditPopupOpen(false)}
+        onNavigate={onNavigate}
+      />
     </div>
   );
 }
