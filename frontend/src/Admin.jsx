@@ -88,7 +88,15 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState(() => {
     try {
       const saved = localStorage.getItem("gif_admin_users");
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length >= 4) {
+          return parsed;
+        }
+      }
+    } catch {}
+    try {
+      localStorage.setItem("gif_admin_users", JSON.stringify(INITIAL_USERS));
     } catch {}
     return INITIAL_USERS;
   });
@@ -123,7 +131,15 @@ export default function AdminDashboard() {
   const [services, setServices] = useState(() => {
     try {
       const saved = localStorage.getItem("gif_services_catalog");
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.overview && parsed[0]?.strategySteps) {
+          return parsed;
+        }
+      }
+    } catch {}
+    try {
+      localStorage.setItem("gif_services_catalog", JSON.stringify(INITIAL_SERVICES));
     } catch {}
     return INITIAL_SERVICES;
   });
@@ -131,7 +147,15 @@ export default function AdminDashboard() {
   const [caseStudies, setCaseStudies] = useState(() => {
     try {
       const saved = localStorage.getItem("gif_case_studies_catalog");
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.challenge && parsed[0]?.strategy) {
+          return parsed;
+        }
+      }
+    } catch {}
+    try {
+      localStorage.setItem("gif_case_studies_catalog", JSON.stringify(INITIAL_CASE_STUDIES));
     } catch {}
     return INITIAL_CASE_STUDIES;
   });
@@ -187,6 +211,24 @@ export default function AdminDashboard() {
   const [newUserData, setNewUserData] = useState({ name: "", email: "", password: "", role: "Editor" });
 
   // Persistence helpers
+  // 1-Click Master Catalog Reset / Recovery
+  const handleResetMasterCatalog = () => {
+    if (window.confirm("Restore factory default master catalog? This will refresh all 8 pre-seeded services and case studies with complete 7-section content.")) {
+      try {
+        localStorage.setItem("gif_services_catalog", JSON.stringify(INITIAL_SERVICES));
+        localStorage.setItem("gif_case_studies_catalog", JSON.stringify(INITIAL_CASE_STUDIES));
+        localStorage.setItem("gif_admin_users", JSON.stringify(INITIAL_USERS));
+        setServices(INITIAL_SERVICES);
+        setCaseStudies(INITIAL_CASE_STUDIES);
+        setUsers(INITIAL_USERS);
+        window.dispatchEvent(new Event("storage"));
+        showNotice("Master catalog successfully restored to factory defaults!");
+      } catch (err) {
+        alert("Error resetting catalog: " + err.message);
+      }
+    }
+  };
+
   const showNotice = (msg) => {
     setNotification(msg);
     setTimeout(() => setNotification(""), 4000);
@@ -643,9 +685,49 @@ export default function AdminDashboard() {
           >
             <ExternalLink size={13} /> Visit Site
           </a>
+          <div className="wp-topbar-quick-actions">
+            {isEditorOrAdmin && (
+              <>
+                <button
+                  type="button"
+                  className="wp-topbar-link"
+                  onClick={handleStartNewService}
+                  title="Create New Service"
+                >
+                  <Plus size={13} /> New Service
+                </button>
+                <button
+                  type="button"
+                  className="wp-topbar-link"
+                  onClick={handleStartNewCaseStudy}
+                  title="Create New Case Study"
+                >
+                  <Plus size={13} /> New Case Study
+                </button>
+              </>
+            )}
+            {isAdmin && (
+              <button
+                type="button"
+                className="wp-topbar-link"
+                onClick={() => setIsAddUserModalOpen(true)}
+                title="Add New User"
+              >
+                <Plus size={13} /> New User
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="wp-topbar-right">
+          <button
+            type="button"
+            onClick={handleResetMasterCatalog}
+            className="wp-topbar-reset-btn"
+            title="Restore Master Data to Factory Defaults"
+          >
+            <RefreshCw size={12} /> Reset Master Data
+          </button>
           {/* Quick RBAC Switcher */}
           <div className="wp-role-switcher">
             <span className="wp-role-label">Role Switcher:</span>
@@ -897,6 +979,14 @@ export default function AdminDashboard() {
                         </button>
                       </>
                     )}
+                    <button
+                      type="button"
+                      onClick={handleResetMasterCatalog}
+                      className="wp-btn wp-btn-outline"
+                      title="Restore all 8 Services and Case Studies to factory defaults"
+                    >
+                      <RefreshCw size={15} /> Restore Master Catalog
+                    </button>
                     <a href="/" target="_blank" rel="noreferrer" className="wp-btn wp-btn-outline">
                       <ExternalLink size={15} /> Visit Website
                     </a>

@@ -426,7 +426,7 @@ export function getStoredServices() {
     const raw = localStorage.getItem("gif_services_catalog");
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.overview && parsed[0]?.strategySteps) {
         return parsed.map((s) => {
           let IconComp = Sparkles;
           if (typeof s.icon === "string") {
@@ -448,7 +448,7 @@ export function getStoredCaseStudies() {
     const raw = localStorage.getItem("gif_case_studies_catalog");
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0]?.challenge && parsed[0]?.strategy) {
         return parsed;
       }
     }
@@ -1626,7 +1626,7 @@ export function ServiceDetailPage({ slug, onNavigate }) {
                 WHAT WE DO & EXECUTE
               </h3>
               <div className="space-y-3.5">
-                {service.whatWeDo.map((item, idx) => (
+                {(service.whatWeDo || []).map((item, idx) => (
                   <div key={idx} className="flex items-start gap-3 text-xs md:text-sm font-inter text-gray-700">
                     <div className="w-5 h-5 rounded-full bg-brand-lime flex items-center justify-center shrink-0 mt-0.5 text-brand-dark font-space font-bold text-[10px]">
                       ✓
@@ -1643,7 +1643,7 @@ export function ServiceDetailPage({ slug, onNavigate }) {
                 4-STEP SPRINT ROADMAP.
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {service.strategySteps.map((st, idx) => (
+                {(service.strategySteps || []).map((st, idx) => (
                   <div key={idx} className="bg-white border-2 border-black rounded-2xl p-6">
                     <div className="font-space font-extrabold text-2xl text-brand-blue mb-1">
                       {st.step}
@@ -1665,7 +1665,7 @@ export function ServiceDetailPage({ slug, onNavigate }) {
                 INCLUDED ASSETS & DELIVERABLES
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {service.deliverables.map((del, idx) => (
+                {(service.deliverables || []).map((del, idx) => (
                   <div key={idx} className="flex items-center gap-2 bg-white px-3.5 py-2.5 rounded-xl border border-black/10 text-xs font-inter text-gray-800">
                     <Check className="w-3.5 h-3.5 text-[#16a34a] shrink-0" />
                     <span>{del}</span>
@@ -1679,7 +1679,7 @@ export function ServiceDetailPage({ slug, onNavigate }) {
               <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark mb-4">
                 FREQUENTLY ASKED QUESTIONS
               </h3>
-              {service.faqs.map((faq, idx) => (
+              {(service.faqs || []).map((faq, idx) => (
                 <div key={idx} className="bg-white border-2 border-black rounded-2xl p-5">
                   <div className="font-space font-bold text-xs uppercase text-brand-dark mb-1.5">
                     {faq.q}
@@ -1976,7 +1976,7 @@ export function CaseStudyDetailPage({ slug, onNavigate }) {
             {cs.title}
           </h1>
           <div className="flex flex-wrap gap-2 mb-8">
-            {cs.services.map((s, idx) => (
+            {(cs.services || []).map((s, idx) => (
               <span key={idx} className="bg-brand-light-gray border border-black/10 text-gray-700 px-3 py-1 rounded-full text-xs font-space font-bold uppercase">
                 {s}
               </span>
@@ -1991,7 +1991,7 @@ export function CaseStudyDetailPage({ slug, onNavigate }) {
 
         {/* Key Metrics Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {cs.results.map((r, idx) => (
+          {(cs.results || []).map((r, idx) => (
             <div key={idx} className="bg-white border-2 border-black rounded-2xl p-6 text-center">
               <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-blue mb-1">
                 {r.val}
