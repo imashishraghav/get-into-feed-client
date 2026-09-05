@@ -125,7 +125,12 @@ export default function App() {
     };
     window.addEventListener("scroll", handleScroll);
 
-    
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [route]);
+
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
@@ -133,12 +138,6 @@ export default function App() {
       document.body.style.overflow = "";
     }
   }, [mobileMenuOpen]);
-  
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, [route]);
 
   const navigate = (path) => {
     window.history.pushState({}, "", path);
