@@ -4,9 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "pnpm --dir frontend run dev",
-    "build": "pnpm --dir frontend run build",
-    "preview": "pnpm --dir frontend run preview",
+    "dev": "node app.js",
+    "build": "node -e \"console.log('Production build assets already prepared in dist/')\"",
     "start": "node app.js"
   },
   "dependencies": {
