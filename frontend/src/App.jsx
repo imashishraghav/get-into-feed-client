@@ -961,7 +961,7 @@ export default function App() {
         </div>
 
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-10 lg:gap-16 items-start relative z-10">
-          <div className="text-left lg:sticky lg:top-32">
+          <div className="text-left">
             <h2 className="font-space font-bold text-xs tracking-widest uppercase text-brand-blue mb-4">Philosophy</h2>
             <h3 className="font-space font-bold text-[38px] sm:text-[55px] md:text-[70px] xl:text-[80px] leading-[0.85] tracking-tighter uppercase text-brand-dark">
               NO <br /> BORING <br /> MARKETING.
@@ -1005,14 +1005,14 @@ export default function App() {
       {/* About Us Section */}
       <section id="about" className="relative z-10 py-12 md:py-16 bg-white px-6 md:px-12 lg:px-16 w-full border-y border-gray-200">
         <div className="max-w-[1280px] mx-auto grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-10 lg:gap-16 items-start reveal">
-          <div className="text-left lg:sticky lg:top-32">
+          <div className="text-left">
             <h2 className="font-space font-bold text-xs tracking-widest uppercase text-brand-blue mb-4">Who's behind the feed</h2>
             <h3 className="font-space font-bold text-[32px] sm:text-[40px] md:text-[50px] tracking-tighter mb-6 leading-[0.9] uppercase text-brand-dark">
               WE ARE <br /> GETINTOFEED.
             </h3>
           </div>
 
-          <div className="text-left text-sm md:text-base text-gray-600 space-y-4 md:space-y-5 leading-relaxed font-medium bg-brand-light-gray p-6 md:p-10 rounded-3xl border border-gray-100 transition-all duration-300 font-inter">
+          <div className="text-left text-sm md:text-base text-gray-600 space-y-4 md:space-y-5 leading-relaxed font-medium bg-brand-light-gray p-6 md:p-10 rounded-3xl border border-gray-100 font-inter">
             <p className="text-base md:text-xl font-space font-bold text-brand-dark">
               We’re not a big agency. We’re a group of experienced marketing specialists working together.
             </p>
