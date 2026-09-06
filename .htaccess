@@ -2,6 +2,12 @@
 # GET INTO FEED - HOSTINGER CLOUD APACHE / LITESPEED / PASSENGER CONFIGURATION
 # ==============================================================================
 
+# Disable broken Passenger runner so LiteSpeed directly serves SPA & PHP API
+<IfModule mod_passenger.c>
+  PassengerEnabled off
+</IfModule>
+PassengerEnabled off
+
 # 1. ENABLE REWRITE ENGINE
 <IfModule mod_rewrite.c>
   RewriteEngine On

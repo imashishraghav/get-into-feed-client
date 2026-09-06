@@ -700,16 +700,9 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
         <div className="bg-brand-lime text-brand-dark text-[10px] sm:text-xs py-2 px-4 flex items-center justify-between font-bold font-space uppercase tracking-wider z-50 relative w-full shadow-sm border-b border-black/10">
           <div className="flex items-center gap-2 max-w-5xl mx-auto flex-1 justify-center">
             <Zap className="w-3.5 h-3.5 fill-brand-dark shrink-0" />
-            <span className="line-clamp-1 sm:line-clamp-none text-center">
+            <span className="text-center">
               NOW TAKING ON 3 NEW BRANDS THIS MONTH — LET'S BUILD SOMETHING PEOPLE CAN'T SCROLL PAST.
             </span>
-            <button
-              type="button"
-              onClick={() => onOpenAuditPopup ? onOpenAuditPopup() : onNavigate("/contact")}
-              className="inline-flex bg-brand-dark text-white px-2.5 py-1 rounded text-[9px] sm:text-[10px] ml-2 hover:bg-black shrink-0 items-center gap-1 transition-colors cursor-pointer border-none font-bold font-space"
-            >
-              CLAIM AUDIT <ArrowRight className="w-3 h-3" />
-            </button>
           </div>
           <button
             type="button"
@@ -722,8 +715,8 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
         </div>
       )}
 
-      {/* Main Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-[#09090B]/95 backdrop-blur-md border-b border-white/10 transition-all text-white">
+      {/* Main Navigation Bar (Clean White Background) */}
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-200 transition-all text-brand-dark">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-3.5 flex items-center justify-between">
           {/* Brand Logo */}
           <button
@@ -731,7 +724,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             onClick={() => onNavigate("/")}
             className="flex items-center gap-1.5 text-left bg-transparent border-none cursor-pointer p-0 group"
           >
-            <span className="font-space font-extrabold text-xl md:text-2xl tracking-tighter uppercase text-white group-hover:text-brand-lime transition-colors">
+            <span className="font-space font-extrabold text-xl md:text-2xl tracking-tighter uppercase text-brand-dark group-hover:text-brand-blue transition-colors">
               GETINTOFEED
             </span>
             <span className="w-2.5 h-2.5 rounded-full bg-brand-lime border border-black shrink-0"></span>
@@ -748,34 +741,34 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
               <button
                 type="button"
                 onClick={() => onNavigate("/services")}
-                className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "services" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors flex items-center gap-1 cursor-pointer bg-transparent border-none py-2`}
+                className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "services" ? "text-brand-blue" : "text-gray-700"} hover:text-brand-dark transition-colors flex items-center gap-1 cursor-pointer bg-transparent border-none py-2`}
               >
                 SERVICES <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
               {servicesDropdownOpen && (
-                <div className="absolute top-full left-0 w-[620px] bg-[#121214] border-2 border-white/20 rounded-xl p-3.5 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute top-full left-0 w-[620px] bg-white border-2 border-black rounded-xl p-3.5 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   <div className="grid grid-cols-2 gap-2">
                     {getStoredServices().map((s) => (
                       <button
                         key={s.slug}
                         type="button"
                         onClick={() => { setServicesDropdownOpen(false); onNavigate(`/services/${s.slug}`); }}
-                        className="text-left p-2.5 rounded-lg hover:bg-[#1E1E22] transition-all flex items-start gap-2.5 group/item border border-transparent hover:border-white/10 bg-transparent cursor-pointer w-full"
+                        className="text-left p-2.5 rounded-lg hover:bg-gray-100 transition-all flex items-start gap-2.5 group/item border border-transparent hover:border-gray-200 bg-transparent cursor-pointer w-full"
                       >
-                        <s.icon className="w-4 h-4 text-brand-lime group-hover/item:text-white shrink-0 mt-0.5" />
+                        <s.icon className="w-4 h-4 text-brand-blue group-hover/item:text-brand-dark shrink-0 mt-0.5" />
                         <div>
-                          <div className="font-space font-bold text-[11px] uppercase text-white group-hover/item:text-brand-lime leading-tight">
+                          <div className="font-space font-bold text-[11px] uppercase text-brand-dark group-hover/item:text-brand-blue leading-tight">
                             {s.title}
                           </div>
-                          <div className="text-[10px] text-gray-400 line-clamp-1 font-inter mt-0.5">
+                          <div className="text-[10px] text-gray-500 line-clamp-1 font-inter mt-0.5">
                             {s.shortDesc}
                           </div>
                         </div>
                       </button>
                     ))}
                   </div>
-                  <div className="pt-2.5 border-t border-white/10 mt-2">
+                  <div className="pt-2.5 border-t border-gray-200 mt-2">
                     <button
                       type="button"
                       onClick={() => { setServicesDropdownOpen(false); onNavigate("/services"); }}
@@ -791,7 +784,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/work")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "work" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "work" ? "text-brand-blue" : "text-gray-700"} hover:text-brand-dark transition-colors cursor-pointer bg-transparent border-none`}
             >
               WORK
             </button>
@@ -799,7 +792,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/reviews")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "reviews" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "reviews" ? "text-brand-blue" : "text-gray-700"} hover:text-brand-dark transition-colors cursor-pointer bg-transparent border-none`}
             >
               REVIEWS
             </button>
@@ -807,7 +800,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/about")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "about" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "about" ? "text-brand-blue" : "text-gray-700"} hover:text-brand-dark transition-colors cursor-pointer bg-transparent border-none`}
             >
               ABOUT US
             </button>
@@ -815,7 +808,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/pricing")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "pricing" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "pricing" ? "text-brand-blue" : "text-gray-700"} hover:text-brand-dark transition-colors cursor-pointer bg-transparent border-none`}
             >
               PRICING
             </button>
@@ -823,7 +816,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/blog")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "blog" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "blog" ? "text-brand-blue" : "text-gray-700"} hover:text-brand-dark transition-colors cursor-pointer bg-transparent border-none`}
             >
               FEED NOTES
             </button>
@@ -833,16 +826,16 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
           <div className="hidden lg:flex items-center gap-4">
             <a
               href="tel:+919876543210"
-              className="font-space font-bold text-xs text-gray-300 hover:text-white transition-colors flex items-center gap-1.5 text-decoration-none"
+              className="font-space font-bold text-xs text-gray-700 hover:text-brand-dark transition-colors flex items-center gap-1.5 text-decoration-none"
             >
-              <Phone className="w-3.5 h-3.5 text-brand-lime" />
+              <Phone className="w-3.5 h-3.5 text-brand-blue" />
               <span>+91 98765 43210</span>
             </a>
 
             <button
               type="button"
               onClick={onOpenLeadModal ? onOpenLeadModal : () => onNavigate("/contact")}
-              className="bg-brand-lime text-brand-dark px-5 py-2.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-white hover:text-brand-dark transition-all flex items-center gap-1.5 shadow-md hover:shadow-lg cursor-pointer border-none"
+              className="bg-brand-lime text-brand-dark px-5 py-2.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-dark hover:text-white transition-all flex items-center gap-1.5 shadow-sm hover:shadow-md cursor-pointer border border-black/10"
             >
               Start a Project <ArrowRight className="w-3.5 h-3.5" />
             </button>
@@ -852,7 +845,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-white hover:text-brand-lime bg-transparent border-none cursor-pointer"
+            className="lg:hidden p-2 text-brand-dark hover:text-brand-blue bg-transparent border-none cursor-pointer"
             aria-label="Toggle Navigation"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -861,60 +854,53 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
 
         {/* Mobile Nav Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-[#09090B] border-b-2 border-white/20 px-6 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top duration-200">
+          <div className="lg:hidden bg-white border-b-2 border-gray-200 px-6 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top duration-200">
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/services"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-800 hover:text-brand-blue border-b border-gray-100 bg-transparent"
             >
               SERVICES
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/work"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-800 hover:text-brand-blue border-b border-gray-100 bg-transparent"
             >
               WORK
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/reviews"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-800 hover:text-brand-blue border-b border-gray-100 bg-transparent"
             >
               REVIEWS
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/about"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-800 hover:text-brand-blue border-b border-gray-100 bg-transparent"
             >
               ABOUT US
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/pricing"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-800 hover:text-brand-blue border-b border-gray-100 bg-transparent"
             >
               PRICING
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/blog"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-800 hover:text-brand-blue border-b border-gray-100 bg-transparent"
             >
               FEED NOTES / BLOG
             </button>
             <button
               type="button"
-              onClick={() => { setMobileMenuOpen(false); if (onOpenAuditPopup) onOpenAuditPopup(); else onNavigate("/audit"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-lime border-b border-white/10 bg-transparent"
-            >
-              ⚡ FREE 360° AUDIT
-            </button>
-            <button
-              type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/contact"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-800 hover:text-brand-blue border-b border-gray-100 bg-transparent"
             >
               CONTACT DESK
             </button>
@@ -922,9 +908,9 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <div className="pt-2 flex flex-col gap-3">
               <a
                 href="tel:+919876543210"
-                className="text-gray-300 text-xs font-space font-bold uppercase tracking-wider py-1 flex items-center gap-2 text-decoration-none hover:text-white"
+                className="text-gray-700 text-xs font-space font-bold uppercase tracking-wider py-1 flex items-center gap-2 text-decoration-none hover:text-brand-dark"
               >
-                <Phone className="w-4 h-4 text-brand-lime" /> Call +91 98765 43210
+                <Phone className="w-4 h-4 text-brand-blue" /> Call +91 98765 43210
               </a>
               <button
                 type="button"
@@ -933,7 +919,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
                   if (onOpenLeadModal) onOpenLeadModal();
                   else onNavigate("/contact");
                 }}
-                className="bg-brand-lime text-brand-dark px-5 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-white transition-all flex justify-center items-center gap-2 cursor-pointer border-none w-full"
+                className="bg-brand-lime text-brand-dark px-5 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-dark hover:text-white transition-all flex justify-center items-center gap-2 cursor-pointer border-none w-full"
               >
                 Start a Project <ArrowRight className="w-4 h-4" />
               </button>
@@ -983,7 +969,7 @@ export function PageFooter({ onNavigate }) {
               <li><button type="button" onClick={() => onNavigate("/blog")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Feed Notes / Blog</button></li>
               <li><button type="button" onClick={() => onNavigate("/work")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Social Campaigns</button></li>
               <li><button type="button" onClick={() => onNavigate("/contact")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Contact Growth Desk</button></li>
-              <li><button type="button" onClick={() => onNavigate("/audit")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Free 360° Audit</button></li>
+              <li><button type="button" onClick={() => onNavigate("/pricing")} className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-left">Pricing & Retainers</button></li>
             </ul>
           </div>
 
@@ -1401,11 +1387,24 @@ export function GrowthAuditPopup({ isOpen, onClose, onNavigate }) {
 }
 
 
-export function PageLayout({ children, onNavigate, activeNav = "" }) {
-  const [leadModalOpen, setLeadModalOpen] = useState(false);
-  const [auditPopupOpen, setAuditPopupOpen] = useState(false);
+export function PageLayout({
+  children,
+  onNavigate,
+  activeNav = "",
+  leadModalOpen: externalLeadModalOpen,
+  setLeadModalOpen: externalSetLeadModalOpen,
+  selectedService: externalSelectedService,
+  setSelectedService: externalSetSelectedService
+}) {
+  const [internalLeadModalOpen, internalSetLeadModalOpen] = useState(false);
+  const leadModalOpen = externalLeadModalOpen !== undefined ? externalLeadModalOpen : internalLeadModalOpen;
+  const setLeadModalOpen = externalSetLeadModalOpen !== undefined ? externalSetLeadModalOpen : internalSetLeadModalOpen;
 
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", website: "", service: "General Growth Inquiry", message: "" });
+  const [internalSelectedService, internalSetSelectedService] = useState("General Growth Inquiry");
+  const selectedService = externalSelectedService !== undefined ? externalSelectedService : internalSelectedService;
+  const setSelectedService = externalSetSelectedService !== undefined ? externalSetSelectedService : internalSetSelectedService;
+
+  const [formData, setFormData] = useState({ name: "", email: "", phone: "", website: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
@@ -1420,13 +1419,13 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
       await fetch(`${API_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, source: "Subpage Quick Consultation" })
+        body: JSON.stringify({ ...formData, service: selectedService, source: "Subpage Quick Consultation" })
       });
       setSubmitted(true);
       setTimeout(() => {
         setSubmitted(false);
         setLeadModalOpen(false);
-        setFormData({ name: "", email: "", phone: "", website: "", service: "General Growth Inquiry", message: "" });
+        setFormData({ name: "", email: "", phone: "", website: "", message: "" });
       }, 2000);
     } catch (err) {
       setSubmitted(true);
@@ -1443,7 +1442,6 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
         onNavigate={onNavigate}
         activeNav={activeNav}
         onOpenLeadModal={() => setLeadModalOpen(true)}
-        onOpenAuditPopup={() => setAuditPopupOpen(true)}
       />
 
       {/* 2. Main Page Content Slot */}
@@ -1493,6 +1491,20 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
                 </div>
 
                 <form onSubmit={handleLeadSubmit} className="space-y-3.5 text-left">
+                  <div>
+                    <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Selected Plan / Service</label>
+                    <select
+                      value={selectedService}
+                      onChange={(e) => setSelectedService(e.target.value)}
+                      className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
+                    >
+                      <option value="Basic Plan (₹14,999/mo)">Basic Plan — ₹14,999 / mo (Social + Content + Ads)</option>
+                      <option value="Intermediate Plan (₹29,999/mo)">Intermediate Plan — ₹29,999 / mo (Google & Meta Ads + Creative)</option>
+                      <option value="Advanced Plan (₹44,999/mo)">Advanced Plan — ₹44,999 / mo (Full Growth System)</option>
+                      <option value="Talk to Sales - Custom Plan">Talk to Sales / Custom Enterprise Plan</option>
+                      <option value="General Growth Inquiry">General Growth Inquiry / Other</option>
+                    </select>
+                  </div>
                   <div>
                     <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Your Name *</label>
                     <input
@@ -1554,13 +1566,6 @@ export function PageLayout({ children, onNavigate, activeNav = "" }) {
 
       {/* 5. Global Cookie & Privacy Preferences Banner */}
       <CookieConsentBanner onNavigate={onNavigate} />
-
-      {/* 6. High-Converting Growth Audit Popup */}
-      <GrowthAuditPopup
-        isOpen={auditPopupOpen}
-        onClose={() => setAuditPopupOpen(false)}
-        onNavigate={onNavigate}
-      />
     </div>
   );
 }
@@ -2432,58 +2437,89 @@ export function ReviewsPage({ onNavigate }) {
 // PRICING PAGE (/pricing)
 // =========================================================================
 export function PricingPage({ onNavigate }) {
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState("Basic Plan (₹14,999/mo)");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const search = window.location.search || "";
+      const hash = window.location.hash || "";
+      if (search.includes("talkToSales") || hash.includes("talkToSales")) {
+        setSelectedService("Talk to Sales - Custom Plan");
+        setLeadModalOpen(true);
+      }
+    }
+  }, []);
+
   const tiers = [
     {
-      name: "Starter Growth Sprint",
-      price: "₹75,000",
-      period: "/ month",
-      desc: "For fast-moving brands looking to test a single channel with elite creative direction.",
+      name: "Basic",
+      tagline: "GET YOUR BRAND MOVING.",
+      focus: "SOCIAL + CONTENT + ADS",
+      price: "₹14,999",
+      period: "/ mo",
+      desc: "For fast-moving brands looking to establish authority and test paid social with elite creative direction.",
       features: [
-        "1 Core Growth Channel (Meta Ads OR Short-Form Video)",
+        "Social Media Management & Creative Strategy",
         "8 Custom thumb-stopping video/carousel creative assets",
+        "Meta Ads Setup, Audience Testing & Optimization",
         "Weekly creative sprint reviews and angle testing",
-        "Dedicated Slack channel with senior growth lead",
-        "Standard Looker Studio KPI dashboard"
+        "Standard Looker Studio KPI dashboard",
+        "Dedicated Support Lead in your Slack/WhatsApp"
       ],
-      cta: "Apply For Starter Sprint",
-      badge: "Focused Sprint"
+      cta: "Explore Basic",
+      planKey: "Basic Plan (₹14,999/mo)",
+      badge: "Fast Start"
     },
     {
-      name: "Scale Retainer",
-      price: "₹1,50,000",
-      period: "/ month",
-      desc: "Our flagship full-stack growth program for brands spending ₹2L - ₹15L/month on media.",
+      name: "Intermediate",
+      tagline: "TURN ATTENTION INTO BUSINESS.",
+      focus: "SOCIAL + CONTENT + GOOGLE + META",
+      price: "₹29,999",
+      period: "/ mo",
+      desc: "Our flagship full-stack growth program for ambitious brands ready to scale acquisition profitably.",
       features: [
-        "Full-Stack Multi-Channel (Meta, Google, & Organic Social)",
+        "Full-Stack Multi-Channel (Meta, Google & Organic Social)",
         "20+ High-velocity video reels, UGC cuts, and ad creatives",
         "Server-side CAPI and advanced GA4 attribution tracking",
         "Landing page CRO wireframes & conversion audits",
         "Dedicated Account Director + Video Producer in your Slack",
-        "Bi-weekly strategic growth calls"
+        "Bi-weekly strategic growth calls & sprint roadmap"
       ],
-      cta: "Scale With Flagship Retainer",
+      cta: "Explore Intermediate",
+      planKey: "Intermediate Plan (₹29,999/mo)",
       badge: "Most Popular",
       popular: true
     },
     {
-      name: "Enterprise Growth Partner",
-      price: "₹3,50,000",
-      period: "/ month",
-      desc: "Complete digital dominance for funded startups and market leaders.",
+      name: "Advanced",
+      tagline: "MAKE GROWTH YOUR NORMAL.",
+      focus: "FULL GROWTH SYSTEM",
+      price: "₹44,999",
+      period: "/ mo",
+      desc: "Complete omnichannel growth dominance and dedicated tech support for scaling category leaders.",
       features: [
-        "Total omnichannel growth (Paid, Organic, Video, SEO, Web)",
-        "Unlimited creative iterations and custom production days",
-        "Full React / Next.js web engineering support",
-        "Executive CMO strategic advisory",
+        "Total omnichannel growth (Paid Ads, Organic, Video, SEO, Web)",
+        "Unlimited creative iterations and custom production velocity",
+        "Full React / Web engineering and funnel optimization",
+        "Executive CMO strategic advisory & competitor intelligence",
         "24/7 Priority escalation desk and dedicated squad"
       ],
-      cta: "Schedule Enterprise Briefing",
-      badge: "Full Dominance"
+      cta: "Explore Advanced",
+      planKey: "Advanced Plan (₹44,999/mo)",
+      badge: "Full Growth System"
     }
   ];
 
   return (
-    <PageLayout onNavigate={onNavigate} activeNav="pricing">
+    <PageLayout
+      onNavigate={onNavigate}
+      activeNav="pricing"
+      leadModalOpen={leadModalOpen}
+      setLeadModalOpen={setLeadModalOpen}
+      selectedService={selectedService}
+      setSelectedService={setSelectedService}
+    >
       <div className="space-y-16 text-left">
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/20 border border-brand-lime/40 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-4">
@@ -2495,7 +2531,7 @@ export function PricingPage({ onNavigate }) {
             <span className="text-brand-blue">ZERO HIDDEN MARKUPS.</span>
           </h1>
           <p className="text-gray-600 text-sm md:text-base font-inter leading-relaxed">
-            No endless hourly billing or mysterious agency fees. Choose a sprint or retainer tier that fits your commercial stage.
+            Transparent, fixed pricing for ambitious brands ready to dominate the feed. Select a plan below to start your sprint or consult with our growth team.
           </p>
         </div>
 
@@ -2505,23 +2541,26 @@ export function PricingPage({ onNavigate }) {
               key={idx}
               className={`rounded-3xl p-8 flex flex-col justify-between border-2 transition-all relative ${
                 tier.popular
-                  ? "bg-white border-black shadow-2xl scale-[1.02] ring-2 ring-brand-blue"
-                  : "bg-white border-black/20 hover:border-black shadow-sm"
+                  ? "bg-brand-lime text-brand-dark border-brand-lime shadow-2xl scale-[1.02] ring-2 ring-brand-blue"
+                  : "bg-white border-black/20 hover:border-black shadow-sm text-brand-dark"
               }`}
             >
               {tier.popular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand-blue text-white px-4 py-1 rounded-full font-space font-bold text-[10px] uppercase tracking-wider">
-                  {tier.badge}
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand-dark text-white px-4 py-1 rounded-full font-space font-bold text-[10px] uppercase tracking-wider flex items-center gap-1 border border-brand-lime">
+                  <Star className="w-3 h-3 text-brand-lime fill-brand-lime" /> {tier.badge}
                 </div>
               )}
 
               <div>
-                <div className="font-space font-bold text-xl uppercase text-brand-dark mb-1">
+                <div className="font-space font-bold text-xs uppercase tracking-widest text-gray-500 mb-2">
                   {tier.name}
                 </div>
-                <p className="text-gray-600 text-xs font-inter mb-6 min-h-[36px]">
-                  {tier.desc}
-                </p>
+                <div className="font-space font-bold text-lg uppercase tracking-tight mb-1 text-brand-dark">
+                  {tier.tagline}
+                </div>
+                <div className="text-[10px] font-space font-bold uppercase tracking-wider text-brand-blue mb-4">
+                  {tier.focus}
+                </div>
 
                 <div className="flex items-baseline gap-1 mb-6 pb-6 border-b border-black/10">
                   <span className="font-space font-extrabold text-3xl md:text-4xl text-brand-dark">
@@ -2529,6 +2568,10 @@ export function PricingPage({ onNavigate }) {
                   </span>
                   <span className="text-xs text-gray-500 font-space font-bold">{tier.period}</span>
                 </div>
+
+                <p className="text-gray-600 text-xs font-inter mb-6 min-h-[36px]">
+                  {tier.desc}
+                </p>
 
                 <div className="space-y-3 mb-8">
                   <div className="font-space font-bold text-[11px] uppercase text-gray-500">What's Included:</div>
@@ -2543,10 +2586,13 @@ export function PricingPage({ onNavigate }) {
 
               <button
                 type="button"
-                onClick={() => onNavigate("/contact")}
+                onClick={() => {
+                  setSelectedService(tier.planKey);
+                  setLeadModalOpen(true);
+                }}
                 className={`w-full py-3.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider transition-all cursor-pointer border-none ${
                   tier.popular
-                    ? "bg-brand-lime text-brand-dark hover:bg-[#E2FF4D] shadow-md"
+                    ? "bg-brand-dark text-white hover:bg-black shadow-md"
                     : "bg-brand-dark text-white hover:bg-brand-blue"
                 }`}
               >
@@ -2554,6 +2600,28 @@ export function PricingPage({ onNavigate }) {
               </button>
             </div>
           ))}
+        </div>
+
+        {/* Custom Scope / Talk to Sales Box */}
+        <div className="bg-white border-2 border-black rounded-3xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+          <div>
+            <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark mb-2">
+              NEED A TAILORED ENTERPRISE OR MULTI-BRAND SCOPE?
+            </h3>
+            <p className="text-gray-600 text-xs md:text-sm font-inter">
+              If your media spend exceeds ₹15L/month or you need bespoke omnichannel infrastructure, let's build a dedicated growth pod.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedService("Talk to Sales - Custom Plan");
+              setLeadModalOpen(true);
+            }}
+            className="bg-brand-lime text-brand-dark px-8 py-4 rounded-xl font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-dark hover:text-white transition-all whitespace-nowrap cursor-pointer border-none shadow-md"
+          >
+            Talk to Sales →
+          </button>
         </div>
       </div>
     </PageLayout>
@@ -3405,7 +3473,7 @@ export function SitemapPage({ onNavigate }) {
               <li><button type="button" onClick={() => onNavigate("/blog")} className="hover:underline bg-transparent border-none p-0 cursor-pointer text-left">Feed Notes / Blog Hub</button></li>
               <li><button type="button" onClick={() => onNavigate("/pricing")} className="hover:underline bg-transparent border-none p-0 cursor-pointer text-left">Sprint Pricing & Retainers</button></li>
               <li><button type="button" onClick={() => onNavigate("/faqs")} className="hover:underline bg-transparent border-none p-0 cursor-pointer text-left">Agency FAQs</button></li>
-              <li><button type="button" onClick={() => onNavigate("/audit")} className="hover:underline bg-transparent border-none p-0 cursor-pointer text-left">Free 360° Diagnostic Audit</button></li>
+              <li><button type="button" onClick={() => onNavigate("/contact")} className="hover:underline bg-transparent border-none p-0 cursor-pointer text-left">Start a Project Consultation</button></li>
             </ul>
           </div>
         </div>

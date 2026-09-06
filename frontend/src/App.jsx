@@ -42,7 +42,6 @@ import {
   PageHeader,
   PageFooter,
   CookieConsentBanner,
-  GrowthAuditPopup,
   ServicesHubPage,
   ServiceDetailPage,
   AboutUsPage,
@@ -71,26 +70,6 @@ export default function App() {
   const [showTopBar, setShowTopBar] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [leadModalOpen, setLeadModalOpen] = useState(false);
-  const [auditPopupOpen, setAuditPopupOpen] = useState(false);
-
-  useEffect(() => {
-    try {
-      const closedTime = localStorage.getItem("gif_audit_popup_closed");
-      if (!closedTime || (Date.now() - parseInt(closedTime, 10)) > 24 * 60 * 60 * 1000) {
-        const timer = setTimeout(() => {
-          setAuditPopupOpen(true);
-        }, 5000);
-        return () => clearTimeout(timer);
-      }
-    } catch {}
-  }, []);
-
-  const handleCloseAuditPopup = () => {
-    try {
-      localStorage.setItem("gif_audit_popup_closed", Date.now().toString());
-    } catch {}
-    setAuditPopupOpen(false);
-  };
   const [selectedService, setSelectedService] = useState("General Inbound");
   const [scrollProgress, setScrollProgress] = useState(0);
   useEffect(() => {
@@ -345,7 +324,6 @@ export default function App() {
         onNavigate={navigate}
         activeNav="home"
         onOpenLeadModal={() => { setSelectedService("Start a Project"); setLeadModalOpen(true); }}
-        onOpenAuditPopup={() => setAuditPopupOpen(true)}
       />
 
       {/* Hero Section */}
@@ -544,7 +522,7 @@ export default function App() {
                 className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
                 <Edit3 className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Content Marketing</h3>
+                <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Content Marketing</h3>
               </div>
 
               <div
@@ -552,7 +530,7 @@ export default function App() {
                 className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-1 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
                 <Megaphone className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Ads Campaign</h3>
+                <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Ads Campaign</h3>
               </div>
 
               <div
@@ -560,7 +538,7 @@ export default function App() {
                 className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-2 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
                 <Users className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Social Media</h3>
+                <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Social Media</h3>
               </div>
 
               <div
@@ -568,7 +546,7 @@ export default function App() {
                 className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-3 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
                 <PenTool className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Graphics Design</h3>
+                <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Graphics Design</h3>
               </div>
 
               <div
@@ -576,7 +554,7 @@ export default function App() {
                 className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
                 <Clapperboard className="w-5 h-5 shrink-0 text-red-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Reels</h3>
+                <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Reels</h3>
               </div>
 
               <div
@@ -584,7 +562,7 @@ export default function App() {
                 className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-1 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
                 <Video className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Videos</h3>
+                <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Videos</h3>
               </div>
 
               <div
@@ -592,7 +570,7 @@ export default function App() {
                 className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-2 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
                 <Code className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Web Development</h3>
+                <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Web Development</h3>
               </div>
 
               <div
@@ -600,7 +578,7 @@ export default function App() {
                 className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-3 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
                 <Search className="w-5 h-5 shrink-0 text-orange-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">SEO</h3>
+                <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">SEO</h3>
               </div>
             </div>
 
@@ -608,14 +586,14 @@ export default function App() {
             <div className="mt-8 bg-brand-dark text-white rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 shadow-xl reveal">
               <div className="text-center md:text-left">
                 <h4 className="font-space font-bold text-xl md:text-2xl uppercase tracking-tight mb-2">Not sure where to start?</h4>
-                <p className="text-gray-400 text-xs md:text-sm font-inter">Let's audit your current feed and find the easiest growth wins.</p>
+                <p className="text-gray-400 text-xs md:text-sm font-inter">Tell us about your brand and let's find the highest-ROI growth wins.</p>
               </div>
               <button
                 type="button"
-                onClick={() => setAuditPopupOpen(true)}
+                onClick={() => { setSelectedService("Growth Strategy & Consultation"); setLeadModalOpen(true); }}
                 className="w-full md:w-auto shrink-0 bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 group shadow-md hover:shadow-[0_0_25px_rgba(212,255,0,0.5)] hover:-translate-y-0.5 cursor-pointer border-none"
               >
-                Get a Free Audit <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
+                Start a Project <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
               </button>
             </div>
           </div>
@@ -658,51 +636,51 @@ export default function App() {
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 md:gap-4 w-full mb-10">
             <div onClick={() => { setSelectedService("Real Estate"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <Home className="w-5 h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Real Estate</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Real Estate</h3>
             </div>
             <div onClick={() => { setSelectedService("D2C & E-Commerce"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <ShoppingBag className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">D2C & E-Commerce</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">D2C & E-Commerce</h3>
             </div>
             <div onClick={() => { setSelectedService("Hospitality"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <Coffee className="w-5 h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Hospitality</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Hospitality</h3>
             </div>
             <div onClick={() => { setSelectedService("Healthcare & Wellness"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <Heart className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Healthcare & Wellness</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Healthcare & Wellness</h3>
             </div>
             <div onClick={() => { setSelectedService("Education"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <GraduationCap className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Education</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Education</h3>
             </div>
             <div onClick={() => { setSelectedService("Automotive"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <Car className="w-5 h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Automotive</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Automotive</h3>
             </div>
             <div onClick={() => { setSelectedService("Fashion & Beauty"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <Sparkles className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Fashion & Beauty</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Fashion & Beauty</h3>
             </div>
             <div onClick={() => { setSelectedService("Pro Services"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <Briefcase className="w-5 h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Pro Services</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Pro Services</h3>
             </div>
             <div onClick={() => { setSelectedService("Startups & Tech"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <Rocket className="w-5 h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Startups & Tech</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Startups & Tech</h3>
             </div>
             <div onClick={() => { setSelectedService("Fitness & Sports"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <Dumbbell className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Fitness & Sports</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Fitness & Sports</h3>
             </div>
             <div onClick={() => { setSelectedService("Travel & Experiences"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <Map className="w-5 h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Travel & Experiences</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Travel & Experiences</h3>
             </div>
             <div onClick={() => { setSelectedService("Finance"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
               <PieChart className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Finance</h3>
+              <h3 className="font-space font-bold text-sm sm:text-base md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Finance</h3>
             </div>
           </div>
 
@@ -757,13 +735,13 @@ export default function App() {
           </div>
 
           <div className="text-center reveal">
-            <a
-              href="#contact"
-              onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-              className="inline-flex bg-brand-dark text-white px-8 py-3.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-lime hover:text-brand-dark hover:shadow-lg hover:-translate-y-0.5 transition-all items-center gap-2 group text-decoration-none"
+            <button
+              type="button"
+              onClick={() => { setSelectedService("Ready to Launch Sprint"); setLeadModalOpen(true); }}
+              className="inline-flex bg-brand-dark text-white px-8 py-3.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-lime hover:text-brand-dark hover:shadow-lg hover:-translate-y-0.5 transition-all items-center gap-2 group cursor-pointer border-none"
             >
               Ready to Launch? <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -850,13 +828,13 @@ export default function App() {
               <p className="text-gray-600 text-xs md:text-sm leading-relaxed mb-6 flex-grow font-medium font-inter">
                 For businesses that have something good to say but aren't getting enough attention online.
               </p>
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="mt-auto w-full text-center bg-white border border-transparent hover:border-brand-dark hover:bg-brand-dark hover:text-white text-brand-dark py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn shadow-sm text-decoration-none"
+              <button
+                type="button"
+                onClick={() => navigate("/work")}
+                className="mt-auto w-full text-center bg-white border border-transparent hover:border-brand-dark hover:bg-brand-dark hover:text-white text-brand-dark py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn shadow-sm cursor-pointer"
               >
                 GET NOTICED <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-              </a>
+              </button>
             </div>
 
             {/* 02 Need Customers (Blue Pop Card) */}
@@ -868,13 +846,13 @@ export default function App() {
               <p className="text-blue-100 text-xs md:text-sm leading-relaxed mb-6 flex-grow font-medium font-inter">
                 For businesses ready to turn digital attention into enquiries, bookings or sales.
               </p>
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="mt-auto w-full text-center bg-white hover:bg-brand-lime text-brand-dark py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 shadow-sm group/btn text-decoration-none"
+              <button
+                type="button"
+                onClick={() => navigate("/contact")}
+                className="mt-auto w-full text-center bg-white hover:bg-brand-lime text-brand-dark py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 shadow-sm group/btn cursor-pointer border-none"
               >
                 GET LEADS <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-              </a>
+              </button>
             </div>
 
             {/* 03 Need The Whole Thing (Dark Card) */}
@@ -886,13 +864,13 @@ export default function App() {
               <p className="text-gray-300 text-xs md:text-sm leading-relaxed mb-6 flex-grow font-medium font-inter">
                 For brands that want one connected team handling their digital marketing.
               </p>
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="mt-auto w-full text-center bg-white/10 border border-white/20 hover:bg-brand-lime hover:border-brand-lime hover:text-brand-dark text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn text-decoration-none"
+              <button
+                type="button"
+                onClick={() => navigate("/services")}
+                className="mt-auto w-full text-center bg-white/10 border border-white/20 hover:bg-brand-lime hover:border-brand-lime hover:text-brand-dark text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn cursor-pointer"
               >
                 BUILD SYSTEM <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -912,13 +890,13 @@ export default function App() {
             </h2>
             <p className="text-gray-400 text-sm md:text-base font-medium mb-8 font-inter">Transparent pricing for brands ready to dominate the feed.</p>
 
-            <a
-              href="#contact"
-              onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-              className="inline-flex bg-transparent border border-white/20 text-white px-6 py-2.5 rounded-lg font-bold font-space uppercase text-[10px] sm:text-xs tracking-wider hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime transition-all items-center gap-2 group shadow-sm text-decoration-none"
+            <button
+              type="button"
+              onClick={() => navigate("/pricing?talkToSales=true")}
+              className="inline-flex bg-transparent border border-white/20 text-white px-6 py-2.5 rounded-lg font-bold font-space uppercase text-[10px] sm:text-xs tracking-wider hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime transition-all items-center gap-2 group shadow-sm cursor-pointer"
             >
               Talk to Sales <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-            </a>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-[1000px] mx-auto w-full items-stretch">
@@ -932,13 +910,13 @@ export default function App() {
               <div className="text-[9px] sm:text-[10px] font-space font-bold uppercase tracking-widest text-brand-blue mb-6 leading-relaxed flex-grow">
                 SOCIAL + CONTENT + ADS
               </div>
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="mt-auto w-full text-center bg-white/5 border border-white/10 hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn text-decoration-none"
+              <button
+                type="button"
+                onClick={() => { setSelectedService("Basic Plan (₹14,999/mo)"); setLeadModalOpen(true); }}
+                className="mt-auto w-full text-center bg-white/5 border border-white/10 hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn cursor-pointer"
               >
                 EXPLORE <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-              </a>
+              </button>
             </div>
 
             {/* 02 Intermediate */}
@@ -955,13 +933,13 @@ export default function App() {
               <div className="text-[9px] sm:text-[10px] font-space font-bold uppercase tracking-widest text-brand-blue mb-6 leading-relaxed flex-grow">
                 SOCIAL + CONTENT + GOOGLE + META
               </div>
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="mt-auto w-full text-center bg-brand-dark hover:bg-black text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 shadow-sm group/btn text-decoration-none"
+              <button
+                type="button"
+                onClick={() => { setSelectedService("Intermediate Plan (₹29,999/mo)"); setLeadModalOpen(true); }}
+                className="mt-auto w-full text-center bg-brand-dark hover:bg-black text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 shadow-sm group/btn cursor-pointer border-none"
               >
                 EXPLORE <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-              </a>
+              </button>
             </div>
 
             {/* 03 Advanced */}
@@ -974,13 +952,13 @@ export default function App() {
               <div className="text-[9px] sm:text-[10px] font-space font-bold uppercase tracking-widest text-brand-coral mb-6 leading-relaxed flex-grow">
                 FULL GROWTH SYSTEM
               </div>
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="mt-auto w-full text-center bg-white/5 border border-white/10 hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn text-decoration-none"
+              <button
+                type="button"
+                onClick={() => { setSelectedService("Advanced Plan (₹44,999/mo)"); setLeadModalOpen(true); }}
+                className="mt-auto w-full text-center bg-white/5 border border-white/10 hover:bg-brand-lime hover:text-brand-dark hover:border-brand-lime text-white py-3 rounded-lg font-space font-bold uppercase text-[10px] md:text-xs tracking-wider transition-all inline-flex justify-center items-center gap-2 group/btn cursor-pointer"
               >
                 EXPLORE <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -1026,7 +1004,7 @@ export default function App() {
             <div className="pt-4">
               <button
                 type="button"
-                onClick={() => setLeadModalOpen(true)}
+                onClick={() => navigate("/contact")}
                 className="inline-flex bg-brand-dark text-white px-6 py-3.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-blue hover:text-white transition-all items-center gap-2 group shadow-md cursor-pointer border-none"
               >
                 Tired of boring? Let's talk <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
@@ -1061,13 +1039,13 @@ export default function App() {
             </p>
 
             <div className="pt-4">
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="inline-flex bg-brand-dark text-white px-6 py-3 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-blue transition-all items-center gap-2 group mt-2 shadow-md text-decoration-none"
+              <button
+                type="button"
+                onClick={() => navigate("/about")}
+                className="inline-flex bg-brand-dark text-white px-6 py-3 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-blue transition-all items-center gap-2 group mt-2 shadow-md cursor-pointer border-none"
               >
                 MEET THE TEAM <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -1118,25 +1096,6 @@ export default function App() {
       {/* Global Cookie & Privacy Preferences Banner on Homepage */}
       <CookieConsentBanner onNavigate={navigate} />
 
-      {/* Interactive Growth & Creative Audit Pop-up Modal */}
-      <GrowthAuditPopup
-        isOpen={auditPopupOpen}
-        onClose={handleCloseAuditPopup}
-        onNavigate={navigate}
-      />
-
-      {/* Quick Floating Audit Trigger Pill */}
-      <button
-        type="button"
-        onClick={() => setAuditPopupOpen(true)}
-        className="fixed bottom-6 left-6 z-40 bg-brand-lime text-brand-dark px-3.5 py-2 rounded-full font-space font-bold text-xs uppercase tracking-wider border-2 border-black shadow-[3px_3px_0px_#000] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all flex items-center gap-2 cursor-pointer group"
-        title="Claim Free Growth Audit"
-      >
-        <Sparkles className="w-3.5 h-3.5 text-brand-blue group-hover:rotate-12 transition-transform" />
-        <span className="hidden sm:inline">Free Growth Audit</span>
-        <span className="sm:hidden">Audit</span>
-      </button>
-
       {/* LEAD INTAKE MODAL */}
       {leadModalOpen && (
         <div
@@ -1170,6 +1129,26 @@ export default function App() {
               </div>
             ) : (
               <form onSubmit={handleLeadSubmit} className="flex flex-col gap-3">
+                <div>
+                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Selected Plan / Service</label>
+                  <select
+                    value={selectedService}
+                    onChange={(e) => setSelectedService(e.target.value)}
+                    className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-xs text-white focus:border-[#D4FF00] outline-none"
+                  >
+                    <option value="Basic Plan (₹14,999/mo)">Basic Plan — ₹14,999 / mo (Social + Content + Ads)</option>
+                    <option value="Intermediate Plan (₹29,999/mo)">Intermediate Plan — ₹29,999 / mo (Google & Meta Ads + Creative)</option>
+                    <option value="Advanced Plan (₹44,999/mo)">Advanced Plan — ₹44,999 / mo (Full Growth System)</option>
+                    <option value="Talk to Sales - Custom Plan">Talk to Sales / Custom Enterprise Plan</option>
+                    <option value="Ready to Launch - Sprint">Ready to Launch — Growth Sprint</option>
+                    <option value="Paid Performance & Ads">Paid Performance & Ads ROAS</option>
+                    <option value="Short-Form Video & Reels">Short-Form Video & Reels Creative</option>
+                    <option value="Web Engineering & CRO">High-Speed Web Development & CRO</option>
+                    <option value="SEO & Organic Growth">SEO & Organic Engine Optimization</option>
+                    <option value="Brand Positioning & Identity">Brand Positioning & Identity</option>
+                  </select>
+                </div>
+
                 <div>
                   <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Your Name *</label>
                   <input
