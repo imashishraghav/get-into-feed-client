@@ -1237,89 +1237,75 @@ export function GrowthAuditPopup({ isOpen, onClose, onNavigate }) {
       onClick={onClose}
     >
       <div
-        className="bg-white border-2 border-black rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-brand-dark overflow-hidden animate-in zoom-in-95 duration-200"
+        className="bg-white border-2 border-black rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-5 md:p-6 shadow-2xl relative text-brand-dark overflow-hidden animate-in zoom-in-95 duration-200 max-h-[94vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Gradient Banner */}
-        <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-brand-lime via-brand-blue to-brand-lime"></div>
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-brand-lime via-brand-blue to-brand-lime"></div>
 
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 w-8 h-8 rounded-full bg-brand-light-gray hover:bg-black hover:text-white transition-colors flex items-center justify-center border border-black/10 cursor-pointer"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 w-7 h-7 rounded-full bg-brand-light-gray hover:bg-black hover:text-white transition-colors flex items-center justify-center border border-black/10 cursor-pointer"
           aria-label="Close Popup"
         >
-          <X className="w-4 h-4" />
+          <X className="w-3.5 h-3.5" />
         </button>
 
         {submitted ? (
-          <div className="text-center py-10 space-y-4">
-            <div className="w-16 h-16 rounded-2xl bg-brand-lime border-2 border-black flex items-center justify-center mx-auto text-brand-dark shadow-[4px_4px_0px_#000]">
-              <CheckCircle2 className="w-9 h-9" />
+          <div className="text-center py-6 sm:py-8 space-y-3">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-brand-lime border-2 border-black flex items-center justify-center mx-auto text-brand-dark shadow-[3px_3px_0px_#000]">
+              <CheckCircle2 className="w-7 h-7" />
             </div>
-            <h3 className="font-space font-extrabold text-2xl uppercase tracking-tight text-brand-dark">
+            <h3 className="font-space font-extrabold text-xl sm:text-2xl uppercase tracking-tight text-brand-dark">
               AUDIT DOSSIER QUEUED!
             </h3>
-            <p className="text-gray-600 text-xs md:text-sm font-inter max-w-sm mx-auto leading-relaxed">
+            <p className="text-gray-600 text-xs font-inter max-w-sm mx-auto leading-relaxed">
               Our Senior Growth Architect is reviewing your brand. We will send your custom teardown via WhatsApp/Email within <strong>24 to 48 hours</strong>.
             </p>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-light-gray text-xs font-space font-bold text-brand-blue">
-              <Sparkles className="w-3.5 h-3.5" /> Direct WhatsApp Dispatch
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-light-gray text-[11px] font-space font-bold text-brand-blue">
+              <Sparkles className="w-3 h-3" /> Direct WhatsApp Dispatch
             </div>
           </div>
         ) : (
           <div>
             {/* Header with Badges */}
-            <div className="mb-5 text-left">
-              <div className="flex flex-wrap items-center gap-2 mb-2.5">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase tracking-wider border border-black">
-                  <Flame className="w-3 h-3 text-brand-dark fill-brand-dark" /> LIMITED TO 5 BRANDS / MONTH
+            <div className="mb-3 sm:mb-4 text-left pr-8">
+              <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[9px] uppercase tracking-wider border border-black">
+                  <Flame className="w-2.5 h-2.5 text-brand-dark fill-brand-dark" /> LIMITED TO 5 BRANDS / MONTH
                 </span>
-                <span className="inline-flex items-center gap-1 text-[10px] font-space font-bold uppercase text-brand-blue bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">
+                <span className="inline-flex items-center gap-1 text-[9px] font-space font-bold uppercase text-brand-blue bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
                   ₹25,000 VALUE — 100% FREE
                 </span>
               </div>
-              <h2 className="font-space font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-brand-dark leading-tight">
+              <h2 className="font-space font-extrabold text-lg sm:text-xl md:text-2xl uppercase tracking-tight text-brand-dark leading-tight">
                 CLAIM YOUR FREE 360° GROWTH AUDIT.
               </h2>
-              <p className="text-gray-600 text-xs font-inter mt-1.5 leading-relaxed">
+              <p className="text-gray-500 text-[11px] font-inter mt-1 leading-snug">
                 Get a senior strategist teardown of your paid ads ROAS, viral reel hooks, and conversion funnel bottlenecks — with zero sales pressure.
               </p>
             </div>
 
-            {/* Audit Form */}
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-left">
-              <div>
-                <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                  Founder / Marketing Lead Name *
-                </label>
-                <input
-                  required
-                  type="text"
-                  placeholder="e.g. Ashish Raghav"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Audit Form (Streamlined 2-Column Compact Grid) */}
+            <form onSubmit={handleSubmit} className="space-y-2.5 text-left">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                    Work Email *
+                  <label className="block text-[10px] font-space font-bold uppercase text-gray-700 mb-0.5">
+                    Founder / Lead Name *
                   </label>
                   <input
                     required
-                    type="email"
-                    placeholder="e.g. ashish@brand.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                    type="text"
+                    placeholder="e.g. Ashish Raghav"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-lg px-3 py-1.5 sm:py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                  <label className="block text-[10px] font-space font-bold uppercase text-gray-700 mb-0.5">
                     WhatsApp / Phone *
                   </label>
                   <input
@@ -1328,14 +1314,27 @@ export function GrowthAuditPopup({ isOpen, onClose, onNavigate }) {
                     placeholder="e.g. +91 98765 43210"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-lg px-3 py-1.5 sm:py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                  <label className="block text-[10px] font-space font-bold uppercase text-gray-700 mb-0.5">
+                    Work Email *
+                  </label>
+                  <input
+                    required
+                    type="email"
+                    placeholder="e.g. ashish@brand.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-lg px-3 py-1.5 sm:py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-space font-bold uppercase text-gray-700 mb-0.5">
                     Website / Instagram Link
                   </label>
                   <input
@@ -1343,17 +1342,20 @@ export function GrowthAuditPopup({ isOpen, onClose, onNavigate }) {
                     placeholder="e.g. yourbrand.com"
                     value={formData.website}
                     onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-lg px-3 py-1.5 sm:py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                  <label className="block text-[10px] font-space font-bold uppercase text-gray-700 mb-0.5">
                     Primary Growth Goal
                   </label>
                   <select
                     value={formData.service}
                     onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none"
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-lg px-2.5 py-1.5 sm:py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none"
                   >
                     <option value="Paid Performance & Ads ROAS">Scale Meta & Google ROAS</option>
                     <option value="Short-Form Video & Reels">Viral Reels & 9:16 Creative</option>
@@ -1363,30 +1365,29 @@ export function GrowthAuditPopup({ isOpen, onClose, onNavigate }) {
                     <option value="Influencer Seeding Network">Creator & Influencer Network</option>
                   </select>
                 </div>
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                  Biggest Marketing Bottleneck (Optional)
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Ad fatigue, high CAC, low landing page conversion..."
-                  value={formData.challenge}
-                  onChange={(e) => setFormData({ ...formData, challenge: e.target.value })}
-                  className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
-                />
+                <div>
+                  <label className="block text-[10px] font-space font-bold uppercase text-gray-700 mb-0.5">
+                    Biggest Bottleneck (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Ad fatigue, high CAC..."
+                    value={formData.challenge}
+                    onChange={(e) => setFormData({ ...formData, challenge: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-lg px-3 py-1.5 sm:py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
+                  />
+                </div>
               </div>
 
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-brand-lime text-brand-dark py-3.5 rounded-xl font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-black shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50 mt-4"
+                className="w-full bg-brand-lime text-brand-dark py-2.5 sm:py-3 rounded-xl font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-black shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50 mt-3"
               >
                 {submitting ? "Analyzing & Transmitting..." : "Claim Free 360° Growth Audit →"}
               </button>
 
-              <div className="flex items-center justify-center gap-4 text-[10px] text-gray-500 font-inter pt-1">
+              <div className="flex items-center justify-center gap-3 text-[9px] sm:text-[10px] text-gray-500 font-inter pt-0.5">
                 <span className="flex items-center gap-1">🔒 100% Confidential</span>
                 <span className="flex items-center gap-1">⚡ 48-Hour Turnaround</span>
                 <span className="flex items-center gap-1">🚫 No Spam</span>
