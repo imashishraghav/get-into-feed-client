@@ -43,6 +43,7 @@ import {
   PageHeader,
   PageFooter,
   CookieConsentBanner,
+  WhatsAppFloatingButton,
   ServicesHubPage,
   ServiceDetailPage,
   AboutUsPage,
@@ -82,20 +83,47 @@ export default function App() {
     return () => clearTimeout(timer);
   }, []);
   useEffect(() => {
-    // Dynamic SEO Titles & Meta Descriptions
+    // Dynamic SEO Titles & Meta Descriptions + OpenGraph + Admin Customization
     const metaDesc = document.querySelector('meta[name="description"]');
     const setSEO = (title, desc) => {
       document.title = title;
       if (metaDesc) metaDesc.setAttribute("content", desc);
+
+      let ogTitle = document.querySelector('meta[property="og:title"]');
+      if (!ogTitle) {
+        ogTitle = document.createElement('meta');
+        ogTitle.setAttribute('property', 'og:title');
+        document.head.appendChild(ogTitle);
+      }
+      ogTitle.setAttribute('content', title);
+
+      let ogDesc = document.querySelector('meta[property="og:description"]');
+      if (!ogDesc) {
+        ogDesc = document.createElement('meta');
+        ogDesc.setAttribute('property', 'og:description');
+        document.head.appendChild(ogDesc);
+      }
+      ogDesc.setAttribute('content', desc);
     };
 
+    // 1. Check custom overrides from Admin SEO Manager
+    try {
+      const customSEO = JSON.parse(localStorage.getItem("gif_custom_seo_tags") || "{}");
+      const cleanRoute = route === "" ? "/" : route;
+      if (customSEO[cleanRoute] && customSEO[cleanRoute].title) {
+        setSEO(customSEO[cleanRoute].title, customSEO[cleanRoute].description || "GetIntoFeed Creative & Performance Growth Agency");
+        return;
+      }
+    } catch {}
+
+    // 2. Automated default SEO rules
     if (route === "/" || route === "") {
       setSEO("GetIntoFeed | Creative Marketing & Performance Growth Agency", "Premier creative performance marketing studio. We engineer thumb-stopping video reels, high-converting React funnels, and algorithmic paid media for ambitious brands.");
     } else if (route === "/services" || route === "/services/") {
       setSEO("Growth Services & Capabilities | GetIntoFeed", "Explore our 8 core growth disciplines: Brand Positioning, Paid Performance Ads, Video Reels, Web Development, SEO, and CRO Funnels.");
     } else if (route.startsWith("/services/")) {
       const slug = route.replace("/services/", "").replace(/\/.*$/, "");
-      setSEO(`${slug.toUpperCase().replace(/-/g, " ")} | GetIntoFeed Agency Capabilities`, "Senior strategist-led growth sprint with dedicated deliverables, transparent pricing tiers, and execution roadmap.");
+      setSEO(`${slug.toUpperCase().replace(/-/g, " ")} | GetIntoFeed Capabilities`, "Senior strategist-led growth sprint with dedicated deliverables, transparent pricing tiers, and execution roadmap.");
     } else if (route === "/work" || route === "/work/") {
       setSEO("Selected Case Studies & Commercial Results | GetIntoFeed", "Real client outcomes: +380% qualified pipeline, 4.8x blended ROAS, and 28,000+ verified customer acquisitions.");
     } else if (route.startsWith("/work/")) {
@@ -108,7 +136,12 @@ export default function App() {
     } else if (route.startsWith("/pricing")) {
       setSEO("Transparent Growth Sprints & Retainers | GetIntoFeed", "Clear sprint pricing with zero hidden fees. Starter Sprints, Scale Retainers, and Enterprise partnerships.");
     } else if (route.startsWith("/blog") || route.startsWith("/feed-notes")) {
-      setSEO("Feed Notes | Editorial Playbooks & Growth Strategies | GetIntoFeed", "Raw, battle-tested teardowns of short-form video algorithms, server-side attribution, and commercial brand positioning.");
+      const slug = route.replace(/^\/(blog|feed-notes|insights)\/?/, "").replace(/\/.*$/, "");
+      if (slug) {
+        setSEO(`${slug.toUpperCase().replace(/-/g, " ")} | Feed Notes Playbook | GetIntoFeed`, "Tactical marketing teardown, algorithmic short-form strategy, and commercial brand positioning.");
+      } else {
+        setSEO("Feed Notes | Editorial Playbooks & Growth Strategies | GetIntoFeed", "Raw, battle-tested teardowns of short-form video algorithms, server-side attribution, and commercial brand positioning.");
+      }
     } else if (route.startsWith("/contact")) {
       setSEO("Contact Growth Desk | Schedule Strategy Consultation | GetIntoFeed", "Connect with senior growth architects. Schedule a 30-minute diagnostic session or chat directly via WhatsApp.");
     } else if (route.startsWith("/careers")) {
@@ -122,9 +155,15 @@ export default function App() {
     } else if (route.startsWith("/cookie-policy")) {
       setSEO("Cookie & Privacy Policy | GetIntoFeed", "Transparent overview of cookies, tracking signals, and user data privacy.");
     } else if (route.startsWith("/privacy")) {
-      setSEO("Privacy Policy | GetIntoFeed", "Our commitment to client data protection and confidentiality.");
+      setSEO("Privacy Policy & DPDPA Compliance | GetIntoFeed", "Digital Personal Data Protection Act (DPDPA 2023) and GDPR data processing standards.");
     } else if (route.startsWith("/terms")) {
-      setSEO("Terms of Service | GetIntoFeed", "Commercial terms and intellectual property rights.");
+      setSEO("Terms of Commercial Service & Intellectual Property | GetIntoFeed", "Commercial sprint deliverables, IP transfer terms, and legal jurisdiction.");
+    } else if (route.startsWith("/refund") || route.startsWith("/cancellation")) {
+      setSEO("Refund & Cancellation Policy | GetIntoFeed", "Transparent refund rules, sprint milestone approvals, and retainer cancellation terms.");
+    } else if (route.startsWith("/disclaimer")) {
+      setSEO("Performance Disclaimer & Algorithm Notice | GetIntoFeed", "Ad platform algorithmic variances, third-party attribution policies, and performance estimates.");
+    } else if (route.startsWith("/nda") || route.startsWith("/confidentiality")) {
+      setSEO("Mutual Non-Disclosure Agreement (NDA) | GetIntoFeed", "Confidentiality protection for client campaign data, ad accounts, and commercial trade secrets.");
     } else if (route.startsWith("/admin")) {
       setSEO("Admin Studio OS | GetIntoFeed", "Secure agency management operating system.");
     } else {
@@ -1113,6 +1152,7 @@ export default function App() {
 
       {/* Global Cookie & Privacy Preferences Banner on Homepage */}
       <CookieConsentBanner onNavigate={navigate} />
+      <WhatsAppFloatingButton />
 
       {/* UNIVERSAL SINGLE BRANDED LEAD MODAL (CLEAN LIGHT DESIGN) */}
       <UniversalLeadModal

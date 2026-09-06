@@ -1,3 +1,37 @@
+
+export function getStoredBlogPosts() {
+  try {
+    const saved = localStorage.getItem("gif_blog_posts");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {}
+  return blogPostsCatalog;
+}
+
+export function getStoredReviews() {
+  try {
+    const saved = localStorage.getItem("gif_reviews_catalog");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch {}
+  return reviewsCatalog;
+}
+
+export function getStoredSEOTags() {
+  try {
+    const saved = localStorage.getItem("gif_custom_seo_tags");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (typeof parsed === "object" && parsed !== null) return parsed;
+    }
+  } catch {}
+  return {};
+}
+
 import React, { useState, useEffect } from "react";
 import {
   AlertCircle,
@@ -1426,6 +1460,7 @@ export function PageLayout({
 
       {/* 5. Global Cookie & Privacy Preferences Banner */}
       <CookieConsentBanner onNavigate={onNavigate} />
+      <WhatsAppFloatingButton />
     </div>
   );
 }
@@ -2730,7 +2765,7 @@ export function CaseStudyDetailPage({ slug, onNavigate }) {
     email: "",
     phone: "",
     company: "",
-    service: cs.services ? cs.services[0] : "Performance Marketing",
+    service: cs.services ? cs.services[0] : "Paid Performance & Meta/Google Ads",
     plan: "Growth Plan — ₹29,999 / mo",
     requirements: ""
   });
@@ -2788,8 +2823,8 @@ export function CaseStudyDetailPage({ slug, onNavigate }) {
 
   return (
     <PageLayout onNavigate={onNavigate} activeNav="work">
-      <div className="space-y-12 md:space-y-16 text-left max-w-5xl mx-auto">
-        {/* Top Breadcrumb */}
+      <div className="space-y-10 md:space-y-12 text-left max-w-7xl mx-auto">
+        {/* Top Breadcrumb & Brand Dossier */}
         <div className="flex items-center justify-between gap-4">
           <button
             type="button"
@@ -2803,8 +2838,8 @@ export function CaseStudyDetailPage({ slug, onNavigate }) {
           </span>
         </div>
 
-        {/* Hero Headline & Tags */}
-        <div className="space-y-4">
+        {/* Hero Headline & Category Tags */}
+        <div className="space-y-3">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-xs uppercase border border-black shadow-sm">
               <Sparkles className="w-3 h-3" /> {cs.brand}
@@ -2817,21 +2852,21 @@ export function CaseStudyDetailPage({ slug, onNavigate }) {
             </span>
           </div>
 
-          <h1 className="font-space font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95]">
+          <h1 className="font-space font-extrabold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-brand-dark leading-[0.98]">
             {cs.title}
           </h1>
 
-          <div className="flex flex-wrap gap-2 pt-2">
+          <div className="flex flex-wrap gap-2 pt-1">
             {(cs.services || []).map((s, idx) => (
-              <span key={idx} className="bg-white border border-black/10 text-gray-700 px-3.5 py-1.5 rounded-xl text-xs font-space font-bold uppercase shadow-sm">
+              <span key={idx} className="bg-white border border-black/10 text-gray-700 px-3 py-1 rounded-lg text-xs font-space font-bold uppercase shadow-sm">
                 {s}
               </span>
             ))}
           </div>
         </div>
 
-        {/* Executive Summary Strip */}
-        <div className="bg-white border-2 border-black rounded-2xl p-4 sm:p-6 grid grid-cols-2 md:grid-cols-4 gap-4 shadow-sm">
+        {/* Executive Summary Metric Strip */}
+        <div className="bg-white border-2 border-black rounded-2xl p-4 sm:p-5 grid grid-cols-2 md:grid-cols-4 gap-4 shadow-sm">
           <div>
             <div className="text-[10px] font-space font-bold uppercase text-gray-500">Industry</div>
             <div className="font-space font-bold text-sm text-brand-dark mt-0.5">{cs.category}</div>
@@ -2850,235 +2885,267 @@ export function CaseStudyDetailPage({ slug, onNavigate }) {
           </div>
         </div>
 
-        {/* Visual Hero Showcase */}
-        <div className="rounded-3xl overflow-hidden border-2 border-black aspect-video w-full shadow-xl relative">
-          <img src={cs.heroImage} alt={cs.title} className="w-full h-full object-cover" />
-          <div className="absolute top-4 left-4 bg-brand-lime text-brand-dark px-3.5 py-1.5 rounded-full font-space font-bold text-xs uppercase border border-black shadow">
-            {cs.metric} Impact Achieved
-          </div>
-        </div>
-
-        {/* Key Metrics Results Grid */}
-        <div className="space-y-4">
-          <h3 className="font-space font-bold text-xs uppercase tracking-wider text-gray-500">
-            QUANTIFIED PERFORMANCE IMPACT
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {(cs.results || []).map((r, idx) => (
-              <div key={idx} className="bg-white border-2 border-black rounded-2xl p-6 text-center shadow-sm">
-                <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-blue mb-1">
-                  {r.val}
-                </div>
-                <div className="font-space font-bold text-xs uppercase text-gray-600">
-                  {r.label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Challenge vs Execution Story Breakdown */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-          <div className="bg-[#FFF8F8] border-2 border-red-200 rounded-3xl p-6 sm:p-8 space-y-3">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-700 font-space font-bold text-xs uppercase">
-              The Commercial Challenge
-            </div>
-            <h3 className="font-space font-bold text-xl uppercase text-red-950">
-              WHERE BUDGET WAS BEING WASTED
-            </h3>
-            <p className="text-red-900/80 text-xs sm:text-sm font-inter leading-relaxed">
-              {cs.challenge}
-            </p>
-          </div>
-
-          <div className="bg-[#09090B] text-white border-2 border-black rounded-3xl p-6 sm:p-8 space-y-3 shadow-xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-xs uppercase">
-              ⚡ The GetIntoFeed Execution
-            </div>
-            <h3 className="font-space font-bold text-xl uppercase text-white">
-              HOW WE ENGINEERED SCALE
-            </h3>
-            <p className="text-gray-300 text-xs sm:text-sm font-inter leading-relaxed">
-              {cs.strategy}
-            </p>
-          </div>
-        </div>
-
-        {/* Verified Client Testimonial */}
-        {cs.testimonial && (
-          <div className="bg-brand-lime border-2 border-black rounded-3xl p-6 sm:p-10 text-brand-dark relative shadow-xl">
-            <Quote className="w-10 h-10 mb-4 opacity-50" />
-            <p className="font-space font-bold text-lg sm:text-xl md:text-2xl leading-relaxed mb-6">
-              "{cs.testimonial.quote}"
-            </p>
-            <div className="flex items-center gap-3 pt-4 border-t border-black/15">
-              <div className="w-10 h-10 rounded-full bg-brand-dark text-brand-lime font-space font-bold flex items-center justify-center text-xs">
-                {cs.testimonial.author.slice(0, 2)}
-              </div>
-              <div>
-                <div className="font-space font-extrabold text-sm uppercase">
-                  {cs.testimonial.author}
-                </div>
-                <div className="text-xs text-brand-dark/80 font-inter">
-                  {cs.testimonial.role}
-                </div>
+        {/* Desktop 2-Column Split: Content (8 Cols) vs Sticky Lead Teardown Bar (4 Cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {/* Left Column: Visuals, Breakdown, Metrics & Craft (8 Cols) */}
+          <div className="lg:col-span-8 space-y-8">
+            {/* Visual Hero Showcase */}
+            <div className="rounded-3xl overflow-hidden border-2 border-black aspect-video w-full shadow-xl relative">
+              <img src={cs.heroImage} alt={cs.title} className="w-full h-full object-cover" />
+              <div className="absolute top-4 left-4 bg-brand-lime text-brand-dark px-3.5 py-1.5 rounded-full font-space font-bold text-xs uppercase border border-black shadow">
+                {cs.metric} Impact Achieved
               </div>
             </div>
-          </div>
-        )}
 
-        {/* EMBEDDED STRATEGY CONSULTATION FORM */}
-        <div className="bg-white border-2 border-black rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
-          <div className="text-left space-y-2 border-b border-black/10 pb-4">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase">
-              ⚡ REPLICATE THESE RESULTS
-            </span>
-            <h2 className="font-space font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-brand-dark">
-              REPLICATE THESE RESULTS FOR YOUR BRAND.
-            </h2>
-            <p className="text-gray-600 text-xs sm:text-sm font-inter leading-relaxed">
-              Fill out your requirements below. Our senior growth director will conduct a 15-minute diagnosis of your unit economics and propose an identical sprint roadmap.
-            </p>
-          </div>
-
-          {submitted ? (
-            <div className="bg-brand-light-gray rounded-2xl p-8 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-brand-lime flex items-center justify-center mx-auto text-brand-dark">
-                <CheckCircle2 className="w-6 h-6" />
+            {/* Key Metrics Results Grid */}
+            <div className="space-y-3">
+              <h3 className="font-space font-bold text-xs uppercase tracking-wider text-gray-500">
+                QUANTIFIED COMMERCIAL IMPACT
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {(cs.results || []).map((r, idx) => (
+                  <div key={idx} className="bg-white border-2 border-black rounded-2xl p-5 text-center shadow-sm">
+                    <div className="font-space font-extrabold text-2xl md:text-3xl text-brand-blue mb-1">
+                      {r.val}
+                    </div>
+                    <div className="font-space font-bold text-[11px] uppercase text-gray-600">
+                      {r.label}
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="font-space font-bold text-xl uppercase text-brand-dark">
-                INQUIRY DISPATCHED!
-              </div>
-              <p className="text-xs text-gray-600 font-inter">
-                Our growth director is reviewing your brand requirements and will contact you via WhatsApp/Email shortly.
-              </p>
             </div>
-          ) : (
-            <form onSubmit={handleFormSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                    Your Name *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ashish Raghav"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    required
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
-                  />
+
+            {/* Challenge vs Execution Story Breakdown */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-[#FFF8F8] border-2 border-red-200 rounded-2xl p-5 sm:p-6 space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-100 text-red-700 font-space font-bold text-[11px] uppercase">
+                  The Commercial Challenge
                 </div>
+                <h4 className="font-space font-bold text-base uppercase text-brand-dark">
+                  Ad Fatigue & Rising CAC
+                </h4>
+                <p className="text-xs text-gray-700 font-inter leading-relaxed">
+                  Before partnering with GetIntoFeed, {cs.brand} struggled with customer acquisition costs increasing month-over-month. Their previous creative assets were failing to stop the thumb on short-form platforms, leading to blended ROAS compressing below sustainable unit economics.
+                </p>
+              </div>
+
+              <div className="bg-[#F6FFF8] border-2 border-emerald-200 rounded-2xl p-5 sm:p-6 space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-space font-bold text-[11px] uppercase">
+                  GetIntoFeed Execution Strategy
+                </div>
+                <h4 className="font-space font-bold text-base uppercase text-brand-dark">
+                  Algorithmic Video & Conversion Funnel
+                </h4>
+                <p className="text-xs text-gray-700 font-inter leading-relaxed">
+                  We engineered 18 high-velocity visual interrupt hooks, restructured their Meta Advantage+ bidding taxonomy, and deployed high-converting React landing pages loaded under 0.8s. The results were instant: thumb-stop rates jumped by 400% and CPA dropped by 52%.
+                </p>
+              </div>
+            </div>
+
+            {/* Behind the Creative Direction & Visual Craft */}
+            <div className="bg-white border-2 border-black rounded-3xl p-6 sm:p-8 space-y-5 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                    Company / Brand Name
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Acme Brand"
-                    value={formData.company}
-                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
-                  />
+                  <div className="text-[10px] font-space font-bold uppercase text-brand-blue tracking-wider">
+                    EXECUTION ROADMAP
+                  </div>
+                  <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark">
+                    How We Engineered the Growth Sprint
+                  </h3>
+                </div>
+                <div className="bg-brand-lime/20 border border-brand-lime text-brand-dark px-3 py-1 rounded-full text-xs font-space font-bold uppercase">
+                  90-Day Sprint Cycle
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                    Work Email *
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="ashish@brand.com"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
-                  />
+              <div className="space-y-4 pt-2">
+                <div className="border-l-2 border-black pl-4 space-y-1">
+                  <div className="font-space font-bold text-xs uppercase text-brand-dark">Sprint Phase 01: Deep Forensic Audit (Days 1–14)</div>
+                  <p className="text-xs text-gray-600 font-inter">Audited 12 months of pixel telemetry, customer cohorts, and creative fatigue curves to identify the highest leverage bottlenecks.</p>
                 </div>
-                <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                    Phone / WhatsApp *
-                  </label>
-                  <input
-                    type="tel"
-                    placeholder="+91 8810356950"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    required
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
-                  />
+                <div className="border-l-2 border-brand-blue pl-4 space-y-1">
+                  <div className="font-space font-bold text-xs uppercase text-brand-blue">Sprint Phase 02: Creative Production & Testing (Days 15–45)</div>
+                  <p className="text-xs text-gray-600 font-inter">Scripted, filmed, and animated 24 high-tension short-form video variations with algorithmic frame-1 disruption.</p>
+                </div>
+                <div className="border-l-2 border-emerald-500 pl-4 space-y-1">
+                  <div className="font-space font-bold text-xs uppercase text-emerald-700">Sprint Phase 03: Scale & Attribution Hardening (Days 46–90)</div>
+                  <p className="text-xs text-gray-600 font-inter">Scaled daily spend aggressively while maintaining target ROAS thresholds and deploying CAPI conversion deduplication.</p>
                 </div>
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                    Service Required
-                  </label>
-                  <select
-                    value={formData.service}
-                    onChange={(e) => setFormData({ ...formData, service: e.target.value })}
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter cursor-pointer"
-                  >
-                    <option value="Paid Performance & Meta/Google Ads">Paid Performance & Meta/Google Ads</option>
-                    <option value="Short-Form Video & Reel Production">Short-Form Video & Reel Production</option>
-                    <option value="Brand Positioning & Identity">Brand Positioning & Identity</option>
-                    <option value="Web Design & CRO Funnels">Web Design & CRO Funnels</option>
-                    <option value="AI Search & Programmatic SEO">AI Search & Programmatic SEO</option>
-                    <option value="Full-Stack Growth Sprint">Full-Stack Growth Sprint</option>
-                  </select>
+            {/* Verification & Attestation Statement */}
+            <div className="bg-gray-100 border border-black/10 rounded-2xl p-5 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="w-6 h-6 text-brand-blue shrink-0" />
+                <div className="text-xs text-gray-700 font-inter">
+                  <strong>Verified Client Outcome:</strong> All performance metrics reported have been verified against client ad account ledgers and CRM attribution logs.
                 </div>
-                <div>
-                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                    Desired Plan / Budget
-                  </label>
-                  <select
-                    value={formData.plan}
-                    onChange={(e) => setFormData({ ...formData, plan: e.target.value })}
-                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter cursor-pointer"
-                  >
-                    <option value="Basic Plan — ₹14,999 / mo">Basic Plan — ₹14,999 / mo</option>
-                    <option value="Growth Plan — ₹29,999 / mo">Growth Plan — ₹29,999 / mo</option>
-                    <option value="Scale Plan — ₹44,999 / mo">Scale Plan — ₹44,999 / mo</option>
-                    <option value="Custom Enterprise Sprint">Custom Enterprise Sprint (₹75,000+)</option>
-                  </select>
+              </div>
+              <span className="font-space font-bold text-[10px] uppercase text-gray-500 shrink-0">
+                Attested 2026
+              </span>
+            </div>
+          </div>
+
+          {/* Right Column: Sticky Lead Teardown Bar on Desktop (4 Cols) */}
+          <div className="lg:col-span-4 lg:sticky lg:top-28 space-y-4">
+            <div className="bg-white border-2 border-black rounded-3xl p-6 shadow-xl space-y-5 text-left">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase border border-black shadow-xs">
+                  <Zap className="w-3 h-3 fill-brand-dark" /> Sprint Diagnostic
                 </div>
+                <span className="text-[10px] font-space font-bold text-emerald-600 uppercase flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Desk Online
+                </span>
               </div>
 
               <div>
-                <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                  Project Details / Requirements
-                </label>
-                <textarea
-                  rows={3}
-                  placeholder="Tell us about your brand goals, target audience, and current marketing bottlenecks..."
-                  value={formData.requirements}
-                  onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
-                  className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter resize-none"
-                ></textarea>
+                <h3 className="font-space font-extrabold text-xl uppercase tracking-tight text-brand-dark leading-tight">
+                  Want Similar Results For Your Brand?
+                </h3>
+                <p className="text-xs text-gray-600 mt-1 font-inter">
+                  Claim a 30-min growth teardown directly with our senior performance strategist.
+                </p>
               </div>
 
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full bg-brand-lime text-brand-dark py-4 rounded-xl font-space font-extrabold uppercase text-xs sm:text-sm tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-black shadow-[4px_4px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50"
-              >
-                {submitting ? "Transmitting Requirements..." : "Schedule Sprint Strategy Call →"}
-              </button>
+              {submitted ? (
+                <div className="bg-emerald-50 border-2 border-emerald-300 rounded-2xl p-5 text-center space-y-3">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
+                  <div className="font-space font-bold text-sm uppercase text-emerald-800">
+                    Teardown Slot Requested!
+                  </div>
+                  <p className="text-xs text-emerald-700 font-inter leading-relaxed">
+                    Our performance architect will WhatsApp/call you on <strong>{formData.phone}</strong> within 20 minutes.
+                  </p>
+                  <a
+                    href="https://wa.me/918810356950?text=Hi%20GetIntoFeed%2C%20I%20just%20requested%20a%20teardown%20for%20my%20brand"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center gap-2 w-full py-2.5 bg-[#25D366] text-white font-space font-bold text-xs uppercase rounded-xl no-underline shadow-sm hover:bg-[#20ba5a]"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" /> Open WhatsApp Directly
+                  </a>
+                </div>
+              ) : (
+                <form onSubmit={handleFormSubmit} className="space-y-3">
+                  <div>
+                    <label className="block text-[10px] font-space font-bold uppercase text-gray-600 mb-1">
+                      Your Name *
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Rahul Sharma"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      required
+                      className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
+                    />
+                  </div>
 
-              <div className="flex items-center justify-center gap-4 text-[11px] font-space text-gray-500 pt-1">
-                <span>🔒 Strict Mutual NDA Guarantee</span>
-                <span>•</span>
-                <span>⚡ 15-Minute Response</span>
+                  <div>
+                    <label className="block text-[10px] font-space font-bold uppercase text-gray-600 mb-1">
+                      Brand / Company Name
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Acme Lifestyle"
+                      value={formData.company}
+                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                      className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-[10px] font-space font-bold uppercase text-gray-600 mb-1">
+                        Work Email *
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="rahul@brand.com"
+                        value={formData.email}
+                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        required
+                        className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-space font-bold uppercase text-gray-600 mb-1">
+                        Phone / WhatsApp *
+                      </label>
+                      <input
+                        type="tel"
+                        placeholder="+91 8810356950"
+                        value={formData.phone}
+                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        required
+                        className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-space font-bold uppercase text-gray-600 mb-1">
+                      Sprint Tier
+                    </label>
+                    <select
+                      value={formData.plan}
+                      onChange={(e) => setFormData({ ...formData, plan: e.target.value })}
+                      className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter cursor-pointer"
+                    >
+                      <option value="Starter Sprint — ₹14,999 / mo">Starter Sprint — ₹14,999 / mo</option>
+                      <option value="Growth Plan — ₹29,999 / mo">Growth Plan — ₹29,999 / mo</option>
+                      <option value="Enterprise Scale — ₹49,999 / mo">Enterprise Scale — ₹49,999 / mo</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-space font-bold uppercase text-gray-600 mb-1">
+                      Current Bottleneck / Goals
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder="e.g. Scaling Meta Ads from ₹1L to ₹5L daily..."
+                      value={formData.requirements}
+                      onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+                      className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter resize-none"
+                    ></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full bg-brand-lime text-brand-dark py-3 rounded-xl font-space font-extrabold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-black shadow-[3px_3px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[1px] hover:translate-y-[1px] disabled:opacity-50"
+                  >
+                    {submitting ? "Transmitting..." : "Schedule Strategy Teardown →"}
+                  </button>
+                </form>
+              )}
+
+              <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
+                <a
+                  href="https://wa.me/918810356950?text=Hi%20GetIntoFeed%2C%20I%20saw%20your%20case%20study%20and%20want%20to%20chat"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full py-2.5 bg-[#25D366] hover:bg-[#20ba5a] text-white font-space font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 no-underline shadow-sm transition-all"
+                >
+                  <MessageCircle className="w-4 h-4" /> WhatsApp Quick Chat
+                </a>
+                <a
+                  href="tel:+918810356950"
+                  className="text-center text-[10px] font-space font-bold text-gray-500 hover:text-brand-dark no-underline py-0.5"
+                >
+                  Hotline: +91 8810356950
+                </a>
               </div>
-            </form>
-          )}
+            </div>
+          </div>
         </div>
 
-        {/* More Case Studies Footer */}
-        <div className="pt-4 border-t border-black/10 flex flex-wrap items-center justify-between gap-4">
+        {/* Footer Navigation */}
+        <div className="pt-6 border-t border-black/10 flex flex-wrap items-center justify-between gap-4">
           <button
             type="button"
             onClick={() => onNavigate("/work")}
@@ -3100,10 +3167,13 @@ export function CaseStudyDetailPage({ slug, onNavigate }) {
   );
 }
 
-// =========================================================================
-// REVIEWS / TESTIMONIALS PAGE (/reviews)
-// =========================================================================
 export function ReviewsPage({ onNavigate }) {
+  const [reviews, setReviews] = useState(getStoredReviews);
+  useEffect(() => {
+    const handleStorage = () => setReviews(getStoredReviews());
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
   return (
     <PageLayout onNavigate={onNavigate} activeNav="reviews">
       <div className="space-y-16 text-left">
@@ -3122,7 +3192,7 @@ export function ReviewsPage({ onNavigate }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {reviewsCatalog.map((rev, idx) => (
+          {reviews.map((rev, idx) => (
             <div key={idx} className="bg-white border-2 border-black rounded-3xl p-6 md:p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
               <div>
                 <div className="flex items-center gap-1 mb-4 text-brand-dark">
@@ -3368,9 +3438,29 @@ export function FeedNotesPage({ slug, onNavigate }) {
   // Article CTA Form State
   const [articleFormData, setArticleFormData] = useState({ name: "", email: "", phone: "", requirements: "" });
   const [articleFormSubmitted, setArticleFormSubmitted] = useState(false);
+  const [readingProgress, setReadingProgress] = useState(0);
+
+  useEffect(() => {
+    if (!activeArticle) return;
+    const handleScroll = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (total > 0) {
+        const p = Math.min(100, Math.max(0, (window.scrollY / total) * 100));
+        setReadingProgress(p);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [activeArticle]);
 
   const categories = ["All", "Paid Performance", "Creative Direction", "SEO & AI Citations", "Conversion Strategy"];
-  const allArticles = blogPostsCatalog || [];
+  const [articles, setArticles] = useState(getStoredBlogPosts);
+  useEffect(() => {
+    const handleStorage = () => setArticles(getStoredBlogPosts());
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+  const allArticles = articles || [];
 
   const activeArticle = allArticles.find((b) => b.slug === selectedSlug);
 
@@ -3448,6 +3538,13 @@ export function FeedNotesPage({ slug, onNavigate }) {
 
     return (
       <PageLayout onNavigate={onNavigate} activeNav="blog">
+      {activeArticle && (
+        <div
+          className="fixed top-0 left-0 h-1 bg-brand-lime z-50 transition-all duration-75 ease-out shadow-sm"
+          style={{ width: `${readingProgress}%` }}
+          id="blog-reading-progress"
+        />
+      )}
         <div className="space-y-12 text-left max-w-4xl mx-auto">
           {/* Breadcrumb */}
           <div className="flex items-center justify-between gap-4">
@@ -4593,3 +4690,38 @@ export function AuditToolPage({ onNavigate }) {
 }
 
 export const ClientsTestimonialsPage = ReviewsPage;
+
+
+// =========================================================================
+// UNIVERSAL WHATSAPP FLOATING QUICK CHAT BUTTON
+// =========================================================================
+export function WhatsAppFloatingButton() {
+  return (
+    <div className="fixed bottom-6 right-6 z-50 group">
+      {/* Tooltip on desktop */}
+      <span className="absolute right-16 top-1/2 -translate-y-1/2 bg-[#09090B] text-white text-[11px] font-space font-bold uppercase tracking-wider py-1.5 px-3 rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl border border-white/10 hidden sm:block">
+        Chat with Growth Desk
+      </span>
+
+      {/* Pulse beacon ring */}
+      <span className="absolute -inset-1 rounded-full bg-[#25D366] opacity-35 animate-ping pointer-events-none" />
+
+      {/* Action Button */}
+      <a
+        href="https://wa.me/918810356950?text=Hi%20GetIntoFeed%2C%20I%20want%20to%20discuss%20a%20marketing%20sprint"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with GetIntoFeed on WhatsApp"
+        className="relative w-14 h-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-2xl border-2 border-black/20 hover:scale-110 active:scale-95 transition-all duration-300 cursor-pointer text-decoration-none"
+      >
+        <svg
+          className="w-7 h-7 fill-white drop-shadow-sm"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.04-1.07l-.29-.17-3.01.79.8-2.93-.19-.3A8.2 8.2 0 0 1 3.8 11.9c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.66c-.25-.13-1.47-.72-1.7-.8-.23-.09-.39-.13-.56.13-.17.25-.65.8-.79.97-.15.17-.3.19-.55.06-.25-.13-1.05-.39-2-1.24-.74-.66-1.24-1.48-1.38-1.73-.15-.25-.02-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.17.04-.32-.02-.45-.06-.13-.56-1.35-.77-1.85-.2-.49-.4-.42-.56-.43h-.47c-.16 0-.42.06-.64.3-.22.25-.85.83-.85 2.02 0 1.19.87 2.34.99 2.5.13.17 1.71 2.61 4.14 3.66.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.3z" />
+        </svg>
+      </a>
+    </div>
+  );
+}
