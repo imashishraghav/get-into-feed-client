@@ -3440,19 +3440,6 @@ export function FeedNotesPage({ slug, onNavigate }) {
   const [articleFormSubmitted, setArticleFormSubmitted] = useState(false);
   const [readingProgress, setReadingProgress] = useState(0);
 
-  useEffect(() => {
-    if (!activeArticle) return;
-    const handleScroll = () => {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      if (total > 0) {
-        const p = Math.min(100, Math.max(0, (window.scrollY / total) * 100));
-        setReadingProgress(p);
-      }
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [activeArticle]);
-
   const categories = ["All", "Paid Performance", "Creative Direction", "SEO & AI Citations", "Conversion Strategy"];
   const [articles, setArticles] = useState(getStoredBlogPosts);
   useEffect(() => {
@@ -3463,6 +3450,22 @@ export function FeedNotesPage({ slug, onNavigate }) {
   const allArticles = articles || [];
 
   const activeArticle = allArticles.find((b) => b.slug === selectedSlug);
+
+  useEffect(() => {
+    if (!activeArticle) {
+      setReadingProgress(0);
+      return;
+    }
+    const handleScroll = () => {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      if (total > 0) {
+        const p = Math.min(100, Math.max(0, (window.scrollY / total) * 100));
+        setReadingProgress(p);
+      }
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [activeArticle]);
 
   const filteredArticles = allArticles.filter((b) => {
     const matchCategory = activeCategory === "All" || b.category === activeCategory;
