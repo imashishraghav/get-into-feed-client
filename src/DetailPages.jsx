@@ -1736,315 +1736,794 @@ export function ServicesHubPage({ onNavigate }) {
 }
 
 // =========================================================================
-// SERVICE DETAIL PAGE (/services/:slug) — 2-COLUMN DESKTOP STICKY FORM
+// SLUG ALIAS RESOLUTION & TECH STACKS FOR SERVICES
+// =========================================================================
+const SERVICE_SLUG_ALIASES = {
+  "content-marketing": "content-creation",
+  "reels": "content-creation",
+  "videos": "content-creation",
+  "ads-campaign": "performance-marketing",
+  "growth": "performance-marketing",
+  "paid-ads": "performance-marketing",
+  "graphics-design": "branding",
+  "strategy": "branding",
+  "brand-identity": "branding",
+  "influencer-marketing": "influencer-network",
+  "influencer-network": "influencer-network",
+  "web-design": "web-development",
+  "web-development": "web-development",
+  "social-media": "social-media",
+  "seo": "seo",
+  "analytics": "analytics"
+};
+
+const SERVICE_TECH_STACKS = {
+  "branding": [
+    { name: "Figma", desc: "Design Systems & Token Architecture" },
+    { name: "Adobe Illustrator", desc: "Vector Logos & Geometry" },
+    { name: "After Effects", desc: "Kinetic Identity & Brand Motion" },
+    { name: "FontBase", desc: "Type Hierarchy Engine" },
+    { name: "Notion", desc: "Brand Voice & Positioning Guide" }
+  ],
+  "performance-marketing": [
+    { name: "Meta Ads Manager", desc: "Advantage+ Media Buying" },
+    { name: "Google Ads", desc: "High-Intent Search & PMax" },
+    { name: "Triple Whale", desc: "Blended Multi-Touch Attribution" },
+    { name: "Meta CAPI", desc: "Server-Side Pixel Tracking" },
+    { name: "Google Analytics 4", desc: "Conversion Funnel Measurement" }
+  ],
+  "social-media": [
+    { name: "Notion", desc: "30-Day Sprint Editorial Calendar" },
+    { name: "Canva & Figma", desc: "High-Velocity Visuals" },
+    { name: "CapCut Pro", desc: "Trend-Jumping Viral Reels" },
+    { name: "Buffer / Later", desc: "Multi-Platform Automated Queue" },
+    { name: "Meta Business Suite", desc: "Community DM & Engagement Hub" }
+  ],
+  "content-creation": [
+    { name: "Adobe Premiere Pro", desc: "High-Retention Pacing & Cuts" },
+    { name: "DaVinci Resolve", desc: "Cinematic Color Grading & Depth" },
+    { name: "After Effects", desc: "Kinetic Subtitles & 3D Hooks" },
+    { name: "Sony FX3 & A7IV", desc: "4K Studio Production Rigs" },
+    { name: "Frame.io", desc: "Frame-by-Frame Client Approval" }
+  ],
+  "web-development": [
+    { name: "React & Next.js", desc: "Modern Reactive Web Architecture" },
+    { name: "Tailwind CSS", desc: "Zero-Jank Responsive UI" },
+    { name: "Vite & Vercel", desc: "Sub-Second Global Edge CDN" },
+    { name: "PostgreSQL", desc: "Secure Relational Storage" },
+    { name: "Google PageSpeed", desc: "95+ Core Web Vitals" }
+  ],
+  "seo": [
+    { name: "Semrush", desc: "Keyword & Competitive Gap Intel" },
+    { name: "Ahrefs", desc: "Backlink & Authority Diagnostics" },
+    { name: "Google Search Console", desc: "Indexation & CTR Analytics" },
+    { name: "Screaming Frog", desc: "Deep Technical Site Crawls" },
+    { name: "Perplexity & ChatGPT", desc: "Generative AI Search Optimization" }
+  ],
+  "influencer-network": [
+    { name: "Modash", desc: "Creator Engagement & Fake Follower Audit" },
+    { name: "Aspire & GRIN", desc: "Creator Relationship CRM" },
+    { name: "Partnership Ads", desc: "Meta Whitelisted Ad Sets" },
+    { name: "Digital Rights Doc", desc: "Perpetual Ad Usage Licensing" },
+    { name: "Shopify Collabs", desc: "Affiliate Tracking & Commission" }
+  ],
+  "analytics": [
+    { name: "Google Analytics 4", desc: "Custom Event Taxonomies" },
+    { name: "Looker Studio", desc: "Automated Executive Dashboards" },
+    { name: "Microsoft Clarity", desc: "Session Recordings & Heatmaps" },
+    { name: "Klaviyo", desc: "High-LTV Retention Workflows" },
+    { name: "BigQuery", desc: "Raw Warehouse Storage" }
+  ]
+};
+
+const SERVICE_CASE_STUDY_MAP = {
+  "branding": "luxeliving-realty",
+  "performance-marketing": "glowup-skincare",
+  "social-media": "glowup-skincare",
+  "content-creation": "glowup-skincare",
+  "web-development": "apex-fintech",
+  "seo": "apex-fintech",
+  "influencer-network": "glowup-skincare",
+  "analytics": "luxeliving-realty"
+};
+
+// =========================================================================
+// SERVICE DETAIL PAGE (/services/:slug) — REDESIGNED WORLD-CLASS LAYOUT
 // =========================================================================
 export function ServiceDetailPage({ slug, onNavigate }) {
   const currentServices = getStoredServices();
-  const service = currentServices.find((s) => s.slug === slug) || currentServices[0];
+  const canonicalSlug = SERVICE_SLUG_ALIASES[slug] || slug;
+  const service = currentServices.find((s) => s.slug === canonicalSlug) || currentServices.find((s) => s.slug === slug) || currentServices[0];
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    company: "",
-    service: service.title,
-    budget: "₹1,00,000 - ₹3,00,000",
-    timeline: "Immediately (Within 7 Days)",
-    details: ""
-  });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [selectedServiceTitle, setSelectedServiceTitle] = useState(service.title);
+  const [expandedFaqIndex, setExpandedFaqIndex] = useState(0);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert("Please enter your name, email, and phone number.");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await fetch(`${API_URL}/api/enquiries`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          company: formData.company,
-          service_required: service.title,
-          budget_tier: formData.budget,
-          project_timeline: formData.timeline,
-          message: formData.details
-        })
-      });
-      setSubmitted(true);
-    } catch (err) {
-      setSubmitted(true); // Graceful fallback
-    } finally {
-      setSubmitting(false);
-    }
+  useEffect(() => {
+    setSelectedServiceTitle(service.title);
+  }, [service.title]);
+
+  const handleOpenModal = (svcTitle) => {
+    setSelectedServiceTitle(svcTitle || service.title);
+    setLeadModalOpen(true);
   };
 
+  const caseStudies = typeof getStoredCaseStudies === "function" ? getStoredCaseStudies() : caseStudiesCatalog;
+  const matchedCaseSlug = SERVICE_CASE_STUDY_MAP[service.slug] || "luxeliving-realty";
+  const matchedCase = caseStudies.find((c) => c.slug === matchedCaseSlug) || caseStudies[0];
+  const techStack = SERVICE_TECH_STACKS[service.slug] || SERVICE_TECH_STACKS["branding"];
+
   return (
-    <PageLayout onNavigate={onNavigate} activeNav="services">
-      <div className="space-y-12">
-        {/* Breadcrumb / Back Button */}
-        <div>
-          <button
-            type="button"
-            onClick={() => onNavigate("/services")}
-            className="inline-flex items-center gap-2 text-xs font-space font-bold uppercase text-gray-500 hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to All Services
-          </button>
+    <PageLayout
+      onNavigate={onNavigate}
+      activeNav="services"
+      leadModalOpen={leadModalOpen}
+      setLeadModalOpen={setLeadModalOpen}
+      selectedService={selectedServiceTitle}
+      setSelectedService={setSelectedServiceTitle}
+    >
+      <div className="space-y-16 md:space-y-24">
+        {/* 1. INTERACTIVE QUICK-SWITCH SERVICE PILLS BAR */}
+        <div className="w-full border-b border-black/10 pb-4">
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <span className="font-space font-bold text-[11px] uppercase tracking-wider text-gray-500 flex items-center gap-1.5">
+              <Sliders className="w-3.5 h-3.5 text-brand-dark" />
+              Explore All Service Capabilities
+            </span>
+            <span className="text-[11px] font-space text-gray-400 hidden sm:inline-block">
+              Click any service to view sprint details
+            </span>
+          </div>
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {currentServices.map((s) => {
+              const isActive = s.slug === service.slug || (SERVICE_SLUG_ALIASES[slug] === s.slug);
+              const SvcIcon = s.icon || Sparkles;
+              return (
+                <button
+                  key={s.slug}
+                  type="button"
+                  onClick={() => onNavigate(`/services/${s.slug}`)}
+                  className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-full font-space text-xs font-bold whitespace-nowrap transition-all cursor-pointer border ${
+                    isActive
+                      ? "bg-[#09090B] text-white border-[#09090B] shadow-md"
+                      : "bg-white text-gray-700 border-black/10 hover:bg-gray-100 hover:text-black"
+                  }`}
+                >
+                  <SvcIcon className={`w-3.5 h-3.5 ${isActive ? "text-brand-lime" : "text-gray-500"}`} />
+                  <span>{s.title.split(" & ")[0].split(" / ")[0]}</span>
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-lime animate-pulse ml-0.5"></span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* 2-COLUMN LAYOUT */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-          {/* LEFT COLUMN: Deep Content Dossier */}
-          <div className="lg:col-span-7 space-y-12 text-left">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/30 border border-brand-lime/50 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-4">
-                <service.icon className="w-3.5 h-3.5 text-brand-blue" />
-                {service.category}
-              </div>
-              <h1 className="font-space font-extrabold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-brand-dark leading-[0.95] mb-6">
-                {service.title}
-              </h1>
-              <p className="text-gray-700 text-sm md:text-base font-inter leading-relaxed">
-                {service.overview}
-              </p>
+        {/* 2. BREADCRUMBS & TOP STATUS BAR */}
+        <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-space font-semibold text-gray-500">
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onNavigate("/services")}
+              className="hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer text-gray-500 font-space font-bold uppercase inline-flex items-center gap-1.5"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> Services Hub
+            </button>
+            <span>/</span>
+            <span className="text-gray-400">{service.category}</span>
+            <span>/</span>
+            <span className="text-brand-dark font-bold">{service.title}</span>
+          </div>
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-space font-bold uppercase">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+            ⚡ 7-Day Sprint Available • Senior Talent Only
+          </div>
+        </div>
+
+        {/* 3. HERO SECTION: DYNAMIC 2-COLUMN OVERVIEW */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center text-left">
+          {/* LEFT: Core Value Proposition */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider">
+              {React.createElement(service.icon || Sparkles, { className: "w-4 h-4 text-brand-blue" })}
+              {service.category}
             </div>
 
-            {/* WHAT WE DO */}
-            <div className="bg-white border-2 border-black rounded-3xl p-8 shadow-sm">
-              <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark mb-6 flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-brand-blue" />
-                WHAT WE DO & EXECUTE
-              </h3>
-              <div className="space-y-3.5">
-                {(service.whatWeDo || []).map((item, idx) => (
-                  <div key={idx} className="flex items-start gap-3 text-xs md:text-sm font-inter text-gray-700">
-                    <div className="w-5 h-5 rounded-full bg-brand-lime flex items-center justify-center shrink-0 mt-0.5 text-brand-dark font-space font-bold text-[10px]">
-                      ✓
-                    </div>
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <h1 className="font-space font-extrabold text-3xl sm:text-5xl md:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95]">
+              {service.title}
+            </h1>
 
-            {/* 4-STEP SPRINT EXECUTION ROADMAP */}
-            <div>
-              <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark mb-6">
-                4-STEP SPRINT ROADMAP.
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {(service.strategySteps || []).map((st, idx) => (
-                  <div key={idx} className="bg-white border-2 border-black rounded-2xl p-6">
-                    <div className="font-space font-extrabold text-2xl text-brand-blue mb-1">
-                      {st.step}
-                    </div>
-                    <div className="font-space font-bold text-sm uppercase text-brand-dark mb-2">
-                      {st.name}
-                    </div>
-                    <p className="text-gray-600 text-xs font-inter leading-relaxed">
-                      {st.desc}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <p className="text-gray-700 text-sm sm:text-base md:text-lg font-inter leading-relaxed max-w-2xl">
+              {service.overview}
+            </p>
 
-            {/* DELIVERABLES CHECKLIST */}
-            <div className="bg-brand-light-gray border border-black/10 rounded-3xl p-8">
-              <h3 className="font-space font-bold text-lg uppercase tracking-tight text-brand-dark mb-4">
-                INCLUDED ASSETS & DELIVERABLES
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {(service.deliverables || []).map((del, idx) => (
-                  <div key={idx} className="flex items-center gap-2 bg-white px-3.5 py-2.5 rounded-xl border border-black/10 text-xs font-inter text-gray-800">
-                    <Check className="w-3.5 h-3.5 text-[#16a34a] shrink-0" />
-                    <span>{del}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* SERVICE FAQS */}
-            <div className="space-y-4">
-              <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark mb-4">
-                FREQUENTLY ASKED QUESTIONS
-              </h3>
-              {(service.faqs || []).map((faq, idx) => (
-                <div key={idx} className="bg-white border-2 border-black rounded-2xl p-5">
-                  <div className="font-space font-bold text-xs uppercase text-brand-dark mb-1.5">
-                    {faq.q}
-                  </div>
-                  <p className="text-gray-600 text-xs font-inter leading-relaxed">
-                    {faq.a}
-                  </p>
-                </div>
+            {/* Key Commercial Deliverables Chips */}
+            <div className="flex flex-wrap gap-2 pt-2">
+              {(service.deliverables || []).slice(0, 4).map((item, idx) => (
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-black/10 text-xs font-inter font-medium text-gray-800 shadow-sm"
+                >
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  {item}
+                </span>
               ))}
             </div>
-          </div>
 
-          {/* RIGHT COLUMN: STICKY "START YOUR PROJECT" FORM */}
-          <div className="lg:col-span-5 lg:sticky lg:top-28 self-start">
-            <div className="bg-white border-2 border-black rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden">
-              <div className="flex items-center justify-between gap-2 mb-3">
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase">
-                  <Zap className="w-3 h-3" /> Ready to Scale
-                </div>
-                <span className="font-space font-bold text-xs text-gray-500">Fast 15-Min Response</span>
-              </div>
+            {/* Hero CTA Action Row */}
+            <div className="flex flex-wrap items-center gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => handleOpenModal(service.title)}
+                className="bg-brand-lime text-brand-dark px-7 py-4 rounded-xl font-space font-extrabold uppercase text-xs sm:text-sm tracking-wider hover:bg-[#E2FF4D] transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center gap-2 cursor-pointer border-none"
+              >
+                <span>Book Strategy Sprint</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
 
-              <h3 className="font-space font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-brand-dark leading-none mb-2">
-                START YOUR PROJECT.
-              </h3>
-              <p className="text-gray-600 text-xs font-inter mb-6 leading-relaxed">
-                Connect directly with a senior strategist for <span className="font-bold text-brand-blue">{service.title}</span>.
-              </p>
+              <a
+                href={`https://wa.me/918810356950?text=${encodeURIComponent("Hi GetIntoFeed, I would like to discuss deploying a sprint for " + service.title)}`}
+                target="_blank"
+                rel="noreferrer"
+                className="bg-white border-2 border-black text-brand-dark px-6 py-3.5 rounded-xl font-space font-bold uppercase text-xs sm:text-sm hover:bg-gray-50 transition-all flex items-center gap-2 cursor-pointer no-underline shadow-sm hover:shadow"
+              >
+                <MessageCircle className="w-4 h-4 text-emerald-600" />
+                <span>Chat on WhatsApp</span>
+              </a>
+            </div>
 
-              {submitted ? (
-                <div className="bg-brand-light-gray rounded-2xl p-8 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-brand-lime flex items-center justify-center mx-auto text-brand-dark">
-                    <CheckCircle2 className="w-6 h-6" />
-                  </div>
-                  <div className="font-space font-bold text-xl uppercase text-brand-dark">
-                    INQUIRY DISPATCHED!
-                  </div>
-                  <p className="text-xs text-gray-600 font-inter">
-                    Our performance director is reviewing your requirements and will reach out to <span className="font-bold text-brand-dark">{formData.email}</span> shortly.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setSubmitted(false)}
-                    className="mt-2 text-xs font-space font-bold uppercase underline text-brand-blue bg-transparent border-none cursor-pointer"
-                  >
-                    Submit Another Query
-                  </button>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-4 text-left">
-                  <div>
-                    <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ashish Raghav"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                      className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none transition-colors"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                        Work Email *
-                      </label>
-                      <input
-                        type="email"
-                        placeholder="ashish@brand.com"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        required
-                        className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                        Phone / WhatsApp *
-                      </label>
-                      <input
-                        type="tel"
-                        placeholder="+91 98765 43210"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        required
-                        className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none transition-colors"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                      Company Name / URL
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Acme Corp or https://..."
-                      value={formData.company}
-                      onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                      className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none transition-colors"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                        Estimated Budget
-                      </label>
-                      <select
-                        value={formData.budget}
-                        onChange={(e) => setFormData({ ...formData, budget: e.target.value })}
-                        className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
-                      >
-                        <option value="Under ₹75,000">Under ₹75,000</option>
-                        <option value="₹75,000 - ₹1,50,000">₹75,000 - ₹1,50,000</option>
-                        <option value="₹1,50,000 - ₹3,50,000">₹1,50,000 - ₹3,50,000</option>
-                        <option value="₹3,50,000+ (Enterprise)">₹3,50,000+ (Enterprise)</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                        Project Timeline
-                      </label>
-                      <select
-                        value={formData.timeline}
-                        onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
-                        className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
-                      >
-                        <option value="Immediately (Within 7 Days)">Immediately (Within 7 Days)</option>
-                        <option value="Within 2-4 Weeks">Within 2-4 Weeks</option>
-                        <option value="Exploring Options">Exploring Options</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                      Project Details / Core Pain Points
-                    </label>
-                    <textarea
-                      rows={3}
-                      placeholder="Tell us what you are building and what bottlenecks you are facing..."
-                      value={formData.details}
-                      onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-                      className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
-                    ></textarea>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full bg-brand-lime text-brand-dark py-3.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-none shadow-md disabled:opacity-50"
-                  >
-                    {submitting ? "Booking Sprint..." : "Book Strategy Consultation →"}
-                  </button>
-
-                  <div className="flex items-center justify-center gap-2 text-[10px] text-gray-500 font-inter pt-1">
-                    <Lock className="w-3 h-3 text-gray-400" />
-                    <span>Non-Disclosure & Data Confidentiality Guaranteed</span>
-                  </div>
-                </form>
-              )}
+            {/* Trust Signals */}
+            <div className="flex flex-wrap items-center gap-6 pt-2 text-xs font-space font-semibold text-gray-500">
+              <span className="flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-brand-blue" />
+                100% Commercial IP Ownership
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4 text-emerald-600" />
+                48h Rapid Creative Turnaround
+              </span>
             </div>
           </div>
-        </div>
+
+          {/* RIGHT: Interactive Sprint Blueprint Card */}
+          <div className="lg:col-span-5">
+            <div className="bg-white border-2 border-black rounded-3xl p-6 sm:p-8 shadow-2xl relative overflow-hidden text-left">
+              <div className="flex items-center justify-between gap-2 mb-4 pb-4 border-b border-black/10">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase tracking-wider">
+                  <Zap className="w-3 h-3" /> VERIFIED SPRINT BLUEPRINT
+                </span>
+                <span className="font-space font-bold text-xs text-gray-500">Ready in 7 Days</span>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <div className="text-[11px] font-space font-bold uppercase text-gray-500 mb-1">
+                    Investment Tier
+                  </div>
+                  <div className="font-space font-extrabold text-2xl sm:text-3xl text-brand-dark">
+                    {service.pricingTier}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <div className="bg-[#F8F8F8] p-3.5 rounded-xl border border-black/5">
+                    <div className="text-[10px] font-space font-bold uppercase text-gray-500">Sprint Cadence</div>
+                    <div className="font-space font-bold text-sm text-brand-dark mt-0.5">7 to 14 Days</div>
+                  </div>
+                  <div className="bg-[#F8F8F8] p-3.5 rounded-xl border border-black/5">
+                    <div className="text-[10px] font-space font-bold uppercase text-gray-500">Squad Makeup</div>
+                    <div className="font-space font-bold text-sm text-brand-dark mt-0.5">Senior Leads Only</div>
+                  </div>
+                </div>
+
+                <div className="space-y-2.5 pt-2 border-t border-black/10">
+                  <div className="text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Included Execution Standards:
+                  </div>
+                  <div className="flex items-start gap-2 text-xs font-inter text-gray-700">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span>Direct WhatsApp sprint room with senior director</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-xs font-inter text-gray-700">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span>Weekly live review sprints & continuous iterations</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-xs font-inter text-gray-700">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span>Production-ready Figma source files & assets delivered</span>
+                  </div>
+                  <div className="flex items-start gap-2 text-xs font-inter text-gray-700">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                    <span>Strict mutual NDA & IP transfer upon completion</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenModal(service.title)}
+                  className="w-full mt-4 bg-[#09090B] hover:bg-black text-brand-lime py-4 rounded-xl font-space font-extrabold uppercase text-xs tracking-wider transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer border-none"
+                >
+                  <span>Deploy Sprint Now</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <div className="flex items-center justify-center gap-2 text-[11px] font-space font-medium text-gray-500 pt-1">
+                  <Lock className="w-3.5 h-3.5 text-gray-400" />
+                  <span>Confidential • 15-Minute Response Guaranteed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 4. PERFORMANCE METRIC STATS STRIP */}
+        <section className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 text-left">
+          <div className="bg-white border-2 border-black rounded-2xl p-5 md:p-6 shadow-sm">
+            <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-dark mb-1">
+              ₹120Cr+
+            </div>
+            <div className="font-space font-bold text-xs uppercase text-gray-500">
+              Pipeline & Revenue Scaled
+            </div>
+          </div>
+
+          <div className="bg-white border-2 border-black rounded-2xl p-5 md:p-6 shadow-sm">
+            <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-blue mb-1">
+              3.8x - 6.4x
+            </div>
+            <div className="font-space font-bold text-xs uppercase text-gray-500">
+              Average Blended Campaign ROAS
+            </div>
+          </div>
+
+          <div className="bg-white border-2 border-black rounded-2xl p-5 md:p-6 shadow-sm">
+            <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-dark mb-1">
+              48 Hours
+            </div>
+            <div className="font-space font-bold text-xs uppercase text-gray-500">
+              Rapid First Concept Velocity
+            </div>
+          </div>
+
+          <div className="bg-white border-2 border-black rounded-2xl p-5 md:p-6 shadow-sm">
+            <div className="font-space font-extrabold text-3xl md:text-4xl text-emerald-600 mb-1">
+              100%
+            </div>
+            <div className="font-space font-bold text-xs uppercase text-gray-500">
+              Senior Specialist Led Execution
+            </div>
+          </div>
+        </section>
+
+        {/* 5. THE TRADITIONAL AGENCY TRAP VS THE GETINTOFEED EDGE */}
+        <section className="text-left space-y-6">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-2">
+              <Award className="w-3.5 h-3.5 text-brand-dark" />
+              The GetIntoFeed Advantage
+            </div>
+            <h2 className="font-space font-extrabold text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-brand-dark">
+              WHY TRADITIONAL AGENCIES FAIL VS HOW WE DELIVER.
+            </h2>
+            <p className="text-gray-600 text-sm md:text-base font-inter max-w-2xl mt-1">
+              Most agencies burn your budget on bloated overhead, endless discovery meetings, and junior staff. Here is how our sprint model changes the equation.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* TRADITIONAL AGENCY CARD */}
+            <div className="bg-[#FFF8F8] border-2 border-red-200 rounded-3xl p-6 sm:p-8 space-y-4">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-700 font-space font-bold text-xs uppercase">
+                ❌ Traditional Agency Model
+              </div>
+              <h3 className="font-space font-bold text-xl uppercase text-red-950">
+                Slow, Bureaucratic & Generic
+              </h3>
+              <ul className="space-y-3 font-inter text-xs sm:text-sm text-red-900/80 list-none p-0">
+                <li className="flex items-start gap-2.5">
+                  <span className="text-red-500 font-bold shrink-0">✕</span>
+                  <span>4 to 8 weeks of slow onboarding and 15-page slide decks before any work begins.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-red-500 font-bold shrink-0">✕</span>
+                  <span>Pitched by founders, then silently delegated to unpaid interns and junior coordinators.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-red-500 font-bold shrink-0">✕</span>
+                  <span>Recycled Canva templates copied directly from your closest competitors.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-red-500 font-bold shrink-0">✕</span>
+                  <span>Focuses on vanity metrics (impressions, likes) instead of actual pipeline and sales.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-red-500 font-bold shrink-0">✕</span>
+                  <span>72-hour email delay and ticketing systems whenever you need urgent revisions.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* GETINTOFEED SPRINT CARD */}
+            <div className="bg-[#09090B] text-white border-2 border-black rounded-3xl p-6 sm:p-8 space-y-4 shadow-xl">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-xs uppercase">
+                ⚡ The GetIntoFeed Sprint
+              </div>
+              <h3 className="font-space font-bold text-xl uppercase text-white">
+                Rapid, High-Status & Revenue-Driven
+              </h3>
+              <ul className="space-y-3 font-inter text-xs sm:text-sm text-gray-300 list-none p-0">
+                <li className="flex items-start gap-2.5">
+                  <span className="text-brand-lime font-bold shrink-0">✓</span>
+                  <span>Live in 7 days flat. Zero bureaucratic friction, zero wasted hours.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-brand-lime font-bold shrink-0">✓</span>
+                  <span>Direct collaboration with senior growth directors and seasoned creative directors only.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-brand-lime font-bold shrink-0">✓</span>
+                  <span>Bespoke, world-class creative assets engineered specifically to stand out in the feed.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-brand-lime font-bold shrink-0">✓</span>
+                  <span>Obsessed with unit economics: ROAS, CPA reduction, and verified cash revenue.</span>
+                </li>
+                <li className="flex items-start gap-2.5">
+                  <span className="text-brand-lime font-bold shrink-0">✓</span>
+                  <span>Private WhatsApp channel with 15-minute average response time during business hours.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. WHAT WE DO & EXECUTE (DETAILED CAPABILITIES GRID) */}
+        <section className="text-left space-y-6">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-brand-blue" />
+                Execution Capabilities
+              </div>
+              <h2 className="font-space font-extrabold text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-brand-dark">
+                WHAT WE EXECUTE & DELIVER.
+              </h2>
+            </div>
+            <button
+              type="button"
+              onClick={() => handleOpenModal(service.title)}
+              className="font-space font-bold text-xs uppercase text-brand-dark hover:text-brand-blue transition-colors flex items-center gap-1.5 bg-transparent border-none p-0 cursor-pointer"
+            >
+              <span>Request Custom Scope</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {(service.whatWeDo || []).map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-white border-2 border-black rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow relative flex flex-col justify-between"
+              >
+                <div>
+                  <div className="font-space font-extrabold text-2xl text-brand-blue/30 mb-3">
+                    0{idx + 1}
+                  </div>
+                  <h4 className="font-space font-bold text-base uppercase tracking-tight text-brand-dark mb-2">
+                    {item.split(":")[0] || item.split(",")[0] || item}
+                  </h4>
+                  <p className="text-gray-600 text-xs sm:text-sm font-inter leading-relaxed">
+                    {item}
+                  </p>
+                </div>
+                <div className="pt-4 mt-4 border-t border-black/5 flex items-center gap-2 text-[11px] font-space font-bold text-emerald-600 uppercase">
+                  <Check className="w-3.5 h-3.5" /> Included in Sprint
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 7. 4-STEP SPRINT EXECUTION ROADMAP */}
+        <section className="text-left space-y-6">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-2">
+              <Zap className="w-3.5 h-3.5 text-brand-dark" />
+              Battle-Tested Process
+            </div>
+            <h2 className="font-space font-extrabold text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-brand-dark">
+              THE 4-STEP SPRINT BLUEPRINT.
+            </h2>
+            <p className="text-gray-600 text-sm md:text-base font-inter max-w-2xl mt-1">
+              How we take your marketing from initial brief to high-performance scale in record time.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {(service.strategySteps || []).map((st, idx) => (
+              <div
+                key={idx}
+                className="bg-white border-2 border-black rounded-2xl p-6 relative flex flex-col justify-between shadow-sm hover:-translate-y-1 transition-transform"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="font-space font-extrabold text-3xl text-brand-blue">
+                      {st.step}
+                    </span>
+                    <span className="font-space font-bold text-[10px] uppercase px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">
+                      Phase 0{idx + 1}
+                    </span>
+                  </div>
+                  <h4 className="font-space font-bold text-base uppercase text-brand-dark mb-2">
+                    {st.name}
+                  </h4>
+                  <p className="text-gray-600 text-xs font-inter leading-relaxed">
+                    {st.desc}
+                  </p>
+                </div>
+                <div className="pt-4 mt-4 border-t border-black/5 flex items-center justify-between text-[11px] font-space text-gray-500">
+                  <span>Velocity: Days {idx * 2 + 1}-{idx * 2 + 2}</span>
+                  <span className="text-brand-dark font-bold">100% On Time</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 8. PRODUCTION-GRADE TECH & TOOL STACK */}
+        <section className="text-left space-y-6">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-2">
+              <Code className="w-3.5 h-3.5 text-brand-dark" />
+              Modern Tooling
+            </div>
+            <h2 className="font-space font-extrabold text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-brand-dark">
+              ENTERPRISE PRODUCTION STACK.
+            </h2>
+            <p className="text-gray-600 text-sm md:text-base font-inter max-w-2xl mt-1">
+              We never cut corners with amateur software. We engineer on the exact tools used by top global brands and fast-scaling venture startups.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3.5">
+            {techStack.map((tool, idx) => (
+              <div
+                key={idx}
+                className="bg-white border-2 border-black rounded-2xl p-4 text-center hover:bg-brand-lime/10 transition-colors shadow-sm"
+              >
+                <div className="font-space font-bold text-sm text-brand-dark mb-1">
+                  {tool.name}
+                </div>
+                <div className="font-inter text-[11px] text-gray-500 leading-tight">
+                  {tool.desc}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 9. FEATURED CONTEXTUAL CASE STUDY SPOTLIGHT */}
+        {matchedCase && (
+          <section className="text-left space-y-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-2">
+                  <Star className="w-3.5 h-3.5 text-brand-dark" />
+                  Field Results
+                </div>
+                <h2 className="font-space font-extrabold text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-brand-dark">
+                  PROVEN RESULTS IN ACTION.
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => onNavigate(`/work/${matchedCase.slug}`)}
+                className="font-space font-bold text-xs uppercase text-brand-dark hover:text-brand-blue transition-colors flex items-center gap-1.5 bg-transparent border-none p-0 cursor-pointer"
+              >
+                <span>Read Full Case Study</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            <div className="bg-white border-2 border-black rounded-3xl overflow-hidden shadow-xl grid grid-cols-1 lg:grid-cols-12">
+              <div className="lg:col-span-5 relative min-h-[260px] lg:min-h-full">
+                <img
+                  src={matchedCase.heroImage}
+                  alt={matchedCase.brand}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6">
+                  <span className="inline-block px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase w-fit mb-2">
+                    {matchedCase.category}
+                  </span>
+                  <h3 className="font-space font-bold text-xl text-white uppercase">
+                    {matchedCase.brand}
+                  </h3>
+                </div>
+              </div>
+
+              <div className="lg:col-span-7 p-6 sm:p-8 md:p-10 space-y-6 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="font-space font-extrabold text-3xl sm:text-4xl text-brand-blue">
+                      {matchedCase.metric}
+                    </span>
+                    <span className="font-space font-bold text-xs uppercase text-gray-600">
+                      {matchedCase.result}
+                    </span>
+                  </div>
+
+                  <h4 className="font-space font-bold text-lg sm:text-xl uppercase tracking-tight text-brand-dark mb-3">
+                    {matchedCase.title}
+                  </h4>
+
+                  <p className="text-gray-700 text-xs sm:text-sm font-inter leading-relaxed mb-6">
+                    {matchedCase.strategy || matchedCase.challenge}
+                  </p>
+
+                  {matchedCase.testimonial && (
+                    <div className="bg-brand-light-gray rounded-2xl p-5 border border-black/5">
+                      <p className="text-xs sm:text-sm font-inter italic text-gray-800 mb-2">
+                        "{matchedCase.testimonial.quote}"
+                      </p>
+                      <div className="font-space font-bold text-xs text-brand-dark">
+                        — {matchedCase.testimonial.author},{" "}
+                        <span className="font-normal text-gray-500">{matchedCase.testimonial.role}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-black/10">
+                  <button
+                    type="button"
+                    onClick={() => handleOpenModal(service.title)}
+                    className="bg-brand-lime text-brand-dark px-6 py-3 rounded-xl font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all cursor-pointer border-none shadow-sm"
+                  >
+                    Deploy Similar Campaign →
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onNavigate(`/work/${matchedCase.slug}`)}
+                    className="text-xs font-space font-bold uppercase text-brand-dark underline hover:text-brand-blue bg-transparent border-none cursor-pointer"
+                  >
+                    View Breakdown Dossier
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* 10. INCLUDED ASSETS & DELIVERABLES CHECKLIST */}
+        <section className="bg-white border-2 border-black rounded-3xl p-6 sm:p-10 text-left space-y-6 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <span className="font-space font-bold text-[11px] uppercase tracking-wider text-gray-500 block mb-1">
+                Asset Transfer Protocol
+              </span>
+              <h3 className="font-space font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-brand-dark">
+                INCLUDED ASSETS & DELIVERABLES.
+              </h3>
+            </div>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 font-space font-bold text-xs uppercase border border-emerald-200">
+              <CheckCircle2 className="w-3.5 h-3.5" /> 100% Commercial IP Transfer
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {(service.deliverables || []).map((del, idx) => (
+              <div
+                key={idx}
+                className="flex items-center gap-3 bg-[#F8F8F8] px-4 py-3.5 rounded-xl border border-black/5 text-xs sm:text-sm font-inter font-medium text-gray-800"
+              >
+                <div className="w-5 h-5 rounded-full bg-brand-lime flex items-center justify-center shrink-0 text-brand-dark font-space font-bold text-[10px]">
+                  ✓
+                </div>
+                <span>{del}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 11. EXPANDABLE FAQ ACCORDION */}
+        <section className="text-left space-y-6">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-2">
+              <HelpCircle className="w-3.5 h-3.5 text-brand-dark" />
+              Got Questions?
+            </div>
+            <h2 className="font-space font-extrabold text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-brand-dark">
+              FREQUENTLY ASKED QUESTIONS.
+            </h2>
+            <p className="text-gray-600 text-sm md:text-base font-inter max-w-2xl mt-1">
+              Everything you need to know about working with GetIntoFeed for {service.title}.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {(service.faqs || []).map((faq, idx) => {
+              const isOpen = expandedFaqIndex === idx;
+              return (
+                <div
+                  key={idx}
+                  className="bg-white border-2 border-black rounded-2xl overflow-hidden transition-all shadow-sm"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setExpandedFaqIndex(isOpen ? -1 : idx)}
+                    className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 bg-transparent border-none cursor-pointer"
+                  >
+                    <span className="font-space font-bold text-sm sm:text-base uppercase text-brand-dark">
+                      {faq.q}
+                    </span>
+                    <span className="p-1 rounded-full bg-gray-100 shrink-0">
+                      {isOpen ? (
+                        <ChevronUp className="w-4 h-4 text-brand-dark" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-brand-dark" />
+                      )}
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-5 sm:px-6 pb-6 pt-0 text-gray-700 text-xs sm:text-sm font-inter leading-relaxed border-t border-black/5">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 12. HIGH-CONVERTING BRUTALIST CLOSING BANNER */}
+        <section className="bg-[#09090B] text-white border-2 border-black rounded-3xl p-8 sm:p-12 md:p-16 text-center relative overflow-hidden shadow-2xl space-y-6">
+          <div className="max-w-3xl mx-auto space-y-4">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-lime/20 border border-brand-lime/40 text-brand-lime font-space font-bold text-xs uppercase tracking-wider">
+              <Zap className="w-3.5 h-3.5" /> 7-Day Sprint Availability Open
+            </div>
+
+            <h2 className="font-space font-extrabold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-white leading-tight">
+              READY TO ACCELERATE YOUR <br className="hidden sm:inline" />
+              <span className="text-brand-lime">{service.title.toUpperCase()}?</span>
+            </h2>
+
+            <p className="text-gray-300 text-sm sm:text-base md:text-lg font-inter max-w-2xl mx-auto leading-relaxed">
+              Skip the 3-month agency pitch deck circus. Deploy an elite, revenue-focused marketing sprint with GetIntoFeed in under 7 business days.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+            <button
+              type="button"
+              onClick={() => handleOpenModal(service.title)}
+              className="bg-brand-lime text-brand-dark px-8 py-4 rounded-xl font-space font-extrabold uppercase text-xs sm:text-sm tracking-wider hover:bg-[#E2FF4D] transition-all shadow-lg hover:scale-105 cursor-pointer border-none flex items-center gap-2"
+            >
+              <span>Book 15-Minute Strategy Call</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <a
+              href={`https://wa.me/918810356950?text=${encodeURIComponent("Hi GetIntoFeed, I would like to schedule a strategy call regarding " + service.title)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-4 rounded-xl font-space font-bold uppercase text-xs sm:text-sm transition-all flex items-center gap-2 cursor-pointer no-underline"
+            >
+              <MessageCircle className="w-4 h-4 text-brand-lime" />
+              <span>Direct WhatsApp (+91 8810356950)</span>
+            </a>
+          </div>
+
+          <div className="pt-4 flex flex-wrap items-center justify-center gap-6 text-xs font-space font-medium text-gray-400">
+            <span>⚡ Average Response: 15 Minutes</span>
+            <span>•</span>
+            <span>🔒 Strict Mutual NDA Guarantee</span>
+            <span>•</span>
+            <span>💯 100% Commercial IP Transfer</span>
+          </div>
+        </section>
       </div>
     </PageLayout>
   );
