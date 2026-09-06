@@ -1,8 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, CheckCircle2, ArrowRight, Sparkles } from "lucide-react";
 import { trackLeadConversion } from "../utils/analytics.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
+
+const SERVICES_LIST = [
+  "Content Creation & Viral Reels",
+  "Paid Media & Performance Ads",
+  "Brand Positioning & Visual Identity",
+  "Social Media & Organic Growth",
+  "Web Design & Conversion Funnels",
+  "AI Search & Programmatic SEO",
+  "Influencer & Creator UGC Network",
+  "Analytics, Attribution & Retention",
+  "Full-Stack Growth Sprint (All-in-One)",
+  "Other / Custom Requirement"
+];
+
+const PLANS_LIST = [
+  "Basic Plan — ₹14,999 / mo",
+  "Intermediate Plan — ₹29,999 / mo",
+  "Advanced Plan — ₹44,999 / mo",
+  "Custom Sprint / Enterprise Tier (₹75,000+)",
+  "Not Sure / Need Recommendation"
+];
 
 export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelectedService }) {
   const [formData, setFormData] = useState({
@@ -10,10 +31,36 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
     email: "",
     phone: "",
     website: "",
-    message: ""
+    service: "Content Creation & Viral Reels",
+    plan: "Basic Plan — ₹14,999 / mo",
+    requirements: ""
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  // Intelligently sync service or plan when modal opens or selectedService prop changes
+  useEffect(() => {
+    if (!selectedService) return;
+
+    const str = String(selectedService);
+    const isPlan = str.includes("14,999") || str.includes("29,999") || str.includes("44,999") || str.toLowerCase().includes("plan");
+
+    if (isPlan) {
+      if (str.includes("14,999")) {
+        setFormData((prev) => ({ ...prev, plan: "Basic Plan — ₹14,999 / mo" }));
+      } else if (str.includes("29,999")) {
+        setFormData((prev) => ({ ...prev, plan: "Intermediate Plan — ₹29,999 / mo" }));
+      } else if (str.includes("44,999")) {
+        setFormData((prev) => ({ ...prev, plan: "Advanced Plan — ₹44,999 / mo" }));
+      } else {
+        setFormData((prev) => ({ ...prev, plan: str }));
+      }
+    } else {
+      // Find closest matching service or use as custom
+      const matchedSvc = SERVICES_LIST.find((s) => s.toLowerCase().includes(str.toLowerCase()) || str.toLowerCase().includes(s.toLowerCase()));
+      setFormData((prev) => ({ ...prev, service: matchedSvc || str }));
+    }
+  }, [selectedService, isOpen]);
 
   if (!isOpen) return null;
 
@@ -25,7 +72,6 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
     }
 
     setSubmitting(true);
-    const activeService = selectedService || "General Growth Consultation";
 
     const newLead = {
       id: "lead-" + Date.now(),
@@ -33,17 +79,15 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
       email: formData.email,
       phone: formData.phone,
       company: formData.website || "Direct Inquiry",
-      service: activeService,
-      budget: activeService.includes("14,999")
-        ? "₹14,999/mo"
-        : activeService.includes("29,999")
-        ? "₹29,999/mo"
-        : activeService.includes("44,999")
-        ? "₹44,999/mo"
-        : "Custom Enterprise",
+      service: formData.service,
+      plan: formData.plan,
+      budget: formData.plan,
+      requirements: formData.requirements,
       status: "New",
       date: new Date().toISOString().slice(0, 10),
-      message: formData.message || `Inquiry for ${activeService}`
+      message: formData.requirements
+        ? `[Plan: ${formData.plan}] [Service: ${formData.service}] Requirements: ${formData.requirements}`
+        : `[Plan: ${formData.plan}] [Service: ${formData.service}]`
     };
 
     // 1. Instant CRM localStorage update for Admin dashboard
@@ -61,6 +105,10 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...newLead,
+          service: formData.service,
+          plan: formData.plan,
+          budget_tier: formData.plan,
+          requirements: formData.requirements,
           source: "Universal Lead Modal"
         })
       });
@@ -72,7 +120,7 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
     try {
       trackLeadConversion({
         id: newLead.id,
-        service: newLead.service,
+        service: `${formData.service} (${formData.plan})`,
         source: "universal_lead_modal",
         company: newLead.company
       });
@@ -82,18 +130,26 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
     setTimeout(() => {
       setSubmitted(false);
       onClose();
-      setFormData({ name: "", email: "", phone: "", website: "", message: "" });
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        website: "",
+        service: "Content Creation & Viral Reels",
+        plan: "Basic Plan — ₹14,999 / mo",
+        requirements: ""
+      });
     }, 2200);
     setSubmitting(false);
   };
 
   return (
     <div
-      className="fixed inset-0 z-[250] bg-black/65 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-[250] bg-black/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div
-        className="bg-white border-2 border-black rounded-3xl max-w-lg w-full p-5 sm:p-7 md:p-8 shadow-[8px_8px_0px_#000] relative text-brand-dark overflow-hidden animate-in zoom-in-95 duration-200 max-h-[94vh] overflow-y-auto"
+        className="bg-white border-2 border-black rounded-3xl max-w-xl w-full p-5 sm:p-7 md:p-8 shadow-[8px_8px_0px_#000] relative text-brand-dark overflow-hidden animate-in zoom-in-95 duration-200 max-h-[94vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Top Lime Gradient Accent Bar */}
@@ -118,13 +174,13 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
               INQUIRY RECEIVED!
             </h3>
             <p className="text-gray-600 text-xs sm:text-sm font-inter max-w-xs mx-auto leading-relaxed">
-              Our senior growth strategist will reach out on WhatsApp/Phone within 2 hours.
+              Our senior growth strategist will review your requirements and reach out on WhatsApp/Phone within 15 minutes.
             </p>
           </div>
         ) : (
           <div>
             {/* Modal Header */}
-            <div className="mb-5 text-left pr-8">
+            <div className="mb-4 text-left pr-8">
               <span className="inline-flex items-center gap-1.5 font-space text-[10px] font-bold bg-brand-lime text-brand-dark px-2.5 py-1 rounded-full uppercase border border-black/15 tracking-wider mb-2">
                 <Sparkles className="w-3 h-3 text-brand-dark" />
                 GET INTO THE FEED
@@ -133,37 +189,53 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
                 LET'S SCALE YOUR BRAND.
               </h3>
               <p className="text-xs text-gray-500 font-inter mt-1 leading-relaxed">
-                Direct access to senior growth operators. Tell us what you're building.
+                Direct access to senior growth operators. Custom tailor your service and plan below.
               </p>
             </div>
 
             {/* Modal Form */}
             <form onSubmit={handleSubmit} className="space-y-3 text-left">
-              {/* Selected Plan / Service */}
-              <div>
-                <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
-                  Selected Plan / Service
-                </label>
-                <select
-                  value={selectedService || "Basic Plan (₹14,999/mo)"}
-                  onChange={(e) => setSelectedService && setSelectedService(e.target.value)}
-                  className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter font-medium cursor-pointer"
-                >
-                  <option value="Basic Plan (₹14,999/mo)">Basic Plan — ₹14,999 / mo (Social + Content + Ads)</option>
-                  <option value="Intermediate Plan (₹29,999/mo)">Intermediate Plan — ₹29,999 / mo (Google & Meta Ads + Creative)</option>
-                  <option value="Advanced Plan (₹44,999/mo)">Advanced Plan — ₹44,999 / mo (Full Growth System)</option>
-                  <option value="Talk to Sales - Custom Plan">Talk to Sales / Custom Enterprise Plan</option>
-                  <option value="Ready to Launch - Sprint">Ready to Launch — Growth Sprint</option>
-                  <option value="Paid Performance & Ads">Paid Performance & Ads ROAS</option>
-                  <option value="Short-Form Video & Reels">Short-Form Video & Reels Creative</option>
-                  <option value="Web Engineering & CRO">High-Speed Web Development & CRO</option>
-                  <option value="SEO & Organic Growth">Search SEO & AI Citation (GEO)</option>
-                  <option value="Brand Positioning & Identity">Brand Identity & Redesign</option>
-                  <option value="General Growth Consultation">General Growth Consultation</option>
-                </select>
+              {/* 1. SEPARATED: SERVICE REQUIRED & PLAN / BUDGET TIER */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Service Required *
+                  </label>
+                  <select
+                    value={formData.service}
+                    onChange={(e) => {
+                      setFormData({ ...formData, service: e.target.value });
+                      if (setSelectedService) setSelectedService(e.target.value);
+                    }}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter font-medium cursor-pointer"
+                  >
+                    {SERVICES_LIST.map((svc) => (
+                      <option key={svc} value={svc}>
+                        {svc}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Selected Plan / Tier *
+                  </label>
+                  <select
+                    value={formData.plan}
+                    onChange={(e) => setFormData({ ...formData, plan: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter font-medium cursor-pointer"
+                  >
+                    {PLANS_LIST.map((pln) => (
+                      <option key={pln} value={pln}>
+                        {pln}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
-              {/* Founder Name */}
+              {/* 2. FOUNDER / CONTACT NAME */}
               <div>
                 <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
                   Your Name *
@@ -178,7 +250,7 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
                 />
               </div>
 
-              {/* 2-Column Email & Phone */}
+              {/* 3. 2-COLUMN EMAIL & PHONE */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
                   <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
@@ -208,7 +280,7 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
                 </div>
               </div>
 
-              {/* Website or Social Handle */}
+              {/* 4. WEBSITE OR SOCIAL HANDLE */}
               <div>
                 <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
                   Website or Instagram Link (Optional)
@@ -222,11 +294,25 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
                 />
               </div>
 
-              {/* Submit CTA Button */}
+              {/* 5. PROJECT DETAILS & REQUIREMENTS TEXTAREA */}
+              <div>
+                <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                  Project Details / Requirements
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Tell us about your brand goals, target audience, or specific deliverables required..."
+                  value={formData.requirements}
+                  onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+                  className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter resize-none"
+                ></textarea>
+              </div>
+
+              {/* 6. SUBMIT CTA BUTTON */}
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-brand-lime text-brand-dark py-3.5 rounded-xl font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-black shadow-[4px_4px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50 mt-2"
+                className="w-full bg-brand-lime text-brand-dark py-3.5 rounded-xl font-space font-extrabold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-black shadow-[4px_4px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50 mt-1"
               >
                 {submitting ? "Transmitting..." : "Schedule Sprint Consultation →"}
               </button>
@@ -234,7 +320,7 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
               {/* Trust Badges */}
               <div className="flex items-center justify-center gap-3 sm:gap-4 text-[10px] text-gray-500 font-inter pt-1">
                 <span className="flex items-center gap-1">🔒 100% Confidential</span>
-                <span className="flex items-center gap-1">⚡ 2-Hour Response</span>
+                <span className="flex items-center gap-1">⚡ 15-Min Response</span>
                 <span className="flex items-center gap-1">🚫 No Spam</span>
               </div>
             </form>
