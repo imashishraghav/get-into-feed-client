@@ -723,7 +723,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
       )}
 
       {/* Main Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-black/10 transition-all text-brand-dark">
+      <header className="sticky top-0 z-40 bg-[#09090B]/95 backdrop-blur-md border-b border-white/10 transition-all text-white">
         <div className="max-w-[1280px] mx-auto px-6 md:px-12 py-3.5 flex items-center justify-between">
           {/* Brand Logo */}
           <button
@@ -731,10 +731,10 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             onClick={() => onNavigate("/")}
             className="flex items-center gap-1.5 text-left bg-transparent border-none cursor-pointer p-0 group"
           >
-            <span className="font-space font-extrabold text-xl md:text-2xl tracking-tighter uppercase text-brand-dark group-hover:text-brand-blue transition-colors">
+            <span className="font-space font-extrabold text-xl md:text-2xl tracking-tighter uppercase text-white group-hover:text-brand-lime transition-colors">
               GETINTOFEED
             </span>
-            <span className="w-2.5 h-2.5 rounded-full bg-brand-lime border border-brand-dark shrink-0"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-brand-lime border border-black shrink-0"></span>
           </button>
 
           {/* Desktop Nav Items */}
@@ -748,34 +748,34 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
               <button
                 type="button"
                 onClick={() => onNavigate("/services")}
-                className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "services" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors flex items-center gap-1 cursor-pointer bg-transparent border-none py-2`}
+                className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "services" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors flex items-center gap-1 cursor-pointer bg-transparent border-none py-2`}
               >
                 SERVICES <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
               {servicesDropdownOpen && (
-                <div className="absolute top-full left-0 w-[620px] bg-white border-2 border-black rounded-xl p-3.5 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute top-full left-0 w-[620px] bg-[#121214] border-2 border-white/20 rounded-xl p-3.5 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   <div className="grid grid-cols-2 gap-2">
                     {getStoredServices().map((s) => (
                       <button
                         key={s.slug}
                         type="button"
                         onClick={() => { setServicesDropdownOpen(false); onNavigate(`/services/${s.slug}`); }}
-                        className="text-left p-2.5 rounded-lg hover:bg-brand-light-gray transition-all flex items-start gap-2.5 group/item border border-transparent hover:border-black/10 bg-transparent cursor-pointer w-full"
+                        className="text-left p-2.5 rounded-lg hover:bg-[#1E1E22] transition-all flex items-start gap-2.5 group/item border border-transparent hover:border-white/10 bg-transparent cursor-pointer w-full"
                       >
-                        <s.icon className="w-4 h-4 text-brand-dark group-hover/item:text-brand-blue shrink-0 mt-0.5" />
+                        <s.icon className="w-4 h-4 text-brand-lime group-hover/item:text-white shrink-0 mt-0.5" />
                         <div>
-                          <div className="font-space font-bold text-[11px] uppercase text-brand-dark group-hover/item:text-brand-blue leading-tight">
+                          <div className="font-space font-bold text-[11px] uppercase text-white group-hover/item:text-brand-lime leading-tight">
                             {s.title}
                           </div>
-                          <div className="text-[10px] text-gray-500 line-clamp-1 font-inter mt-0.5">
+                          <div className="text-[10px] text-gray-400 line-clamp-1 font-inter mt-0.5">
                             {s.shortDesc}
                           </div>
                         </div>
                       </button>
                     ))}
                   </div>
-                  <div className="pt-2.5 border-t border-black/10 mt-2">
+                  <div className="pt-2.5 border-t border-white/10 mt-2">
                     <button
                       type="button"
                       onClick={() => { setServicesDropdownOpen(false); onNavigate("/services"); }}
@@ -791,7 +791,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/work")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "work" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "work" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
             >
               WORK
             </button>
@@ -799,7 +799,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/reviews")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "reviews" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "reviews" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
             >
               REVIEWS
             </button>
@@ -807,7 +807,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/about")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "about" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "about" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
             >
               ABOUT US
             </button>
@@ -815,7 +815,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/pricing")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "pricing" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "pricing" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
             >
               PRICING
             </button>
@@ -823,7 +823,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <button
               type="button"
               onClick={() => onNavigate("/blog")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "blog" ? "text-brand-blue" : "text-brand-dark"} hover:text-brand-blue transition-colors cursor-pointer bg-transparent border-none`}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "blog" ? "text-brand-lime" : "text-gray-300"} hover:text-brand-lime transition-colors cursor-pointer bg-transparent border-none`}
             >
               FEED NOTES
             </button>
@@ -833,16 +833,16 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
           <div className="hidden lg:flex items-center gap-4">
             <a
               href="tel:+919876543210"
-              className="font-space font-bold text-xs text-gray-600 hover:text-brand-dark transition-colors flex items-center gap-1.5 text-decoration-none"
+              className="font-space font-bold text-xs text-gray-300 hover:text-white transition-colors flex items-center gap-1.5 text-decoration-none"
             >
-              <Phone className="w-3.5 h-3.5 text-brand-blue" />
+              <Phone className="w-3.5 h-3.5 text-brand-lime" />
               <span>+91 98765 43210</span>
             </a>
 
             <button
               type="button"
               onClick={onOpenLeadModal ? onOpenLeadModal : () => onNavigate("/contact")}
-              className="bg-brand-dark text-white px-5 py-2.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-blue hover:text-white transition-all flex items-center gap-1.5 shadow-sm hover:shadow-md cursor-pointer border-none"
+              className="bg-brand-lime text-brand-dark px-5 py-2.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-white hover:text-brand-dark transition-all flex items-center gap-1.5 shadow-md hover:shadow-lg cursor-pointer border-none"
             >
               Start a Project <ArrowRight className="w-3.5 h-3.5" />
             </button>
@@ -852,7 +852,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-brand-dark hover:text-brand-blue bg-transparent border-none cursor-pointer"
+            className="lg:hidden p-2 text-white hover:text-brand-lime bg-transparent border-none cursor-pointer"
             aria-label="Toggle Navigation"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -861,60 +861,60 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
 
         {/* Mobile Nav Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b-2 border-black px-6 py-6 space-y-4 shadow-xl animate-in slide-in-from-top duration-200">
+          <div className="lg:hidden bg-[#09090B] border-b-2 border-white/20 px-6 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top duration-200">
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/services"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-dark border-b border-black/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
             >
               SERVICES
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/work"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-dark border-b border-black/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
             >
               WORK
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/reviews"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-dark border-b border-black/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
             >
               REVIEWS
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/about"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-dark border-b border-black/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
             >
               ABOUT US
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/pricing"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-dark border-b border-black/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
             >
               PRICING
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/blog"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-dark border-b border-black/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
             >
               FEED NOTES / BLOG
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); if (onOpenAuditPopup) onOpenAuditPopup(); else onNavigate("/audit"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-blue border-b border-black/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-lime border-b border-white/10 bg-transparent"
             >
               ⚡ FREE 360° AUDIT
             </button>
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/contact"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-brand-dark border-b border-black/10 bg-transparent"
+              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-200 hover:text-brand-lime border-b border-white/10 bg-transparent"
             >
               CONTACT DESK
             </button>
@@ -922,9 +922,9 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             <div className="pt-2 flex flex-col gap-3">
               <a
                 href="tel:+919876543210"
-                className="text-gray-700 text-xs font-space font-bold uppercase tracking-wider py-1 flex items-center gap-2 text-decoration-none"
+                className="text-gray-300 text-xs font-space font-bold uppercase tracking-wider py-1 flex items-center gap-2 text-decoration-none hover:text-white"
               >
-                <Phone className="w-4 h-4 text-brand-blue" /> Call +91 98765 43210
+                <Phone className="w-4 h-4 text-brand-lime" /> Call +91 98765 43210
               </a>
               <button
                 type="button"
@@ -933,7 +933,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
                   if (onOpenLeadModal) onOpenLeadModal();
                   else onNavigate("/contact");
                 }}
-                className="bg-brand-dark text-white px-5 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-blue transition-all flex justify-center items-center gap-2 cursor-pointer border-none w-full"
+                className="bg-brand-lime text-brand-dark px-5 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-white transition-all flex justify-center items-center gap-2 cursor-pointer border-none w-full"
               >
                 Start a Project <ArrowRight className="w-4 h-4" />
               </button>

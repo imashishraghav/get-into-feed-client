@@ -36,7 +36,6 @@ import {
   X,
   Zap
 } from "lucide-react";
-import FloatingNavControl from "./components/FloatingNavControl";
 import React, { useState, useEffect } from "react";
 import AdminDashboard from "./Admin";
 import {
@@ -377,14 +376,14 @@ export default function App() {
             </p>
 
             <div className="mt-6 md:mt-8 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 sm:gap-6 reveal reveal-delay-2">
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="w-full sm:w-auto bg-brand-lime text-brand-dark px-8 py-3.5 sm:py-4 rounded-lg font-bold font-space uppercase text-xs sm:text-sm tracking-wider hover:bg-[#E2FF4D] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group shadow-[0_0_30px_rgba(212,255,0,0.3)] hover:shadow-[0_0_40px_rgba(212,255,0,0.6)] text-decoration-none"
+              <button
+                type="button"
+                onClick={() => setLeadModalOpen(true)}
+                className="w-full sm:w-auto bg-brand-lime text-brand-dark px-8 py-3.5 sm:py-4 rounded-lg font-bold font-space uppercase text-xs sm:text-sm tracking-wider hover:bg-[#E2FF4D] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group shadow-[0_0_30px_rgba(212,255,0,0.3)] hover:shadow-[0_0_40px_rgba(212,255,0,0.6)] cursor-pointer border-none"
               >
                 Let's Talk
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
-              </a>
+              </button>
               <a
                 href="#services"
                 onClick={(e) => { e.preventDefault(); scrollToSection("#services"); }}
@@ -542,66 +541,66 @@ export default function App() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full">
               <div
                 onClick={() => navigate("/services/content-marketing")}
-                className="bg-[#F8F8F8] p-3 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1"
+                className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
-                <Edit3 className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-tight text-left text-brand-dark">Content Marketing</h3>
+                <Edit3 className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Content Marketing</h3>
               </div>
 
               <div
                 onClick={() => navigate("/services/ads-campaign")}
-                className="bg-[#F8F8F8] p-3 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-1 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1"
+                className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-1 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
-                <Megaphone className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-tight text-left text-brand-dark">Ads Campaign</h3>
+                <Megaphone className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Ads Campaign</h3>
               </div>
 
               <div
                 onClick={() => navigate("/services/social-media")}
-                className="bg-[#F8F8F8] p-3 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-2 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1"
+                className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-2 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
-                <Users className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-tight text-left text-brand-dark">Social Media</h3>
+                <Users className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Social Media</h3>
               </div>
 
               <div
                 onClick={() => navigate("/services/graphics-design")}
-                className="bg-[#F8F8F8] p-3 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-3 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1"
+                className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-3 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
-                <PenTool className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-tight text-left text-brand-dark">Graphics Design</h3>
+                <PenTool className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Graphics Design</h3>
               </div>
 
               <div
                 onClick={() => navigate("/services/reels")}
-                className="bg-[#F8F8F8] p-3 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1"
+                className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
-                <Clapperboard className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-red-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-tight text-left text-brand-dark">Reels</h3>
+                <Clapperboard className="w-5 h-5 shrink-0 text-red-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Reels</h3>
               </div>
 
               <div
                 onClick={() => navigate("/services/videos")}
-                className="bg-[#F8F8F8] p-3 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-1 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1"
+                className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-1 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
-                <Video className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-tight text-left text-brand-dark">Videos</h3>
+                <Video className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Videos</h3>
               </div>
 
               <div
                 onClick={() => navigate("/services/growth")}
-                className="bg-[#F8F8F8] p-3 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-2 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1"
+                className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-2 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
-                <Code className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-tight text-left text-brand-dark">Web Development</h3>
+                <Code className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">Web Development</h3>
               </div>
 
               <div
                 onClick={() => navigate("/services/strategy")}
-                className="bg-[#F8F8F8] p-3 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-3 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1"
+                className="bg-[#F8F8F8] p-3.5 sm:p-4 md:px-5 md:py-4 rounded-xl hover:shadow-md hover:bg-brand-dark transition-all duration-300 border border-transparent hover:border-brand-dark group reveal reveal-delay-3 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1"
               >
-                <Search className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-orange-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-                <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-tight text-left text-brand-dark">SEO</h3>
+                <Search className="w-5 h-5 shrink-0 text-orange-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+                <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight group-hover:text-white transition-colors m-0 leading-snug text-left text-brand-dark">SEO</h3>
               </div>
             </div>
 
@@ -613,7 +612,7 @@ export default function App() {
               </div>
               <button
                 type="button"
-                onClick={() => navigate("/audit")}
+                onClick={() => setAuditPopupOpen(true)}
                 className="w-full md:w-auto shrink-0 bg-brand-lime text-brand-dark px-6 py-3 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 group shadow-md hover:shadow-[0_0_25px_rgba(212,255,0,0.5)] hover:-translate-y-0.5 cursor-pointer border-none"
               >
                 Get a Free Audit <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" style={{ width: "16px", height: "16px" }} />
@@ -656,65 +655,65 @@ export default function App() {
           </div>
 
           {/* Compact Industry Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4 w-full mb-10">
-            <div onClick={() => { setSelectedService("Real Estate"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <Home className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Real Estate</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 md:gap-4 w-full mb-10">
+            <div onClick={() => { setSelectedService("Real Estate"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <Home className="w-5 h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Real Estate</h3>
             </div>
-            <div onClick={() => { setSelectedService("D2C & E-Commerce"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <ShoppingBag className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">D2C & E-Commerce</h3>
+            <div onClick={() => { setSelectedService("D2C & E-Commerce"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <ShoppingBag className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">D2C & E-Commerce</h3>
             </div>
-            <div onClick={() => { setSelectedService("Hospitality"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <Coffee className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Hospitality</h3>
+            <div onClick={() => { setSelectedService("Hospitality"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <Coffee className="w-5 h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Hospitality</h3>
             </div>
-            <div onClick={() => { setSelectedService("Healthcare & Wellness"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <Heart className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Healthcare & Wellness</h3>
+            <div onClick={() => { setSelectedService("Healthcare & Wellness"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <Heart className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Healthcare & Wellness</h3>
             </div>
-            <div onClick={() => { setSelectedService("Education"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <GraduationCap className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Education</h3>
+            <div onClick={() => { setSelectedService("Education"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <GraduationCap className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Education</h3>
             </div>
-            <div onClick={() => { setSelectedService("Automotive"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <Car className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Automotive</h3>
+            <div onClick={() => { setSelectedService("Automotive"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <Car className="w-5 h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Automotive</h3>
             </div>
-            <div onClick={() => { setSelectedService("Fashion & Beauty"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <Sparkles className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Fashion & Beauty</h3>
+            <div onClick={() => { setSelectedService("Fashion & Beauty"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <Sparkles className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Fashion & Beauty</h3>
             </div>
-            <div onClick={() => { setSelectedService("Pro Services"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <Briefcase className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Pro Services</h3>
+            <div onClick={() => { setSelectedService("Pro Services"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <Briefcase className="w-5 h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Pro Services</h3>
             </div>
-            <div onClick={() => { setSelectedService("Startups & Tech"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <Rocket className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Startups & Tech</h3>
+            <div onClick={() => { setSelectedService("Startups & Tech"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <Rocket className="w-5 h-5 shrink-0 text-brand-coral group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Startups & Tech</h3>
             </div>
-            <div onClick={() => { setSelectedService("Fitness & Sports"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <Dumbbell className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Fitness & Sports</h3>
+            <div onClick={() => { setSelectedService("Fitness & Sports"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <Dumbbell className="w-5 h-5 shrink-0 text-[#9ACC00] group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Fitness & Sports</h3>
             </div>
-            <div onClick={() => { setSelectedService("Travel & Experiences"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <Map className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Travel & Experiences</h3>
+            <div onClick={() => { setSelectedService("Travel & Experiences"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <Map className="w-5 h-5 shrink-0 text-gray-500 group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Travel & Experiences</h3>
             </div>
-            <div onClick={() => { setSelectedService("Finance"); setLeadModalOpen(true); }} className="group bg-white p-3 md:px-5 md:py-4 rounded-xl shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 hover:border-brand-dark cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2 md:gap-3 w-full h-full hover:-translate-y-1">
-              <PieChart className="w-4 h-4 md:w-5 md:h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
-              <h3 className="font-space font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-tight m-0 leading-tight text-brand-dark group-hover:text-brand-lime transition-colors">Finance</h3>
+            <div onClick={() => { setSelectedService("Finance"); setLeadModalOpen(true); }} className="group bg-white hover:bg-brand-dark hover:border-brand-dark p-3.5 sm:p-4 md:px-5 md:py-4.5 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-200 cursor-pointer flex flex-col sm:flex-row items-start sm:items-center justify-start gap-2.5 md:gap-3 w-full h-full hover:-translate-y-1">
+              <PieChart className="w-5 h-5 shrink-0 text-brand-blue group-hover:text-brand-lime transition-colors" style={{ width: "20px", height: "20px" }} />
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base uppercase tracking-tight m-0 leading-snug text-brand-dark group-hover:text-brand-lime transition-colors">Finance</h3>
             </div>
           </div>
 
           <div className="text-center reveal">
-            <a
-              href="#contact"
-              onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-              className="inline-flex bg-white border border-gray-200 text-brand-dark px-6 py-2.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-dark hover:text-brand-lime hover:border-brand-dark transition-all items-center gap-2 group shadow-sm hover:-translate-y-0.5 text-decoration-none"
+            <button
+              type="button"
+              onClick={() => navigate("/contact")}
+              className="inline-flex bg-white border border-gray-300 text-brand-dark px-6 py-3 rounded-lg font-bold font-space uppercase text-xs sm:text-sm tracking-wider hover:bg-brand-dark hover:text-brand-lime hover:border-brand-dark transition-all items-center gap-2 group shadow-sm hover:-translate-y-0.5 cursor-pointer"
             >
-              Is your industry missing? Let's talk <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-            </a>
+              Is your industry missing? Let's talk <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" style={{ width: "14px", height: "14px" }} />
+            </button>
           </div>
         </div>
       </section>
@@ -729,31 +728,31 @@ export default function App() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6 relative z-0 max-w-4xl mx-auto mb-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-6 relative z-0 max-w-4xl mx-auto mb-10">
             <div className="hidden md:block absolute top-8 left-[10%] right-[10%] h-[2px] bg-gray-100 -z-10"></div>
 
-            <div className="relative reveal flex flex-col items-center text-center group">
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-brand-light-gray border border-gray-200 flex items-center justify-center font-space font-bold text-lg md:text-xl shadow-sm mb-4 text-brand-dark z-10 group-hover:-translate-y-1 transition-transform duration-300" style={{ width: "64px", height: "64px" }}>01</div>
-              <h3 className="font-space font-bold text-sm md:text-base mb-2 uppercase text-brand-dark">Discover</h3>
-              <p className="text-gray-500 text-[11px] md:text-xs font-medium leading-relaxed max-w-[200px] font-inter">We dig deep into your business, audience, and goals. No assumptions.</p>
+            <div className="relative reveal flex flex-col items-center text-center group p-2">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-brand-light-gray border border-gray-200 flex items-center justify-center font-space font-bold text-base sm:text-lg md:text-xl shadow-sm mb-3 md:mb-4 text-brand-dark z-10 group-hover:-translate-y-1 transition-transform duration-300">01</div>
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base mb-1.5 md:mb-2 uppercase text-brand-dark">Discover</h3>
+              <p className="text-gray-500 text-[10px] sm:text-[11px] md:text-xs font-medium leading-relaxed max-w-[180px] sm:max-w-[200px] font-inter">We dig deep into your business, audience, and goals. No assumptions.</p>
             </div>
 
-            <div className="relative reveal reveal-delay-1 flex flex-col items-center text-center group">
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-brand-blue text-white flex items-center justify-center font-space font-bold text-lg md:text-xl shadow-sm mb-4 z-10 ring-8 ring-white group-hover:-translate-y-1 transition-transform duration-300" style={{ width: "64px", height: "64px" }}>02</div>
-              <h3 className="font-space font-bold text-sm md:text-base mb-2 uppercase text-brand-dark">Build</h3>
-              <p className="text-gray-500 text-[11px] md:text-xs font-medium leading-relaxed max-w-[200px] font-inter">Strategy, content creation, visual design, and campaign architecture.</p>
+            <div className="relative reveal reveal-delay-1 flex flex-col items-center text-center group p-2">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-brand-blue text-white flex items-center justify-center font-space font-bold text-base sm:text-lg md:text-xl shadow-sm mb-3 md:mb-4 z-10 ring-4 sm:ring-8 ring-white group-hover:-translate-y-1 transition-transform duration-300">02</div>
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base mb-1.5 md:mb-2 uppercase text-brand-dark">Build</h3>
+              <p className="text-gray-500 text-[10px] sm:text-[11px] md:text-xs font-medium leading-relaxed max-w-[180px] sm:max-w-[200px] font-inter">Strategy, content creation, visual design, and campaign architecture.</p>
             </div>
 
-            <div className="relative reveal reveal-delay-2 flex flex-col items-center text-center group">
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-brand-dark text-white flex items-center justify-center font-space font-bold text-lg md:text-xl shadow-sm mb-4 z-10 ring-8 ring-white group-hover:-translate-y-1 transition-transform duration-300" style={{ width: "64px", height: "64px" }}>03</div>
-              <h3 className="font-space font-bold text-sm md:text-base mb-2 uppercase text-brand-dark">Launch</h3>
-              <p className="text-gray-500 text-[11px] md:text-xs font-medium leading-relaxed max-w-[200px] font-inter">We push the button. Your brand enters the feed where the audience lives.</p>
+            <div className="relative reveal reveal-delay-2 flex flex-col items-center text-center group p-2">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-brand-dark text-white flex items-center justify-center font-space font-bold text-base sm:text-lg md:text-xl shadow-sm mb-3 md:mb-4 z-10 ring-4 sm:ring-8 ring-white group-hover:-translate-y-1 transition-transform duration-300">03</div>
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base mb-1.5 md:mb-2 uppercase text-brand-dark">Launch</h3>
+              <p className="text-gray-500 text-[10px] sm:text-[11px] md:text-xs font-medium leading-relaxed max-w-[180px] sm:max-w-[200px] font-inter">We push the button. Your brand enters the feed where the audience lives.</p>
             </div>
 
-            <div className="relative reveal reveal-delay-3 flex flex-col items-center text-center group">
-              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-brand-lime text-brand-dark flex items-center justify-center font-space font-bold text-lg md:text-xl shadow-sm mb-4 z-10 ring-8 ring-white group-hover:-translate-y-1 transition-transform duration-300" style={{ width: "64px", height: "64px" }}>04</div>
-              <h3 className="font-space font-bold text-sm md:text-base mb-2 uppercase text-brand-dark">Optimize</h3>
-              <p className="text-gray-500 text-[11px] md:text-xs font-medium leading-relaxed max-w-[200px] font-inter">Measure everything. Learn from the data. Scale what actually works.</p>
+            <div className="relative reveal reveal-delay-3 flex flex-col items-center text-center group p-2">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-brand-lime text-brand-dark flex items-center justify-center font-space font-bold text-base sm:text-lg md:text-xl shadow-sm mb-3 md:mb-4 z-10 ring-4 sm:ring-8 ring-white group-hover:-translate-y-1 transition-transform duration-300">04</div>
+              <h3 className="font-space font-bold text-xs sm:text-sm md:text-base mb-1.5 md:mb-2 uppercase text-brand-dark">Optimize</h3>
+              <p className="text-gray-500 text-[10px] sm:text-[11px] md:text-xs font-medium leading-relaxed max-w-[180px] sm:max-w-[200px] font-inter">Measure everything. Learn from the data. Scale what actually works.</p>
             </div>
           </div>
 
@@ -1025,13 +1024,13 @@ export default function App() {
             </div>
 
             <div className="pt-4">
-              <a
-                href="#contact"
-                onClick={(e) => { e.preventDefault(); scrollToSection("#contact"); }}
-                className="inline-flex bg-brand-dark text-white px-6 py-3.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-blue hover:text-white transition-all items-center gap-2 group text-decoration-none shadow-md"
+              <button
+                type="button"
+                onClick={() => setLeadModalOpen(true)}
+                className="inline-flex bg-brand-dark text-white px-6 py-3.5 rounded-lg font-bold font-space uppercase text-xs tracking-wider hover:bg-brand-blue hover:text-white transition-all items-center gap-2 group shadow-md cursor-pointer border-none"
               >
                 Tired of boring? Let's talk <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" style={{ width: "12px", height: "12px" }} />
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -1242,8 +1241,6 @@ export default function App() {
           </div>
         </div>
       )}
-      {/* Floating UP/DOWN Control */}
-      <FloatingNavControl />
     </div>
   );
 }
