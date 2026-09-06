@@ -106,6 +106,25 @@ export default function App() {
       ogDesc.setAttribute('content', desc);
     };
 
+    // SPA Virtual Pageview for Google Analytics & Google Tag Manager
+    try {
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "virtual_pageview",
+          page_path: window.location.pathname,
+          page_title: document.title
+        });
+
+        if (typeof window.gtag === "function") {
+          window.gtag("event", "page_view", {
+            page_path: window.location.pathname,
+            page_title: document.title
+          });
+        }
+      }
+    } catch {}
+
     // 1. Check custom overrides from Admin SEO Manager
     try {
       const customSEO = JSON.parse(localStorage.getItem("gif_custom_seo_tags") || "{}");

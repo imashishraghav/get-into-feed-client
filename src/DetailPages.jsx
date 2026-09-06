@@ -4699,8 +4699,29 @@ export const ClientsTestimonialsPage = ReviewsPage;
 // UNIVERSAL WHATSAPP FLOATING QUICK CHAT BUTTON
 // =========================================================================
 export function WhatsAppFloatingButton() {
+  const handleWhatsAppClick = () => {
+    try {
+      if (typeof window !== "undefined") {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "whatsapp_click",
+          button_name: "Floating WhatsApp Quick Chat",
+          page_path: window.location.pathname,
+          timestamp: new Date().toISOString()
+        });
+        if (typeof window.gtag === "function") {
+          window.gtag("event", "whatsapp_click", {
+            event_category: "Contact & Lead Acquisition",
+            event_label: "Floating Quick Chat Button",
+            page_path: window.location.pathname
+          });
+        }
+      }
+    } catch {}
+  };
+
   return (
-    <div className="fixed bottom-6 right-6 z-50 group">
+    <div className="fixed bottom-6 right-6 z-50 group" id="gtm-whatsapp-float-container">
       {/* Tooltip on desktop */}
       <span className="absolute right-16 top-1/2 -translate-y-1/2 bg-[#09090B] text-white text-[11px] font-space font-bold uppercase tracking-wider py-1.5 px-3 rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl border border-white/10 hidden sm:block">
         Chat with Growth Desk
@@ -4711,6 +4732,9 @@ export function WhatsAppFloatingButton() {
 
       {/* Action Button */}
       <a
+        id="gtm-floating-whatsapp-btn"
+        data-gtm-name="whatsapp_floating"
+        onClick={handleWhatsAppClick}
         href="https://wa.me/918810356950?text=Hi%20GetIntoFeed%2C%20I%20want%20to%20discuss%20a%20marketing%20sprint"
         target="_blank"
         rel="noopener noreferrer"
