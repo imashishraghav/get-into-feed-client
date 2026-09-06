@@ -52,6 +52,7 @@ import {
   X,
   Zap
 } from "lucide-react";
+import { UniversalLeadModal } from "./components/UniversalLeadModal";
 import { trackLeadConversion, trackEvent } from "./utils/analytics.js";
 
 const API_URL = import.meta.env.VITE_API_URL || "https://get-into-feed-client.vercel.app";
@@ -1400,40 +1401,9 @@ export function PageLayout({
   const leadModalOpen = externalLeadModalOpen !== undefined ? externalLeadModalOpen : internalLeadModalOpen;
   const setLeadModalOpen = externalSetLeadModalOpen !== undefined ? externalSetLeadModalOpen : internalSetLeadModalOpen;
 
-  const [internalSelectedService, internalSetSelectedService] = useState("General Growth Inquiry");
+  const [internalSelectedService, internalSetSelectedService] = useState("General Growth Consultation");
   const selectedService = externalSelectedService !== undefined ? externalSelectedService : internalSelectedService;
   const setSelectedService = externalSetSelectedService !== undefined ? externalSetSelectedService : internalSetSelectedService;
-
-  const [formData, setFormData] = useState({ name: "", email: "", phone: "", website: "", message: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleLeadSubmit = async (e) => {
-    e.preventDefault();
-    if (!formData.name || !formData.email || !formData.phone) {
-      alert("Please fill in your name, email, and phone number.");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      await fetch(`${API_URL}/api/leads`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, service: selectedService, source: "Subpage Quick Consultation" })
-      });
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
-        setLeadModalOpen(false);
-        setFormData({ name: "", email: "", phone: "", website: "", message: "" });
-      }, 2000);
-    } catch (err) {
-      setSubmitted(true);
-      setTimeout(() => { setSubmitted(false); setLeadModalOpen(false); }, 2000);
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   return (
     <div className="antialiased selection:bg-brand-lime selection:text-brand-dark bg-[#FAFAFA] font-inter relative min-h-screen text-[#09090B] flex flex-col justify-between">
@@ -1452,117 +1422,13 @@ export function PageLayout({
       {/* 3. Global Branded Footer */}
       <PageFooter onNavigate={onNavigate} />
 
-      {/* 4. Quick Consultation Modal */}
-      {leadModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150">
-          <div className="bg-white border-2 border-black rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl relative text-brand-dark">
-            <button
-              type="button"
-              onClick={() => setLeadModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-black p-1 bg-transparent border-none cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            {submitted ? (
-              <div className="text-center py-8">
-                <div className="w-14 h-14 rounded-full bg-brand-lime flex items-center justify-center mx-auto mb-4 text-brand-dark">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark mb-2">
-                  INQUIRY RECEIVED!
-                </h3>
-                <p className="text-gray-600 text-xs font-inter">
-                  Our growth strategist will contact you within 15 minutes.
-                </p>
-              </div>
-            ) : (
-              <div>
-                <div className="mb-6">
-                  <span className="font-space text-[10px] font-bold bg-brand-lime text-brand-dark px-2.5 py-1 rounded-full uppercase border border-black/10">
-                    GET INTO THE FEED
-                  </span>
-                  <h3 className="font-space font-extrabold text-2xl uppercase tracking-tight text-brand-dark mt-2 mb-1">
-                    START YOUR SPRINT
-                  </h3>
-                  <p className="text-xs text-gray-500 font-inter">
-                    Direct access to senior strategists. We reply in under 15 minutes.
-                  </p>
-                </div>
-
-                <form onSubmit={handleLeadSubmit} className="space-y-3.5 text-left">
-                  <div>
-                    <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Selected Plan / Service</label>
-                    <select
-                      value={selectedService}
-                      onChange={(e) => setSelectedService(e.target.value)}
-                      className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
-                    >
-                      <option value="Basic Plan (₹14,999/mo)">Basic Plan — ₹14,999 / mo (Social + Content + Ads)</option>
-                      <option value="Intermediate Plan (₹29,999/mo)">Intermediate Plan — ₹29,999 / mo (Google & Meta Ads + Creative)</option>
-                      <option value="Advanced Plan (₹44,999/mo)">Advanced Plan — ₹44,999 / mo (Full Growth System)</option>
-                      <option value="Talk to Sales - Custom Plan">Talk to Sales / Custom Enterprise Plan</option>
-                      <option value="General Growth Inquiry">General Growth Inquiry / Other</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Your Name *</label>
-                    <input
-                      type="text"
-                      placeholder="e.g. Ashish Raghav"
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                      className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Work Email *</label>
-                      <input
-                        type="email"
-                        placeholder="ashish@brand.com"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        required
-                        className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Phone / WhatsApp *</label>
-                      <input
-                        type="tel"
-                        placeholder="+91 98765 43210"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        required
-                        className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">Company / Website</label>
-                    <input
-                      type="text"
-                      placeholder="https://yourbrand.com"
-                      value={formData.website}
-                      onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                      className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:outline-none"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full bg-brand-lime text-brand-dark py-3.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-none shadow-md mt-2 disabled:opacity-50"
-                  >
-                    {submitting ? "Transmitting..." : "Schedule Sprint Call →"}
-                  </button>
-                </form>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {/* 4. Universal Branded Quick Consultation Modal */}
+      <UniversalLeadModal
+        isOpen={leadModalOpen}
+        onClose={() => setLeadModalOpen(false)}
+        selectedService={selectedService}
+        setSelectedService={setSelectedService}
+      />
 
       {/* 5. Global Cookie & Privacy Preferences Banner */}
       <CookieConsentBanner onNavigate={onNavigate} />

@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import AdminDashboard from "./Admin";
+import { UniversalLeadModal } from "./components/UniversalLeadModal";
 import {
   PageHeader,
   PageFooter,
@@ -72,6 +73,14 @@ export default function App() {
   const [leadModalOpen, setLeadModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("General Inbound");
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Auto-open lead modal after 5 seconds on site load (as requested, no button)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLeadModalOpen(true);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, []);
   useEffect(() => {
     // Dynamic SEO Titles & Meta Descriptions
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -1096,130 +1105,13 @@ export default function App() {
       {/* Global Cookie & Privacy Preferences Banner on Homepage */}
       <CookieConsentBanner onNavigate={navigate} />
 
-      {/* LEAD INTAKE MODAL */}
-      {leadModalOpen && (
-        <div
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[200] flex items-center justify-center p-4"
-          onClick={() => setLeadModalOpen(false)}
-        >
-          <div
-            className="bg-[#09090B] border-2 border-[#D4FF00] rounded-2xl p-6 sm:p-8 max-w-md w-full relative shadow-[0_0_50px_rgba(212,255,0,0.2)] text-white"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={() => setLeadModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white bg-transparent border-none cursor-pointer"
-              aria-label="Close modal"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="mb-6">
-              <span className="font-space text-[10px] font-bold bg-[#D4FF00] text-[#09090B] px-2 py-0.5 rounded uppercase">GET INTO THE FEED</span>
-              <h3 className="font-space text-2xl font-bold uppercase mt-2 text-white">Let's Scale Your Brand</h3>
-              <p className="text-xs text-gray-400 mt-1 font-inter">Tell us what you're building. Our team responds within 2 hours.</p>
-            </div>
-
-            {submitSuccess ? (
-              <div className="text-center py-8">
-                <Check className="w-12 h-12 text-[#D4FF00] mx-auto mb-3" />
-                <h4 className="font-space text-xl font-bold text-white">Inquiry Received!</h4>
-                <p className="text-sm text-gray-300 mt-1">We'll reach out on WhatsApp/Phone (+91-8810356950) shortly.</p>
-              </div>
-            ) : (
-              <form onSubmit={handleLeadSubmit} className="flex flex-col gap-3">
-                <div>
-                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Selected Plan / Service</label>
-                  <select
-                    value={selectedService}
-                    onChange={(e) => setSelectedService(e.target.value)}
-                    className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-xs text-white focus:border-[#D4FF00] outline-none"
-                  >
-                    <option value="Basic Plan (₹14,999/mo)">Basic Plan — ₹14,999 / mo (Social + Content + Ads)</option>
-                    <option value="Intermediate Plan (₹29,999/mo)">Intermediate Plan — ₹29,999 / mo (Google & Meta Ads + Creative)</option>
-                    <option value="Advanced Plan (₹44,999/mo)">Advanced Plan — ₹44,999 / mo (Full Growth System)</option>
-                    <option value="Talk to Sales - Custom Plan">Talk to Sales / Custom Enterprise Plan</option>
-                    <option value="Ready to Launch - Sprint">Ready to Launch — Growth Sprint</option>
-                    <option value="Paid Performance & Ads">Paid Performance & Ads ROAS</option>
-                    <option value="Short-Form Video & Reels">Short-Form Video & Reels Creative</option>
-                    <option value="Web Engineering & CRO">High-Speed Web Development & CRO</option>
-                    <option value="SEO & Organic Growth">SEO & Organic Engine Optimization</option>
-                    <option value="Brand Positioning & Identity">Brand Positioning & Identity</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Your Name *</label>
-                  <input
-                    required
-                    type="text"
-                    placeholder="e.g. Ashish Raghav"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Work Email *</label>
-                    <input
-                      required
-                      type="email"
-                      placeholder="e.g. ashish@brand.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none"
-                    />
-                  </div>
-                  <div>
-                    <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Phone / WhatsApp *</label>
-                    <input
-                      required
-                      type="tel"
-                      placeholder="e.g. 8810356950"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">Website or Instagram</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. yourbrand.com"
-                    value={formData.website}
-                    onChange={(e) => setFormData({ ...formData, website: e.target.value })}
-                    className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="block font-space text-[11px] font-bold uppercase mb-1 text-gray-300">What are your growth goals?</label>
-                  <textarea
-                    rows={2}
-                    placeholder="Tell us what you want to achieve..."
-                    value={formData.message}
-                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full bg-[#18181B] border border-white/15 rounded-lg px-3 py-2 text-sm text-white focus:border-[#D4FF00] outline-none"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="bg-[#D4FF00] text-[#09090B] font-space font-bold uppercase text-xs tracking-wider py-3 rounded-lg hover:bg-[#E2FF4D] hover:shadow-[0_0_25px_rgba(212,255,0,0.5)] transition-all mt-2 cursor-pointer border-none shadow-[0_0_20px_rgba(212,255,0,0.3)]"
-                >
-                  {submitting ? "Sending..." : "Submit Growth Inquiry →"}
-                </button>
-              </form>
-            )}
-          </div>
-        </div>
-      )}
+      {/* UNIVERSAL SINGLE BRANDED LEAD MODAL (CLEAN LIGHT DESIGN) */}
+      <UniversalLeadModal
+        isOpen={leadModalOpen}
+        onClose={() => setLeadModalOpen(false)}
+        selectedService={selectedService}
+        setSelectedService={setSelectedService}
+      />
     </div>
   );
 }
