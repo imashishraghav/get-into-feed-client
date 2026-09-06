@@ -267,7 +267,7 @@ export default function AuditModal({ isOpen, onClose, initialData = {} }) {
                     <input
                       required
                       type="tel"
-                      placeholder="+91 98765 43210"
+                      placeholder="+91 8810356950"
                       value={formData.phone}
                       onChange={(e) => update("phone", e.target.value)}
                     />
@@ -328,7 +328,7 @@ export default function AuditModal({ isOpen, onClose, initialData = {} }) {
             <div className="success-card">
               <span>🚀 Want instant feedback?</span>
               <a
-                href={`https://wa.me/919876543210?text=${encodeURIComponent(`Hi Get Into Feed team! I just requested a 360° growth audit for ${formData.company || "my business"}. Can we discuss priority growth sprint slots?`)}`}
+                href={`https://wa.me/918810356950?text=${encodeURIComponent(`Hi Get Into Feed team! I just requested a 360° growth audit for ${formData.company || "my business"}. Can we discuss priority growth sprint slots?`)}`}
                 target="_blank"
                 rel="noreferrer"
                 className="button button-whatsapp"

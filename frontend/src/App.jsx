@@ -311,6 +311,15 @@ export default function App() {
   if (route.startsWith("/terms")) {
     return <LegalPage type="terms" onNavigate={navigate} />;
   }
+  if (route.startsWith("/refund") || route.startsWith("/cancellation")) {
+    return <LegalPage type="refund" onNavigate={navigate} />;
+  }
+  if (route.startsWith("/disclaimer")) {
+    return <LegalPage type="disclaimer" onNavigate={navigate} />;
+  }
+  if (route.startsWith("/nda") || route.startsWith("/confidentiality")) {
+    return <LegalPage type="nda" onNavigate={navigate} />;
+  }
 
   if (route !== "/" && route !== "") {
     return <NotFoundPage onNavigate={navigate} />;

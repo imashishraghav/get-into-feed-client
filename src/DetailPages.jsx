@@ -792,14 +792,6 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
 
             <button
               type="button"
-              onClick={() => onNavigate("/reviews")}
-              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "reviews" ? "text-brand-blue" : "text-gray-700"} hover:text-brand-dark transition-colors cursor-pointer bg-transparent border-none`}
-            >
-              REVIEWS
-            </button>
-
-            <button
-              type="button"
               onClick={() => onNavigate("/about")}
               className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "about" ? "text-brand-blue" : "text-gray-700"} hover:text-brand-dark transition-colors cursor-pointer bg-transparent border-none`}
             >
@@ -821,16 +813,24 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             >
               FEED NOTES
             </button>
+
+            <button
+              type="button"
+              onClick={() => onNavigate("/contact")}
+              className={`font-space font-bold text-xs uppercase tracking-wider ${activeNav === "contact" ? "text-brand-blue" : "text-gray-700"} hover:text-brand-dark transition-colors cursor-pointer bg-transparent border-none`}
+            >
+              CONTACT US
+            </button>
           </nav>
 
           {/* Right Action CTAs */}
           <div className="hidden lg:flex items-center gap-4">
             <a
-              href="tel:+919876543210"
+              href="tel:+918810356950"
               className="font-space font-bold text-xs text-gray-700 hover:text-brand-dark transition-colors flex items-center gap-1.5 text-decoration-none"
             >
               <Phone className="w-3.5 h-3.5 text-brand-blue" />
-              <span>+91 98765 43210</span>
+              <span>+91 8810356950</span>
             </a>
 
             <button
@@ -870,13 +870,7 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
             >
               WORK
             </button>
-            <button
-              type="button"
-              onClick={() => { setMobileMenuOpen(false); onNavigate("/reviews"); }}
-              className="block w-full text-left font-space font-bold text-sm uppercase py-2 text-gray-800 hover:text-brand-blue border-b border-gray-100 bg-transparent"
-            >
-              REVIEWS
-            </button>
+
             <button
               type="button"
               onClick={() => { setMobileMenuOpen(false); onNavigate("/about"); }}
@@ -908,10 +902,10 @@ export function PageHeader({ onNavigate, activeNav = "", onOpenLeadModal, onOpen
 
             <div className="pt-2 flex flex-col gap-3">
               <a
-                href="tel:+919876543210"
+                href="tel:+918810356950"
                 className="text-gray-700 text-xs font-space font-bold uppercase tracking-wider py-1 flex items-center gap-2 text-decoration-none hover:text-brand-dark"
               >
-                <Phone className="w-4 h-4 text-brand-blue" /> Call +91 98765 43210
+                <Phone className="w-4 h-4 text-brand-blue" /> Call +91 8810356950
               </a>
               <button
                 type="button"
@@ -1041,7 +1035,7 @@ export function CookieConsentBanner({ onNavigate }) {
 
   return (
     <>
-      <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 bg-white border-2 border-black rounded-2xl p-5 shadow-2xl animate-in slide-in-from-bottom duration-300 text-brand-dark">
+      <div className="fixed bottom-4 left-4 right-4 md:right-auto md:left-6 md:max-w-md z-50 bg-white border-2 border-black rounded-2xl p-5 shadow-2xl animate-in slide-in-from-bottom duration-300 text-brand-dark">
         <div className="flex items-start gap-3">
           <Shield className="w-5 h-5 text-brand-blue shrink-0 mt-0.5" />
           <div>
@@ -1298,7 +1292,7 @@ export function GrowthAuditPopup({ isOpen, onClose, onNavigate }) {
                   <input
                     required
                     type="tel"
-                    placeholder="e.g. +91 98765 43210"
+                    placeholder="e.g. +91 8810356950"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full bg-[#F4F4F5] border border-black/15 rounded-lg px-3 py-1.5 sm:py-2 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all"
@@ -1663,72 +1657,137 @@ export function AboutUsPage({ onNavigate }) {
 // SERVICES HUB PAGE (/services)
 // =========================================================================
 export function ServicesHubPage({ onNavigate }) {
+  const [leadModalOpen, setLeadModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState("General Growth Consultation");
+  const services = getStoredServices();
+
+  const handleOpenModal = (svcTitle) => {
+    setSelectedService(svcTitle);
+    setLeadModalOpen(true);
+  };
+
   return (
-    <PageLayout onNavigate={onNavigate} activeNav="services">
-      <div className="space-y-16">
-        <div className="text-left max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/20 border border-brand-lime/40 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-4">
-            <Zap className="w-3.5 h-3.5 text-brand-blue" />
-            End-To-End Growth Architecture
+    <PageLayout
+      onNavigate={onNavigate}
+      activeNav="services"
+      leadModalOpen={leadModalOpen}
+      setLeadModalOpen={setLeadModalOpen}
+      selectedService={selectedService}
+      setSelectedService={setSelectedService}
+    >
+      <div className="space-y-16 md:space-y-24 text-left">
+        {/* Hero Section */}
+        <div className="max-w-3xl space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider">
+            <Zap className="w-3.5 h-3.5 text-brand-dark" />
+            Full-Stack Growth Architecture
           </div>
-          <h1 className="font-space font-extrabold text-4xl sm:text-5xl md:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95] mb-6">
+          <h1 className="font-space font-extrabold text-4xl sm:text-5xl md:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95]">
             OUR CAPABILITIES. <br />
             <span className="text-brand-blue">BUILT FOR REVENUE.</span>
           </h1>
-          <p className="text-gray-600 text-sm md:text-base font-inter leading-relaxed">
-            Eight synchronized disciplines working under one roof. We combine thumb-stopping video creative with rigorous paid performance media and friction-free web development.
+          <p className="text-gray-600 text-sm md:text-base font-inter leading-relaxed max-w-2xl">
+            Eight synchronized disciplines executed by senior growth directors. We combine thumb-stopping video, high-converting React funnels, and algorithmic media buying that eliminate ad waste.
           </p>
         </div>
 
-        {/* 8 Services Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {getStoredServices().map((svc) => (
-            <div
-              key={svc.slug}
-              className="bg-white border-2 border-black rounded-3xl p-8 md:p-10 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
-            >
-              <div>
-                <div className="flex items-center justify-between gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-brand-lime flex items-center justify-center text-brand-dark group-hover:bg-brand-blue group-hover:text-white transition-colors">
-                    <svc.icon className="w-6 h-6" />
-                  </div>
-                  <span className="font-space font-bold text-xs uppercase text-gray-500 bg-brand-light-gray px-3 py-1 rounded-full border border-black/10">
-                    {svc.category}
-                  </span>
-                </div>
-
-                <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark group-hover:text-brand-blue transition-colors mb-3">
-                  {svc.title}
-                </h3>
-                <p className="text-gray-600 text-xs md:text-sm font-inter leading-relaxed mb-6">
-                  {svc.shortDesc}
-                </p>
-
-                <div className="space-y-2 pt-4 border-t border-black/10 mb-8">
-                  <div className="font-space font-bold text-[11px] uppercase text-gray-500 mb-2">Key Deliverables:</div>
-                  {(svc.deliverables || []).map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-xs font-inter text-gray-700">
-                      <Check className="w-3.5 h-3.5 text-brand-blue shrink-0" />
-                      <span>{item}</span>
+        {/* 3-COLUMN SERVICES GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {services.map((svc) => {
+            const SvcIcon = svc.icon || Sparkles;
+            return (
+              <div
+                key={svc.slug}
+                className="bg-white border-2 border-black rounded-3xl p-6 sm:p-7 md:p-8 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 relative"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-5">
+                    <div className="w-12 h-12 rounded-2xl bg-brand-lime border border-black/10 flex items-center justify-center text-brand-dark group-hover:bg-brand-dark group-hover:text-brand-lime transition-colors">
+                      <SvcIcon className="w-6 h-6" />
                     </div>
-                  ))}
+                    <span className="font-space font-bold text-[10px] uppercase text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full border border-black/5">
+                      {svc.category}
+                    </span>
+                  </div>
+
+                  <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark group-hover:text-brand-blue transition-colors mb-2.5">
+                    {svc.title}
+                  </h3>
+                  <p className="text-gray-600 text-xs sm:text-sm font-inter leading-relaxed mb-6">
+                    {svc.shortDesc}
+                  </p>
+
+                  <div className="space-y-2 pt-4 border-t border-black/10 mb-6">
+                    <div className="font-space font-bold text-[10px] uppercase text-gray-500 mb-2 tracking-wider">
+                      Included Sprint Assets:
+                    </div>
+                    {(svc.deliverables || []).slice(0, 4).map((item, dIdx) => (
+                      <div key={dIdx} className="flex items-start gap-2 text-xs font-inter text-gray-700">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-black/10 space-y-3">
+                  <div className="flex items-center justify-between text-xs font-space">
+                    <span className="text-gray-500 font-bold uppercase text-[10px]">Tier</span>
+                    <span className="font-bold text-brand-dark">{svc.pricingTier}</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onNavigate(`/services/${svc.slug}`)}
+                      className="w-full bg-[#09090B] hover:bg-black text-white py-2.5 rounded-xl font-space font-bold uppercase text-[11px] tracking-wider transition-colors cursor-pointer border-none flex items-center justify-center gap-1"
+                    >
+                      Blueprint <ArrowRight className="w-3 h-3" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenModal(svc.title)}
+                      className="w-full bg-brand-lime text-brand-dark hover:bg-[#E2FF4D] py-2.5 rounded-xl font-space font-bold uppercase text-[11px] tracking-wider transition-colors cursor-pointer border border-black/10 shadow-sm"
+                    >
+                      Quick Consult
+                    </button>
+                  </div>
                 </div>
               </div>
+            );
+          })}
+        </div>
 
-              <div className="pt-4 border-t border-black/10 flex items-center justify-between">
-                <span className="font-space font-bold text-xs uppercase text-brand-dark">
-                  {svc.pricingTier}
-                </span>
-                <button
-                  type="button"
-                  onClick={() => onNavigate(`/services/${svc.slug}`)}
-                  className="bg-brand-dark text-white px-5 py-2.5 rounded-lg font-space font-bold uppercase text-xs tracking-wider group-hover:bg-brand-blue transition-colors cursor-pointer border-none flex items-center gap-1.5"
-                >
-                  View Blueprint <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-          ))}
+        {/* Custom Multi-Discipline Sprint Banner */}
+        <div className="bg-[#09090B] text-white border-2 border-black rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden shadow-xl space-y-6">
+          <div className="max-w-2xl mx-auto space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase">
+              ⚡ BESPOKE VENTURE SPRINT
+            </span>
+            <h2 className="font-space font-extrabold text-3xl sm:text-4xl uppercase tracking-tight text-white">
+              NEED A MULTI-DISCIPLINE GROWTH SPRINT?
+            </h2>
+            <p className="text-gray-300 text-xs sm:text-sm font-inter leading-relaxed">
+              Bundle Creative Video, Paid Performance, and React CRO Funnels into a unified 30-day velocity sprint.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <button
+              type="button"
+              onClick={() => handleOpenModal("Full-Stack Growth Sprint")}
+              className="bg-brand-lime text-brand-dark px-7 py-3.5 rounded-xl font-space font-extrabold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all shadow-md cursor-pointer border-none"
+            >
+              Configure Custom Sprint →
+            </button>
+            <a
+              href="https://wa.me/918810356950?text=Hi%20GetIntoFeed%2C%20I%20want%20to%20discuss%20a%20custom%20marketing%20sprint"
+              target="_blank"
+              rel="noreferrer"
+              className="bg-white/10 hover:bg-white/20 text-white border border-white/20 px-6 py-3.5 rounded-xl font-space font-bold uppercase text-xs tracking-wider transition-all cursor-pointer no-underline flex items-center gap-1.5"
+            >
+              <MessageCircle className="w-3.5 h-3.5 text-brand-lime" /> WhatsApp (+91 8810356950)
+            </a>
+          </div>
         </div>
       </div>
     </PageLayout>
@@ -2535,31 +2594,49 @@ export function ServiceDetailPage({ slug, onNavigate }) {
 export function WorkPage({ onNavigate }) {
   const [filter, setFilter] = useState("All");
   const categories = ["All", "High-Ticket Real Estate", "E-Commerce & D2C", "B2B & FinTech"];
-
   const currentCases = getStoredCaseStudies();
-  const filtered = filter === "All"
-    ? currentCases
-    : currentCases.filter((c) => c.category === filter);
+  const filtered = filter === "All" ? currentCases : currentCases.filter((c) => c.category === filter);
 
   return (
     <PageLayout onNavigate={onNavigate} activeNav="work">
-      <div className="space-y-16 text-left">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/20 border border-brand-lime/40 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-4">
-            <Award className="w-3.5 h-3.5 text-brand-blue" />
-            Proof In The Feed
+      <div className="space-y-16 md:space-y-24 text-left">
+        {/* Hero Header */}
+        <div className="max-w-3xl space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider">
+            <Award className="w-3.5 h-3.5 text-brand-dark" />
+            Verified Case Studies & ROI
           </div>
-          <h1 className="font-space font-extrabold text-4xl sm:text-5xl md:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95] mb-6">
-            SELECTED CASE STUDIES. <br />
+          <h1 className="font-space font-extrabold text-4xl sm:text-5xl md:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95]">
+            SELECTED WORK. <br />
             <span className="text-brand-blue">REAL COMMERCIAL ROAS.</span>
           </h1>
-          <p className="text-gray-600 text-sm md:text-base font-inter leading-relaxed">
-            Explore how we partnered with ambitious brands to transform their digital presence, eliminate ad waste, and generate measurable revenue.
+          <p className="text-gray-600 text-sm md:text-base font-inter leading-relaxed max-w-2xl">
+            Explore how we partner with ambitious ventures to replace generic marketing with high-velocity creative, positive unit economics, and predictable scale.
           </p>
         </div>
 
+        {/* Proof Metrics Strip */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div className="bg-white border-2 border-black rounded-2xl p-5 md:p-6 shadow-sm">
+            <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-dark mb-1">₹120Cr+</div>
+            <div className="font-space font-bold text-xs uppercase text-gray-500">Pipeline Scaled</div>
+          </div>
+          <div className="bg-white border-2 border-black rounded-2xl p-5 md:p-6 shadow-sm">
+            <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-blue mb-1">3.8x - 6.4x</div>
+            <div className="font-space font-bold text-xs uppercase text-gray-500">Average ROAS</div>
+          </div>
+          <div className="bg-white border-2 border-black rounded-2xl p-5 md:p-6 shadow-sm">
+            <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-dark mb-1">24+</div>
+            <div className="font-space font-bold text-xs uppercase text-gray-500">Venture Sprints</div>
+          </div>
+          <div className="bg-white border-2 border-black rounded-2xl p-5 md:p-6 shadow-sm">
+            <div className="font-space font-extrabold text-3xl md:text-4xl text-emerald-600 mb-1">100%</div>
+            <div className="font-space font-bold text-xs uppercase text-gray-500">Client IP Transfer</div>
+          </div>
+        </div>
+
         {/* Category Filters */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 pt-2">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -2567,7 +2644,7 @@ export function WorkPage({ onNavigate }) {
               onClick={() => setFilter(cat)}
               className={`px-4 py-2 rounded-full font-space font-bold text-xs uppercase tracking-wider transition-all cursor-pointer border ${
                 filter === cat
-                  ? "bg-brand-dark text-white border-black"
+                  ? "bg-[#09090B] text-white border-[#09090B] shadow-md"
                   : "bg-white text-gray-700 border-black/10 hover:border-black"
               }`}
             >
@@ -2576,46 +2653,61 @@ export function WorkPage({ onNavigate }) {
           ))}
         </div>
 
-        {/* Case Studies Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* 3-Column Case Studies Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filtered.map((cs) => (
             <div
               key={cs.slug}
-              className="bg-white border-2 border-black rounded-3xl overflow-hidden group shadow-sm hover:shadow-xl transition-all flex flex-col justify-between"
+              className="bg-white border-2 border-black rounded-3xl overflow-hidden group shadow-sm hover:shadow-xl transition-all flex flex-col justify-between hover:-translate-y-1"
             >
               <div>
-                <div className="aspect-video w-full overflow-hidden relative">
+                <div className="aspect-video w-full overflow-hidden relative border-b-2 border-black">
                   <img
                     src={cs.heroImage}
                     alt={cs.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                   />
-                  <div className="absolute top-3 left-3 bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase px-2.5 py-1 rounded-full border border-black">
+                  <div className="absolute top-3 left-3 bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase px-3 py-1 rounded-full border border-black shadow-sm">
                     {cs.metric} {cs.result}
                   </div>
                 </div>
 
-                <div className="p-6">
-                  <div className="font-space font-bold text-xs uppercase text-brand-blue mb-1">
-                    {cs.brand} • {cs.category}
+                <div className="p-6 sm:p-7 space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-space font-bold text-xs uppercase text-brand-blue">
+                      {cs.brand}
+                    </span>
+                    <span className="font-space font-medium text-[10px] uppercase text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">
+                      {cs.category}
+                    </span>
                   </div>
-                  <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark mb-3">
+
+                  <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark group-hover:text-brand-blue transition-colors leading-tight">
                     {cs.title}
                   </h3>
-                  <p className="text-gray-600 text-xs font-inter line-clamp-3 mb-4">
+
+                  <p className="text-gray-600 text-xs font-inter leading-relaxed line-clamp-3">
                     {cs.challenge}
                   </p>
+
+                  <div className="flex flex-wrap gap-1.5 pt-2">
+                    {(cs.services || []).map((s, idx) => (
+                      <span key={idx} className="bg-gray-100 border border-black/5 text-gray-700 px-2.5 py-0.5 rounded-full text-[10px] font-space font-bold uppercase">
+                        {s}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="p-6 pt-0">
+              <div className="p-6 sm:p-7 pt-0">
                 <button
                   type="button"
                   onClick={() => onNavigate(`/work/${cs.slug}`)}
-                  className="w-full bg-brand-light-gray hover:bg-brand-lime text-brand-dark py-2.5 rounded-xl font-space font-bold text-xs uppercase transition-colors cursor-pointer border border-black/10"
+                  className="w-full bg-brand-light-gray hover:bg-brand-lime text-brand-dark py-3 rounded-xl font-space font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer border border-black/10 flex items-center justify-center gap-1.5"
                 >
-                  Read Full Teardown →
+                  Read Full Teardown <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>
@@ -2627,101 +2719,381 @@ export function WorkPage({ onNavigate }) {
 }
 
 // =========================================================================
-// CASE STUDY DETAIL PAGE (/work/:slug)
+// CASE STUDY DETAIL PAGE (/work/:slug) — WITH EMBEDDED CONSULTATION FORM
 // =========================================================================
 export function CaseStudyDetailPage({ slug, onNavigate }) {
   const currentCases = getStoredCaseStudies();
   const cs = currentCases.find((c) => c.slug === slug) || currentCases[0];
 
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    service: cs.services ? cs.services[0] : "Performance Marketing",
+    plan: "Growth Plan — ₹29,999 / mo",
+    requirements: ""
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.email || !formData.phone) {
+      alert("Please enter your name, email, and phone number.");
+      return;
+    }
+    setSubmitting(true);
+
+    const leadData = {
+      id: "case-lead-" + Date.now(),
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      company: formData.company || "Case Study Inquiry",
+      service: formData.service,
+      plan: formData.plan,
+      budget: formData.plan,
+      requirements: formData.requirements,
+      source: `Case Study: ${cs.brand}`
+    };
+
+    try {
+      const existingRaw = localStorage.getItem("gif_admin_leads");
+      const existing = existingRaw ? JSON.parse(existingRaw) : [];
+      localStorage.setItem("gif_admin_leads", JSON.stringify([leadData, ...existing]));
+      window.dispatchEvent(new Event("storage"));
+    } catch {}
+
+    try {
+      await fetch(`${API_URL}/api/leads`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(leadData)
+      });
+    } catch {}
+
+    try {
+      trackLeadConversion({
+        id: leadData.id,
+        service: `${formData.service} (${cs.brand} Teardown)`,
+        source: "case_study_detail_form",
+        company: leadData.company
+      });
+    } catch {}
+
+    setSubmitted(true);
+    setSubmitting(false);
+  };
+
   return (
     <PageLayout onNavigate={onNavigate} activeNav="work">
-      <div className="space-y-12 text-left max-w-4xl mx-auto">
-        <button
-          type="button"
-          onClick={() => onNavigate("/work")}
-          className="inline-flex items-center gap-2 text-xs font-space font-bold uppercase text-gray-500 hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to All Case Studies
-        </button>
+      <div className="space-y-12 md:space-y-16 text-left max-w-5xl mx-auto">
+        {/* Top Breadcrumb */}
+        <div className="flex items-center justify-between gap-4">
+          <button
+            type="button"
+            onClick={() => onNavigate("/work")}
+            className="inline-flex items-center gap-2 text-xs font-space font-bold uppercase text-gray-500 hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to All Case Studies
+          </button>
+          <span className="font-space font-bold text-xs text-gray-400">
+            Case Dossier: {cs.brand}
+          </span>
+        </div>
 
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-4 border border-black">
-            {cs.brand} • {cs.category}
+        {/* Hero Headline & Tags */}
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-xs uppercase border border-black shadow-sm">
+              <Sparkles className="w-3 h-3" /> {cs.brand}
+            </span>
+            <span className="px-3 py-1 rounded-full bg-gray-100 text-gray-700 font-space font-bold text-xs uppercase border border-black/5">
+              {cs.category}
+            </span>
+            <span className="px-3 py-1 rounded-full bg-blue-50 text-brand-blue font-space font-bold text-xs uppercase border border-blue-200">
+              Verified Case Study
+            </span>
           </div>
-          <h1 className="font-space font-extrabold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-brand-dark leading-[0.95] mb-6">
+
+          <h1 className="font-space font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95]">
             {cs.title}
           </h1>
-          <div className="flex flex-wrap gap-2 mb-8">
+
+          <div className="flex flex-wrap gap-2 pt-2">
             {(cs.services || []).map((s, idx) => (
-              <span key={idx} className="bg-brand-light-gray border border-black/10 text-gray-700 px-3 py-1 rounded-full text-xs font-space font-bold uppercase">
+              <span key={idx} className="bg-white border border-black/10 text-gray-700 px-3.5 py-1.5 rounded-xl text-xs font-space font-bold uppercase shadow-sm">
                 {s}
               </span>
             ))}
           </div>
         </div>
 
-        {/* Hero Image */}
-        <div className="rounded-3xl overflow-hidden border-2 border-black aspect-video w-full">
+        {/* Executive Summary Strip */}
+        <div className="bg-white border-2 border-black rounded-2xl p-4 sm:p-6 grid grid-cols-2 md:grid-cols-4 gap-4 shadow-sm">
+          <div>
+            <div className="text-[10px] font-space font-bold uppercase text-gray-500">Industry</div>
+            <div className="font-space font-bold text-sm text-brand-dark mt-0.5">{cs.category}</div>
+          </div>
+          <div>
+            <div className="text-[10px] font-space font-bold uppercase text-gray-500">Sprint Cadence</div>
+            <div className="font-space font-bold text-sm text-brand-dark mt-0.5">90-Day Execution</div>
+          </div>
+          <div>
+            <div className="text-[10px] font-space font-bold uppercase text-gray-500">Channels</div>
+            <div className="font-space font-bold text-sm text-brand-blue mt-0.5">{(cs.services || []).slice(0, 2).join(" + ")}</div>
+          </div>
+          <div>
+            <div className="text-[10px] font-space font-bold uppercase text-gray-500">Verified Impact</div>
+            <div className="font-space font-extrabold text-sm text-emerald-600 mt-0.5">{cs.metric} {cs.result}</div>
+          </div>
+        </div>
+
+        {/* Visual Hero Showcase */}
+        <div className="rounded-3xl overflow-hidden border-2 border-black aspect-video w-full shadow-xl relative">
           <img src={cs.heroImage} alt={cs.title} className="w-full h-full object-cover" />
+          <div className="absolute top-4 left-4 bg-brand-lime text-brand-dark px-3.5 py-1.5 rounded-full font-space font-bold text-xs uppercase border border-black shadow">
+            {cs.metric} Impact Achieved
+          </div>
         </div>
 
-        {/* Key Metrics Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {(cs.results || []).map((r, idx) => (
-            <div key={idx} className="bg-white border-2 border-black rounded-2xl p-6 text-center">
-              <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-blue mb-1">
-                {r.val}
+        {/* Key Metrics Results Grid */}
+        <div className="space-y-4">
+          <h3 className="font-space font-bold text-xs uppercase tracking-wider text-gray-500">
+            QUANTIFIED PERFORMANCE IMPACT
+          </h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {(cs.results || []).map((r, idx) => (
+              <div key={idx} className="bg-white border-2 border-black rounded-2xl p-6 text-center shadow-sm">
+                <div className="font-space font-extrabold text-3xl md:text-4xl text-brand-blue mb-1">
+                  {r.val}
+                </div>
+                <div className="font-space font-bold text-xs uppercase text-gray-600">
+                  {r.label}
+                </div>
               </div>
-              <div className="font-space font-bold text-xs uppercase text-gray-600">
-                {r.label}
-              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Challenge vs Execution Story Breakdown */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <div className="bg-[#FFF8F8] border-2 border-red-200 rounded-3xl p-6 sm:p-8 space-y-3">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 text-red-700 font-space font-bold text-xs uppercase">
+              The Commercial Challenge
             </div>
-          ))}
-        </div>
-
-        {/* Challenge & Strategy */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="bg-white border-2 border-black rounded-2xl p-8">
-            <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark mb-3">
-              THE COMMERCIAL CHALLENGE
+            <h3 className="font-space font-bold text-xl uppercase text-red-950">
+              WHERE BUDGET WAS BEING WASTED
             </h3>
-            <p className="text-gray-600 text-sm font-inter leading-relaxed">
+            <p className="text-red-900/80 text-xs sm:text-sm font-inter leading-relaxed">
               {cs.challenge}
             </p>
           </div>
 
-          <div className="bg-white border-2 border-black rounded-2xl p-8">
-            <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark mb-3">
-              OUR STRATEGIC EXECUTION
+          <div className="bg-[#09090B] text-white border-2 border-black rounded-3xl p-6 sm:p-8 space-y-3 shadow-xl">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-xs uppercase">
+              ⚡ The GetIntoFeed Execution
+            </div>
+            <h3 className="font-space font-bold text-xl uppercase text-white">
+              HOW WE ENGINEERED SCALE
             </h3>
-            <p className="text-gray-600 text-sm font-inter leading-relaxed">
+            <p className="text-gray-300 text-xs sm:text-sm font-inter leading-relaxed">
               {cs.strategy}
             </p>
           </div>
         </div>
 
-        {/* Client Testimonial */}
+        {/* Verified Client Testimonial */}
         {cs.testimonial && (
-          <div className="bg-brand-lime border-2 border-black rounded-3xl p-8 md:p-10 text-brand-dark">
-            <Quote className="w-8 h-8 mb-4 opacity-70" />
-            <p className="font-space font-bold text-lg md:text-xl leading-relaxed mb-4">
+          <div className="bg-brand-lime border-2 border-black rounded-3xl p-6 sm:p-10 text-brand-dark relative shadow-xl">
+            <Quote className="w-10 h-10 mb-4 opacity-50" />
+            <p className="font-space font-bold text-lg sm:text-xl md:text-2xl leading-relaxed mb-6">
               "{cs.testimonial.quote}"
             </p>
-            <div className="font-space font-bold text-xs uppercase">
-              {cs.testimonial.author} — <span className="opacity-80">{cs.testimonial.role}</span>
+            <div className="flex items-center gap-3 pt-4 border-t border-black/15">
+              <div className="w-10 h-10 rounded-full bg-brand-dark text-brand-lime font-space font-bold flex items-center justify-center text-xs">
+                {cs.testimonial.author.slice(0, 2)}
+              </div>
+              <div>
+                <div className="font-space font-extrabold text-sm uppercase">
+                  {cs.testimonial.author}
+                </div>
+                <div className="text-xs text-brand-dark/80 font-inter">
+                  {cs.testimonial.role}
+                </div>
+              </div>
             </div>
           </div>
         )}
 
-        {/* CTA */}
-        <div className="pt-8 text-center">
+        {/* EMBEDDED STRATEGY CONSULTATION FORM */}
+        <div className="bg-white border-2 border-black rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+          <div className="text-left space-y-2 border-b border-black/10 pb-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase">
+              ⚡ REPLICATE THESE RESULTS
+            </span>
+            <h2 className="font-space font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-brand-dark">
+              REPLICATE THESE RESULTS FOR YOUR BRAND.
+            </h2>
+            <p className="text-gray-600 text-xs sm:text-sm font-inter leading-relaxed">
+              Fill out your requirements below. Our senior growth director will conduct a 15-minute diagnosis of your unit economics and propose an identical sprint roadmap.
+            </p>
+          </div>
+
+          {submitted ? (
+            <div className="bg-brand-light-gray rounded-2xl p-8 text-center space-y-3">
+              <div className="w-12 h-12 rounded-full bg-brand-lime flex items-center justify-center mx-auto text-brand-dark">
+                <CheckCircle2 className="w-6 h-6" />
+              </div>
+              <div className="font-space font-bold text-xl uppercase text-brand-dark">
+                INQUIRY DISPATCHED!
+              </div>
+              <p className="text-xs text-gray-600 font-inter">
+                Our growth director is reviewing your brand requirements and will contact you via WhatsApp/Email shortly.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleFormSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Your Name *
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Ashish Raghav"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Company / Brand Name
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Acme Brand"
+                    value={formData.company}
+                    onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Work Email *
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="ashish@brand.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Phone / WhatsApp *
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="+91 8810356950"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    required
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Service Required
+                  </label>
+                  <select
+                    value={formData.service}
+                    onChange={(e) => setFormData({ ...formData, service: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter cursor-pointer"
+                  >
+                    <option value="Paid Performance & Meta/Google Ads">Paid Performance & Meta/Google Ads</option>
+                    <option value="Short-Form Video & Reel Production">Short-Form Video & Reel Production</option>
+                    <option value="Brand Positioning & Identity">Brand Positioning & Identity</option>
+                    <option value="Web Design & CRO Funnels">Web Design & CRO Funnels</option>
+                    <option value="AI Search & Programmatic SEO">AI Search & Programmatic SEO</option>
+                    <option value="Full-Stack Growth Sprint">Full-Stack Growth Sprint</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                    Desired Plan / Budget
+                  </label>
+                  <select
+                    value={formData.plan}
+                    onChange={(e) => setFormData({ ...formData, plan: e.target.value })}
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter cursor-pointer"
+                  >
+                    <option value="Basic Plan — ₹14,999 / mo">Basic Plan — ₹14,999 / mo</option>
+                    <option value="Growth Plan — ₹29,999 / mo">Growth Plan — ₹29,999 / mo</option>
+                    <option value="Scale Plan — ₹44,999 / mo">Scale Plan — ₹44,999 / mo</option>
+                    <option value="Custom Enterprise Sprint">Custom Enterprise Sprint (₹75,000+)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-space font-bold uppercase text-gray-700 mb-1">
+                  Project Details / Requirements
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Tell us about your brand goals, target audience, and current marketing bottlenecks..."
+                  value={formData.requirements}
+                  onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
+                  className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3.5 py-2.5 text-xs text-brand-dark focus:border-brand-blue focus:bg-white focus:outline-none transition-all font-inter resize-none"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-brand-lime text-brand-dark py-4 rounded-xl font-space font-extrabold uppercase text-xs sm:text-sm tracking-wider hover:bg-[#E2FF4D] transition-all flex items-center justify-center gap-2 cursor-pointer border-2 border-black shadow-[4px_4px_0px_#000] hover:shadow-[1px_1px_0px_#000] hover:translate-x-[2px] hover:translate-y-[2px] disabled:opacity-50"
+              >
+                {submitting ? "Transmitting Requirements..." : "Schedule Sprint Strategy Call →"}
+              </button>
+
+              <div className="flex items-center justify-center gap-4 text-[11px] font-space text-gray-500 pt-1">
+                <span>🔒 Strict Mutual NDA Guarantee</span>
+                <span>•</span>
+                <span>⚡ 15-Minute Response</span>
+              </div>
+            </form>
+          )}
+        </div>
+
+        {/* More Case Studies Footer */}
+        <div className="pt-4 border-t border-black/10 flex flex-wrap items-center justify-between gap-4">
           <button
             type="button"
-            onClick={() => onNavigate("/contact")}
-            className="bg-brand-dark text-white px-8 py-4 rounded-lg font-space font-bold uppercase text-xs tracking-wider hover:bg-brand-blue transition-colors cursor-pointer border-none"
+            onClick={() => onNavigate("/work")}
+            className="text-xs font-space font-bold uppercase text-brand-dark hover:text-brand-blue transition-colors bg-transparent border-none p-0 cursor-pointer flex items-center gap-1.5"
           >
-            Replicate These Results For Your Brand →
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to All Case Studies
           </button>
+          <a
+            href="https://wa.me/918810356950?text=Hi%20GetIntoFeed%2C%20I%20saw%20your%20case%20study%20and%20want%20to%20chat"
+            target="_blank"
+            rel="noreferrer"
+            className="text-xs font-space font-bold uppercase text-emerald-700 hover:text-emerald-900 flex items-center gap-1.5 no-underline"
+          >
+            <MessageCircle className="w-3.5 h-3.5" /> Direct WhatsApp (+91 8810356950)
+          </a>
         </div>
       </div>
     </PageLayout>
@@ -2983,7 +3355,6 @@ export function FeedNotesPage({ slug, onNavigate }) {
 
   const [reactions, setReactions] = useState({ love: 42, fire: 89, clap: 35, funny: 12, insightful: 67 });
   const [reacted, setReacted] = useState({});
-  const [shareModalOpen, setShareModalOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
   // Comments state
@@ -2991,44 +3362,30 @@ export function FeedNotesPage({ slug, onNavigate }) {
     { name: "Siddharth Rao", comment: "The breakdown of frame 1 visual interrupts changed how we film our reels. Immediate 3x retention bump.", date: "March 3, 2026" },
     { name: "Pooja Hegde", comment: "Finally an agency talking about the economic reality of CAC instead of just pretty aesthetics.", date: "March 4, 2026" }
   ]);
-  const [newComment, setNewComment] = useState({ name: "", email: "", comment: "", website: "" });
+  const [newComment, setNewComment] = useState({ name: "", email: "", comment: "" });
   const [commentSubmitted, setCommentSubmitted] = useState(false);
 
-  const activeArticle = blogPostsCatalog.find((b) => b.slug === selectedSlug);
+  // Article CTA Form State
+  const [articleFormData, setArticleFormData] = useState({ name: "", email: "", phone: "", requirements: "" });
+  const [articleFormSubmitted, setArticleFormSubmitted] = useState(false);
 
-  useEffect(() => {
-    if (!selectedSlug) return;
-    fetch(`${API_URL}/api/blog/${selectedSlug}/engagement`)
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (!data) return;
-        if (data.reactions) {
-          setReactions((prev) => ({ ...prev, ...data.reactions }));
-        }
-        if (Array.isArray(data.comments) && data.comments.length > 0) {
-          setComments(
-            data.comments.map((c) => ({
-              name: c.name || c.author_name,
-              comment: c.message || c.comment_text || c.comment,
-              date: new Date(c.createdAt || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
-            }))
-          );
-        }
-      })
-      .catch(() => null);
-  }, [selectedSlug]);
+  const categories = ["All", "Paid Performance", "Creative Direction", "SEO & AI Citations", "Conversion Strategy"];
+  const allArticles = blogPostsCatalog || [];
+
+  const activeArticle = allArticles.find((b) => b.slug === selectedSlug);
+
+  const filteredArticles = allArticles.filter((b) => {
+    const matchCategory = activeCategory === "All" || b.category === activeCategory;
+    const matchSearch = !search || b.title.toLowerCase().includes(search.toLowerCase()) || b.excerpt.toLowerCase().includes(search.toLowerCase());
+    return matchCategory && matchSearch;
+  });
+
+  const featuredArticle = allArticles[0];
 
   const handleReact = (type) => {
     if (reacted[type]) return;
     setReactions((prev) => ({ ...prev, [type]: (prev[type] || 0) + 1 }));
     setReacted((prev) => ({ ...prev, [type]: true }));
-    if (activeArticle) {
-      fetch(`${API_URL}/api/blog/${activeArticle.slug}/react`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type })
-      }).catch(() => null);
-    }
   };
 
   const handleShare = (platform) => {
@@ -3041,8 +3398,6 @@ export function FeedNotesPage({ slug, onNavigate }) {
       window.open(`https://wa.me/?text=${encodeURIComponent("Check out this growth article from GetIntoFeed: " + url)}`, "_blank");
     } else if (platform === "linkedin") {
       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, "_blank");
-    } else if (platform === "twitter") {
-      window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Great insight on creative marketing:")}`, "_blank");
     }
   };
 
@@ -3052,50 +3407,80 @@ export function FeedNotesPage({ slug, onNavigate }) {
       alert("Please fill in your name, email, and comment.");
       return;
     }
-    // In our backend workflow, this is submitted as PENDING
-    if (activeArticle) {
-      fetch(`${API_URL}/api/blog/${activeArticle.slug}/comments`, {
+    setComments([
+      ...comments,
+      { name: newComment.name, comment: newComment.comment, date: "Just now" }
+    ]);
+    setCommentSubmitted(true);
+    setNewComment({ name: "", email: "", comment: "" });
+  };
+
+  const handleArticleFormSubmit = async (e) => {
+    e.preventDefault();
+    if (!articleFormData.name || !articleFormData.email || !articleFormData.phone) {
+      alert("Please enter your name, email, and phone number.");
+      return;
+    }
+
+    try {
+      await fetch(`${API_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          author_name: newComment.name,
-          author_email: newComment.email,
-          comment_text: newComment.comment,
-          website: newComment.website
+          name: articleFormData.name,
+          email: articleFormData.email,
+          phone: articleFormData.phone,
+          service: "Growth Strategy from Blog",
+          message: `From Article [${activeArticle.title}]: ${articleFormData.requirements}`,
+          source: "Blog In-Article Consultation Form"
         })
-      }).catch(() => null);
-    }
-    setCommentSubmitted(true);
-    setNewComment({ name: "", email: "", comment: "", website: "" });
+      });
+    } catch {}
+
+    setArticleFormSubmitted(true);
   };
 
-  // If a single article is opened:
+  // =========================================================================
+  // SINGLE ARTICLE VIEW (/blog/:slug)
+  // =========================================================================
   if (activeArticle) {
+    const relatedArticles = allArticles.filter((b) => b.slug !== activeArticle.slug).slice(0, 3);
+
     return (
       <PageLayout onNavigate={onNavigate} activeNav="blog">
-        <div className="space-y-10 text-left max-w-3xl mx-auto">
-          <button
-            type="button"
-            onClick={() => setSelectedSlug(null)}
-            className="inline-flex items-center gap-2 text-xs font-space font-bold uppercase text-gray-500 hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Feed Notes
-          </button>
+        <div className="space-y-12 text-left max-w-4xl mx-auto">
+          {/* Breadcrumb */}
+          <div className="flex items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={() => setSelectedSlug(null)}
+              className="inline-flex items-center gap-2 text-xs font-space font-bold uppercase text-gray-500 hover:text-brand-dark transition-colors bg-transparent border-none p-0 cursor-pointer"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to All Articles
+            </button>
+            <span className="font-space font-bold text-xs text-brand-blue uppercase">
+              {activeArticle.category}
+            </span>
+          </div>
 
-          <div>
-            <div className="flex items-center gap-3 text-xs font-space font-bold uppercase text-brand-blue mb-3">
-              <span>{activeArticle.category}</span>
+          {/* Article Header */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 text-xs font-space font-bold uppercase text-gray-500">
+              <span className="px-2.5 py-0.5 rounded-full bg-brand-lime text-brand-dark">{activeArticle.category}</span>
               <span>•</span>
-              <span className="text-gray-500">{activeArticle.readTime}</span>
+              <span>{activeArticle.readTime}</span>
               <span>•</span>
-              <span className="text-gray-500">{activeArticle.date}</span>
+              <span>{activeArticle.date}</span>
             </div>
-            <h1 className="font-space font-extrabold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tighter text-brand-dark leading-[0.95] mb-6">
+
+            <h1 className="font-space font-extrabold text-3xl sm:text-5xl md:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95]">
               {activeArticle.title}
             </h1>
-            <div className="flex items-center justify-between gap-4 py-4 border-y border-black/10">
+
+            {/* Author & Share Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-black/10">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-brand-dark text-white font-space font-bold flex items-center justify-center text-xs uppercase">
+                <div className="w-11 h-11 rounded-full bg-brand-dark text-white font-space font-bold flex items-center justify-center text-xs uppercase">
                   {activeArticle.author.slice(0, 2)}
                 </div>
                 <div>
@@ -3104,29 +3489,44 @@ export function FeedNotesPage({ slug, onNavigate }) {
                 </div>
               </div>
 
-              {/* Share Action */}
-              <button
-                type="button"
-                onClick={() => setShareModalOpen(true)}
-                className="bg-brand-light-gray hover:bg-brand-lime text-brand-dark px-3.5 py-2 rounded-lg font-space font-bold text-xs uppercase transition-colors flex items-center gap-1.5 cursor-pointer border border-black/10"
-              >
-                <Share2 className="w-3.5 h-3.5" /> Share
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleShare("whatsapp")}
+                  className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-space font-bold text-xs uppercase flex items-center gap-1.5 cursor-pointer hover:bg-emerald-100"
+                >
+                  <MessageCircle className="w-3.5 h-3.5 text-emerald-600" /> Share WhatsApp
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleShare("copy")}
+                  className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-space font-bold text-xs uppercase flex items-center gap-1.5 cursor-pointer border-none"
+                >
+                  {copiedLink ? "✓ Link Copied!" : "Copy Link"}
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Article Content */}
-          <div className="prose prose-neutral max-w-none text-gray-800 font-inter text-sm md:text-base leading-relaxed space-y-6">
-            <p className="font-bold text-base md:text-lg text-brand-dark border-l-4 border-brand-lime pl-4 italic">
+          {/* Key Takeaways Box */}
+          <div className="bg-brand-light-gray border-2 border-black rounded-2xl p-6 space-y-2">
+            <div className="font-space font-bold text-xs uppercase text-brand-blue flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" /> Core Thesis & Key Takeaways
+            </div>
+            <p className="font-inter text-xs sm:text-sm text-gray-800 leading-relaxed font-medium">
               {activeArticle.excerpt}
             </p>
-            <div className="whitespace-pre-line">
+          </div>
+
+          {/* Article Body Content */}
+          <div className="prose prose-neutral max-w-none text-gray-800 font-inter text-sm sm:text-base leading-relaxed space-y-6">
+            <div className="whitespace-pre-line leading-loose">
               {activeArticle.content}
             </div>
           </div>
 
-          {/* ARTICLE REACTIONS SYSTEM */}
-          <div className="bg-white border-2 border-black rounded-2xl p-6 text-center space-y-3">
+          {/* Interactive Reactions */}
+          <div className="bg-white border-2 border-black rounded-2xl p-6 text-center space-y-3 shadow-sm">
             <h4 className="font-space font-bold text-xs uppercase tracking-wider text-gray-500">
               DID YOU FIND THIS VALUABLE? LEAVE A REACTION
             </h4>
@@ -3134,8 +3534,8 @@ export function FeedNotesPage({ slug, onNavigate }) {
               <button
                 type="button"
                 onClick={() => handleReact("love")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-space font-bold transition-all cursor-pointer ${
-                  reacted.love ? "bg-red-50 border-red-500 text-red-600" : "bg-white border-black/20 hover:border-black"
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-xs font-space font-bold transition-all cursor-pointer ${
+                  reacted.love ? "bg-red-50 border-red-500 text-red-600 shadow-sm" : "bg-white border-black/20 hover:border-black"
                 }`}
               >
                 ❤️ <span>Love</span> <span className="text-gray-500">({reactions.love})</span>
@@ -3143,8 +3543,8 @@ export function FeedNotesPage({ slug, onNavigate }) {
               <button
                 type="button"
                 onClick={() => handleReact("fire")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-space font-bold transition-all cursor-pointer ${
-                  reacted.fire ? "bg-orange-50 border-orange-500 text-orange-600" : "bg-white border-black/20 hover:border-black"
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-xs font-space font-bold transition-all cursor-pointer ${
+                  reacted.fire ? "bg-orange-50 border-orange-500 text-orange-600 shadow-sm" : "bg-white border-black/20 hover:border-black"
                 }`}
               >
                 🔥 <span>Fire</span> <span className="text-gray-500">({reactions.fire})</span>
@@ -3152,58 +3552,107 @@ export function FeedNotesPage({ slug, onNavigate }) {
               <button
                 type="button"
                 onClick={() => handleReact("clap")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-space font-bold transition-all cursor-pointer ${
-                  reacted.clap ? "bg-yellow-50 border-yellow-500 text-yellow-700" : "bg-white border-black/20 hover:border-black"
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full border text-xs font-space font-bold transition-all cursor-pointer ${
+                  reacted.clap ? "bg-emerald-50 border-emerald-500 text-emerald-600 shadow-sm" : "bg-white border-black/20 hover:border-black"
                 }`}
               >
                 👏 <span>Clap</span> <span className="text-gray-500">({reactions.clap})</span>
               </button>
-              <button
-                type="button"
-                onClick={() => handleReact("insightful")}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border text-xs font-space font-bold transition-all cursor-pointer ${
-                  reacted.insightful ? "bg-blue-50 border-blue-500 text-blue-700" : "bg-white border-black/20 hover:border-black"
-                }`}
-              >
-                💡 <span>Insightful</span> <span className="text-gray-500">({reactions.insightful})</span>
-              </button>
             </div>
           </div>
 
-          {/* COMMENTS SECTION */}
-          <div className="space-y-8 pt-8 border-t border-black/10">
-            <h3 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark">
-              COMMUNITY DISCUSSION ({comments.length})
+          {/* EMBEDDED IN-ARTICLE CONSULTATION FORM */}
+          <div className="bg-[#09090B] text-white border-2 border-black rounded-3xl p-6 sm:p-10 space-y-6 shadow-2xl">
+            <div className="space-y-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase">
+                ⚡ IMPLEMENT THIS BLUEPRINT
+              </span>
+              <h3 className="font-space font-extrabold text-2xl sm:text-3xl uppercase tracking-tight text-white">
+                WANT US TO EXECUTE THIS STRATEGY FOR YOUR BRAND?
+              </h3>
+              <p className="text-gray-300 text-xs sm:text-sm font-inter">
+                Skip the trial and error. Book a direct consultation with our senior strategy directors.
+              </p>
+            </div>
+
+            {articleFormSubmitted ? (
+              <div className="bg-white/10 rounded-2xl p-6 text-center space-y-2 border border-brand-lime/30">
+                <CheckCircle2 className="w-8 h-8 text-brand-lime mx-auto" />
+                <div className="font-space font-bold text-base uppercase text-brand-lime">Request Received</div>
+                <p className="text-xs text-gray-300">Our senior team will reach out via WhatsApp/Phone within 15 minutes.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleArticleFormSubmit} className="space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  <input
+                    type="text"
+                    placeholder="Your Name *"
+                    value={articleFormData.name}
+                    onChange={(e) => setArticleFormData({ ...articleFormData, name: e.target.value })}
+                    required
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-brand-lime font-inter"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Work Email *"
+                    value={articleFormData.email}
+                    onChange={(e) => setArticleFormData({ ...articleFormData, email: e.target.value })}
+                    required
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-brand-lime font-inter"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Phone / WhatsApp *"
+                    value={articleFormData.phone}
+                    onChange={(e) => setArticleFormData({ ...articleFormData, phone: e.target.value })}
+                    required
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-brand-lime font-inter"
+                  />
+                </div>
+                <textarea
+                  rows={2}
+                  placeholder="Tell us about your brand and what you want to achieve..."
+                  value={articleFormData.requirements}
+                  onChange={(e) => setArticleFormData({ ...articleFormData, requirements: e.target.value })}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-400 focus:outline-none focus:border-brand-lime font-inter resize-none"
+                ></textarea>
+                <button
+                  type="submit"
+                  className="w-full bg-brand-lime text-brand-dark py-3.5 rounded-xl font-space font-extrabold uppercase text-xs tracking-wider hover:bg-[#E2FF4D] transition-all cursor-pointer border-none shadow-md"
+                >
+                  Book 15-Minute Strategy Teardown →
+                </button>
+              </form>
+            )}
+          </div>
+
+          {/* Comments Section */}
+          <div className="space-y-6 pt-6 border-t border-black/10">
+            <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark">
+              COMMENTS & DISCUSSION ({comments.length})
             </h3>
 
-            {/* Approved comments list */}
             <div className="space-y-4">
-              {comments.map((c, idx) => (
-                <div key={idx} className="bg-white border border-black/15 rounded-xl p-4">
-                  <div className="flex items-center justify-between text-xs mb-1">
-                    <span className="font-space font-bold uppercase text-brand-dark">{c.name}</span>
-                    <span className="text-gray-400 text-[11px]">{c.date}</span>
+              {comments.map((cm, idx) => (
+                <div key={idx} className="bg-white border-2 border-black rounded-2xl p-5 space-y-1.5 shadow-sm">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-space font-bold uppercase text-brand-dark">{cm.name}</span>
+                    <span className="text-gray-400 font-inter">{cm.date}</span>
                   </div>
-                  <p className="text-gray-700 text-xs md:text-sm font-inter">{c.comment}</p>
+                  <p className="text-xs sm:text-sm text-gray-700 font-inter leading-relaxed">
+                    {cm.comment}
+                  </p>
                 </div>
               ))}
             </div>
 
-            {/* Submit Comment Form */}
-            <div className="bg-white border-2 border-black rounded-2xl p-6">
-              <h4 className="font-space font-bold text-sm uppercase text-brand-dark mb-1">
-                JOIN THE CONVERSATION
-              </h4>
-              <p className="text-gray-500 text-xs mb-4">
-                Comments are reviewed by our editorial team prior to public publishing.
-              </p>
-
+            {/* Post Comment Form */}
+            <form onSubmit={handleCommentSubmit} className="bg-white border-2 border-black rounded-2xl p-6 space-y-3">
+              <h4 className="font-space font-bold text-xs uppercase text-brand-dark">Add Your Voice to the Discussion</h4>
               {commentSubmitted ? (
-                <div className="bg-brand-lime/20 border border-brand-lime p-4 rounded-xl text-xs font-inter text-brand-dark">
-                  ✓ <strong>Thank you!</strong> Your comment has been submitted and is awaiting administrator moderation before going live.
-                </div>
+                <div className="text-xs text-emerald-600 font-space font-bold">Thank you! Your comment has been posted.</div>
               ) : (
-                <form onSubmit={handleCommentSubmit} className="space-y-3">
+                <>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <input
                       type="text"
@@ -3211,7 +3660,7 @@ export function FeedNotesPage({ slug, onNavigate }) {
                       value={newComment.name}
                       onChange={(e) => setNewComment({ ...newComment, name: e.target.value })}
                       required
-                      className="bg-[#F4F4F5] border border-black/10 rounded-lg px-3 py-2 text-xs text-brand-dark focus:outline-none"
+                      className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2 text-xs font-inter"
                     />
                     <input
                       type="email"
@@ -3219,93 +3668,131 @@ export function FeedNotesPage({ slug, onNavigate }) {
                       value={newComment.email}
                       onChange={(e) => setNewComment({ ...newComment, email: e.target.value })}
                       required
-                      className="bg-[#F4F4F5] border border-black/10 rounded-lg px-3 py-2 text-xs text-brand-dark focus:outline-none"
+                      className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2 text-xs font-inter"
                     />
                   </div>
                   <textarea
                     rows={3}
-                    placeholder="Write your perspective or question..."
+                    placeholder="Share your perspective or query..."
                     value={newComment.comment}
                     onChange={(e) => setNewComment({ ...newComment, comment: e.target.value })}
                     required
-                    className="w-full bg-[#F4F4F5] border border-black/10 rounded-lg px-3 py-2 text-xs text-brand-dark focus:outline-none"
+                    className="w-full bg-[#F4F4F5] border border-black/15 rounded-xl px-3 py-2 text-xs font-inter resize-none"
                   ></textarea>
                   <button
                     type="submit"
-                    className="bg-brand-dark text-white px-5 py-2.5 rounded-lg font-space font-bold uppercase text-xs hover:bg-brand-blue transition-colors cursor-pointer border-none"
+                    className="bg-brand-dark text-white px-5 py-2.5 rounded-xl font-space font-bold text-xs uppercase cursor-pointer border-none"
                   >
-                    Submit Comment For Review →
+                    Post Comment
                   </button>
-                </form>
+                </>
               )}
-            </div>
+            </form>
           </div>
 
-          {/* SHARE MODAL */}
-          {shareModalOpen && (
-            <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-              <div className="bg-white border-2 border-black rounded-2xl max-w-sm w-full p-6 text-center">
-                <div className="flex items-center justify-between pb-2 border-b border-black/10 mb-4">
-                  <h4 className="font-space font-bold text-xs uppercase text-brand-dark">Share Article</h4>
-                  <button type="button" onClick={() => setShareModalOpen(false)} className="text-gray-500 bg-transparent border-none cursor-pointer"><X className="w-4 h-4" /></button>
+          {/* Related Articles */}
+          <div className="space-y-4 pt-6">
+            <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark">
+              MORE STRATEGIC BREAKDOWNS
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {relatedArticles.map((rel) => (
+                <div
+                  key={rel.slug}
+                  onClick={() => { setSelectedSlug(rel.slug); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                  className="bg-white border-2 border-black rounded-2xl p-4 shadow-sm hover:shadow-md cursor-pointer transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <span className="font-space font-bold text-[10px] uppercase text-brand-blue block mb-1">
+                      {rel.category}
+                    </span>
+                    <h4 className="font-space font-bold text-xs uppercase text-brand-dark line-clamp-2">
+                      {rel.title}
+                    </h4>
+                  </div>
+                  <div className="text-[10px] text-gray-500 font-inter pt-3 mt-3 border-t border-black/5">
+                    {rel.readTime}
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs font-space font-bold uppercase">
-                  <button type="button" onClick={() => handleShare("copy")} className="p-3 bg-gray-100 hover:bg-brand-lime rounded-xl border-none cursor-pointer">
-                    {copiedLink ? "Copied! ✓" : "Copy Link"}
-                  </button>
-                  <button type="button" onClick={() => handleShare("whatsapp")} className="p-3 bg-green-50 text-green-700 hover:bg-green-100 rounded-xl border-none cursor-pointer">
-                    WhatsApp
-                  </button>
-                  <button type="button" onClick={() => handleShare("linkedin")} className="p-3 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-xl border-none cursor-pointer">
-                    LinkedIn
-                  </button>
-                  <button type="button" onClick={() => handleShare("twitter")} className="p-3 bg-gray-50 hover:bg-gray-100 rounded-xl border-none cursor-pointer">
-                    X / Twitter
-                  </button>
-                </div>
-              </div>
+              ))}
             </div>
-          )}
+          </div>
         </div>
       </PageLayout>
     );
   }
 
-  // Articles Hub Listing
-  const filtered = blogPostsCatalog.filter((b) => {
-    const matchCat = activeCategory === "All" || b.category.toLowerCase().includes(activeCategory.toLowerCase());
-    const matchSearch = b.title.toLowerCase().includes(search.toLowerCase()) || b.excerpt.toLowerCase().includes(search.toLowerCase());
-    return matchCat && matchSearch;
-  });
-
+  // =========================================================================
+  // BLOG LISTING HUB VIEW (/blog) — MAGAZINE STYLE UX
+  // =========================================================================
   return (
     <PageLayout onNavigate={onNavigate} activeNav="blog">
-      <div className="space-y-12 text-left">
-        <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime/20 border border-brand-lime/40 text-brand-dark font-space font-bold text-xs uppercase tracking-wider mb-4">
-            <FileText className="w-3.5 h-3.5 text-brand-blue" />
-            Editorial Playbooks & Insights
+      <div className="space-y-12 md:space-y-16 text-left">
+        {/* Magazine Hero */}
+        <div className="max-w-3xl space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-lime/30 border border-brand-lime/60 text-brand-dark font-space font-bold text-xs uppercase tracking-wider">
+            <FileText className="w-3.5 h-3.5 text-brand-dark" />
+            Feed Notes & Insights
           </div>
-          <h1 className="font-space font-extrabold text-4xl sm:text-5xl md:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95] mb-6">
-            FEED NOTES. <br />
-            <span className="text-brand-blue">STRATEGY UNFILTERED.</span>
+          <h1 className="font-space font-extrabold text-4xl sm:text-5xl md:text-6xl uppercase tracking-tighter text-brand-dark leading-[0.95]">
+            FIELD NOTES. <br />
+            <span className="text-brand-blue">UNCENSORED PLAYBOOKS.</span>
           </h1>
-          <p className="text-gray-600 text-sm md:text-base font-inter leading-relaxed">
-            Raw, battle-tested teardowns of short-form video algorithms, server-side attribution, and commercial brand positioning.
+          <p className="text-gray-600 text-sm md:text-base font-inter leading-relaxed max-w-2xl">
+            Real performance marketing teardowns, creative psychology frameworks, and organic algorithm breakdowns written by active growth directors.
           </p>
         </div>
 
-        {/* Search & Filter Bar */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* FEATURED STORY SPOTLIGHT */}
+        {featuredArticle && (
+          <div
+            onClick={() => setSelectedSlug(featuredArticle.slug)}
+            className="bg-[#09090B] text-white border-2 border-black rounded-3xl p-6 sm:p-10 shadow-2xl cursor-pointer hover:shadow-3xl transition-all grid grid-cols-1 lg:grid-cols-12 gap-6 items-center"
+          >
+            <div className="lg:col-span-8 space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="bg-brand-lime text-brand-dark font-space font-bold text-[10px] uppercase px-3 py-1 rounded-full">
+                  Featured Teardown
+                </span>
+                <span className="text-xs font-space text-gray-400">
+                  {featuredArticle.readTime}
+                </span>
+              </div>
+              <h2 className="font-space font-extrabold text-2xl sm:text-3xl md:text-4xl uppercase tracking-tight text-white leading-tight">
+                {featuredArticle.title}
+              </h2>
+              <p className="text-gray-300 text-xs sm:text-sm font-inter leading-relaxed max-w-2xl">
+                {featuredArticle.excerpt}
+              </p>
+              <div className="flex items-center gap-3 pt-2">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-xs font-space font-bold text-brand-lime">
+                  {featuredArticle.author.slice(0, 2)}
+                </div>
+                <div className="text-xs font-space">
+                  <span className="text-white font-bold">{featuredArticle.author}</span>
+                  <span className="text-gray-400"> • {featuredArticle.date}</span>
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-4 flex lg:justify-end">
+              <span className="inline-flex items-center gap-2 bg-brand-lime text-brand-dark px-6 py-3.5 rounded-xl font-space font-extrabold uppercase text-xs tracking-wider shadow-md">
+                Read Full Teardown <ArrowRight className="w-4 h-4" />
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* Filter Pills & Instant Search Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
           <div className="flex flex-wrap items-center gap-2">
-            {["All", "Creative Strategy", "Paid Performance", "SEO"].map((cat) => (
+            {categories.map((cat) => (
               <button
                 key={cat}
                 type="button"
                 onClick={() => setActiveCategory(cat)}
                 className={`px-3.5 py-1.5 rounded-full font-space font-bold text-xs uppercase tracking-wider transition-all cursor-pointer border ${
                   activeCategory === cat
-                    ? "bg-brand-dark text-white border-black"
+                    ? "bg-[#09090B] text-white border-[#09090B] shadow-md"
                     : "bg-white text-gray-700 border-black/10 hover:border-black"
                 }`}
               >
@@ -3314,47 +3801,48 @@ export function FeedNotesPage({ slug, onNavigate }) {
             ))}
           </div>
 
-          <div className="relative w-full sm:w-64">
-            <Search className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <div className="relative min-w-[240px]">
             <input
               type="text"
-              placeholder="Search playbooks..."
+              placeholder="Search breakdowns..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-white border border-black/15 rounded-lg pl-9 pr-3 py-2 text-xs text-brand-dark focus:outline-none"
+              className="w-full bg-white border border-black/15 rounded-full px-4 py-2 text-xs font-inter focus:outline-none focus:border-brand-blue"
             />
+            <Search className="w-3.5 h-3.5 text-gray-400 absolute right-3.5 top-3" />
           </div>
         </div>
 
-        {/* Blog Posts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {filtered.map((post) => (
+        {/* 3-COLUMN EDITORIAL ARTICLES GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+          {filteredArticles.map((art) => (
             <div
-              key={post.slug}
-              className="bg-white border-2 border-black rounded-3xl p-6 flex flex-col justify-between shadow-sm hover:shadow-xl transition-all group hover:-translate-y-1"
+              key={art.slug}
+              onClick={() => { setSelectedSlug(art.slug); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+              className="bg-white border-2 border-black rounded-3xl p-6 sm:p-7 shadow-sm hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between hover:-translate-y-1"
             >
-              <div>
-                <div className="flex items-center justify-between gap-2 text-xs font-space font-bold uppercase text-brand-blue mb-3">
-                  <span>{post.category}</span>
-                  <span className="text-gray-400">{post.readTime}</span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="font-space font-bold text-[10px] uppercase text-brand-blue bg-blue-50 px-2.5 py-0.5 rounded-full">
+                    {art.category}
+                  </span>
+                  <span className="text-[10px] font-space text-gray-400">{art.readTime}</span>
                 </div>
-                <h3 className="font-space font-bold text-xl uppercase tracking-tight text-brand-dark group-hover:text-brand-blue transition-colors mb-3">
-                  {post.title}
+
+                <h3 className="font-space font-bold text-lg sm:text-xl uppercase tracking-tight text-brand-dark group-hover:text-brand-blue leading-snug">
+                  {art.title}
                 </h3>
-                <p className="text-gray-600 text-xs font-inter line-clamp-3 mb-6">
-                  {post.excerpt}
+
+                <p className="text-gray-600 text-xs font-inter leading-relaxed line-clamp-3">
+                  {art.excerpt}
                 </p>
               </div>
 
-              <div className="pt-4 border-t border-black/10 flex items-center justify-between">
-                <div className="text-[11px] text-gray-500 font-space font-bold uppercase">{post.author}</div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedSlug(post.slug)}
-                  className="font-space font-bold text-xs uppercase text-brand-dark hover:text-brand-blue transition-colors bg-transparent border-none cursor-pointer"
-                >
-                  Read Post →
-                </button>
+              <div className="pt-4 mt-4 border-t border-black/10 flex items-center justify-between text-xs font-space">
+                <span className="text-gray-500 font-bold">{art.author}</span>
+                <span className="text-brand-dark font-bold underline flex items-center gap-1">
+                  Read <ArrowRight className="w-3 h-3" />
+                </span>
               </div>
             </div>
           ))}
@@ -3432,7 +3920,7 @@ export function ContactPage({ onNavigate }) {
                   <Phone className="w-4 h-4 text-brand-blue shrink-0 mt-0.5" />
                   <div>
                     <div className="font-space font-bold uppercase text-brand-dark">Phone / WhatsApp</div>
-                    <a href="tel:+919876543210" className="text-gray-600 hover:text-black">+91 98765 43210</a>
+                    <a href="tel:+918810356950" className="text-gray-600 hover:text-black">+91 8810356950</a>
                   </div>
                 </div>
 
@@ -3455,7 +3943,7 @@ export function ContactPage({ onNavigate }) {
 
               <div className="pt-4 border-t border-black/10">
                 <a
-                  href="https://wa.me/919876543210?text=Hi%20GetIntoFeed%20team,%20I%20am%20interested%20in%20a%20growth%20sprint."
+                  href="https://wa.me/918810356950?text=Hi%20GetIntoFeed%20team,%20I%20am%20interested%20in%20a%20growth%20sprint."
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full bg-[#25D366] text-white py-3 rounded-xl font-space font-bold text-xs uppercase flex items-center justify-center gap-2 hover:opacity-90 transition-opacity text-decoration-none shadow-sm"
@@ -3519,7 +4007,7 @@ export function ContactPage({ onNavigate }) {
                     <label className="block text-xs font-space font-bold uppercase text-gray-700 mb-1">Phone / WhatsApp *</label>
                     <input
                       type="tel"
-                      placeholder="+91 98765 43210"
+                      placeholder="+91 8810356950"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       required
@@ -3831,72 +4319,232 @@ export function SitemapPage({ onNavigate }) {
 // COOKIE POLICY PAGE (/cookie-policy)
 // =========================================================================
 export function CookiePolicyPage({ onNavigate }) {
-  return (
-    <PageLayout onNavigate={onNavigate} activeNav="cookie-policy">
-      <div className="space-y-8 text-left max-w-3xl mx-auto prose prose-neutral font-inter text-xs sm:text-sm text-gray-700">
-        <h1 className="font-space font-extrabold text-3xl uppercase tracking-tight text-brand-dark mb-4">
-          COOKIE & PRIVACY POLICY
-        </h1>
-        <p><strong>Effective Date:</strong> January 1, 2026</p>
-        <p>
-          GetIntoFeed ("we", "us", or "our") uses cookies and similar browser storage mechanisms to recognize you when you visit our website, optimize your page load speeds, and measure analytics performance.
-        </p>
-        <h3>1. Categories of Cookies We Use</h3>
-        <ul>
-          <li><strong>Strictly Necessary Cookies:</strong> Essential for you to browse the website and use core security features.</li>
-          <li><strong>Analytics & Performance:</strong> Aggregated measurement of page visits, device types, and bounce rates via GA4 without individual PII.</li>
-          <li><strong>Targeting & Advertising:</strong> First-party Meta Conversions API (CAPI) signals to prevent serving duplicate marketing ads.</li>
-        </ul>
-        <h3>2. Managing Your Preferences</h3>
-        <p>
-          You can update your cookie preferences at any time by clearing your browser cache or clicking the button below:
-        </p>
-        <button
-          type="button"
-          onClick={() => { localStorage.removeItem("gif_cookie_consent"); window.location.reload(); }}
-          className="bg-brand-dark text-white px-5 py-2 rounded-lg font-space font-bold uppercase text-xs cursor-pointer border-none"
-        >
-          Reset Cookie Preferences
-        </button>
-      </div>
-    </PageLayout>
-  );
+  return <LegalPage type="cookies" onNavigate={onNavigate} />;
 }
 
 // =========================================================================
-// LEGAL PAGE (/privacy & /terms)
+// COMPREHENSIVE ENTERPRISE LEGAL HUB (PRIVACY, TERMS, REFUND, DISCLAIMER, NDA, COOKIES)
 // =========================================================================
 export function LegalPage({ type = "privacy", onNavigate }) {
-  const isPrivacy = type === "privacy";
+  const [activeTab, setActiveTab] = useState(type);
+
+  const tabs = [
+    { id: "privacy", label: "Privacy Policy", path: "/privacy" },
+    { id: "terms", label: "Terms of Service", path: "/terms" },
+    { id: "refund", label: "Refund & Cancellation", path: "/refund-policy" },
+    { id: "disclaimer", label: "Performance Disclaimer", path: "/disclaimer" },
+    { id: "nda", label: "Mutual NDA & IP Protocol", path: "/nda" },
+    { id: "cookies", label: "Cookie Policy", path: "/cookie-policy" }
+  ];
 
   return (
     <PageLayout onNavigate={onNavigate}>
-      <div className="space-y-8 text-left max-w-3xl mx-auto prose prose-neutral font-inter text-xs sm:text-sm text-gray-700">
-        <h1 className="font-space font-extrabold text-3xl uppercase tracking-tight text-brand-dark">
-          {isPrivacy ? "PRIVACY POLICY" : "TERMS OF SERVICE"}
-        </h1>
-        <p><strong>Last Updated:</strong> January 2026</p>
-        {isPrivacy ? (
-          <>
-            <p>
-              Your privacy is paramount. GetIntoFeed will never sell, lease, or monetize your company data, phone numbers, or email addresses to third parties.
-            </p>
-            <h3>Information Collection</h3>
-            <p>
-              When you submit a consultation form or free audit request, we collect your name, email, phone number, and company URL solely to prepare your strategic proposal.
-            </p>
-          </>
-        ) : (
-          <>
-            <p>
-              By accessing the GetIntoFeed website or contracting our creative and growth sprints, you agree to these commercial terms.
-            </p>
-            <h3>Intellectual Property</h3>
-            <p>
-              Upon receipt of full payment for creative sprints, all custom brand assets, Figma files, and video deliverables become the exclusive intellectual property of the client.
-            </p>
-          </>
-        )}
+      <div className="space-y-10 text-left max-w-4xl mx-auto">
+        {/* Top Header */}
+        <div className="space-y-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-lime text-brand-dark font-space font-bold text-xs uppercase border border-black">
+            <Shield className="w-3.5 h-3.5" /> Compliance, Commercial & Privacy Protocol
+          </div>
+          <h1 className="font-space font-extrabold text-3xl sm:text-4xl md:text-5xl uppercase tracking-tight text-brand-dark">
+            LEGAL & COMMERCIAL TERMS.
+          </h1>
+          <p className="text-gray-600 text-xs sm:text-sm font-inter">
+            Last Updated: January 2026 • Official Legal Repository for GetIntoFeed Creative Studio
+          </p>
+        </div>
+
+        {/* Interactive Tab Switcher */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-black/10">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => { setActiveTab(tab.id); onNavigate(tab.path); }}
+              className={`px-4 py-2 rounded-full font-space font-bold text-xs uppercase tracking-wider whitespace-nowrap transition-all cursor-pointer border ${
+                activeTab === tab.id
+                  ? "bg-[#09090B] text-white border-[#09090B] shadow-md"
+                  : "bg-white text-gray-700 border-black/10 hover:border-black"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        {/* DOCUMENT CONTAINER */}
+        <div className="bg-white border-2 border-black rounded-3xl p-6 sm:p-10 shadow-sm space-y-8 font-inter text-xs sm:text-sm text-gray-800 leading-relaxed">
+          {/* TAB 1: PRIVACY POLICY */}
+          {activeTab === "privacy" && (
+            <div className="space-y-6">
+              <h2 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark">
+                PRIVACY POLICY & DATA PROTECTION PROTOCOL
+              </h2>
+              <p>
+                GetIntoFeed ("we", "our", or "the Agency") is dedicated to safeguarding the privacy, confidentiality, and integrity of personal and enterprise information entrusted to us by clients, prospective brand partners, and website visitors.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">1. Data We Collect</h3>
+              <p>When you interact with our website, request a growth audit, or submit a sprint inquiry, we collect:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Identity & Contact Data:</strong> Full name, professional work email address, telephone/WhatsApp contact number (+91), and company/brand name.</li>
+                <li><strong>Commercial Specifications:</strong> Selected service tier, estimated monthly ad spend budget, project timelines, and strategic pain points.</li>
+                <li><strong>Technical & Usage Signals:</strong> IP address, device fingerprints, browser telemetry, UTM campaign tracking parameters, and aggregate session recordings via Google Analytics 4 and Microsoft Clarity.</li>
+              </ul>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">2. Purpose & Legal Basis of Processing</h3>
+              <p>We process your information exclusively for legitimate commercial purposes under India’s Digital Personal Data Protection Act (DPDP Act 2023) and global GDPR standards:</p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>To evaluate your brand requirements and deliver customized growth audit dossiers.</li>
+                <li>To establish direct contact regarding strategic marketing sprints via Phone, WhatsApp (+91 8810356950), or Email (hello@getintofeed.com).</li>
+                <li>To prevent algorithmic click fraud and ensure high-integrity server-side attribution via Meta Conversions API (CAPI).</li>
+              </ul>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">3. Non-Disclosure & Zero-Monetization Pledge</h3>
+              <p>
+                We do not sell, rent, lease, or monetize your company data, customer contacts, or financial figures to any third-party data brokers. Data shared with trusted cloud infrastructure partners (e.g., Hostinger Cloud, Google Cloud BigQuery, Vercel) is encrypted and processed under strict confidentiality agreements.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">4. Grievance Redressal Officer</h3>
+              <p>
+                For data access, correction, or deletion requests, please contact our Compliance Officer:<br />
+                <strong>Email:</strong> hello@getintofeed.com<br />
+                <strong>Telephone / WhatsApp:</strong> +91 8810356950
+              </p>
+            </div>
+          )}
+
+          {/* TAB 2: TERMS OF SERVICE */}
+          {activeTab === "terms" && (
+            <div className="space-y-6">
+              <h2 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark">
+                COMMERCIAL TERMS OF SERVICE & SPRINT AGREEMENT
+              </h2>
+              <p>
+                By contracting GetIntoFeed or utilizing our digital assets, you agree to these binding commercial terms governing all creative sprints, media execution, and software consulting.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">1. Sprint Scope & Execution Cadence</h3>
+              <p>
+                All services are executed in rapid 7-day to 14-day production sprints. Specific deliverables (Figma design files, 4K video cuts, Next.js codebases, and Meta ad setups) are detailed in the accepted proposal and sprint specification sheet.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">2. 100% Intellectual Property & Asset Transfer</h3>
+              <p>
+                Upon receipt of full invoice payment, all bespoke brand identities, creative copy, Figma components, video edits, and custom software code become the <strong>100% exclusive intellectual property of the client</strong>. GetIntoFeed retains only the limited right to feature non-confidential deliverables in our portfolio and case studies unless governed by a customized private NDA.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">3. Paid Ad Spend & Account Ownership</h3>
+              <p>
+                Clients maintain direct billing relationships with third-party ad networks (Meta Business Manager, Google Ads, YouTube). Ad spend is paid directly by the client to the ad network. Agency service retainers cover strategic media buying, creative production, and optimization, not the ad network budget itself.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">4. Governing Law & Dispute Resolution</h3>
+              <p>
+                These terms are governed by the laws of India. Any unresolved disputes arising under this agreement shall be subject to the exclusive jurisdiction of the competent courts in New Delhi, India.
+              </p>
+            </div>
+          )}
+
+          {/* TAB 3: REFUND & CANCELLATION */}
+          {activeTab === "refund" && (
+            <div className="space-y-6">
+              <h2 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark">
+                REFUND & CANCELLATION POLICY
+              </h2>
+              <p>
+                Because GetIntoFeed deploys senior strategists, creative directors, and video editors immediately upon project kick-off, our refund framework reflects dedicated human capital allocation.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">1. Sprint Kick-Off & Deposit Terms</h3>
+              <p>
+                Sprint initial deposits cover discovery, account auditing, and initial creative ideation. Once a sprint has officially commenced and strategist hours have been deployed (Days 1–2), initial deposits are non-refundable.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">2. Monthly Retainer Cancellations</h3>
+              <p>
+                For recurring monthly retainers (e.g. ₹14,999, ₹29,999, ₹44,999/mo), clients may cancel or pause their engagement with a <strong>15-day written notice</strong> prior to the next billing cycle. No further recurring charges will apply following the notice period.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">3. Asset Handover Upon Termination</h3>
+              <p>
+                In the event of cancellation, all completed creative assets, source files, and ad copies produced up to the termination date will be packaged and delivered to the client in full.
+              </p>
+            </div>
+          )}
+
+          {/* TAB 4: PERFORMANCE DISCLAIMER */}
+          {activeTab === "disclaimer" && (
+            <div className="space-y-6">
+              <h2 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark">
+                PERFORMANCE & COMMERCIAL RESULTS DISCLAIMER
+              </h2>
+              <p>
+                GetIntoFeed takes immense pride in our documented client track record (e.g. 3.8x–6.4x average ROAS, ₹42Cr+ pipeline generated, -52% CAC reduction). However, transparency is fundamental to our operating philosophy.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">1. Historical Case Studies</h3>
+              <p>
+                Any revenue figures, ROAS benchmarks, or lead growth metrics cited on this website represent verified past results achieved for specific clients under specific market conditions, ad spend levels, and product economics.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">2. No Guarantee of Uniform Projections</h3>
+              <p>
+                Marketing outcomes depend on variables beyond agency control, including client product-market fit, pricing elasticity, fulfillment velocity, algorithm updates by Meta/Google, and consumer macroeconomic conditions. We guarantee senior execution excellence and relentless optimization, but no ethical agency can guarantee exact revenue projections.
+              </p>
+            </div>
+          )}
+
+          {/* TAB 5: MUTUAL NDA & CONFIDENTIALITY */}
+          {activeTab === "nda" && (
+            <div className="space-y-6">
+              <h2 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark">
+                MUTUAL NON-DISCLOSURE & CONFIDENTIALITY PROTOCOL
+              </h2>
+              <p>
+                We understand that sharing ad accounts, revenue metrics, customer acquisition economics, and unreleased product roadmaps requires absolute trust.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">1. Definition of Confidential Information</h3>
+              <p>
+                Confidential Information includes all non-public customer lists, ad creative angles, ROAS data, financial statements, trade secrets, software codebases, and brand strategy briefs exchanged during the engagement.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">2. Agency Obligation</h3>
+              <p>
+                GetIntoFeed covenants to maintain all client proprietary information in strict confidence, restricting access solely to the senior squad assigned to your project. We execute formal standalone bilateral NDAs for enterprise partnerships upon request.
+              </p>
+            </div>
+          )}
+
+          {/* TAB 6: COOKIE POLICY */}
+          {activeTab === "cookies" && (
+            <div className="space-y-6">
+              <h2 className="font-space font-bold text-2xl uppercase tracking-tight text-brand-dark">
+                COOKIE & TRACKING TECHNOLOGY POLICY
+              </h2>
+              <p>
+                Our website utilizes modern browser cookies and server-side conversion measurement to maintain blazing-fast load times and measure site performance.
+              </p>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">1. Cookie Taxonomy</h3>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Strictly Necessary:</strong> Required for secure session persistence, CSRF protection, and responsive rendering.</li>
+                <li><strong>Analytics Signals:</strong> Google Analytics 4 (G-LHVZY6EFW1) and Google Tag Manager (GTM-PHJF6JHM) collect anonymized telemetry on page depth and user interactions.</li>
+                <li><strong>Attribution Tokens:</strong> Meta CAPI event deduplication tokens preventing repetitive ad deliveries.</li>
+              </ul>
+
+              <h3 className="font-space font-bold text-base uppercase text-brand-dark">2. Reset Your Preferences</h3>
+              <p>You can reset or reconfigure your stored cookie choices at any time:</p>
+              <button
+                type="button"
+                onClick={() => { localStorage.removeItem("gif_cookie_consent"); window.location.reload(); }}
+                className="bg-[#09090B] text-brand-lime px-5 py-2.5 rounded-xl font-space font-bold text-xs uppercase cursor-pointer border-none shadow-sm"
+              >
+                Reset Stored Cookie Preferences
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </PageLayout>
   );
