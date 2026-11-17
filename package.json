@@ -16,7 +16,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "helmet": "^8.0.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.12.1"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
