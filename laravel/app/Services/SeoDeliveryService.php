@@ -11,6 +11,7 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class SeoDeliveryService
 {
@@ -289,8 +290,8 @@ class SeoDeliveryService
 
         $seo = $service->seo;
         $title = $seo?->seo_title ?: ($service->name . ' — Growth Services | GetIntoFeed');
-        $desc = $seo?->meta_description ?: ($service->short_description ?: strip_tags($service->description ?? ''));
-        $desc = mb_substr(trim(preg_replace('/\s+/', ' ', $desc)), 0, 160);
+        $rawDesc = $seo?->meta_description ?: ($service->short_description ?: $service->description);
+        $desc = $this->formatMetaDescription($rawDesc, 155);
         $canonical = $seo?->canonical_url ?: "https://getintofeed.com/services/{$service->slug}";
 
         $imageUrl = $this->resolveImageUrl([
@@ -408,8 +409,8 @@ class SeoDeliveryService
 
         $seo = $blog->seo;
         $title = $seo?->seo_title ?: ($blog->title . ' — Feed Notes | GetIntoFeed');
-        $desc = $seo?->meta_description ?: ($blog->summary ?: strip_tags($blog->content ?? ''));
-        $desc = mb_substr(trim(preg_replace('/\s+/', ' ', $desc)), 0, 160);
+        $rawDesc = $seo?->meta_description ?: ($blog->summary ?: $blog->content);
+        $desc = $this->formatMetaDescription($rawDesc, 155);
         $canonical = $seo?->canonical_url ?: "https://getintofeed.com/blog/{$slug}";
 
         $imageUrl = $this->resolveImageUrl([
@@ -594,8 +595,8 @@ class SeoDeliveryService
         if ($page) {
             $seo = $page->seo;
             $title = $seo?->seo_title ?: ($page->title . ' — GetIntoFeed');
-            $desc = $seo?->meta_description ?: strip_tags($page->content ?? '');
-            $desc = mb_substr(trim(preg_replace('/\s+/', ' ', $desc)), 0, 160) ?: self::DEFAULT_DESC;
+            $rawDesc = $seo?->meta_description ?: $page->content;
+            $desc = $this->formatMetaDescription($rawDesc, 155);
             $canonical = $seo?->canonical_url ?: "https://getintofeed.com/{$slug}";
             $imageUrl = $this->resolveImageUrl([$seo?->ogMedia?->url, $page->featuredMedia?->url]);
             $robots = $this->resolveRobotsDirectives($seo);
@@ -754,6 +755,28 @@ class SeoDeliveryService
         }
 
         return self::DEFAULT_IMAGE;
+    }
+
+    /**
+     * Clean and format SEO meta description with proper tag spacing and word-boundary limit.
+     */
+    public function formatMetaDescription(?string $content, int $limit = 155): string
+    {
+        if (empty($content)) {
+            return self::DEFAULT_DESC;
+        }
+
+        // 1. Ensure whitespace exists around HTML block elements before stripping
+        $spaced = preg_replace('/<\/(h[1-6]|p|div|li|article|section|tr|td)>/i', ' ', (string) $content);
+        $spaced = preg_replace('/<(br|hr)\s*\/?>/i', ' ', $spaced);
+        $clean = strip_tags($spaced);
+
+        // 2. Decode HTML entities and normalize all whitespace
+        $clean = html_entity_decode($clean, ENT_QUOTES, 'UTF-8');
+        $squished = Str::squish($clean);
+
+        // 3. Clean word-boundary truncation (max 155 chars)
+        return Str::limit($squished, $limit, '...');
     }
 
     /**
