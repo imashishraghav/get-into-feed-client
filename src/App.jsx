@@ -215,7 +215,7 @@ export default function App() {
   useEffect(() => {
     // Dynamic SEO Titles, Meta Descriptions, Canonical, OpenGraph, Twitter Cards, JSON-LD
     const BASE_URL = "https://getintofeed.com";
-    const DEFAULT_IMAGE = `${BASE_URL}/agency-hero.png`;
+    const DEFAULT_IMAGE = `${BASE_URL}/agency-hero.jpg`;
 
     const setSEO = (title, desc, path = "/", image = DEFAULT_IMAGE) => {
       // Title

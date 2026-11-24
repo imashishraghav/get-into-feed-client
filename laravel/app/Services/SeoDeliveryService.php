@@ -17,7 +17,7 @@ class SeoDeliveryService
 {
     protected const DEFAULT_TITLE = 'GetIntoFeed | Creative Marketing & Performance Growth Agency';
     protected const DEFAULT_DESC = 'Premier creative performance marketing studio in India. We engineer thumb-stopping video reels, high-converting funnels, and algorithmic paid media for ambitious brands.';
-    protected const DEFAULT_IMAGE = 'https://getintofeed.com/agency-hero.png';
+    protected const DEFAULT_IMAGE = 'https://getintofeed.com/agency-hero.jpg';
     protected const SITE_NAME = 'GetIntoFeed';
     protected const TWITTER_HANDLE = '@getintofeed';
 
