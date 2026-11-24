@@ -2,16 +2,21 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Login;
+use App\Filament\Pages\Dashboard;
+use App\Filament\Widgets\DashboardWelcomeWidget;
+use App\Filament\Widgets\RecentLeadsWidget;
+use App\Http\Middleware\EnforceTwoFactorAuthentication;
+use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
-use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -28,7 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login(\App\Filament\Pages\Auth\Login::class)
+            ->login(Login::class)
             ->passwordReset()
             ->brandLogo(fn () => view('filament.brand-logo'))
             ->brandLogoHeight('2.25rem')
@@ -50,49 +55,41 @@ class AdminPanelProvider extends PanelProvider
                 ],
                 'gray' => Color::Slate,
             ])
-            ->darkMode(false)
-            ->defaultThemeMode(\Filament\Enums\ThemeMode::Light)
+            ->darkMode(true)
+            ->defaultThemeMode(ThemeMode::Light)
             ->sidebarCollapsibleOnDesktop()
-            ->sidebarWidth('11.5rem')
+            ->sidebarWidth('16rem')
             ->collapsedSidebarWidth('4.5rem')
             ->globalSearchKeyBindings(['mod+k', '/'])
             ->spa()
             ->renderHook(
-                \Filament\View\PanelsRenderHook::HEAD_END,
+                PanelsRenderHook::HEAD_END,
                 fn (): string => view('filament.custom-theme')->render()
             )
             ->renderHook(
-                \Filament\View\PanelsRenderHook::GLOBAL_SEARCH_AFTER,
+                PanelsRenderHook::GLOBAL_SEARCH_AFTER,
                 fn (): string => view('filament.topbar-actions')->render()
             )
             ->navigationGroups([
-                NavigationGroup::make('Enquiries & Leads')->collapsible(false),
-                NavigationGroup::make('Posts')->collapsible(false),
+                NavigationGroup::make('Audience & Inquiries')->collapsible(false),
                 NavigationGroup::make('Content Studio')->collapsible(false),
-                NavigationGroup::make('Settings')->collapsible(false),
-            ])
-            ->navigationItems([
-                \Filament\Navigation\NavigationItem::make('Add Post')
-                    ->group('Posts')
-                    ->icon('heroicon-o-pencil-square')
-                    ->url(fn (): string => \App\Filament\Resources\BlogPostResource::getUrl('create'))
-                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.blog-posts.create'))
-                    ->sort(2),
+                NavigationGroup::make('Media Library')->collapsible(false),
+                NavigationGroup::make('Settings & Operations')->collapsible(false),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->userMenuItems([
-                \Filament\Navigation\MenuItem::make()
+                MenuItem::make()
                     ->label('Two-Factor Security (MFA)')
                     ->url('/admin/two-factor/setup')
                     ->icon('heroicon-o-shield-check'),
             ])
             ->pages([
-                \App\Filament\Pages\Dashboard::class,
+                Dashboard::class,
             ])
             ->widgets([
-                \App\Filament\Widgets\DashboardWelcomeWidget::class,
-                \App\Filament\Widgets\RecentLeadsWidget::class,
+                DashboardWelcomeWidget::class,
+                RecentLeadsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -107,7 +104,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-                \App\Http\Middleware\EnforceTwoFactorAuthentication::class,
+                EnforceTwoFactorAuthentication::class,
             ]);
     }
 }

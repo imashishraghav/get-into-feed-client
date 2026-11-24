@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\AwardController;
 use App\Http\Controllers\Api\V1\BlogController;
 use App\Http\Controllers\Api\V1\BootstrapController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
+use App\Http\Controllers\Api\V1\CrmWebhookController;
 use App\Http\Controllers\Api\V1\FaqController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\LeadController;
@@ -22,7 +23,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::get('/bootstrap', [BootstrapController::class, 'index']);
     Route::get('/bootstrap', [BootstrapController::class, 'index']);
-Route::get('/health', [HealthController::class, 'index']);
+    Route::get('/health', [HealthController::class, 'index']);
     Route::get('/pages/{slug}', [PageController::class, 'show']);
 
     Route::get('/services', [ServiceController::class, 'index']);
@@ -56,23 +57,8 @@ Route::get('/health', [HealthController::class, 'index']);
     Route::post('/newsletter/subscribe', [SubscriberController::class, 'subscribe'])->middleware('throttle:5,1');
     Route::post('/subscribers', [SubscriberController::class, 'subscribe'])->middleware('throttle:5,1');
 
-    // ── DEDICATED CRM PORTAL REST API (crm.getintofeed.com) ──────────────
-    Route::prefix('crm')->group(function () {
-        Route::post('/auth/login', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'login'])->middleware('throttle:10,1');
-
-        Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
-            Route::get('/auth/me', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'me']);
-            Route::get('/stats', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'stats']);
-            Route::get('/pipeline', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'pipeline']);
-            Route::get('/leads', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'index']);
-            Route::post('/leads', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'store']);
-            Route::get('/leads/{id}', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'show']);
-            Route::patch('/leads/{id}/stage', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'updateStage']);
-            Route::patch('/leads/{id}', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'update']);
-            Route::post('/leads/{id}/notes', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'storeNote']);
-            Route::post('/leads/{id}/activities', [\App\Http\Controllers\Api\V1\CrmLeadController::class, 'storeActivity']);
-        });
-    });
+    // ── EXTERNAL CRM WEBHOOK INBOUND CALLBACK ───────────────────────────
+    Route::post('/webhooks/crm-status', [CrmWebhookController::class, 'handleStatusUpdate'])->middleware('throttle:30,1');
 
     // Model Context Protocol (MCP) Streamable HTTP & JSON-RPC Endpoints (Throttled & Protected)
     Route::middleware('throttle:60,1')->group(function () {

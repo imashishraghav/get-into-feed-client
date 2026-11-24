@@ -1,0 +1,32 @@
+<?php
+
+namespace App\Filament\Resources\SubscriberResource\Pages;
+
+use App\Filament\Resources\SubscriberResource;
+use App\Models\AuditLog;
+use Filament\Actions\DeleteAction;
+use Filament\Resources\Pages\EditRecord;
+
+class EditSubscriber extends EditRecord
+{
+    protected static string $resource = SubscriberResource::class;
+
+    protected ?array $previousValues = null;
+
+    protected function beforeSave(): void
+    {
+        $this->previousValues = $this->record->toArray();
+    }
+
+    protected function afterSave(): void
+    {
+        AuditLog::log('UPDATE', $this->record, $this->previousValues, $this->record->toArray());
+    }
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            DeleteAction::make(),
+        ];
+    }
+}

@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreLeadRequest;
+use App\Jobs\SyncLeadToCrmJob;
 use App\Models\Lead;
+use App\Support\LeadAlertDispatcher;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class LeadController extends Controller
@@ -16,18 +18,18 @@ class LeadController extends Controller
         $validated = $request->validated();
 
         // 1. Honeypot anti-spam check (bots filling hidden fields)
-        if (!empty($request->input('hp_field')) || !empty($request->input('bot_check')) || !empty($request->input('website_url_check'))) {
+        if (! empty($request->input('hp_field')) || ! empty($request->input('bot_check')) || ! empty($request->input('website_url_check'))) {
             return response()->json([
                 'success' => true,
                 'message' => 'Thank you! Your growth enquiry has been submitted. Our team will contact you shortly.',
-                'leadId' => 'LEAD-' . strtoupper(Str::random(8)),
-                'lead_code' => 'LEAD-' . strtoupper(Str::random(8)),
+                'leadId' => 'LEAD-'.strtoupper(Str::random(8)),
+                'lead_code' => 'LEAD-'.strtoupper(Str::random(8)),
             ], 201);
         }
 
         // 2. Normalization
         $clientName = trim($validated['name'] ?? '') ?: 'Inbound Client';
-        $clientEmail = !empty($validated['email']) ? strtolower(trim($validated['email'])) : null;
+        $clientEmail = ! empty($validated['email']) ? strtolower(trim($validated['email'])) : null;
         $normalizedPhone = $this->normalizePhoneNumber($validated['phone'] ?? null);
 
         // 3. Prevent duplicate rapid submissions within 5 minutes (300 seconds)
@@ -54,22 +56,22 @@ class LeadController extends Controller
             }
         }
 
-        $leadCode = 'LEAD-' . strtoupper(Str::random(8));
+        $leadCode = 'LEAD-'.strtoupper(Str::random(8));
 
         // Format message from notes/requirements if needed
         $messageContent = $validated['message'] ?? $validated['note'] ?? $validated['requirements'] ?? null;
-        
+
         // Clean company/business name (eliminate fake fallback labels)
         $companyVal = null;
-        if (!empty($validated['company']) && !in_array(strtolower($validated['company']), ['direct web inquiry', 'direct client', 'contact page form'])) {
+        if (! empty($validated['company']) && ! in_array(strtolower($validated['company']), ['direct web inquiry', 'direct client', 'contact page form'])) {
             $companyVal = trim($validated['company']);
-        } elseif (!empty($validated['business']) && !in_array(strtolower($validated['business']), ['direct web inquiry', 'direct client', 'contact page form'])) {
+        } elseif (! empty($validated['business']) && ! in_array(strtolower($validated['business']), ['direct web inquiry', 'direct client', 'contact page form'])) {
             $companyVal = trim($validated['business']);
         }
 
         // Clean budget (eliminate fake fallback labels)
         $budgetVal = null;
-        if (!empty($validated['budget']) && !in_array(strtolower($validated['budget']), ['direct inbound', 'inbound consultation'])) {
+        if (! empty($validated['budget']) && ! in_array(strtolower($validated['budget']), ['direct inbound', 'inbound consultation'])) {
             $budgetVal = trim($validated['budget']);
         }
 
@@ -90,7 +92,7 @@ class LeadController extends Controller
             'name' => $clientName,
             'email' => $clientEmail,
             'phone' => $normalizedPhone,
-            'whatsapp' => !empty($validated['whatsapp']) ? $this->normalizePhoneNumber($validated['whatsapp']) : $normalizedPhone,
+            'whatsapp' => ! empty($validated['whatsapp']) ? $this->normalizePhoneNumber($validated['whatsapp']) : $normalizedPhone,
             'company' => $companyVal,
             'city' => $validated['city'] ?? null,
             'industry' => $validated['industry'] ?? null,
@@ -116,55 +118,34 @@ class LeadController extends Controller
             'consent_ip' => $hasConsent ? $request->ip() : null,
             'status' => 'New',
             'stage' => 'New',
+            'crm_sync_status' => 'pending',
             'score' => $score,
             'priority' => $priority,
             'sla_due_at' => now()->addMinutes(15),
         ]);
 
-        // Auto-create CRM Event & 15-Minute SLA Task
+        // Dispatch asynchronous queued job to sync lead to external CRM (crm.getintofeed.com)
         try {
-            \App\Models\CrmLeadEvent::create([
-                'lead_id' => $lead->id,
-                'event_type' => 'created',
-                'description' => "Inbound lead registered via {$lead->source} [Score: {$score}/100, Priority: {$priority}]",
-                'properties' => [
-                    'score' => $score,
-                    'priority' => $priority,
-                    'utm_source' => $lead->utm_source,
-                    'utm_campaign' => $lead->utm_campaign,
-                    'city' => $lead->city,
-                ],
-            ]);
-
-            \App\Models\CrmTask::create([
-                'lead_id' => $lead->id,
-                'title' => "⚡ Respond to {$lead->name} within 15 mins (SLA)",
-                'description' => "Review project brief for {$lead->interested_service} and make introductory outreach. Phone: {$lead->phone} | Email: " . ($lead->email ?: 'N/A'),
-                'type' => 'SLA',
-                'priority' => $priority === 'Urgent' ? 'Urgent' : 'High',
-                'status' => 'Pending',
-                'due_at' => $lead->sla_due_at,
-                'assigned_user_id' => $lead->assigned_user_id,
-            ]);
-        } catch (\Throwable $crmEx) {
-            \Illuminate\Support\Facades\Log::warning("Failed to initialize CRM task/event for {$lead->lead_code}: " . $crmEx->getMessage());
+            SyncLeadToCrmJob::dispatch($lead);
+        } catch (\Throwable $syncEx) {
+            Log::warning("[LeadController] Failed to dispatch SyncLeadToCrmJob for {$lead->lead_code}: ".$syncEx->getMessage());
         }
 
         // Lead Alert Dispatcher (Email + WhatsApp with deduplication & delivery tracking)
         try {
-            app(\App\Support\LeadAlertDispatcher::class)->dispatch(
+            app(LeadAlertDispatcher::class)->dispatch(
                 (string) $lead->getKey(),
                 [
-                    'name'    => $lead->name,
-                    'email'   => $lead->email ?? 'N/A',
-                    'phone'   => $lead->phone ?? 'N/A',
+                    'name' => $lead->name,
+                    'email' => $lead->email ?? 'N/A',
+                    'phone' => $lead->phone ?? 'N/A',
                     'service' => $lead->interested_service,
                     'message' => $lead->message,
                 ],
                 $lead->source ?? 'Website Lead Form'
             );
         } catch (\Throwable $dispatchEx) {
-            \Illuminate\Support\Facades\Log::warning("Failed to dispatch lead alerts for {$lead->lead_code}: " . $dispatchEx->getMessage());
+            Log::warning("Failed to dispatch lead alerts for {$lead->lead_code}: ".$dispatchEx->getMessage());
         }
 
         return response()->json([
@@ -196,25 +177,25 @@ class LeadController extends Controller
 
         // Handle double zero international prefix 00...
         if (str_starts_with($digits, '00')) {
-            return '+' . substr($digits, 2);
+            return '+'.substr($digits, 2);
         }
 
         // Standard Indian mobile (10 digits)
         if (strlen($digits) === 10) {
-            return '+91' . $digits;
+            return '+91'.$digits;
         }
 
         // 11 digits starting with 0 (e.g. 09876543210 in India)
         if (strlen($digits) === 11 && str_starts_with($digits, '0')) {
-            return '+91' . substr($digits, 1);
+            return '+91'.substr($digits, 1);
         }
 
         // 12 digits starting with 91
         if (strlen($digits) === 12 && str_starts_with($digits, '91')) {
-            return '+' . $digits;
+            return '+'.$digits;
         }
 
-        return '+' . $digits;
+        return '+'.$digits;
     }
 
     /**
@@ -225,14 +206,14 @@ class LeadController extends Controller
         $score = 15; // Base inbound intent score
 
         // 1. Contactability
-        if (!empty($normalizedPhone) && strlen($normalizedPhone) >= 10) {
+        if (! empty($normalizedPhone) && strlen($normalizedPhone) >= 10) {
             $score += 20;
         }
 
-        if (!empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (! empty($email) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $freeDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'rediffmail.com', 'icloud.com'];
-            $domain = strtolower(substr(strrchr($email, "@"), 1));
-            if (!in_array($domain, $freeDomains)) {
+            $domain = strtolower(substr(strrchr($email, '@'), 1));
+            if (! in_array($domain, $freeDomains)) {
                 $score += 25; // High-value verified corporate domain
             } else {
                 $score += 15;
@@ -240,12 +221,12 @@ class LeadController extends Controller
         }
 
         // 2. Firmographics / Company Presence
-        if (!empty($data['company']) || !empty($data['business']) || !empty($data['website'])) {
+        if (! empty($data['company']) || ! empty($data['business']) || ! empty($data['website'])) {
             $score += 15;
         }
 
         // 3. Clear Commercial Budget Intent
-        if (!empty($data['budget']) && !in_array(strtolower($data['budget']), ['not sure', 'exploring', 'direct inbound', 'inbound consultation'])) {
+        if (! empty($data['budget']) && ! in_array(strtolower($data['budget']), ['not sure', 'exploring', 'direct inbound', 'inbound consultation'])) {
             $score += 15;
         }
 

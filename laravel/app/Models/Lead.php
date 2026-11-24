@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Lead extends Model
 {
@@ -12,7 +13,23 @@ class Lead extends Model
 
     protected $table = 'crm_leads';
 
+    protected static function booted()
+    {
+        static::creating(function ($lead) {
+            if (empty($lead->uuid)) {
+                $lead->uuid = (string) Str::uuid();
+            }
+            if (empty($lead->lead_code)) {
+                $lead->lead_code = 'ENQ-'.strtoupper(Str::random(8));
+            }
+            if (empty($lead->crm_sync_status)) {
+                $lead->crm_sync_status = 'pending';
+            }
+        });
+    }
+
     protected $fillable = [
+        'uuid',
         'lead_code',
         'name',
         'email',
@@ -44,6 +61,11 @@ class Lead extends Model
         'consent_ip',
         'status',
         'is_test',
+        'crm_sync_status',
+        'crm_synced_at',
+        'crm_sync_attempts',
+        'crm_sync_error',
+        'crm_lead_id',
         'priority',
         'score',
         'stage',
@@ -67,6 +89,8 @@ class Lead extends Model
         'first_response_at' => 'datetime',
         'score' => 'integer',
         'is_test' => 'boolean',
+        'crm_synced_at' => 'datetime',
+        'crm_sync_attempts' => 'integer',
     ];
 
     /**
@@ -83,6 +107,30 @@ class Lead extends Model
     public function scopeTests($query)
     {
         return $query->where('is_test', true);
+    }
+
+    /**
+     * Scope query to leads successfully synced to external CRM.
+     */
+    public function scopeSynced($query)
+    {
+        return $query->where('crm_sync_status', 'synced');
+    }
+
+    /**
+     * Scope query to leads pending sync to external CRM.
+     */
+    public function scopePendingSync($query)
+    {
+        return $query->where('crm_sync_status', 'pending');
+    }
+
+    /**
+     * Scope query to leads whose external CRM sync failed.
+     */
+    public function scopeFailedSync($query)
+    {
+        return $query->where('crm_sync_status', 'failed');
     }
 
     public function assignedUser()

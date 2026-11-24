@@ -35,10 +35,10 @@ class SsrRoutingTest extends TestCase
         $response->assertDontSee('<h1>Your business is online. But is it getting noticed?</h1>', false);
     }
 
-    public function test_crm_leads_api_rejects_unauthenticated_requests(): void
+    public function test_crm_leads_api_is_removed_from_website_admin(): void
     {
         $response = $this->getJson('/api/v1/crm/leads');
 
-        $response->assertStatus(401);
+        $response->assertStatus(404);
     }
 }
