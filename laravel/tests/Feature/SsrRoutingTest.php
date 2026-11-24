@@ -2,10 +2,13 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class SsrRoutingTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_homepage_returns_unique_server_rendered_h1(): void
     {
         $response = $this->get('/');
@@ -28,7 +31,7 @@ class SsrRoutingTest extends TestCase
         $response = $this->get('/pricing');
 
         $response->assertStatus(200);
-        $response->assertSee('<h1>Transparent Growth Sprints &amp; Retainers</h1>', false);
+        $response->assertSee('<h1>Pricing &amp; Growth Sprints — Transparent Retainers</h1>', false);
         $response->assertDontSee('<h1>Your business is online. But is it getting noticed?</h1>', false);
     }
 

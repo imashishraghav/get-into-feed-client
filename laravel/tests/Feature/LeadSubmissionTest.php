@@ -2,12 +2,13 @@
 
 namespace Tests\Feature;
 
-use App\Models\Lead;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class LeadSubmissionTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_inbound_lead_requires_email_or_phone(): void
     {
         $response = $this->postJson('/api/v1/leads', [

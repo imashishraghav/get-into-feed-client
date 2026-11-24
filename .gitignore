@@ -21,4 +21,6 @@ _backup_*
 _staging_*
 hostinger_deploy/
 .pnpm-store/
+.phpunit.result.cache
+laravel/.phpunit.result.cache
 
