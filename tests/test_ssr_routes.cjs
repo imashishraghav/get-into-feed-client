@@ -37,6 +37,10 @@ function renderRoute(routePath) {
         title = 'Feed Notes & Growth Insights — Performance Marketing Playbooks | GetIntoFeed';
         h1 = 'Feed Notes & Growth Insights';
         body = '<h1>' + h1 + '</h1><p>Deep dives on Meta Advantage+ scaling...</p>';
+    } else if (routePath === '/thank-you') {
+        title = 'Thank You | Consultation Request Received — GetIntoFeed';
+        h1 = 'Thank You! Your Growth Consultation Is Scheduled';
+        body = '<h1>' + h1 + '</h1><p>Thank you for requesting a growth consultation...</p>';
     }
 
     // SSR Injection
@@ -59,7 +63,8 @@ const routes = [
     '/pricing',
     '/contact',
     '/services/seo-services-delhi-ncr',
-    '/blog'
+    '/blog',
+    '/thank-you'
 ];
 
 console.log('Testing Server-Side Rendered H1 and Title across public routes:');

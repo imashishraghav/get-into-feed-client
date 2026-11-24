@@ -660,6 +660,16 @@ class SeoDeliveryService
                 'title' => 'Free Performance Marketing Audit — Instant Growth Analysis | GetIntoFeed',
                 'description' => 'Get a comprehensive audit of your Meta & Google ad accounts, funnel drop-offs, and creative fatigue score in 24 hours.',
             ],
+            'thank-you' => [
+                'title' => 'Thank You | Consultation Request Received — GetIntoFeed',
+                'description' => 'Thank you for requesting a growth consultation with GetIntoFeed. A senior performance strategist will contact you within 2-4 business hours.',
+                'robots' => 'noindex, follow',
+            ],
+            'thankyou' => [
+                'title' => 'Thank You | Consultation Request Received — GetIntoFeed',
+                'description' => 'Thank you for requesting a growth consultation with GetIntoFeed. A senior performance strategist will contact you within 2-4 business hours.',
+                'robots' => 'noindex, follow',
+            ],
         ];
 
         if (isset($staticPages[$slug])) {
@@ -671,7 +681,7 @@ class SeoDeliveryService
                 'title' => $info['title'],
                 'description' => $info['description'],
                 'canonical' => $canonical,
-                'robots' => 'index, follow',
+                'robots' => $info['robots'] ?? 'index, follow',
                 'og_type' => 'website',
                 'og_title' => $info['title'],
                 'og_description' => $info['description'],
@@ -1396,6 +1406,23 @@ HTML;
         <section>
           <h2>Schedule an Inquiry</h2>
           <p>Fill out our inbound inquiry form on this page or message us directly on WhatsApp to get started within 24 hours.</p>
+        </section>
+HTML;
+        } elseif ($slug === 'thank-you' || $slug === 'thankyou') {
+            $bodyContent = <<<HTML
+        <h1>Thank You! Your Growth Consultation Is Scheduled</h1>
+        <p class="intro">{$cleanDesc}</p>
+        <section>
+          <h2>Next Steps in Your Growth Sprint</h2>
+          <ol>
+            <li><strong>Step 1: Account &amp; Funnel Audit</strong> — We inspect search visibility, ad fatigue, and conversion bottlenecks.</li>
+            <li><strong>Step 2: Direct Discovery Call</strong> — A 20-minute strategy call to align on target CAC and KPIs.</li>
+            <li><strong>Step 3: Agile Execution Plan</strong> — Defined sprint milestones with zero locked-in retainers.</li>
+          </ol>
+        </section>
+        <section>
+          <h2>Urgent Inquiries</h2>
+          <p>Need urgent assistance? <a href="https://wa.me/918810356950">Chat with our strategy lead on WhatsApp (+91-8810356950)</a></p>
         </section>
 HTML;
         } else {
