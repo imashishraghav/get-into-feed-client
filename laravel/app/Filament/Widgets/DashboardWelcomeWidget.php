@@ -41,7 +41,7 @@ class DashboardWelcomeWidget extends Widget
     public function getCounts(): array
     {
         $leadQuery = Lead::production();
-        $testimonialsPublished = Testimonial::where('is_published', true);
+        $testimonialsPublished = Testimonial::whereIn('status', ['published', 'Published']);
         $testimonialsCount = $testimonialsPublished->count();
         $avgRating = $testimonialsCount > 0 ? round((float) $testimonialsPublished->avg('rating'), 1) : 0.0;
 
