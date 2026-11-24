@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import ErrorBoundary from "./components/ErrorBoundary.jsx";
 import { getStoredBlogPosts } from "./data/blogPosts.js";
-import { trackLeadConversion, trackEvent } from "./utils/analytics.js";
+import { trackLeadConversion, trackEvent, initScrollDepthTracking } from "./utils/analytics.js";
 import { initAttributionTracking, enrichWithAttribution } from "./utils/utm.js";
 
 // Route-level code splitting: All pages and admin dashboard load asynchronously on demand
@@ -61,6 +61,7 @@ export default function App() {
   // Non-blocking background fetch on app mount: defers network work until browser is idle
   useEffect(() => {
     initAttributionTracking();
+    const cleanupScroll = initScrollDepthTracking();
 
     const fetchFreshContent = () => {
       fetch(`/api/blog?t=${Date.now()}`)
@@ -87,10 +88,16 @@ export default function App() {
 
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       const handle = window.requestIdleCallback(fetchFreshContent, { timeout: 2500 });
-      return () => window.cancelIdleCallback(handle);
+      return () => {
+        window.cancelIdleCallback(handle);
+        cleanupScroll();
+      };
     } else {
       const timer = setTimeout(fetchFreshContent, 1200);
-      return () => clearTimeout(timer);
+      return () => {
+        clearTimeout(timer);
+        cleanupScroll();
+      };
     }
   }, []);
 

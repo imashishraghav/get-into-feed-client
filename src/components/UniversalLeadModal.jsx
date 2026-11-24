@@ -260,12 +260,12 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
                   }}
                   aria-invalid={Boolean(fieldErrors.name)}
                   aria-describedby={fieldErrors.name ? "name-error" : undefined}
-                  className={`w-full bg-zinc-900/80 border rounded-xl px-3.5 py-2 text-sm text-white placeholder-zinc-500 focus:bg-zinc-950 focus:outline-none focus:border-[#d4ff00] focus:ring-1 focus:ring-[#d4ff00]/40 transition-all font-inter ${
+                  className={`w-full bg-zinc-900/80 border rounded-xl px-3.5 py-2 text-sm text-white placeholder-zinc-400 focus:bg-zinc-950 focus:outline-none focus:border-[#d4ff00] focus:ring-1 focus:ring-[#d4ff00]/40 transition-all font-inter ${
                     fieldErrors.name ? "border-rose-500/80 bg-rose-950/20" : "border-white/10 hover:border-white/20"
                   }`}
                 />
                 {fieldErrors.name && (
-                  <p id="name-error" className="text-[11px] text-rose-400 font-semibold mt-1 flex items-center gap-1">
+                  <p id="name-error" aria-live="polite" className="text-[11px] text-rose-400 font-semibold mt-1 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3 shrink-0" />
                     <span>{fieldErrors.name}</span>
                   </p>
@@ -289,12 +289,12 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
                     }}
                     aria-invalid={Boolean(fieldErrors.phone)}
                     aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
-                    className={`w-full bg-zinc-900/80 border rounded-xl px-3.5 py-2 text-sm text-white placeholder-zinc-500 focus:bg-zinc-950 focus:outline-none focus:border-[#d4ff00] focus:ring-1 focus:ring-[#d4ff00]/40 transition-all font-inter ${
+                    className={`w-full bg-zinc-900/80 border rounded-xl px-3.5 py-2 text-sm text-white placeholder-zinc-400 focus:bg-zinc-950 focus:outline-none focus:border-[#d4ff00] focus:ring-1 focus:ring-[#d4ff00]/40 transition-all font-inter ${
                       fieldErrors.phone ? "border-rose-500/80 bg-rose-950/20" : "border-white/10 hover:border-white/20"
                     }`}
                   />
                   {fieldErrors.phone && (
-                    <p id="phone-error" className="text-[11px] text-rose-400 font-semibold mt-1 flex items-center gap-1">
+                    <p id="phone-error" aria-live="polite" className="text-[11px] text-rose-400 font-semibold mt-1 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3 shrink-0" />
                       <span>{fieldErrors.phone}</span>
                     </p>
@@ -316,12 +316,12 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
                     }}
                     aria-invalid={Boolean(fieldErrors.email)}
                     aria-describedby={fieldErrors.email ? "email-error" : undefined}
-                    className={`w-full bg-zinc-900/80 border rounded-xl px-3.5 py-2 text-sm text-white placeholder-zinc-500 focus:bg-zinc-950 focus:outline-none focus:border-[#d4ff00] focus:ring-1 focus:ring-[#d4ff00]/40 transition-all font-inter ${
+                    className={`w-full bg-zinc-900/80 border rounded-xl px-3.5 py-2 text-sm text-white placeholder-zinc-400 focus:bg-zinc-950 focus:outline-none focus:border-[#d4ff00] focus:ring-1 focus:ring-[#d4ff00]/40 transition-all font-inter ${
                       fieldErrors.email ? "border-rose-500/80 bg-rose-950/20" : "border-white/10 hover:border-white/20"
                     }`}
                   />
                   {fieldErrors.email && (
-                    <p id="email-error" className="text-[11px] text-rose-400 font-semibold mt-1 flex items-center gap-1">
+                    <p id="email-error" aria-live="polite" className="text-[11px] text-rose-400 font-semibold mt-1 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3 shrink-0" />
                       <span>{fieldErrors.email}</span>
                     </p>
@@ -361,7 +361,7 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
               {/* 4. Project Goal / Link (Optional) */}
               <div>
                 <label htmlFor="lead-modal-goal" className="block text-[11px] font-space font-bold uppercase tracking-wider text-zinc-300 mb-1">
-                  Current Goal or Website <span className="text-zinc-500 font-normal lowercase">(optional)</span>
+                  Current Goal or Website <span className="text-zinc-400 font-normal lowercase">(optional)</span>
                 </label>
                 <input
                   id="lead-modal-goal"
@@ -369,7 +369,7 @@ export function UniversalLeadModal({ isOpen, onClose, selectedService, setSelect
                   placeholder="e.g. 5x ROAS for fashion brand / https://brand.com"
                   value={formData.requirements}
                   onChange={(e) => setFormData({ ...formData, requirements: e.target.value })}
-                  className="w-full bg-zinc-900/80 border border-white/10 hover:border-white/20 rounded-xl px-3.5 py-2 text-sm text-white placeholder-zinc-500 focus:bg-zinc-950 focus:border-[#d4ff00] focus:ring-1 focus:ring-[#d4ff00]/40 focus:outline-none transition-all font-inter"
+                  className="w-full bg-zinc-900/80 border border-white/10 hover:border-white/20 rounded-xl px-3.5 py-2 text-sm text-white placeholder-zinc-400 focus:bg-zinc-950 focus:border-[#d4ff00] focus:ring-1 focus:ring-[#d4ff00]/40 focus:outline-none transition-all font-inter"
                 />
               </div>
 
