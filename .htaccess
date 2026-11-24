@@ -30,6 +30,10 @@ DirectoryIndex agent_router.php index.html index.php
   RewriteCond %{HTTP:CF-Visitor} !'"scheme":"https"'
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+  # CANONICAL WWW -> NON-WWW PERMANENT 301 REDIRECT
+  RewriteCond %{HTTP_HOST} ^www\.getintofeed\.com$ [NC]
+  RewriteRule ^(.*)$ https://getintofeed.com/$1 [R=301,L]
+
   # ── 0. DEFENSE-IN-DEPTH ACCESS RESTRICTIONS ──
   # Block all hidden dotfiles and dotdirs (e.g. .env, .git) EXCEPT .well-known
   RewriteRule ^\.(?!well-known(/.*)?$) - [F,L,NC]
@@ -95,6 +99,9 @@ DirectoryIndex agent_router.php index.html index.php
   RewriteRule ^how-metas-advantage-plus-algorithm-changes-ecommerce-scaling-in-2026/?$ /blog/meta-advantage-plus-ecommerce-scaling [R=301,L]
   RewriteRule ^advantage-plus/?$ /blog/meta-advantage-plus-ecommerce-scaling [R=301,L]
   RewriteRule ^meta-advantage-plus-ecommerce-scaling/?$ /blog/meta-advantage-plus-ecommerce-scaling [R=301,L]
+
+  # ── 5.5 DYNAMIC SEARCH ENGINE XML SITEMAP (LARAVEL) ──
+  RewriteRule ^sitemap\.xml$ laravel_bridge.php [QSA,L]
 
   # ── 6. AGENT-READY CONTENT NEGOTIATION, REAL 404 & SPA ROUTER ──
   RewriteCond %{REQUEST_FILENAME} !-f
