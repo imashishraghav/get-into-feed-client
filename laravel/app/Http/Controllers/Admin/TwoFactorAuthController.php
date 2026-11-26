@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
+use App\Notifications\NewDeviceLoginAlert;
 use App\Services\TwoFactorAuthService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
@@ -65,15 +66,24 @@ class TwoFactorAuthController extends Controller
         }
 
         $secret = $user->getTwoFactorSecret();
-        if ($secret && $this->tfaService->verifyCode($secret, $code)) {
+        if ($secret && $this->tfaService->verifyCodeForUser($user, $secret, $code)) {
             RateLimiter::clear($throttleKey);
-            session(['auth.two_factor_verified' => true]);
+            session([
+                'auth.two_factor_verified' => true,
+                'auth.reauthenticated_at' => time(),
+            ]);
 
             AuditLog::log('MFA_LOGIN_SUCCESS', $user, null, [
                 'user_email' => $user->email,
                 'ip' => $request->ip(),
                 'trusted_device_issued' => $trustDevice,
             ]);
+
+            try {
+                $user->notify(new NewDeviceLoginAlert((string) $request->ip(), $trustDevice));
+            } catch (\Throwable) {
+                // Do not block login when mail transport is not configured.
+            }
 
             return $this->completeVerificationRedirect($user, $request, $trustDevice);
         }
@@ -264,11 +274,43 @@ class TwoFactorAuthController extends Controller
             return back()->withErrors(['password' => 'Incorrect password. Cannot disable 2FA.']);
         }
 
-        $this->tfaService->disableTwoFactor($user);
+        $this->tfaService->disableTwoFactor($user, $user);
         session()->forget('auth.two_factor_verified');
         $cookieName = (string) config('cms.two_factor.cookie_name', 'gif_mfa_trust');
         Cookie::queue(Cookie::forget($cookieName, '/admin', config('session.domain')));
 
         return redirect()->route('admin.two-factor.setup')->with('status', 'Two-Factor Authentication has been successfully disabled.');
+    }
+
+    public function reauth(Request $request)
+    {
+        $user = $request->user();
+
+        return view('admin.two-factor.reauth', [
+            'requiresTotp' => $user->hasTwoFactorEnabled(),
+        ]);
+    }
+
+    public function verifyReauth(Request $request)
+    {
+        $user = $request->user();
+        $password = (string) $request->input('password', '');
+
+        if (! Hash::check($password, $user->password)) {
+            return back()->withErrors(['password' => 'The password you entered is incorrect.']);
+        }
+
+        if ($user->hasTwoFactorEnabled()) {
+            $code = trim((string) $request->input('code', ''));
+            $secret = (string) $user->getTwoFactorSecret();
+            if (! $this->tfaService->verifyCodeForUser($user, $secret, $code)) {
+                return back()->withErrors(['code' => 'Invalid or already-used 6-digit authenticator code.']);
+            }
+        }
+
+        session(['auth.reauthenticated_at' => time()]);
+
+        return redirect()->intended('/admin/security-settings')
+            ->with('status', 'Identity verified for sensitive operations.');
     }
 }

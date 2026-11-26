@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\TwoFactorAuthController;
 use App\Http\Controllers\Api\V1\PageController;
 use App\Http\Controllers\Api\V1\SitemapController;
 use App\Http\Controllers\FrontendSsrController;
+use App\Http\Middleware\RequireRecentAuthentication;
 use Illuminate\Support\Facades\Route;
 
 // XML Sitemap for Search Engines
@@ -78,6 +79,8 @@ Route::middleware(['web', 'auth'])->prefix('admin/two-factor')->name('admin.two-
     Route::post('/recovery-codes/regenerate', [TwoFactorAuthController::class, 'regenerateRecoveryCodes'])->name('regenerate-recovery');
     Route::post('/revoke-devices', [TwoFactorAuthController::class, 'revokeTrustedDevices'])->name('revoke-devices');
     Route::post('/disable', [TwoFactorAuthController::class, 'disable'])->name('disable');
+    Route::get('/reauth', [TwoFactorAuthController::class, 'reauth'])->name('reauth');
+    Route::post('/reauth', [TwoFactorAuthController::class, 'verifyReauth'])->name('reauth.verify');
 });
 
 // Secure CMS Preview signed endpoints
@@ -89,9 +92,9 @@ Route::get('/cms-preview-data/blog/{uuid}', [PostController::class, 'signedPrevi
     ->middleware(['signed'])
     ->name('admin.posts.signed-preview');
 
-// Secure Database Backup Download (Super Administrator Only)
+// Secure Database Backup Download (Super Administrator Only + Recent Re-Authentication)
 Route::get('/admin/system-backups/{id}/download', [BackupController::class, 'download'])
-    ->middleware(['web', 'auth'])
+    ->middleware(['web', 'auth', RequireRecentAuthentication::class])
     ->name('admin.system-backups.download');
 
 // Secure Inbound Leads Exports (Audited via AuditLogService)

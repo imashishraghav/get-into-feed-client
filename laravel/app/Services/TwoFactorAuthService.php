@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\AuditLog;
 use App\Models\User;
+use App\Notifications\TwoFactorDisabledAlert;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -61,14 +62,43 @@ class TwoFactorAuthService
      */
     public function verifyCode(string $secret, string $code, int $window = 1): bool
     {
+        return $this->matchTotpTimestep($secret, $code, $window) !== null;
+    }
+
+    /**
+     * Verify a 6-digit TOTP code for a specific user and block same-timestep replay attacks.
+     */
+    public function verifyCodeForUser(User $user, string $secret, string $code, int $window = 1): bool
+    {
+        $matchedStep = $this->matchTotpTimestep($secret, $code, $window);
+        if ($matchedStep === null) {
+            return false;
+        }
+
+        $lastStep = $user->two_factor_last_used_timestep !== null
+            ? (int) $user->two_factor_last_used_timestep
+            : null;
+
+        if ($lastStep !== null && $matchedStep <= $lastStep) {
+            return false;
+        }
+
+        $user->two_factor_last_used_timestep = $matchedStep;
+        $user->save();
+
+        return true;
+    }
+
+    private function matchTotpTimestep(string $secret, string $code, int $window = 1): ?int
+    {
         $code = trim($code);
         if (strlen($code) !== 6 || ! ctype_digit($code)) {
-            return false;
+            return null;
         }
 
         $decodedSecret = $this->base32Decode($secret);
         if (empty($decodedSecret)) {
-            return false;
+            return null;
         }
 
         $currentTimestamp = time();
@@ -79,11 +109,11 @@ class TwoFactorAuthService
             $step = $currentStep + $i;
             $calculatedCode = $this->calculateTotp($decodedSecret, $step);
             if (hash_equals($calculatedCode, $code)) {
-                return true;
+                return $step;
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
@@ -296,18 +326,61 @@ class TwoFactorAuthService
     /**
      * Disable 2FA and revoke trusted devices for a user.
      */
-    public function disableTwoFactor(User $user): void
+    public function disableTwoFactor(User $user, ?User $actor = null): void
     {
         $user->two_factor_secret = null;
         $user->two_factor_recovery_codes = null;
         $user->two_factor_confirmed_at = null;
         $user->two_factor_recovery_confirmed_at = null;
         $user->two_factor_grace_until = null;
+        $user->two_factor_last_used_timestep = null;
         $user->two_factor_trusted_token_version = max(1, (int) ($user->two_factor_trusted_token_version ?? 1)) + 1;
         $user->save();
 
         AuditLog::log('MFA_DISABLED', $user, null, [
             'user_email' => $user->email,
+            'actor_id' => $actor?->id,
         ]);
+
+        try {
+            $user->notify(new TwoFactorDisabledAlert(
+                $actor && $actor->id !== $user->id
+                    ? "Disabled by administrator ({$actor->email})"
+                    : 'Disabled by account owner'
+            ));
+        } catch (\Throwable) {
+            // Do not block local environments without mail transport configured.
+        }
+    }
+
+    /**
+     * Superadmin recovery action: reset a locked-out user's 2FA and record full audit trail.
+     */
+    public function resetTwoFactorByAdmin(User $target, User $actor): void
+    {
+        $target->two_factor_secret = null;
+        $target->two_factor_recovery_codes = null;
+        $target->two_factor_confirmed_at = null;
+        $target->two_factor_recovery_confirmed_at = null;
+        $target->two_factor_grace_until = null;
+        $target->two_factor_last_used_timestep = null;
+        $target->two_factor_trusted_token_version = max(1, (int) ($target->two_factor_trusted_token_version ?? 1)) + 1;
+        $target->two_factor_reset_by = $actor->id;
+        $target->two_factor_reset_at = now();
+        $target->save();
+
+        AuditLog::log('MFA_ADMIN_RESET', $target, null, [
+            'target_email' => $target->email,
+            'reset_by_id' => $actor->id,
+            'reset_by_email' => $actor->email,
+        ]);
+
+        try {
+            $target->notify(new TwoFactorDisabledAlert(
+                "Emergency administrator reset performed by {$actor->email}"
+            ));
+        } catch (\Throwable) {
+            // Do not block local environments without mail transport configured.
+        }
     }
 }

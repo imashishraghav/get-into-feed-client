@@ -137,20 +137,41 @@ class HtmlSanitizerService
 
     /**
      * Strip dangerous XSS vectors in mixed Markdown+HTML content without mutating Markdown syntax or line breaks.
+     * Defeats nested-tag reassembly, encoded/raw javascript: URLs, srcdoc iframes, and event handlers.
      */
     private function sanitizeMixedMarkdownHtml(string $content): string
     {
-        $stripped = preg_replace([
-            '#<\s*(script|style|object|embed|applet|form|svg)\b[^>]*>.*?<\s*/\s*\1\s*>#is',
-            '#<\s*(script|style|object|embed|applet|form|input|textarea|select|svg)\b[^>]*\/?>#is',
-        ], '', $content) ?? $content;
+        // 1. Defeat nested-tag reassembly (e.g. <scr<script>ipt>) by looping until fixed point
+        do {
+            $prev = $content;
+            $content = preg_replace([
+                '#<\s*(script|style|object|embed|applet|form|svg)\b[^>]*>.*?<\s*/\s*\1\s*>#is',
+                '#<\s*(script|style|object|embed|applet|form|input|textarea|select|svg)\b[^>]*\/?>#is',
+            ], '', $content) ?? $content;
+        } while ($content !== $prev);
 
-        // Strip inline event handlers (on*=) and javascript:/vbscript:/data:text/html URIs inside attributes
-        $stripped = preg_replace('/\s+on[a-z]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $stripped) ?? $stripped;
-        $stripped = preg_replace('/((?:href|src|srcset|action|formaction)\s*=\s*["\'])\s*(?:javascript:|vbscript:|data\s*:\s*text\/html)/i', '$1#blocked:', $stripped) ?? $stripped;
+        // 2. Strip inline event handlers (on*=)
+        $content = preg_replace('/\s+on[a-z0-9_-]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $content) ?? $content;
 
-        // Enforce iframe host allow-list even inside mixed Markdown+HTML content
-        $stripped = preg_replace_callback('#<iframe\b[^>]*>.*?</iframe>#is', static function (array $match): string {
+        // 3. Strip javascript:, vbscript:, and data: schemes (including entity-encoded and whitespace-padded variants)
+        $content = preg_replace_callback('/((?:href|src|srcset|action|formaction)\s*=\s*["\'])([^"\']+)(["\'])/i', static function (array $m): string {
+            $val = html_entity_decode($m[2], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $valClean = preg_replace('/[\x00-\x1F\x7F\s]+/u', '', $val);
+            if (preg_match('/^(?:javascript|vbscript|data):/i', $valClean)) {
+                return $m[1].'#blocked:'.$m[3];
+            }
+
+            return $m[0];
+        }, $content) ?? $content;
+
+        // 4. Strip dangerous srcdoc attribute entirely
+        $content = preg_replace('/\s+srcdoc\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $content) ?? $content;
+
+        // 5. Enforce iframe host allow-list and disallow srcdoc/data iframes
+        $content = preg_replace_callback('#<iframe\b[^>]*>.*?</iframe>#is', static function (array $match): string {
+            if (preg_match('/\bsrcdoc\b/i', $match[0])) {
+                return '';
+            }
             if (! preg_match('/\bsrc\s*=\s*["\']([^"\']+)["\']/i', $match[0], $srcMatch)) {
                 return '';
             }
@@ -163,9 +184,9 @@ class HtmlSanitizerService
             }
 
             return $match[0];
-        }, $stripped) ?? $stripped;
+        }, $content) ?? $content;
 
-        return $stripped;
+        return $content;
     }
 
     /**

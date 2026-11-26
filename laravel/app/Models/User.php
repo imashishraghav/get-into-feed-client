@@ -31,6 +31,9 @@ class User extends Authenticatable implements FilamentUser
         'two_factor_recovery_confirmed_at',
         'two_factor_grace_until',
         'two_factor_trusted_token_version',
+        'two_factor_last_used_timestep',
+        'two_factor_reset_by',
+        'two_factor_reset_at',
         'last_login_at',
         'last_login_ip',
     ];
@@ -51,6 +54,8 @@ class User extends Authenticatable implements FilamentUser
         'two_factor_recovery_confirmed_at' => 'datetime',
         'two_factor_grace_until' => 'datetime',
         'two_factor_trusted_token_version' => 'integer',
+        'two_factor_last_used_timestep' => 'integer',
+        'two_factor_reset_at' => 'datetime',
     ];
 
     public function hasTwoFactorEnabled(): bool

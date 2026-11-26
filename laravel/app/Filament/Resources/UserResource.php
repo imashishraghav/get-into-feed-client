@@ -8,11 +8,14 @@ use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\Media;
 use App\Models\User;
+use App\Services\TwoFactorAuthService;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\BadgeColumn;
@@ -63,6 +66,7 @@ class UserResource extends ManagedResource
                             'seo_manager' => 'SEO Specialist',
                             'sales_crm' => 'Sales / CRM Executive',
                             'editor' => 'Content Editor',
+                            'author' => 'Author',
                             'viewer' => 'Read-Only Viewer',
                         ]
                         : [
@@ -71,6 +75,7 @@ class UserResource extends ManagedResource
                             'seo_manager' => 'SEO Specialist',
                             'sales_crm' => 'Sales / CRM Executive',
                             'editor' => 'Content Editor',
+                            'author' => 'Author',
                             'viewer' => 'Read-Only Viewer',
                         ])
                     ->default('editor')
@@ -106,11 +111,33 @@ class UserResource extends ManagedResource
                         'gray' => 'viewer',
                     ]),
                 IconColumn::make('is_active')->boolean(),
+                IconColumn::make('two_factor_confirmed_at')
+                    ->label('2FA')
+                    ->boolean()
+                    ->getStateUsing(fn (User $record): bool => $record->hasTwoFactorEnabled()),
                 TextColumn::make('last_login_at')->dateTime()->sortable(),
                 TextColumn::make('created_at')->date()->sortable(),
             ])
             ->actions([
                 EditAction::make(),
+                Action::make('resetTwoFactor')
+                    ->label('Reset 2FA')
+                    ->icon('heroicon-o-shield-exclamation')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->modalHeading('Reset Two-Factor Authentication')
+                    ->modalDescription(fn (User $record): string => "Reset 2FA secret, recovery codes, and trusted browser sessions for {$record->email}?")
+                    ->visible(fn (User $record): bool => (bool) (auth()->user()?->isSuperAdmin() && $record->hasTwoFactorEnabled()))
+                    ->action(function (User $record): void {
+                        $actor = auth()->user();
+                        if ($actor instanceof User) {
+                            app(TwoFactorAuthService::class)->resetTwoFactorByAdmin($record, $actor);
+                            Notification::make()
+                                ->title("Reset 2FA for {$record->email}")
+                                ->success()
+                                ->send();
+                        }
+                    }),
                 DeleteAction::make(),
             ]);
     }

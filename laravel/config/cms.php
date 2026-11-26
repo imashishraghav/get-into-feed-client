@@ -27,5 +27,6 @@ return [
         'grace_days' => (int) env('CMS_2FA_GRACE_DAYS', 7),
         'trust_device_days' => (int) env('CMS_2FA_TRUST_DAYS', 30),
         'cookie_name' => 'gif_mfa_trust',
+        'reauth_ttl_minutes' => (int) env('CMS_REAUTH_TTL_MINUTES', 15),
     ],
 ];
