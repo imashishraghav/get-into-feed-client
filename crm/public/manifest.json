@@ -1,0 +1,37 @@
+{
+  "name": "GetIntoFeed Agency CRM & Delivery OS",
+  "short_name": "FeedOS",
+  "description": "Production-grade Agency CRM & Client Delivery OS for GetIntoFeed Studio (Delhi NCR)",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#0F172A",
+  "background_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quick Add Lead",
+      "short_name": "Add Lead",
+      "description": "Quickly add a new inbound lead",
+      "url": "/?action=quick_add"
+    },
+    {
+      "name": "Unified Inbox",
+      "short_name": "Inbox",
+      "description": "Open WhatsApp & email inbox",
+      "url": "/?module=inbox"
+    },
+    {
+      "name": "Delivery OS",
+      "short_name": "Delivery",
+      "description": "Open Reels and service delivery workspace",
+      "url": "/?module=delivery"
+    }
+  ]
+}

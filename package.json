@@ -1,0 +1,43 @@
+{
+  "name": "get-into-feed",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "sync": "node scripts/sync_frontend_sources.cjs",
+    "prebuild": "node scripts/sync_frontend_sources.cjs",
+    "dev": "vite --config frontend/vite.config.js frontend --host 0.0.0.0",
+    "build": "vite build --config frontend/vite.config.js frontend",
+    "build:crm": "vite build --config crm/vite.config.js crm",
+    "preview": "vite preview --config frontend/vite.config.js frontend --host 0.0.0.0",
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "uuid": "^14.0.3",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.28",
+    "source-map-js": "1.2.2",
+    "tailwindcss": "^3.4.19",
+    "vite": "^6.4.4"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
+    "overrides": {
+      "source-map-js": "1.2.2",
+      "browserslist": "^4.29.0",
+      "baseline-browser-mapping": "^2.11.25",
+      "postcss": "^8.5.28",
+      "esbuild": "^0.25.12"
+    }
+  },
+  "main": "app.js"
+}
