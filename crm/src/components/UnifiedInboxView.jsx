@@ -17,7 +17,13 @@ import { whatsAppAdapter, emailAdapter } from '../adapters/index.js';
 import { maskSensitiveLeadData } from '../utils/rbac.js';
 import { resolveSlaOnFirstContact } from '../utils/slaManager.js';
 
-export function UnifiedInboxView({ leads = [], onShowToast, onUpdateLead, currentUser }) {
+export function UnifiedInboxView({
+  leads = [],
+  onShowToast,
+  onUpdateLead,
+  onSelectLead,
+  currentUser
+}) {
   const [selectedLead, setSelectedLead] = useState(leads[0] || null);
   const [filterChannel, setFilterChannel] = useState('all'); // 'all', 'whatsapp', 'email', 'internal'
   const [selectedLanguage, setSelectedLanguage] = useState('en'); // 'en' or 'hi'
@@ -146,7 +152,10 @@ export function UnifiedInboxView({ leads = [], onShowToast, onUpdateLead, curren
             return (
               <div
                 key={l.id}
-                onClick={() => setSelectedLead(l)}
+                onClick={() => {
+                  setSelectedLead(l);
+                }}
+                onDoubleClick={() => onSelectLead?.(l)}
                 className={`p-3.5 cursor-pointer transition-colors ${
                   isSelected
                     ? 'bg-white border-l-2 border-slate-900 shadow-2xs'

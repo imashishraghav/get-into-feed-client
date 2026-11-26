@@ -1,21 +1,44 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { PROPOSAL_TEMPLATES, generateTokenizedProposal } from '../data/proposalTemplates.js';
 import { whatsAppAdapter, emailAdapter } from '../adapters/index.js';
 
-export function PublicProposalModal({ isOpen, lead, onClose, onConvertContract, onShowToast }) {
+function normalizeLeadForProposal(lead) {
+  if (!lead) return null;
+  return {
+    ...lead,
+    name: lead.name || lead.contact || 'Client',
+    company: lead.company || lead.brand || 'Brand Partner',
+  };
+}
+
+export function PublicProposalModal({
+  isOpen,
+  lead,
+  onClose,
+  onConvertContract,
+  onProceedToEsign,
+  onShowToast
+}) {
+  const normalizedLead = normalizeLeadForProposal(lead);
   const [selectedTemplateId, setSelectedTemplateId] = useState('sprint_30d_performance');
   const [proposalData, setProposalData] = useState(() =>
-    lead ? generateTokenizedProposal({ lead, templateId: 'sprint_30d_performance' }) : null
+    normalizedLead ? generateTokenizedProposal({ lead: normalizedLead, templateId: 'sprint_30d_performance' }) : null
   );
   const [isCopied, setIsCopied] = useState(false);
 
-  if (!isOpen || !lead) return null;
+  useEffect(() => {
+    if (normalizedLead) {
+      setProposalData(generateTokenizedProposal({ lead: normalizedLead, templateId: selectedTemplateId }));
+    }
+  }, [lead?.id, selectedTemplateId]);
+
+  if (!isOpen || !normalizedLead || !proposalData) return null;
 
   const currentTemplate = PROPOSAL_TEMPLATES.find((t) => t.id === selectedTemplateId) || PROPOSAL_TEMPLATES[0];
 
   const handleSelectTemplate = (id) => {
     setSelectedTemplateId(id);
-    const updated = generateTokenizedProposal({ lead, templateId: id });
+    const updated = generateTokenizedProposal({ lead: normalizedLead, templateId: id });
     setProposalData(updated);
   };
 
@@ -27,18 +50,18 @@ export function PublicProposalModal({ isOpen, lead, onClose, onConvertContract, 
   };
 
   const handleSendWhatsApp = async () => {
-    const text = `Hi ${lead.name.split(' ')[0]}! Your 30-Day Growth Sprint proposal is ready. Review here: ${proposalData.public_url}`;
-    await whatsAppAdapter.sendMessage({ to: lead.phone, message: text });
-    onShowToast?.(`Proposal link sent to ${lead.name} on WhatsApp!`);
+    const text = `Hi ${normalizedLead.name.split(' ')[0]}! Your 30-Day Growth Sprint proposal is ready. Review here: ${proposalData.public_url}`;
+    await whatsAppAdapter.sendMessage({ to: normalizedLead.phone, message: text });
+    onShowToast?.(`Proposal link sent to ${normalizedLead.name} on WhatsApp!`);
   };
 
   const handleSendEmail = async () => {
     await emailAdapter.sendEmail({
-      to: lead.email,
-      subject: `Proposal: ${currentTemplate.title} for ${lead.company}`,
-      text: `Hi ${lead.name}, please review your growth proposal: ${proposalData.public_url}`
+      to: normalizedLead.email,
+      subject: `Proposal: ${currentTemplate.title} for ${normalizedLead.company}`,
+      text: `Hi ${normalizedLead.name}, please review your growth proposal: ${proposalData.public_url}`
     });
-    onShowToast?.(`Proposal sent to ${lead.email}!`);
+    onShowToast?.(`Proposal sent to ${normalizedLead.email}!`);
   };
 
   return (
@@ -57,7 +80,7 @@ export function PublicProposalModal({ isOpen, lead, onClose, onConvertContract, 
             <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-slate-100">
               {currentTemplate.title}
             </h2>
-            <p className="text-[11px] text-slate-500">Prepared for <strong>{lead.name}</strong> ({lead.company})</p>
+            <p className="text-[11px] text-slate-500">Prepared for <strong>{normalizedLead.name}</strong> ({normalizedLead.company})</p>
           </div>
 
           <button onClick={onClose} className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 font-bold hover:bg-slate-200">
@@ -155,9 +178,11 @@ export function PublicProposalModal({ isOpen, lead, onClose, onConvertContract, 
           </div>
 
           <button
+            type="button"
             onClick={() => {
-              onClose();
-              onConvertContract(proposalData);
+              const handler = onConvertContract || onProceedToEsign;
+              handler?.(proposalData);
+              onClose?.();
             }}
             className="px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black flex items-center gap-1.5 transition shadow-xs"
           >

@@ -100,10 +100,15 @@ async function testPhase5Usability() {
   const razorpay = new MockPaymentAdapter();
   const payLink = await razorpay.createPaymentLink({
     amount: invoiceCalc.grossInvoiceTotal,
+    grossAmount: invoiceCalc.grossInvoiceTotal,
+    baseAmount: invoiceCalc.baseAmount,
+    gstIncluded: true,
+    stateCode: clientStateCode,
     customerName: testLead.name,
     customerEmail: 'ananya@singhoniacouture.com',
     description: `Invoice ${invNumber} - 30-Day Growth Sprint`
   });
+  assert.strictEqual(payLink.amount, invoiceCalc.grossInvoiceTotal, 'Payment link amount must equal invoice gross total');
   assert.ok(payLink.short_url, 'Payment short url must be generated');
 
   const invoiceSendMsg = await wa.sendMessage({

@@ -119,12 +119,16 @@ export function SlideOverDossier({
     const fee = lead.dealValue || lead.budget_monthly || 79000;
     const res = await paymentAdapter.createPaymentLink({
       amount: fee,
+      baseAmount: fee,
+      gstIncluded: false,
+      stateCode: lead.stateCode || '07',
+      sacCode: lead.sacCode || '998361',
       customerName: displayLead.name || displayLead.contact,
       customerEmail: displayLead.email,
       customerPhone: displayLead.phone,
       description: `30-Day Growth Sprint Retainer — ${lead.company || lead.brand}`
     });
-    setGeneratedPayLink(res.shortUrl);
+    setGeneratedPayLink(res.short_url);
     onShowToast?.('Razorpay UPI payment link created successfully!');
   };
 

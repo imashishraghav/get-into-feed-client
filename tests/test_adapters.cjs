@@ -21,7 +21,7 @@ async function runTests() {
   assert.strictEqual(history.length, 1);
   console.log('✓ MockWhatsAppAdapter passed');
 
-  // 2. Test Payment Mock Adapter (Razorpay + Delhi GST)
+  // 2. Test Payment Mock Adapter (Razorpay + Delhi GST + No Double-GST Golden Check)
   console.log('Testing MockPaymentAdapter...');
   const { MockPaymentAdapter } = require('../crm/src/adapters/paymentAdapter.js');
   const rzp = new MockPaymentAdapter();
@@ -38,7 +38,27 @@ async function runTests() {
   assert.strictEqual(payRes.tax_details.cgst, 9000);
   assert.strictEqual(payRes.tax_details.sgst, 9000);
   assert.strictEqual(payRes.tax_details.igst, 0);
-  console.log('✓ MockPaymentAdapter with Delhi Intra-State GST (CGST+SGST) passed');
+
+  // Golden check: already GST-calculated invoice (79,000 + 18% = 93,220) must NOT double-charge GST to 1,10,000
+  const invoicePayRes = await rzp.createPaymentLink({
+    amount: 93220,
+    grossAmount: 93220,
+    baseAmount: 79000,
+    gstIncluded: true,
+    customerName: 'Kapoor Naturals',
+    customerPhone: '+919818811223',
+    customerEmail: 'neha@kapoor.in',
+    description: 'Delhi GST Tax Invoice GIF/26-27/0108',
+    stateCode: '07',
+    sacCode: '998361'
+  });
+  assert.strictEqual(invoicePayRes.base_amount, 79000);
+  assert.strictEqual(invoicePayRes.amount, 93220);
+  assert.strictEqual(invoicePayRes.tax_details.cgst, 7110);
+  assert.strictEqual(invoicePayRes.tax_details.sgst, 7110);
+  assert.strictEqual(invoicePayRes.tax_details.igst, 0);
+  assert.ok(invoicePayRes.upi_qr.includes('am=93220'));
+  console.log('✓ MockPaymentAdapter with Delhi Intra-State GST & No-Double-GST Golden Check passed');
 
   // 3. Test E-Signature Mock Adapter (Digio)
   console.log('Testing MockEsignAdapter...');

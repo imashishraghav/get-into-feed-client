@@ -69,6 +69,7 @@ export function AppShell() {
     if (typeof window === 'undefined') return false;
     return new URLSearchParams(window.location.search).get('action') === 'quick_add';
   });
+  const [billingCreatorTrigger, setBillingCreatorTrigger] = useState(0);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [leadForProposalModal, setLeadForProposalModal] = useState(null);
   const [activeProposalForEsign, setActiveProposalForEsign] = useState(null);
@@ -127,7 +128,13 @@ export function AppShell() {
       case 'overview':
         return { label: '+ New Lead', onClick: () => setIsQuickAddOpen(true) };
       case 'billing':
-        return { label: '+ Issue Invoice', onClick: () => setCurrentModule('billing') };
+        return {
+          label: '+ Issue Invoice',
+          onClick: () => {
+            setCurrentModule('billing');
+            setBillingCreatorTrigger((prev) => prev + 1);
+          }
+        };
       case 'reels':
         return { label: '+ Upload Reel', onClick: () => showToast('Uploaded 9:16 vertical hook to 12 Reels Studio!') };
       case 'inbox':
@@ -411,6 +418,9 @@ export function AppShell() {
           {currentModule === 'inbox' && (
             <UnifiedInboxView
               leads={visibleLeads}
+              currentUser={currentUser}
+              onUpdateLead={handleUpdateLead}
+              onShowToast={showToast}
               onSelectLead={(lead) => setSelectedLead(lead)}
             />
           )}
@@ -426,6 +436,7 @@ export function AppShell() {
             <BillingStudioView
               leads={visibleLeads}
               onShowToast={showToast}
+              openCreatorTrigger={billingCreatorTrigger}
             />
           )}
 
@@ -486,7 +497,7 @@ export function AppShell() {
           isOpen={Boolean(leadForProposalModal)}
           lead={leadForProposalModal}
           onClose={() => setLeadForProposalModal(null)}
-          onProceedToEsign={(proposal) => {
+          onConvertContract={(proposal) => {
             setActiveProposalForEsign(proposal);
             setLeadForProposalModal(null);
           }}
@@ -497,7 +508,6 @@ export function AppShell() {
       {activeProposalForEsign && (
         <EsignContractModal
           isOpen={Boolean(activeProposalForEsign)}
-          lead={activeProposalForEsign.lead}
           proposal={activeProposalForEsign}
           onClose={() => setActiveProposalForEsign(null)}
           onContractSigned={() => {

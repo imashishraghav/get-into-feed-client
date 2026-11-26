@@ -37,9 +37,12 @@ export function GstInvoiceModal({ isOpen, lead, onClose, onInvoiceCreated, onSho
     setIsGenerating(true);
     const invoiceNumber = generateInvoiceNumber(104);
 
-    // Call Payment Adapter to generate Razorpay Paylink & UPI QR
+    // Call Payment Adapter with tax-inclusive gross total (no double-GST)
     const paylink = await paymentAdapter.createPaymentLink({
       amount: invoiceCalc.grossInvoiceTotal,
+      grossAmount: invoiceCalc.grossInvoiceTotal,
+      baseAmount: invoiceCalc.baseAmount,
+      gstIncluded: true,
       customerName: lead.name || lead.contact,
       customerPhone: lead.phone,
       customerEmail: lead.email,

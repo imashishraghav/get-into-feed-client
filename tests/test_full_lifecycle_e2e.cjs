@@ -174,11 +174,17 @@ async function runFullAgencyLifecycleE2E() {
   const rzp = new MockPaymentAdapter();
   const payLink = await rzp.createPaymentLink({
     amount: invoice.grossInvoiceTotal,
+    grossAmount: invoice.grossInvoiceTotal,
+    baseAmount: invoice.baseAmount,
+    gstIncluded: true,
+    stateCode: '07',
     customerName: lead.name,
     customerEmail: lead.email,
     description: `Invoice ${invoiceNumber} - GetIntoFeed Growth Sprint`
   });
 
+  assert.strictEqual(payLink.amount, 93220, 'Payment link must not double-charge 18% GST on gross total');
+  assert.ok(payLink.upi_qr.includes('am=93220'), 'UPI QR intent must carry ₹93,220');
   assert.ok(payLink.short_url.includes('rzp.io'));
   assert.ok(payLink.upi_qr.includes('upi://pay'));
 

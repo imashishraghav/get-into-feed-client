@@ -9,16 +9,20 @@ export function EsignContractModal({ isOpen, proposal, onClose, onContractSigned
 
   if (!isOpen || !proposal) return null;
 
+  const signerName = proposal.lead_name || 'Client Signatory';
+  const companyName = proposal.company || 'Brand Partner';
+  const companySlug = companyName.toLowerCase().replace(/[^a-z0-9]/g, '') || 'client';
+
   const handleCreateAgreement = async () => {
     const doc = await esignAdapter.createAgreement({
-      title: `Retainer Agreement — ${proposal.company}`,
-      signerName: proposal.lead_name,
-      signerEmail: `client@${proposal.company.toLowerCase().replace(/[^a-z]/g, '')}.in`,
+      title: `Retainer Agreement — ${companyName}`,
+      signerName,
+      signerEmail: `client@${companySlug}.in`,
       signerPhone: '+91 98110 12345',
       contractValue: proposal.monthly_fee
     });
     setAgreement(doc);
-    onShowToast?.(`Digio E-Sign agreement dispatched to ${proposal.lead_name}!`);
+    onShowToast?.(`Digio E-Sign agreement dispatched to ${signerName}!`);
   };
 
   const handleSimulateClientSigning = async () => {

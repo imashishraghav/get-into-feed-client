@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { 
   Receipt, 
@@ -27,9 +27,15 @@ import {
 import { SAC_PRICE_BOOK, SECTION_393_TDS_RATES, AGENCY_SERVICES } from '../utils/priceBook.js';
 import { paymentAdapter, whatsAppAdapter } from '../adapters/index.js';
 
-export function BillingStudioView({ leads = [], onShowToast }) {
+export function BillingStudioView({ leads = [], onShowToast, openCreatorTrigger = 0 }) {
   const [activeTab, setActiveTab] = useState('list'); // 'list' | 'creator' | 'pricebook'
   const [filterStatus, setFilterStatus] = useState('all'); // 'all', 'paid', 'overdue'
+
+  useEffect(() => {
+    if (openCreatorTrigger > 0) {
+      setActiveTab('creator');
+    }
+  }, [openCreatorTrigger]);
 
   // Seed invoices with Section 393 Withholding
   const [invoices, setInvoices] = useState([
@@ -122,6 +128,11 @@ export function BillingStudioView({ leads = [], onShowToast }) {
   const handleCreateInvoice = async () => {
     const paylinkRes = await paymentAdapter.createPaymentLink({
       amount: calculated.grossInvoiceTotal,
+      grossAmount: calculated.grossInvoiceTotal,
+      baseAmount: calculated.baseAmount,
+      gstIncluded: true,
+      stateCode: clientState,
+      sacCode,
       customerName: selectedLead?.name || selectedLead?.contact || 'Client',
       customerPhone: selectedLead?.phone || '+91 98110 00000',
       description: `Delhi GST Tax Invoice ${nextInvoiceNumber}`
