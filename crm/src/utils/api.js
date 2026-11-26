@@ -1,9 +1,9 @@
 /**
  * GetIntoFeed CRM Portal API Client
- * Connects to Laravel REST API engine (https://getintofeed.com/api/v1/crm)
+ * Connects to FeedOS Laravel REST API (/api/v1) via same-origin or VITE_CRM_API_URL.
  */
 
-const API_BASE = import.meta.env.VITE_CRM_API_URL || 'https://getintofeed.com/api/v1/crm';
+const API_BASE = import.meta.env.VITE_CRM_API_URL || '/api/v1';
 
 function getHeaders() {
   const token = localStorage.getItem('gif_crm_token');

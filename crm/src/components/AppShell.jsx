@@ -48,11 +48,15 @@ export function AppShell() {
   // Zone 1: Rail State (Collapsed vs Expanded)
   const [isRailExpanded, setIsRailExpanded] = useState(true);
 
-  // Active Primary Module: Exactly 5 routes
-  // 'overview' | 'leads' | 'inbox' | 'reels' | 'billing'
-  const [currentModule, setCurrentModule] = useState(
-    currentUser?.role === ROLES.CLIENT ? 'reels' : 'overview'
-  );
+  // Active Primary Module: Exactly 5 routes ('overview' | 'leads' | 'inbox' | 'reels' | 'billing')
+  const [currentModule, setCurrentModule] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const requested = new URLSearchParams(window.location.search).get('module');
+      const allowed = ['overview', 'leads', 'inbox', 'reels', 'billing'];
+      if (requested && allowed.includes(requested)) return requested;
+    }
+    return currentUser?.role === ROLES.CLIENT ? 'reels' : 'overview';
+  });
 
   // Leads & Pipeline State
   const [leads, setLeads] = useState(seedLeads);
@@ -61,7 +65,10 @@ export function AppShell() {
 
   // Modals
   const [isCmdKOpen, setIsCmdKOpen] = useState(false);
-  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
+  const [isQuickAddOpen, setIsQuickAddOpen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return new URLSearchParams(window.location.search).get('action') === 'quick_add';
+  });
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [leadForProposalModal, setLeadForProposalModal] = useState(null);
   const [activeProposalForEsign, setActiveProposalForEsign] = useState(null);

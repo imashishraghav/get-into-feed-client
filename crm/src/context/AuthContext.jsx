@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { ROLES, hasPermission } from '../utils/rbac.js';
+import { clearServiceWorkerCaches } from '../utils/serviceWorkerClient.js';
 
 const DEMO_USERS = [
   { id: 'usr_ashish', name: 'Ashish (Founder)', role: ROLES.OWNER, email: 'ashish@getintofeed.com', avatar: 'AR' },
@@ -48,10 +49,18 @@ export function AuthProvider({ children }) {
   const switchRole = (roleKey) => {
     const target = DEMO_USERS.find((u) => u.role === roleKey) || DEMO_USERS[0];
     setCurrentUser(target);
+    clearServiceWorkerCaches();
     // Non-owner roles default to simple mode for zero training
     if (roleKey !== ROLES.OWNER && roleKey !== ROLES.FINANCE) {
       setUiMode('simple');
     }
+  };
+
+  const logout = async () => {
+    localStorage.removeItem('gif_crm_token');
+    localStorage.removeItem('gif_crm_user');
+    await clearServiceWorkerCaches();
+    setCurrentUser(DEMO_USERS[0]);
   };
 
   const toggleUiMode = () => {
@@ -73,6 +82,7 @@ export function AuthProvider({ children }) {
         setCurrentUser,
         demoUsers: DEMO_USERS,
         switchRole,
+        logout,
         uiMode,
         toggleUiMode,
         theme,

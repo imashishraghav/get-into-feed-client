@@ -1,37 +1,49 @@
 {
-  "name": "GetIntoFeed Agency CRM & Delivery OS",
+  "name": "FeedOS — GetIntoFeed Agency OS",
   "short_name": "FeedOS",
-  "description": "Production-grade Agency CRM & Client Delivery OS for GetIntoFeed Studio (Delhi NCR)",
+  "description": "Internal CRM and client operating system for GetIntoFeed Studio (Delhi NCR)",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#0F172A",
-  "background_color": "#FFFFFF",
+  "theme_color": "#F8F9FB",
+  "background_color": "#F8F9FB",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
     {
       "name": "Quick Add Lead",
       "short_name": "Add Lead",
-      "description": "Quickly add a new inbound lead",
-      "url": "/?action=quick_add"
+      "description": "Create a new inbound agency lead",
+      "url": "/?action=quick_add",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Lead Pipeline",
+      "short_name": "Leads",
+      "description": "Open active agency sales pipeline",
+      "url": "/?module=leads",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
       "name": "Unified Inbox",
       "short_name": "Inbox",
-      "description": "Open WhatsApp & email inbox",
-      "url": "/?module=inbox"
+      "description": "Open WhatsApp & email conversations",
+      "url": "/?module=inbox",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
     },
     {
-      "name": "Delivery OS",
-      "short_name": "Delivery",
-      "description": "Open Reels and service delivery workspace",
-      "url": "/?module=delivery"
+      "name": "Reels Studio",
+      "short_name": "Reels",
+      "description": "Open creative delivery & approval studio",
+      "url": "/?module=reels",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
     }
   ]
 }
