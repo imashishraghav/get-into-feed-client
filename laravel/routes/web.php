@@ -18,28 +18,6 @@ Route::get('/sitemap.xml', [SitemapController::class, 'xml']);
 // Web Authentication Fallback (Redirects browser requests to Filament admin login)
 Route::get('/login', fn () => redirect('/admin/login'))->name('login');
 
-// System View Cache Purge & OPcache Reset Endpoint
-Route::get('/api/v1/system/purge-views-cache', function () {
-    $viewCacheDir = storage_path('framework/views');
-    $clearedViews = 0;
-    if (is_dir($viewCacheDir)) {
-        foreach (glob($viewCacheDir.'/*.php') as $f) {
-            @unlink($f);
-            $clearedViews++;
-        }
-    }
-    $opcacheReset = function_exists('opcache_reset') ? @opcache_reset() : false;
-
-    return response()->json([
-        'success' => true,
-        'base_path' => base_path(),
-        'views_path' => resource_path('views'),
-        'cleared_views' => $clearedViews,
-        'opcache_reset' => $opcacheReset,
-        'time' => date('Y-m-d H:i:s'),
-    ]);
-});
-
 // Quick Media Upload for Classic Post Editor (Exact WordPress "Add media" Modal)
 Route::post('/admin/media/quick-upload', function (Request $request) {
     $user = auth()->user();

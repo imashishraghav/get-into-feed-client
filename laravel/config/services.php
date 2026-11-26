@@ -22,8 +22,12 @@ return [
 
     'crm' => [
         'endpoint' => env('CRM_API_ENDPOINT', 'https://crm.getintofeed.com/api/v1/inbound-leads'),
-        'secret' => env('CRM_SYNC_SECRET', 'test-crm-sync-secret-key-change-in-env'),
+        'secret' => env('CRM_SYNC_SECRET'),
         'timeout' => (int) env('CRM_SYNC_TIMEOUT', 10),
+    ],
+
+    'mcp' => [
+        'key' => env('MCP_API_KEY'),
     ],
 
 ];

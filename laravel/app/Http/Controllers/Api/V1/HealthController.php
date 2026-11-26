@@ -3,22 +3,52 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Lead;
+use App\Models\SystemBackup;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class HealthController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
+        $configuredToken = (string) config('cms.health_token', '');
+        $providedToken = (string) $request->header('X-Health-Token', '');
+        $hasValidToken = $configuredToken !== '' && $providedToken !== '' && hash_equals($configuredToken, $providedToken);
+
+        $user = $request->user();
+        $isAdmin = $user && in_array($user->role, ['superadmin', 'admin'], true);
+
+        if (! $isAdmin && ! $hasValidToken) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Unauthorized.',
+            ], 401);
+        }
+
+        $dbConnected = true;
         $dbStatus = 'connected';
         try {
             DB::connection()->getPdo();
-        } catch (\Exception $e) {
-            $dbStatus = 'unreachable: '.$e->getMessage();
+            DB::select('SELECT 1');
+        } catch (\Throwable $e) {
+            $dbConnected = false;
+            $dbStatus = 'unreachable';
         }
 
-        $queueDriver = config('queue.default', 'sync');
+        $cacheOk = true;
+        try {
+            $probeKey = 'health_probe_'.bin2hex(random_bytes(4));
+            Cache::put($probeKey, '1', 5);
+            $cacheOk = Cache::get($probeKey) === '1';
+            Cache::forget($probeKey);
+        } catch (\Throwable $e) {
+            $cacheOk = false;
+        }
+
         $pendingJobs = 0;
         $failedJobs = 0;
         try {
@@ -28,43 +58,45 @@ class HealthController extends Controller
             if (Schema::hasTable('failed_jobs')) {
                 $failedJobs = DB::table('failed_jobs')->count();
             }
-        } catch (\Throwable $qe) {
+        } catch (\Throwable $e) {
         }
 
-        $latestDeliveries = [];
-        try {
-            if (Schema::hasTable('lead_notification_deliveries')) {
-                $latestDeliveries = DB::table('lead_notification_deliveries')->latest('id')->take(3)->get();
-            }
-        } catch (\Throwable $de) {
-        }
+        $crmStats = Schema::hasTable('crm_leads')
+            ? [
+                'synced' => Lead::production()->where('crm_sync_status', 'synced')->count(),
+                'pending' => Lead::production()->where('crm_sync_status', 'pending')->count(),
+                'failed' => Lead::production()->where('crm_sync_status', 'failed')->count(),
+            ]
+            : [];
 
-        $mailConfig = [
-            'mailer' => config('mail.default'),
-            'host' => config('mail.mailers.smtp.host'),
-            'port' => config('mail.mailers.smtp.port'),
-            'encryption' => config('mail.mailers.smtp.encryption'),
-            'from' => config('mail.from.address'),
-            'alerts_enabled' => config('lead-alerts.enabled'),
-            'alerts_email_to' => config('lead-alerts.email_to'),
-            'whatsapp_enabled' => config('lead-alerts.whatsapp_enabled'),
-        ];
+        $lastBackup = Schema::hasTable('system_backups')
+            ? SystemBackup::latest()->first(['filename', 'status', 'created_at'])
+            : null;
+
+        $ok = $dbConnected && $cacheOk;
 
         return response()->json([
-            'agency' => 'Get Into Feed Media Pvt. Ltd.',
-            'status' => 'ok',
-            'service' => 'get-into-feed-laravel-cms',
-            'version' => '1.0.0',
-            'runtime' => 'Laravel 12 (PHP '.PHP_VERSION.')',
+            'success' => $ok,
+            'status' => $ok ? 'ok' : 'degraded',
+            'service' => 'get-into-feed-cms',
             'database' => $dbStatus,
-            'mail_and_alerts' => $mailConfig,
-            'latest_deliveries' => $latestDeliveries,
+            'cache' => $cacheOk ? 'ok' : 'degraded',
             'queue' => [
-                'driver' => $queueDriver,
+                'driver' => config('queue.default', 'database'),
                 'pending_jobs' => $pendingJobs,
                 'failed_jobs' => $failedJobs,
             ],
+            'telemetry' => [
+                'php_version' => PHP_VERSION,
+                'laravel_version' => app()->version(),
+                'crm_sync' => $crmStats,
+                'last_backup' => $lastBackup ? [
+                    'filename' => $lastBackup->filename,
+                    'status' => $lastBackup->status,
+                    'created_at' => $lastBackup->created_at?->toIso8601String(),
+                ] : null,
+            ],
             'timestamp' => now()->toIso8601String(),
-        ]);
+        ], $dbConnected ? 200 : 503);
     }
 }

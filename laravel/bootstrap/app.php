@@ -1,18 +1,28 @@
 <?php
 
+use App\Http\Middleware\SecurityHeaders;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\HandleCors;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__ . '/../routes/web.php',
-        api: __DIR__ . '/../routes/api.php',
-        commands: __DIR__ . '/../routes/console.php',
+        web: __DIR__.'/../routes/web.php',
+        api: __DIR__.'/../routes/api.php',
+        commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
     ->withCommands([
-        __DIR__ . '/../app/Console/Commands',
+        __DIR__.'/../app/Console/Commands',
     ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->trustHosts(
@@ -29,27 +39,24 @@ return Application::configure(basePath: dirname(__DIR__))
             subdomains: true,
         );
 
-        $middleware->validateCsrfTokens(except: [
-            'livewire/*',
-            'admin/livewire/*',
-        ]);
+        $middleware->validateCsrfTokens(except: []);
 
         $middleware->web(append: [
-            \App\Http\Middleware\SecurityHeaders::class,
+            SecurityHeaders::class,
         ]);
 
         $middleware->api(prepend: [
-            \Illuminate\Http\Middleware\HandleCors::class,
-            \App\Http\Middleware\SecurityHeaders::class,
+            HandleCors::class,
+            SecurityHeaders::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+        $exceptions->render(function (Throwable $e, Request $request) {
             if (! $request->is('api/*') && ! $request->is('cms-preview-data/*') && ! $request->expectsJson()) {
                 return null;
             }
 
-            if ($e instanceof \Illuminate\Validation\ValidationException) {
+            if ($e instanceof ValidationException) {
                 return response()->json([
                     'success' => false,
                     'error' => config('app.debug') ? $e->getMessage() : 'The given data was invalid.',
@@ -59,11 +66,11 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             $status = match (true) {
-                $e instanceof \Illuminate\Auth\AuthenticationException => 401,
-                $e instanceof \Illuminate\Auth\Access\AuthorizationException => 403,
-                $e instanceof \Illuminate\Routing\Exceptions\InvalidSignatureException => 403,
-                $e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException => 404,
-                $e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface => $e->getStatusCode(),
+                $e instanceof AuthenticationException => 401,
+                $e instanceof AuthorizationException => 403,
+                $e instanceof InvalidSignatureException => 403,
+                $e instanceof ModelNotFoundException => 404,
+                $e instanceof HttpExceptionInterface => $e->getStatusCode(),
                 default => 500,
             };
 
@@ -76,7 +83,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 429 => 'Too many requests.',
                 default => $status >= 500
                     ? 'An unexpected server error occurred.'
-                    : (\Symfony\Component\HttpFoundation\Response::$statusTexts[$status] ?? 'Request failed.'),
+                    : (Response::$statusTexts[$status] ?? 'Request failed.'),
             };
 
             return response()->json([

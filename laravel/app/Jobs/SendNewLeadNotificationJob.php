@@ -52,7 +52,7 @@ class SendNewLeadNotificationJob implements ShouldQueue
             return;
         }
 
-        $recipient = env('LEAD_NOTIFICATION_RECIPIENT', config('mail.from.address', 'hello@getintofeed.com'));
+        $recipient = config('lead-alerts.recipient', config('mail.from.address', 'hello@getintofeed.com'));
 
         try {
             Mail::to($recipient)->send(new NewLeadNotificationMail($this->lead));
