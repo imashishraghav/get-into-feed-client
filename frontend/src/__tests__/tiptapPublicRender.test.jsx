@@ -29,6 +29,9 @@ describe('Public SPA TipTap & Converted Markdown Rendering', () => {
       <figure class="gif-video-embed" data-video-embed="true">
         <iframe src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ" title="Demo" loading="lazy"></iframe>
       </figure>
+      <figure class="gif-video-embed" data-video-embed="true">
+        <iframe src="https://evil.example/embed/phish"></iframe>
+      </figure>
       <div class="gif-faq-block" data-faq="true">
         <div class="gif-faq-item"><h4>How quickly does CRO lift ROI?</h4><p>Often within 30 days.</p></div>
       </div>
@@ -51,6 +54,7 @@ describe('Public SPA TipTap & Converted Markdown Rendering', () => {
     expect(container.querySelector('.gif-table-scroll table')).not.toBeNull();
     expect(container.querySelector('figure.gif-image-figure figcaption')?.textContent).toBe('Funnel conversion breakdown');
     expect(container.querySelector('figure[data-video-embed] iframe')?.getAttribute('src')).toBe('https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ');
+    expect(container.querySelector('iframe[src*="evil.example"]')).toBeNull();
     expect(container.querySelector('.gif-faq-block .gif-faq-item h4')?.textContent).toBe('How quickly does CRO lift ROI?');
     expect(container.querySelector('.gif-cta-block a.gif-cta-btn')?.getAttribute('href')).toBe('https://getintofeed.com/contact');
     expect(container.querySelector('script')).toBeNull();
