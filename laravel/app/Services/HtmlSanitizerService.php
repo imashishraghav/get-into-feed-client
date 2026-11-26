@@ -15,6 +15,8 @@ class HtmlSanitizerService
         'vimeo.com',
     ];
 
+    private const HTML_TAG_PATTERN = '/<\/?(?:p|h[1-6]|div|span|ul|ol|li|blockquote|table|thead|tbody|tfoot|tr|th|td|figure|figcaption|img|a|strong|em|b|i|u|s|mark|pre|code|iframe|script|style|object|embed|form|input|svg|details|summary|aside|section|br|hr)\b/i';
+
     private HtmlSanitizer $sanitizer;
 
     public function __construct()
@@ -74,24 +76,43 @@ class HtmlSanitizerService
     }
 
     /**
+     * Classify article body as pure 'markdown', 'mixed' (Markdown + embedded HTML such as <table>, <br>, <img>, <iframe>),
+     * or rich 'html' (TipTap / semantic HTML).
+     */
+    public function classifyContent(?string $content): string
+    {
+        if ($content === null || trim($content) === '') {
+            return 'markdown';
+        }
+
+        $hasHtmlTags = (bool) preg_match(self::HTML_TAG_PATTERN, $content);
+        if (! $hasHtmlTags) {
+            return 'markdown';
+        }
+
+        $hasMarkdownLines = (bool) preg_match('/^\s{0,3}(?:#{1,6}\s+\S|[-*+]\s+\S|\d+\.\s+\S|>\s+\S|\|[^\n]+\|)/m', $content);
+        $hasPrimaryHtmlBlocks = (bool) preg_match('/<(?:p|h[1-6])\b/i', $content);
+
+        if ($hasMarkdownLines || ! $hasPrimaryHtmlBlocks) {
+            return 'mixed';
+        }
+
+        return 'html';
+    }
+
+    /**
      * Detect whether content is pure Markdown/plain text without HTML elements
      * so legacy Markdown posts are never altered by HTML sanitization.
      */
     public function isMarkdownOnly(?string $content): bool
     {
-        if ($content === null || trim($content) === '') {
-            return true;
-        }
-
-        return ! (bool) preg_match(
-            '/<\/?(?:p|h[1-6]|div|span|ul|ol|li|blockquote|table|thead|tbody|tfoot|tr|th|td|figure|figcaption|img|a|strong|em|b|i|u|s|mark|pre|code|iframe|script|style|object|embed|form|input|svg|details|summary|aside|section|br|hr)\b/i',
-            $content
-        );
+        return $this->classifyContent($content) === 'markdown';
     }
 
     /**
      * Sanitize HTML input against an allow-list and enforce safe embeds & links.
-     * Preserves pure Markdown posts unaltered.
+     * Preserves pure Markdown posts unaltered and keeps Markdown lines intact in mixed posts
+     * while still stripping dangerous script/event-handler payloads.
      */
     public function sanitize(?string $html): string
     {
@@ -99,13 +120,52 @@ class HtmlSanitizerService
             return '';
         }
 
-        if ($this->isMarkdownOnly($html)) {
+        $classification = $this->classifyContent($html);
+
+        if ($classification === 'markdown') {
             return $html;
+        }
+
+        if ($classification === 'mixed') {
+            return $this->sanitizeMixedMarkdownHtml($html);
         }
 
         $cleaned = $this->sanitizer->sanitize($html);
 
         return $this->filterEmbedsAndExternalLinks($cleaned);
+    }
+
+    /**
+     * Strip dangerous XSS vectors in mixed Markdown+HTML content without mutating Markdown syntax or line breaks.
+     */
+    private function sanitizeMixedMarkdownHtml(string $content): string
+    {
+        $stripped = preg_replace([
+            '#<\s*(script|style|object|embed|applet|form|svg)\b[^>]*>.*?<\s*/\s*\1\s*>#is',
+            '#<\s*(script|style|object|embed|applet|form|input|textarea|select|svg)\b[^>]*\/?>#is',
+        ], '', $content) ?? $content;
+
+        // Strip inline event handlers (on*=) and javascript:/vbscript:/data:text/html URIs inside attributes
+        $stripped = preg_replace('/\s+on[a-z]+\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $stripped) ?? $stripped;
+        $stripped = preg_replace('/((?:href|src|srcset|action|formaction)\s*=\s*["\'])\s*(?:javascript:|vbscript:|data\s*:\s*text\/html)/i', '$1#blocked:', $stripped) ?? $stripped;
+
+        // Enforce iframe host allow-list even inside mixed Markdown+HTML content
+        $stripped = preg_replace_callback('#<iframe\b[^>]*>.*?</iframe>#is', static function (array $match): string {
+            if (! preg_match('/\bsrc\s*=\s*["\']([^"\']+)["\']/i', $match[0], $srcMatch)) {
+                return '';
+            }
+            $src = trim($srcMatch[1]);
+            $scheme = strtolower((string) parse_url($src, PHP_URL_SCHEME));
+            $host = strtolower((string) parse_url($src, PHP_URL_HOST));
+
+            if ($scheme !== 'https' || ! in_array($host, self::ALLOWED_IFRAME_HOSTS, true)) {
+                return '';
+            }
+
+            return $match[0];
+        }, $stripped) ?? $stripped;
+
+        return $stripped;
     }
 
     /**

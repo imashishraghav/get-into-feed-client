@@ -38,7 +38,8 @@ DirectoryIndex agent_router.php index.html index.php
   # Block all hidden dotfiles and dotdirs (e.g. .env, .git) EXCEPT .well-known
   RewriteRule ^\.(?!well-known(/.*)?$) - [F,L,NC]
 
-  # Block direct HTTP access into the internal laravel application directory
+  # Block direct external HTTP access into the internal laravel application directory
+  RewriteCond %{THE_REQUEST} \s/+laravel(/|\s|\?|$) [NC]
   RewriteRule ^laravel(/.*)?$ - [F,L,NC]
 
   # Block any test, debug, clear, view, or deploy script execution
@@ -73,6 +74,10 @@ DirectoryIndex agent_router.php index.html index.php
   # ── 3. LIVEWIRE & FILAMENT ASSET/ENDPOINT ROUTING ──
   RewriteRule ^livewire(/.*)?$ laravel_bridge.php [QSA,L]
   RewriteRule ^filament(/.*)?$ laravel_bridge.php [QSA,L]
+
+  # ── 3.1 LARAVEL PUBLISHED ASSETS (FILAMENT CSS/JS & TIPTAP BUNDLE) ──
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^(css/filament/.+|js/filament/.+|build/editor/.+)$ laravel/public/$1 [L]
 
   # ── 3.5. FORCE MODERN CLEAN NODE/REACT URLS (STRIP ALL .HTML EXTENSIONS) ──
   RewriteCond %{THE_REQUEST} /index\.html[\s?] [NC]

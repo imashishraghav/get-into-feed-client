@@ -35,9 +35,9 @@ class McpController extends Controller
      */
     protected function isAuthorized(Request $request): bool
     {
-        $expectedKey = config('cms.mcp_api_key') ?: config('services.mcp.key');
-        if (empty($expectedKey)) {
-            $expectedKey = hash('sha256', (string) config('app.key'));
+        $expectedKey = (string) (config('cms.mcp_api_key') ?: config('services.mcp.key') ?: '');
+        if ($expectedKey === '') {
+            return false;
         }
 
         $header = $request->header('Authorization') ?: $request->header('X-MCP-Key') ?: '';

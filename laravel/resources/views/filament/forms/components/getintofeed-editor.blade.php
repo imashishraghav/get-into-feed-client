@@ -107,6 +107,7 @@
             mode: 'visual',
             mobileTab: 'content',
             isMarkdownPost: false,
+            isMixedContentPost: false,
             isFocusMode: false,
             isExcerptOpen: false,
             isEditingSlug: false,
@@ -256,7 +257,9 @@
                 this.tempSlug = this.slug;
 
                 this.setMobileTab('content');
-                this.isMarkdownPost = Boolean(this.content.trim() && this.isContentMarkdownOnly(this.content));
+                const contentType = this.classifyEditorContent(this.content);
+                this.isMixedContentPost = (contentType === 'mixed');
+                this.isMarkdownPost = Boolean(this.content.trim() && (contentType === 'markdown' || contentType === 'mixed'));
                 if (this.isMarkdownPost) {
                     this.mode = 'html';
                 }
@@ -318,9 +321,20 @@
                 }
             },
 
+            classifyEditorContent(text) {
+                if (!text || String(text).trim() === '') return 'markdown';
+                const str = String(text);
+                const hasHtml = /[<]\/?(?:p|h[1-6]|div|span|ul|ol|li|blockquote|table|thead|tbody|tfoot|tr|th|td|figure|figcaption|img|a|strong|em|b|i|u|s|mark|pre|code|iframe|script|style|object|embed|form|input|svg|details|summary|aside|section|br|hr)\b/i.test(str);
+                if (!hasHtml) return 'markdown';
+                const hasMarkdownLines = /^\s{0,3}(?:#{1,6}\s+\S|[-*+]\s+\S|\d+\.\s+\S|>\s+\S|\|[^\n]+\|)/m.test(str);
+                const hasPrimaryHtmlBlocks = /[<](?:p|h[1-6])\b/i.test(str);
+                if (hasMarkdownLines || !hasPrimaryHtmlBlocks) return 'mixed';
+                return 'html';
+            },
+
             isContentMarkdownOnly(text) {
-                if (!text || String(text).trim() === '') return false;
-                return !/[<]\/?(?:p|h[1-6]|div|span|ul|ol|li|blockquote|table|thead|tbody|tfoot|tr|th|td|figure|figcaption|img|a|strong|em|b|i|u|s|mark|pre|code|iframe|script|style|object|embed|form|input|svg|details|summary|aside|section|br|hr)\b/i.test(String(text));
+                const kind = this.classifyEditorContent(text);
+                return kind === 'markdown' || kind === 'mixed';
             },
 
             setMobileTab(tab) {
@@ -1955,7 +1969,7 @@
                             Accept: 'application/json',
                             'X-CSRF-TOKEN': this.csrfToken,
                         },
-                        body: JSON.stringify({ expected_version: Number(this.version || 1) }),
+                        body: JSON.stringify({ version: Number(this.version || 1) }),
                     });
                     const payload = await res.json().catch(() => ({}));
                     if (!res.ok || !payload.data) {
@@ -2112,11 +2126,11 @@
     :class="{ 'is-focus-mode': isFocusMode }"
 >
     <!-- Mobile Section Tabs Bar (< 1024px) -->
-    <nav class="gif-mobile-tabs-bar" aria-label="Editorial Studio Sections">
-        <button type="button" @click="setMobileTab('content')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'content' }">Content</button>
-        <button type="button" @click="setMobileTab('publish')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'publish' }">Publish</button>
-        <button type="button" @click="setMobileTab('seo')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'seo' }">SEO</button>
-        <button type="button" @click="setMobileTab('media')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'media' }">Media</button>
+    <nav class="gif-mobile-tabs-bar" role="tablist" aria-label="Editorial Studio Sections">
+        <button type="button" role="tab" :aria-selected="mobileTab === 'content'" @click="setMobileTab('content')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'content' }">Content</button>
+        <button type="button" role="tab" :aria-selected="mobileTab === 'publish'" @click="setMobileTab('publish')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'publish' }">Publish</button>
+        <button type="button" role="tab" :aria-selected="mobileTab === 'seo'" @click="setMobileTab('seo')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'seo' }">SEO</button>
+        <button type="button" role="tab" :aria-selected="mobileTab === 'media'" @click="setMobileTab('media')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'media' }">Media</button>
     </nav>
 
     <!-- Toast Notification -->
@@ -2138,10 +2152,11 @@
         <span><strong>Offline Mode:</strong> Internet disconnected. Edits are safely queued in local browser draft storage.</span>
     </div>
 
-    <!-- Non-Destructive Legacy Markdown Preservation Banner -->
-    <div x-show="isMarkdownPost" style="display:none;" class="gif-status-banner is-info">
+    <!-- Non-Destructive Legacy Markdown & Mixed-Content Preservation Banner -->
+    <div x-show="isMarkdownPost" style="display:none;" class="gif-status-banner is-info" role="status">
         <span>
-            <strong>Legacy Markdown Post:</strong> Preserved untouched so existing Markdown formatting is never altered automatically.
+            <strong x-text="isMixedContentPost ? 'Mixed Markdown + HTML Post:' : 'Legacy Markdown Post:'">Legacy Markdown Post:</strong>
+            Preserved untouched in raw Code/Markdown mode so existing Markdown formatting and embedded HTML (&lt;table&gt;, &lt;br&gt;, &lt;img&gt;, &lt;iframe&gt;) are never altered automatically.
         </span>
         <button type="button" @click="convertMarkdownToVisualBlocks()" class="gif-btn gif-btn-indigo gif-btn-xs">Convert to Visual Blocks</button>
     </div>
@@ -2532,20 +2547,20 @@
         </div>
 
         <!-- Studio Tabs -->
-        <div class="gif-tabs-bar">
-            <button type="button" @click="seoTab = 'audit'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'audit' }">
+        <div class="gif-tabs-bar" role="tablist" aria-label="SEO Studio Panels">
+            <button type="button" role="tab" :aria-selected="seoTab === 'audit'" @click="seoTab = 'audit'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'audit' }">
                 Keywords &amp; Audit (<span x-text="criticalIssues.length">0</span>)
             </button>
-            <button type="button" @click="seoTab = 'serp'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'serp' }">
+            <button type="button" role="tab" :aria-selected="seoTab === 'serp'" @click="seoTab = 'serp'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'serp' }">
                 Google SERP &amp; Meta
             </button>
-            <button type="button" @click="seoTab = 'readability'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'readability' }">
+            <button type="button" role="tab" :aria-selected="seoTab === 'readability'" @click="seoTab = 'readability'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'readability' }">
                 Readability (<span x-text="fleschScore">0</span>)
             </button>
-            <button type="button" @click="seoTab = 'schema'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'schema' }">
+            <button type="button" role="tab" :aria-selected="seoTab === 'schema'" @click="seoTab = 'schema'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'schema' }">
                 Schema &amp; Robots
             </button>
-            <button type="button" @click="seoTab = 'social'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'social' }">
+            <button type="button" role="tab" :aria-selected="seoTab === 'social'" @click="seoTab = 'social'" class="gif-tab-btn" :class="{ 'is-active': seoTab === 'social' }">
                 Social Cards
             </button>
         </div>
@@ -3187,7 +3202,7 @@
          MODAL 5: RESPONSIVE DEVICE PREVIEW + SIGNED SHARE LINK
          ===================================================================== --}}
     <div x-show="previewModal.open" style="display:none;" class="gif-modal-backdrop" @click.self="previewModal.open = false">
-        <div class="gif-modal-window" style="max-width: 960px;">
+        <div class="gif-modal-window" style="max-width: 960px;" role="dialog" aria-modal="true" aria-label="Responsive Article Preview">
             <div class="gif-modal-header" style="flex-wrap:wrap; gap:8px;">
                 <div class="gif-row-gap-2">
                     <span style="font-weight:800; font-size:14px;">Responsive Article Preview</span>
@@ -3237,7 +3252,7 @@
          DRAWER: SLIDE-OVER REVISIONS HISTORY + DIFF + 1-CLICK RESTORE
          ===================================================================== --}}
     <div x-show="revisionsDrawer.open" style="display:none;" class="gif-drawer-backdrop" @click.self="revisionsDrawer.open = false">
-        <div class="gif-drawer-panel" role="dialog" aria-label="Post Revision History">
+        <div class="gif-drawer-panel" role="dialog" aria-modal="true" aria-label="Post Revision History">
             <div class="gif-modal-header">
                 <div>
                     <div style="font-weight:800; font-size:14px;">Revision History &amp; Diff</div>

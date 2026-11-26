@@ -16,7 +16,7 @@ All admin routes use `web` + `auth` session authentication, CSRF protection (`Ve
 | `POST` | `/api/v1/audit` | `5/min` | Public + DPDP consent | Stores 360 growth audit request. |
 | `POST` | `/api/v1/newsletter/subscribe` | `5/min` | Public | Newsletter subscription. |
 | `POST` | `/api/v1/webhooks/crm-status` | `30/min` | HMAC-SHA256 + 5m replay window | Inbound CRM sync status webhook callback. |
-| `POST` | `/api/v1/crm/ingest` | `10/min` | Public + DPDP consent + honeypot | Temporary hardened website lead ingestion bridge (removed in FeedOS Phase 3). |
+| `POST` | `/api/v1/crm/ingest` | `10/min` | Public + DPDP consent + honeypot | Temporary website lead ingestion bridge (**Owner:** Laravel API / CRM sync owner; **Target Removal:** after `feedos-api /api/v1` production cutover, sunset `2026-12-15`). |
 | `GET/POST` | `/api/v1/mcp*`, `/api/mcp*` | `60/min` | Public read / Bearer `MCP_API_KEY` write | Model Context Protocol JSON-RPC & tool endpoints. |
 
 ## Admin Editorial Studio & Operations API (`routes/web.php`)
