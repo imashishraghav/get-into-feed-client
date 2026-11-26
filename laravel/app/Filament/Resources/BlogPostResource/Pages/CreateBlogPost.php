@@ -4,13 +4,23 @@ namespace App\Filament\Resources\BlogPostResource\Pages;
 
 use App\Filament\Resources\BlogPostResource;
 use App\Models\AuditLog;
+use App\Services\BlogPostService;
+use App\Services\HtmlSanitizerService;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 
 class CreateBlogPost extends CreateRecord
 {
     protected static string $resource = BlogPostResource::class;
+
+    public function getMaxContentWidth(): MaxWidth|string|null
+    {
+        return MaxWidth::Full;
+    }
 
     public function getBreadcrumbs(): array
     {
@@ -20,7 +30,10 @@ class CreateBlogPost extends CreateRecord
     public function getTitle(): string|Htmlable
     {
         return new HtmlString('
-            <span style="font-size: 22px; font-weight: 400; color: #1d2327; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif;">Add New Post</span>
+            <div class="flex items-center gap-3">
+                <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-zinc-100">Add New Post</span>
+                <span class="gif-studio-pill">Editorial Studio + SEO PRO</span>
+            </div>
         ');
     }
 
@@ -32,35 +45,74 @@ class CreateBlogPost extends CreateRecord
             $data['scheduled_for'] = null;
         }
 
+        $data['author_id'] = $data['author_id'] ?? auth()->id();
+        $data['slug'] = ! empty($data['slug']) ? Str::slug((string) $data['slug']) : Str::slug((string) ($data['title'] ?? ''));
+
+        $plain = trim(strip_tags((string) ($data['content'] ?? '')));
+        $computedWords = $plain !== '' ? str_word_count($plain) : 0;
+        $data['word_count'] = max($computedWords, (int) ($data['word_count'] ?? 0));
+        $data['reading_time'] = max(1, (int) ceil($data['word_count'] / 200));
+        if (empty($data['read_time']) || preg_match('/^\d+\s+min\s+read$/i', (string) $data['read_time'])) {
+            $data['read_time'] = $data['reading_time'].' min read';
+        }
+
+        $data['secondary_keyphrases'] = is_array($data['secondary_keyphrases'] ?? null)
+            ? array_values(array_filter(array_map('trim', $data['secondary_keyphrases'])))
+            : [];
+
+        $data['faq_items'] = self::normalizeFaqItems($data['faq_items'] ?? []);
+        $data['schema_type'] = $data['schema_type'] ?: 'BlogPosting';
+        $data['robots_index'] = $data['robots_index'] === null ? true : (bool) $data['robots_index'];
+        $data['robots_follow'] = $data['robots_follow'] === null ? true : (bool) $data['robots_follow'];
+        $data['seo_score'] = max(0, min(100, (int) ($data['seo_score'] ?? 0)));
+        $data['readability_score'] = max(0, min(100, (int) ($data['readability_score'] ?? 0)));
+        $data['visibility'] = in_array($data['visibility'] ?? 'public', ['public', 'unlisted', 'private'], true)
+            ? ($data['visibility'] ?? 'public')
+            : 'public';
+        $data['version'] = 1;
+
+        $sanitizedContent = app(HtmlSanitizerService::class)->sanitize((string) ($data['content'] ?? ''));
+        $data['content'] = $sanitizedContent;
+        $data['content_html'] = $sanitizedContent;
+        $data['meta_title'] = $data['seo_title'] ?? '';
+        $data['faq_json'] = $data['faq_items'];
+        $data['scheduled_at'] = $data['scheduled_for'] ?? null;
+
         return $data;
     }
 
     protected function afterCreate(): void
     {
-        $seoData = $this->data['seo'] ?? null;
-        if (is_array($seoData)) {
-            $this->record->seo()->create([
-                'seo_title' => $seoData['seo_title'] ?? null,
-                'meta_description' => $seoData['meta_description'] ?? null,
-                'focus_keyword' => $seoData['focus_keyword'] ?? null,
-                'target_keywords' => $seoData['target_keywords'] ?? [],
-                'canonical_url' => $seoData['canonical_url'] ?? null,
-                'backlinks' => $seoData['backlinks'] ?? [],
-                'robots_index' => (bool) ($seoData['robots_index'] ?? true),
-                'robots_follow' => (bool) ($seoData['robots_follow'] ?? true),
-                'in_sitemap' => (bool) ($seoData['in_sitemap'] ?? true),
-                'sitemap_priority' => $seoData['sitemap_priority'] ?? 0.8,
-                'sitemap_changefreq' => $seoData['sitemap_changefreq'] ?? 'weekly',
-                'og_title' => $seoData['og_title'] ?? null,
-                'og_description' => $seoData['og_description'] ?? null,
-                'og_media_id' => $seoData['og_media_id'] ?? null,
-                'twitter_title' => $seoData['twitter_title'] ?? null,
-                'twitter_description' => $seoData['twitter_description'] ?? null,
-                'twitter_media_id' => $seoData['twitter_media_id'] ?? null,
-                'schema_type' => $seoData['schema_type'] ?? 'Article',
-            ]);
+        $record = $this->record;
+        $service = app(BlogPostService::class);
+        $service->syncSeoAndSchema($record);
+        $service->captureRevision($record, auth()->user(), $record->status === 'published' ? 'publish' : 'manual', 'Initial creation');
+
+        Cache::forget('api_blog_public_list');
+        AuditLog::log('CREATE', $record, null, $record->toArray());
+    }
+
+    /**
+     * @return array<int, array{q: string, a: string}>
+     */
+    protected static function normalizeFaqItems(mixed $items): array
+    {
+        if (! is_array($items)) {
+            return [];
         }
 
-        AuditLog::log('CREATE', $this->record, null, $this->record->toArray());
+        $clean = [];
+        foreach ($items as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+            $q = trim((string) ($item['q'] ?? ($item['question'] ?? '')));
+            $a = trim((string) ($item['a'] ?? ($item['answer'] ?? '')));
+            if ($q !== '' || $a !== '') {
+                $clean[] = ['q' => $q, 'a' => $a];
+            }
+        }
+
+        return $clean;
     }
 }

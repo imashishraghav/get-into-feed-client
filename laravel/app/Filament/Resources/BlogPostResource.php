@@ -3,19 +3,19 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Forms\Components\MediaPicker;
-use App\Filament\Forms\Components\SeoFields;
 use App\Filament\ManagedResource;
 use App\Filament\Resources\BlogPostResource\Pages;
 use App\Filament\Traits\HasScheduledPublishing;
+use App\Models\AuditLog;
 use App\Models\BlogPost;
 use App\Models\Setting;
+use App\Models\User;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
 use Filament\Forms\Form;
@@ -32,6 +32,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class BlogPostResource extends ManagedResource
@@ -53,161 +54,219 @@ class BlogPostResource extends ManagedResource
         return null;
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['seo', 'featuredMedia']);
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Grid::make(['default' => 1, 'lg' => 3])->schema([
-                // ── MAIN CONTENT CANVAS (2 COLUMNS) ──────────────────────
-                Group::make()->columnSpan(['default' => 1, 'lg' => 2])->schema([
-                    // 1. Classic WordPress Post Editor Suite (Exact Match to Screenshot)
-                    ViewField::make('wp_editor_header')
-                        ->view('filament.forms.wp-editor-header')
+            Grid::make(['default' => 1, 'lg' => 12])->schema([
+                // ── MAIN EDITORIAL STUDIO + LIVE SEO STUDIO PRO (8 COLUMNS) ─────────
+                Group::make()->columnSpan(['default' => 1, 'lg' => 8])->schema([
+                    ViewField::make('content')
+                        ->hiddenLabel()
+                        ->default('')
+                        ->required()
+                        ->view('filament.forms.components.getintofeed-editor')
                         ->columnSpanFull(),
 
-                    Hidden::make('title')->required(),
-                    Hidden::make('slug')->required(),
-                    Hidden::make('content')->required(),
+                    // Entangled Core & SEO Studio State Fields (safe defaults for new & legacy posts)
+                    Hidden::make('title')->default('')->required(),
+                    Hidden::make('slug')->default('')->required(),
+                    Hidden::make('excerpt')->default(''),
                     Hidden::make('editor_mode')->default('classic'),
-                    Hidden::make('content_blocks')->dehydrateStateUsing(fn ($state) => $state ?? []),
-
-                    // Excerpt Card (Collapsible)
-                    Section::make('Excerpt')
-                        ->collapsible()
-                        ->collapsed()
-                        ->schema([
-                            Textarea::make('excerpt')
-                                ->label('')
-                                ->placeholder('Write an excerpt (optional short teaser displayed on blog hub & search snippets)...')
-                                ->rows(2),
-                        ]),
-
-                    // ── YOAST SEO SUITE (FULL WIDTH UNDER WRITING CANVAS) ──
-                    SeoFields::makeYoastBox('Article'),
+                    Hidden::make('content_blocks')->default([])->dehydrateStateUsing(fn ($state) => is_array($state) ? $state : []),
+                    Hidden::make('focus_keyphrase')->default(''),
+                    Hidden::make('secondary_keyphrases')->default([])->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values(array_filter(array_map('strval', $state))) : []),
+                    Hidden::make('seo_title')->default(''),
+                    Hidden::make('meta_description')->default(''),
+                    Hidden::make('canonical_url')->default(''),
+                    Hidden::make('schema_type')->default('BlogPosting'),
+                    Hidden::make('robots_index')->default(true)->dehydrateStateUsing(fn ($state) => $state === null ? true : (bool) $state),
+                    Hidden::make('robots_follow')->default(true)->dehydrateStateUsing(fn ($state) => $state === null ? true : (bool) $state),
+                    Hidden::make('faq_items')->default([])->dehydrateStateUsing(fn ($state) => is_array($state) ? array_values($state) : []),
+                    Hidden::make('og_title')->default(''),
+                    Hidden::make('og_description')->default(''),
+                    Hidden::make('seo_score')->default(0)->dehydrateStateUsing(fn ($state) => max(0, min(100, (int) ($state ?? 0)))),
+                    Hidden::make('readability_score')->default(0)->dehydrateStateUsing(fn ($state) => max(0, min(100, (int) ($state ?? 0)))),
+                    Hidden::make('word_count')->default(0)->dehydrateStateUsing(fn ($state) => max(0, (int) ($state ?? 0))),
+                    Hidden::make('reading_time')->default(0)->dehydrateStateUsing(fn ($state) => max(0, (int) ($state ?? 0))),
+                    Hidden::make('visibility')->default('public'),
+                    Hidden::make('version')->default(1)->dehydrateStateUsing(fn ($state) => max(1, (int) ($state ?? 1))),
+                    Hidden::make('content_json')->default(null),
                 ]),
 
-                // ── DOCUMENT SIDEBAR (1 COLUMN - WORDPRESS STYLE BOXES) ──
-                Group::make()->columnSpan(['default' => 1, 'lg' => 1])->schema([
-                    // 1. WordPress / Yoast Classic Publish Box
-                    ViewField::make('wp_publish_box')
-                        ->hiddenLabel()
-                        ->view('filament.forms.wp-publish-box')
-                        ->columnSpanFull(),
+                // ── STICKY DOCUMENT SIDEBAR (4 COLUMNS) ─────────────────────────────
+                Group::make()
+                    ->columnSpan(['default' => 1, 'lg' => 4])
+                    ->extraAttributes(['class' => 'gif-sticky-sidebar'])
+                    ->schema([
+                        // 1. Publish & Status Card
+                        ViewField::make('wp_publish_box')
+                            ->hiddenLabel()
+                            ->view('filament.forms.wp-publish-box')
+                            ->extraAttributes(['class' => 'gif-sidebar-section gif-sidebar-publish'])
+                            ->columnSpanFull(),
 
-                    Hidden::make('status')->default('draft'),
-                    Hidden::make('published_at'),
-                    Hidden::make('scheduled_for'),
-                    Hidden::make('is_featured')->default(false),
+                        Hidden::make('status')->default('draft'),
+                        Hidden::make('published_at'),
+                        Hidden::make('scheduled_for'),
+                        Hidden::make('is_featured')->default(false),
 
-                    // 2. Categories Card
-                    Section::make('Categories')
-                        ->schema([
-                            Select::make('category')
-                                ->label('')
-                                ->placeholder('Select or create category')
-                                ->options(function () {
-                                    $defaults = [
-                                        'Growth Playbook' => 'Growth Playbook',
-                                        'Paid Performance' => 'Paid Performance',
-                                        'AI & GEO Search' => 'AI & GEO Search',
-                                        'SEO & AI Search' => 'SEO & AI Search',
-                                        'Creative Strategy' => 'Creative Strategy',
-                                        'Web & CRO' => 'Web & CRO',
-                                        'Brand Positioning' => 'Brand Positioning',
-                                    ];
-                                    try {
-                                        $fromRegistry = [];
-                                        $raw = Setting::get('blog_categories_registry', []);
-                                        if (is_array($raw)) {
-                                            foreach ($raw as $c) {
-                                                if (! empty($c['name'])) {
-                                                    $fromRegistry[$c['name']] = $c['name'];
+                        // 2. Featured Image + SEO Alt Text Card
+                        Section::make('Featured Image')
+                            ->icon('heroicon-o-photo')
+                            ->extraAttributes(['class' => 'gif-sidebar-section gif-sidebar-media'])
+                            ->schema([
+                                MediaPicker::make('featured_media_id', 'Set featured image'),
+                                TextInput::make('featured_image_alt')
+                                    ->label('Featured Image SEO Alt Text')
+                                    ->placeholder('Descriptive alt text including focus keyphrase...')
+                                    ->maxLength(255)
+                                    ->helperText('Improves Google Images ranking & screen-reader accessibility.'),
+                            ]),
+
+                        // 3. Categories Card
+                        Section::make('Categories')
+                            ->icon('heroicon-o-folder')
+                            ->extraAttributes(['class' => 'gif-sidebar-section gif-sidebar-publish'])
+                            ->schema([
+                                Select::make('category')
+                                    ->label('')
+                                    ->placeholder('Select or create category')
+                                    ->options(function () {
+                                        $defaults = [
+                                            'Growth Playbook' => 'Growth Playbook',
+                                            'Paid Performance' => 'Paid Performance',
+                                            'AI & GEO Search' => 'AI & GEO Search',
+                                            'SEO & AI Search' => 'SEO & AI Search',
+                                            'Creative Strategy' => 'Creative Strategy',
+                                            'Web & CRO' => 'Web & CRO',
+                                            'Brand Positioning' => 'Brand Positioning',
+                                        ];
+                                        try {
+                                            $fromRegistry = [];
+                                            $raw = Setting::get('blog_categories_registry', []);
+                                            if (is_array($raw)) {
+                                                foreach ($raw as $c) {
+                                                    if (! empty($c['name'])) {
+                                                        $fromRegistry[$c['name']] = $c['name'];
+                                                    }
                                                 }
                                             }
+                                            $existing = BlogPost::query()
+                                                ->whereNotNull('category')
+                                                ->where('category', '!=', '')
+                                                ->distinct()
+                                                ->pluck('category', 'category')
+                                                ->toArray();
+
+                                            return array_unique(array_merge($defaults, $fromRegistry, $existing));
+                                        } catch (\Throwable $e) {
+                                            return $defaults;
                                         }
-                                        $existing = BlogPost::query()
-                                            ->whereNotNull('category')
-                                            ->where('category', '!=', '')
-                                            ->distinct()
-                                            ->pluck('category', 'category')
-                                            ->toArray();
-
-                                        return array_unique(array_merge($defaults, $fromRegistry, $existing));
-                                    } catch (\Throwable $e) {
-                                        return $defaults;
-                                    }
-                                })
-                                ->searchable()
-                                ->createOptionForm([
-                                    TextInput::make('name')
-                                        ->label('New Category Name')
-                                        ->required()
-                                        ->maxLength(100)
-                                        ->placeholder('e.g. Social Media Marketing, Case Studies'),
-                                ])
-                                ->createOptionUsing(function (array $data): string {
-                                    $name = trim($data['name']);
-                                    try {
-                                        $raw = Setting::get('blog_categories_registry', []);
-                                        if (! is_array($raw)) {
-                                            $raw = [];
+                                    })
+                                    ->searchable()
+                                    ->createOptionForm([
+                                        TextInput::make('name')
+                                            ->label('New Category Name')
+                                            ->required()
+                                            ->maxLength(100)
+                                            ->placeholder('e.g. Social Media Marketing, Case Studies'),
+                                    ])
+                                    ->createOptionUsing(function (array $data): string {
+                                        $name = trim($data['name']);
+                                        try {
+                                            $raw = Setting::get('blog_categories_registry', []);
+                                            if (! is_array($raw)) {
+                                                $raw = [];
+                                            }
+                                            $raw[] = [
+                                                'name' => $name,
+                                                'slug' => Str::slug($name),
+                                                'description' => 'Added from blog editor.',
+                                            ];
+                                            Setting::set('cms', 'blog_categories_registry', array_values($raw), true);
+                                        } catch (\Throwable $e) {
                                         }
-                                        $raw[] = [
-                                            'name' => $name,
-                                            'slug' => Str::slug($name),
-                                            'description' => 'Added from blog editor.',
-                                        ];
-                                        Setting::set('cms', 'blog_categories_registry', array_values($raw), true);
-                                    } catch (\Throwable $e) {
-                                    }
 
-                                    return $name;
-                                })
-                                ->createOptionAction(function ($action) {
-                                    return $action
-                                        ->modalHeading('Create New Category')
-                                        ->modalButton('Add Category')
-                                        ->modalWidth('md');
-                                })
-                                ->default('Growth Playbook')
-                                ->required()
-                                ->native(false),
-                        ]),
+                                        return $name;
+                                    })
+                                    ->createOptionAction(function ($action) {
+                                        return $action
+                                            ->modalHeading('Create New Category')
+                                            ->modalButton('Add Category')
+                                            ->modalWidth('md');
+                                    })
+                                    ->default('Growth Playbook')
+                                    ->required()
+                                    ->native(false),
+                            ]),
 
-                    // 3. Tags Card
-                    Section::make('Tags')
-                        ->schema([
-                            TagsInput::make('tags')
-                                ->label('')
-                                ->placeholder('Add new tag')
-                                ->helperText('Separate tags with commas or press Enter.'),
-                        ]),
+                        // 4. Tags Card
+                        Section::make('Tags')
+                            ->icon('heroicon-o-tag')
+                            ->extraAttributes(['class' => 'gif-sidebar-section gif-sidebar-publish'])
+                            ->schema([
+                                TagsInput::make('tags')
+                                    ->label('')
+                                    ->placeholder('Add or search tags...')
+                                    ->suggestions(function (): array {
+                                        try {
+                                            return BlogPost::query()
+                                                ->whereNotNull('tags')
+                                                ->pluck('tags')
+                                                ->flatten()
+                                                ->filter(fn ($tag) => is_string($tag) && trim($tag) !== '')
+                                                ->map(fn ($tag) => trim((string) $tag))
+                                                ->unique()
+                                                ->sort()
+                                                ->values()
+                                                ->toArray();
+                                        } catch (\Throwable $e) {
+                                            return [];
+                                        }
+                                    })
+                                    ->helperText('Autocomplete from existing tags or press Enter to create a new tag.'),
+                            ]),
 
-                    // 4. Featured Image Card
-                    Section::make('Featured image')
-                        ->schema([
-                            MediaPicker::make('featured_media_id', 'Set featured image'),
-                        ]),
+                        // 5. Author & Reading Time Card
+                        Section::make('Author & Reading Time')
+                            ->icon('heroicon-o-user')
+                            ->collapsible()
+                            ->collapsed()
+                            ->extraAttributes(['class' => 'gif-sidebar-section gif-sidebar-publish'])
+                            ->schema([
+                                Select::make('author_id')
+                                    ->label('CMS Author Account')
+                                    ->options(fn () => User::query()->orderBy('name')->pluck('name', 'id')->toArray())
+                                    ->searchable()
+                                    ->nullable(),
 
-                    // 5. Author & Reading Time Card
-                    Section::make('Author & Reading Time')
-                        ->collapsible()
-                        ->collapsed()
-                        ->schema([
-                            TextInput::make('author_name')
-                                ->label('Author Name')
-                                ->placeholder('e.g. Rahul Saxena')
-                                ->default('Ashish'),
+                                TextInput::make('author_name')
+                                    ->label('Author Name')
+                                    ->placeholder('e.g. Ashish')
+                                    ->default('Ashish'),
 
-                            TextInput::make('author_role')
-                                ->label('Author Role')
-                                ->placeholder('e.g. VP of Search Architecture')
-                                ->default('Growth Collective'),
+                                TextInput::make('author_role')
+                                    ->label('Author Role')
+                                    ->placeholder('e.g. VP of Search Architecture')
+                                    ->default('Growth Collective'),
 
-                            TextInput::make('read_time')
-                                ->label('Estimated Reading Time')
-                                ->default('5 min read'),
-                        ]),
-                ]),
+                                TextInput::make('read_time')
+                                    ->label('Estimated Reading Time')
+                                    ->default('5 min read'),
+                            ]),
+
+                        // 6. Live Article Outline (TOC)
+                        ViewField::make('article_outline_toc')
+                            ->hiddenLabel()
+                            ->view('filament.forms.article-outline-toc')
+                            ->extraAttributes(['class' => 'gif-sidebar-section gif-sidebar-publish'])
+                            ->columnSpanFull(),
+                    ]),
             ]),
         ]);
     }
@@ -258,22 +317,25 @@ class BlogPostResource extends ManagedResource
                     ->sortable()
                     ->color('gray'),
 
-                TextColumn::make('seo_health')
-                    ->label('SEO')
+                TextColumn::make('seo_score')
+                    ->label('SEO Score')
                     ->badge()
-                    ->getStateUsing(function ($record) {
-                        $seo = $record->seo;
-                        if (! $seo || empty($seo->seo_title) || empty($seo->meta_description)) {
-                            return $seo ? '⚠ Incomplete' : '✕ Missing';
-                        }
+                    ->getStateUsing(function (BlogPost $record): string {
+                        $score = $record->effectiveSeoScore();
 
-                        return '✓ Optimal';
+                        return $score > 0 ? "{$score}/100" : 'Not Audited';
                     })
-                    ->color(fn ($state) => match (true) {
-                        str_contains((string) $state, 'Optimal') => 'success',
-                        str_contains((string) $state, 'Incomplete') => 'warning',
-                        default => 'danger',
-                    }),
+                    ->color(function (BlogPost $record): string {
+                        $score = $record->effectiveSeoScore();
+
+                        return match (true) {
+                            $score >= 80 => 'success',
+                            $score >= 55 => 'warning',
+                            $score > 0 => 'danger',
+                            default => 'gray',
+                        };
+                    })
+                    ->sortable(),
 
                 TextColumn::make('author_name')
                     ->label('Author')
@@ -291,6 +353,7 @@ class BlogPostResource extends ManagedResource
                 Action::make('duplicate')
                     ->label('Duplicate')
                     ->icon('heroicon-o-square-2-stack')
+                    ->color('gray')
                     ->requiresConfirmation()
                     ->visible(fn () => auth()->user()?->hasCmsPermission('blog.create'))
                     ->action(function (BlogPost $record): void {
@@ -307,6 +370,7 @@ class BlogPostResource extends ManagedResource
                         $copy->status = 'draft';
                         $copy->published_at = null;
                         $copy->scheduled_for = null;
+                        $copy->canonical_url = null;
                         $copy->author_id = auth()->id();
                         $copy->views_count = 0;
                         $copy->is_featured = false;

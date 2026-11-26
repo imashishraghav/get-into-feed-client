@@ -32,6 +32,14 @@ class HtmlSanitizerService
             ->allowElement('h4', ['id', 'class'])
             ->allowElement('p', ['class'])
             ->allowElement('blockquote', ['class'])
+            ->allowElement('ul', ['class'])
+            ->allowElement('ol', ['class'])
+            ->allowElement('li', ['class'])
+            ->allowElement('u', ['class'])
+            ->allowElement('s', ['class'])
+            ->allowElement('mark', ['class'])
+            ->allowElement('hr', ['class'])
+            ->allowElement('br', [])
             ->allowElement('a', ['href', 'title', 'target', 'rel', 'class', 'data-cta'])
             ->allowElement('img', ['src', 'alt', 'title', 'width', 'height', 'loading', 'srcset', 'sizes', 'class', 'data-media-id'])
             ->allowElement('figure', ['class', 'data-video-embed'])
@@ -76,7 +84,7 @@ class HtmlSanitizerService
         }
 
         return ! (bool) preg_match(
-            '/<\/?(?:p|h[1-6]|div|span|ul|ol|li|blockquote|table|thead|tbody|tfoot|tr|th|td|figure|figcaption|img|a|strong|em|b|i|u|s|pre|code|iframe|script|style|object|embed|form|input|svg|details|summary|aside|section|br|hr)\b/i',
+            '/<\/?(?:p|h[1-6]|div|span|ul|ol|li|blockquote|table|thead|tbody|tfoot|tr|th|td|figure|figcaption|img|a|strong|em|b|i|u|s|mark|pre|code|iframe|script|style|object|embed|form|input|svg|details|summary|aside|section|br|hr)\b/i',
             $content
         );
     }

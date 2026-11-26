@@ -1,0 +1,462 @@
+/* ==========================================================================
+   GETINTOFEED EDITORIAL STUDIO — TIPTAP CANVAS, BUBBLE MENU & SLASH MENU CSS
+   ========================================================================== */
+
+.gif-tiptap-host {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+
+.gif-tiptap-host .ProseMirror {
+    min-height: 460px;
+    padding: 24px 28px;
+    background: var(--gif-bg, #ffffff);
+    color: var(--gif-text, #0f172a);
+    font-size: 15.5px;
+    line-height: 1.75;
+    outline: none;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+@media (max-width: 767px) {
+    .gif-tiptap-host .ProseMirror {
+        min-height: 360px;
+        padding: 16px 14px 28px;
+        font-size: 16px;
+    }
+}
+
+.gif-tiptap-host .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: var(--gif-text-muted, #64748b);
+    pointer-events: none;
+    height: 0;
+}
+
+.gif-tiptap-host .ProseMirror h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 1.5rem 0 0.75rem;
+    color: var(--gif-text, #0f172a);
+    line-height: 1.3;
+}
+
+.gif-tiptap-host .ProseMirror h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 1.25rem 0 0.5rem;
+    color: var(--gif-text, #0f172a);
+    line-height: 1.35;
+}
+
+.gif-tiptap-host .ProseMirror h4 {
+    font-size: 1.075rem;
+    font-weight: 700;
+    margin: 1rem 0 0.45rem;
+    color: var(--gif-text, #0f172a);
+}
+
+.gif-tiptap-host .ProseMirror p {
+    margin: 0.75rem 0;
+}
+
+.gif-tiptap-host .ProseMirror p.gif-align-center,
+.gif-tiptap-host .ProseMirror h2.gif-align-center,
+.gif-tiptap-host .ProseMirror h3.gif-align-center,
+.gif-tiptap-host .ProseMirror h4.gif-align-center {
+    text-align: center;
+}
+
+.gif-tiptap-host .ProseMirror p.gif-align-right,
+.gif-tiptap-host .ProseMirror h2.gif-align-right,
+.gif-tiptap-host .ProseMirror h3.gif-align-right,
+.gif-tiptap-host .ProseMirror h4.gif-align-right {
+    text-align: right;
+}
+
+.gif-tiptap-host .ProseMirror ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+    margin: 0.85rem 0;
+}
+
+.gif-tiptap-host .ProseMirror ol {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    margin: 0.85rem 0;
+}
+
+.gif-tiptap-host .ProseMirror blockquote {
+    margin: 1.25rem 0;
+    padding: 0.85rem 1.25rem;
+    border-left: 4px solid var(--gif-accent, #2563eb);
+    background: var(--gif-bg-soft, #f8fafc);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: var(--gif-text-body, #334155);
+}
+
+.gif-tiptap-host .ProseMirror mark {
+    background: #fef08a;
+    color: #0f172a;
+    padding: 0 3px;
+    border-radius: 3px;
+}
+
+.gif-tiptap-host .ProseMirror pre {
+    background: #09090b;
+    color: #e4e4e7;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 14px 16px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.gif-tiptap-host .ProseMirror code {
+    background: var(--gif-bg-muted, #f1f5f9);
+    color: var(--gif-accent, #2563eb);
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.gif-tiptap-host .ProseMirror pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+.gif-tiptap-host .ProseMirror a {
+    color: var(--gif-accent, #2563eb);
+    text-decoration: underline;
+}
+
+.gif-tiptap-host .ProseMirror hr {
+    border: 0;
+    border-top: 2px solid var(--gif-border, #e2e8f0);
+    margin: 1.5rem 0;
+}
+
+/* Scrollable Table Container Inside Canvas */
+.gif-tiptap-host .ProseMirror .tableWrapper,
+.gif-tiptap-host .ProseMirror .gif-table-scroll {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 1.25rem 0;
+    border-radius: 8px;
+}
+
+.gif-tiptap-host .ProseMirror table {
+    width: 100%;
+    min-width: 480px;
+    border-collapse: collapse;
+    margin: 0;
+}
+
+.gif-tiptap-host .ProseMirror th,
+.gif-tiptap-host .ProseMirror td {
+    border: 1px solid var(--gif-border-strong, #cbd5e1);
+    padding: 8px 12px;
+    text-align: left;
+    vertical-align: top;
+    min-width: 90px;
+}
+
+.gif-tiptap-host .ProseMirror th {
+    background: var(--gif-bg-soft, #f8fafc);
+    font-weight: 700;
+}
+
+.gif-tiptap-host .ProseMirror .selectedCell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(37, 99, 235, 0.1);
+    pointer-events: none;
+}
+
+/* Callout Node */
+.gif-tiptap-host .ProseMirror div[data-callout] {
+    margin: 1.15rem 0;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border-left: 4px solid var(--gif-accent, #2563eb);
+    background: var(--gif-accent-soft, #eff6ff);
+    color: var(--gif-text, #0f172a);
+}
+
+.gif-tiptap-host .ProseMirror div[data-callout][data-type="tip"] {
+    border-left-color: var(--gif-success, #059669);
+    background: var(--gif-success-bg, #ecfdf5);
+}
+
+.gif-tiptap-host .ProseMirror div[data-callout][data-type="warning"] {
+    border-left-color: var(--gif-warn, #d97706);
+    background: var(--gif-warn-bg, #fffbeb);
+}
+
+/* CTA Button Block */
+.gif-tiptap-host .ProseMirror .gif-cta-block {
+    margin: 1.25rem 0;
+    padding: 16px 18px;
+    border-radius: 12px;
+    border: 1px solid var(--gif-accent-border, #bfdbfe);
+    background: var(--gif-accent-soft, #eff6ff);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.gif-tiptap-host .ProseMirror .gif-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    background: var(--gif-accent, #2563eb);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 13.5px;
+    text-decoration: none;
+}
+
+/* Image + Caption + Alt warning */
+.gif-tiptap-host .ProseMirror figure.gif-image-figure,
+.gif-tiptap-host .ProseMirror .gif-image-wrapper {
+    margin: 1.25rem 0;
+    text-align: center;
+}
+
+.gif-tiptap-host .ProseMirror img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+    margin: 0 auto;
+}
+
+.gif-tiptap-host .ProseMirror img.ProseMirror-selectednode,
+.gif-tiptap-host .ProseMirror .ProseMirror-selectednode {
+    outline: 2px solid var(--gif-accent, #2563eb);
+    outline-offset: 2px;
+}
+
+.gif-tiptap-host .ProseMirror figcaption {
+    margin-top: 6px;
+    font-size: 12.5px;
+    color: var(--gif-text-muted, #64748b);
+    font-style: italic;
+}
+
+/* Video Embed */
+.gif-tiptap-host .ProseMirror figure[data-video-embed] {
+    margin: 1.25rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--gif-border, #e2e8f0);
+    background: #09090b;
+}
+
+.gif-tiptap-host .ProseMirror figure[data-video-embed] iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    border: 0;
+    display: block;
+}
+
+/* FAQ Block */
+.gif-tiptap-host .ProseMirror div[data-faq] {
+    margin: 1.25rem 0;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--gif-indigo-border, #c7d2fe);
+    background: var(--gif-bg-soft, #f8fafc);
+}
+
+.gif-tiptap-host .ProseMirror div[data-faq] .gif-faq-node-badge {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--gif-indigo, #4f46e5);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+/* Auto Table of Contents Block */
+.gif-tiptap-host .ProseMirror div[data-toc] {
+    margin: 1.25rem 0;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px dashed var(--gif-accent-border, #bfdbfe);
+    background: var(--gif-bg-soft, #f8fafc);
+}
+
+/* Bubble Menu */
+.gif-bubble-menu {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 2px;
+    padding: 4px;
+    background: #0f172a;
+    color: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.35);
+    z-index: 90;
+    max-width: calc(100vw - 24px);
+    overflow-x: auto;
+}
+
+.gif-bubble-btn {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0 8px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.gif-bubble-btn:hover,
+.gif-bubble-btn.is-active {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+/* Slash Command Menu */
+.gif-slash-menu {
+    position: fixed;
+    z-index: 95;
+    width: min(300px, calc(100vw - 24px));
+    max-height: 320px;
+    overflow-y: auto;
+    background: var(--gif-bg, #ffffff);
+    color: var(--gif-text, #0f172a);
+    border: 1px solid var(--gif-border-strong, #cbd5e1);
+    border-radius: 12px;
+    box-shadow: 0 18px 36px -8px rgba(15, 23, 42, 0.28);
+    padding: 6px;
+}
+
+.gif-slash-item {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.gif-slash-item:hover,
+.gif-slash-item.is-selected {
+    background: var(--gif-accent-soft, #eff6ff);
+    color: var(--gif-accent, #2563eb);
+}
+
+.gif-slash-badge {
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: var(--gif-bg-muted, #f1f5f9);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.gif-slash-title {
+    font-size: 12.5px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.gif-slash-desc {
+    font-size: 11px;
+    color: var(--gif-text-muted, #64748b);
+    line-height: 1.25;
+}
+
+/* Inline Image NodeView Bar */
+.gif-img-node {
+    position: relative;
+    margin: 1.25rem 0;
+    padding: 8px;
+    border-radius: 12px;
+    border: 1px solid var(--gif-border, #e2e8f0);
+    background: var(--gif-bg-soft, #f8fafc);
+}
+
+.gif-img-node-meta {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.gif-img-alt-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.gif-img-alt-pill.is-ok {
+    background: var(--gif-success-bg, #ecfdf5);
+    color: var(--gif-success, #059669);
+}
+
+.gif-img-alt-pill.is-missing {
+    background: var(--gif-danger-bg, #fff1f2);
+    color: var(--gif-danger, #e11d48);
+}
+
+.gif-img-edit-btn {
+    min-height: 34px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--gif-border-strong, #cbd5e1);
+    background: var(--gif-bg, #ffffff);
+    color: var(--gif-text, #0f172a);
+    font-size: 11.5px;
+    font-weight: 600;
+    cursor: pointer;
+}

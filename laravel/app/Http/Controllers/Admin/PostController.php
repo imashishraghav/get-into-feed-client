@@ -15,10 +15,12 @@ use App\Models\Setting;
 use App\Repositories\Contracts\BlogPostRepositoryInterface;
 use App\Repositories\RevisionRepository;
 use App\Services\BlogPostService;
+use App\Services\HtmlSanitizerService;
 use App\Services\ReadabilityService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
@@ -295,18 +297,32 @@ class PostController extends Controller
         ]);
     }
 
-    public function signedPreview(Request $request, string $uuid): JsonResponse
+    public function signedPreview(Request $request, string $uuid, HtmlSanitizerService $sanitizer): JsonResponse|Response
     {
         $post = BlogPost::withTrashed()
             ->withEditorialRelations()
             ->where('uuid', $uuid)
             ->firstOrFail();
 
-        return (new BlogPostResource($post))
-            ->additional([
-                'success' => true,
-                'preview' => true,
+        if ($request->expectsJson() || $request->query('format') === 'json') {
+            return (new BlogPostResource($post))
+                ->additional([
+                    'success' => true,
+                    'preview' => true,
+                ])
+                ->response();
+        }
+
+        $raw = (string) ($post->content_html ?: $post->content ?: '');
+        $renderedHtml = $sanitizer->isMarkdownOnly($raw)
+            ? Str::markdown($raw, ['html_input' => 'escape', 'allow_unsafe_links' => false])
+            : $sanitizer->sanitize($raw);
+
+        return response()
+            ->view('admin.post-preview', [
+                'post' => $post,
+                'renderedHtml' => $renderedHtml,
             ])
-            ->response();
+            ->header('X-Robots-Tag', 'noindex, nofollow');
     }
 }

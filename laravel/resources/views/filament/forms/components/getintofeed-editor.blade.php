@@ -29,8 +29,20 @@
     }
 
     $recordId = $record?->id ?? null;
+    $recordUuid = $record?->uuid ?? null;
+    $postVersion = max(1, (int) ($record?->version ?? 1));
+    $canPublish = (bool) (auth()->user()?->hasCmsPermission('blog.publish') ?? false);
     $initialFeaturedUrl = $record?->featuredMedia?->url ?? '';
+    $tiptapCssUrl = asset('build/editor/tiptap-studio.css');
+    $tiptapJsUrl = asset('build/editor/tiptap-studio.js');
+    $autosaveEndpoint = $recordId ? route('admin.api.posts.autosave', ['post' => $recordId]) : '';
+    $revisionsEndpoint = $recordId ? route('admin.api.posts.revisions.index', ['post' => $recordId]) : '';
+    $revisionsDiffEndpoint = $recordId ? route('admin.api.posts.revisions.diff', ['post' => $recordId]) : '';
+    $revisionsRestoreBase = $recordId ? url('/admin/api/posts/' . $recordId . '/revisions') : '';
+    $previewLinkEndpoint = $recordId ? route('admin.api.posts.preview-link', ['post' => $recordId]) : '';
 @endphp
+
+<link rel="stylesheet" href="{{ $tiptapCssUrl }}">
 
 {{-- Validation errors surfaced cleanly outside wire:ignore --}}
 @if($errors->has('data.title') || $errors->has('data.slug') || $errors->has('data.content'))
@@ -64,23 +76,37 @@
             ogTitle: cfg.ogTitle,
             ogDescription: cfg.ogDescription,
             seoScore: cfg.seoScore,
+            readabilityScore: cfg.readabilityScore,
             wordCount: cfg.wordCount,
             readingTime: cfg.readingTime,
             featuredImageAlt: cfg.featuredImageAlt,
             featuredMediaId: cfg.featuredMediaId,
+            visibility: cfg.visibility,
+            version: cfg.version,
+            contentJson: cfg.contentJson,
 
             // Config & lookups
             recordId: cfg.recordId || null,
+            recordUuid: cfg.recordUuid || null,
+            canPublish: Boolean(cfg.canPublish),
+            tiptapJsUrl: cfg.tiptapJsUrl || '/build/editor/tiptap-studio.js',
             csrfToken: cfg.csrfToken || '',
             uploadEndpoint: cfg.uploadEndpoint || '/admin/editor/upload-image',
             internalLinksEndpoint: cfg.internalLinksEndpoint || '/admin/editor/internal-links',
             mediaListEndpoint: cfg.mediaListEndpoint || '/admin/media/list',
+            autosaveEndpoint: cfg.autosaveEndpoint || '',
+            revisionsEndpoint: cfg.revisionsEndpoint || '',
+            revisionsDiffEndpoint: cfg.revisionsDiffEndpoint || '',
+            revisionsRestoreBase: cfg.revisionsRestoreBase || '',
+            previewLinkEndpoint: cfg.previewLinkEndpoint || '',
             mediaUrlMap: cfg.mediaUrlMap || {},
             mediaAssets: cfg.mediaAssets || [],
             featuredImageUrl: cfg.initialFeaturedUrl || '',
 
             // Editor UI state
             mode: 'visual',
+            mobileTab: 'content',
+            isMarkdownPost: false,
             isFocusMode: false,
             isExcerptOpen: false,
             isEditingSlug: false,
@@ -90,12 +116,22 @@
             _auditTimer: null,
             _syncTimer: null,
             _localSaveTimer: null,
+            _serverAutosaveTimer: null,
             _canvasCtx: null,
+            _tiptapEditor: null,
+            tiptapReady: false,
+            activeMarks: {},
+            isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
+            isKeyboardOpen: false,
+            keyboardBottomOffset: 0,
+            hasUncommittedChanges: false,
 
-            // Auto-save recovery
+            // Auto-save & Optimistic Locking state
             autoSaveStatus: 'Synced',
+            autosaveState: 'idle',
             hasRecoverableDraft: false,
             recoverableDraftTime: '',
+            versionConflict: null,
 
             // SEO Studio PRO UI
             seoTab: 'audit',
@@ -168,13 +204,37 @@
                 results: [],
                 loading: false,
             },
+            videoModal: {
+                open: false,
+                url: '',
+                title: '',
+                error: '',
+            },
+            revisionsDrawer: {
+                open: false,
+                loading: false,
+                items: [],
+                selectedFrom: null,
+                selectedTo: null,
+                diff: null,
+                diffLoading: false,
+                restoring: false,
+                error: '',
+            },
+            previewModal: {
+                open: false,
+                device: 'desktop',
+                shareUrl: '',
+                expiresInMinutes: 0,
+                loadingShare: false,
+                error: '',
+            },
             toast: {
                 show: false,
                 message: '',
             },
 
             initEditor() {
-                // Coalesce null server values cleanly for legacy records
                 if (typeof this.content !== 'string') this.content = '';
                 if (typeof this.title !== 'string') this.title = '';
                 if (typeof this.slug !== 'string') this.slug = '';
@@ -191,19 +251,28 @@
                 if (typeof this.ogTitle !== 'string') this.ogTitle = '';
                 if (typeof this.ogDescription !== 'string') this.ogDescription = '';
                 if (typeof this.featuredImageAlt !== 'string') this.featuredImageAlt = '';
+                if (!this.visibility) this.visibility = 'public';
+                if (!this.version || Number(this.version) < 1) this.version = 1;
                 this.tempSlug = this.slug;
 
+                this.setMobileTab('content');
+                this.isMarkdownPost = Boolean(this.content.trim() && this.isContentMarkdownOnly(this.content));
+                if (this.isMarkdownPost) {
+                    this.mode = 'html';
+                }
+
                 this.$nextTick(() => {
-                    if (this.$refs.visualCanvas) {
-                        this.$refs.visualCanvas.innerHTML = this.content || '';
-                    }
                     this.resolveFeaturedImageUrl();
                     this.runFullAnalysis();
                     this.checkLocalDraftRecovery();
                     this.fetchInternalSuggestions();
+                    if (!this.isMarkdownPost && this.mode === 'visual') {
+                        this.mountTipTapEditor();
+                    }
                 });
 
-                // Watch sidebar live updates
+                this.setupViewportAndConnectivity();
+
                 this.$watch('featuredMediaId', () => {
                     this.resolveFeaturedImageUrl();
                     this.scheduleAudit();
@@ -212,27 +281,182 @@
                     this.scheduleAudit();
                 });
 
-                // External events from Publish box, TOC sidebar, and form submission
                 window.addEventListener('sync-wp-editor', () => {
                     this.flushContentToWire();
                 });
                 window.addEventListener('gif-switch-seo-tab', (e) => {
                     if (e.detail && e.detail.tab) {
                         this.seoTab = e.detail.tab;
+                        this.setMobileTab('seo');
                     }
                 });
                 window.addEventListener('gif-scroll-to-heading', (e) => {
                     if (!e.detail || typeof e.detail.index !== 'number') return;
+                    this.setMobileTab('content');
                     this.scrollToEditorHeading(e.detail.index);
+                });
+                window.addEventListener('gif-open-preview-modal', () => {
+                    this.openPreviewModal();
+                });
+                window.addEventListener('gif-open-revisions-drawer', () => {
+                    this.openRevisionsDrawer();
+                });
+                window.addEventListener('beforeunload', (e) => {
+                    if (this.hasUncommittedChanges) {
+                        e.preventDefault();
+                        e.returnValue = '';
+                    }
                 });
 
                 const formEl = this.$el.closest('form');
                 if (formEl) {
                     formEl.addEventListener('submit', () => {
+                        this.hasUncommittedChanges = false;
                         this.flushContentToWire();
                         this.clearLocalDraft();
                     });
                 }
+            },
+
+            isContentMarkdownOnly(text) {
+                if (!text || String(text).trim() === '') return false;
+                return !/[<]\/?(?:p|h[1-6]|div|span|ul|ol|li|blockquote|table|thead|tbody|tfoot|tr|th|td|figure|figcaption|img|a|strong|em|b|i|u|s|mark|pre|code|iframe|script|style|object|embed|form|input|svg|details|summary|aside|section|br|hr)\b/i.test(String(text));
+            },
+
+            setMobileTab(tab) {
+                this.mobileTab = tab;
+                document.documentElement.dataset.gifMobileTab = tab;
+            },
+
+            setupViewportAndConnectivity() {
+                window.addEventListener('online', () => {
+                    this.isOnline = true;
+                    this.autoSaveStatus = 'Back online · Ready';
+                    this.autosaveState = 'idle';
+                });
+                window.addEventListener('offline', () => {
+                    this.isOnline = false;
+                    this.autosaveState = 'offline';
+                    this.autoSaveStatus = 'Offline · Saving locally';
+                });
+
+                if (window.visualViewport) {
+                    const updateVp = () => {
+                        const vv = window.visualViewport;
+                        const inset = Math.max(0, Math.round(window.innerHeight - (vv.height + vv.offsetTop)));
+                        this.keyboardBottomOffset = inset;
+                        this.isKeyboardOpen = inset > 120;
+                        document.documentElement.style.setProperty('--gif-vv-bottom', inset + 'px');
+                    };
+                    window.visualViewport.addEventListener('resize', updateVp);
+                    window.visualViewport.addEventListener('scroll', updateVp);
+                }
+            },
+
+            async mountTipTapEditor() {
+                if (!this.$refs.tiptapMount) return;
+                if (this._tiptapEditor) return;
+
+                try {
+                    if (!window.GetIntoFeedTipTap) {
+                        await import(this.tiptapJsUrl);
+                    }
+                } catch (err) {
+                    this.showToast('Unable to load rich editor engine — using code mode.');
+                    this.mode = 'html';
+                    return;
+                }
+
+                if (!window.GetIntoFeedTipTap || !this.$refs.tiptapMount) return;
+
+                this._tiptapEditor = window.GetIntoFeedTipTap.mount({
+                    element: this.$refs.tiptapMount,
+                    bubbleMenuElement: this.$refs.bubbleMenu || null,
+                    initialHtml: this.content || '',
+                    onUpdate: ({ html, json, faqItems }) => {
+                        this.content = html;
+                        this.contentJson = json;
+                        if (Array.isArray(faqItems) && faqItems.length > 0) {
+                            this.faqItems = faqItems;
+                        }
+                        this.markDirtyAndScheduleSaves();
+                    },
+                    onSelectionUpdate: (ed) => {
+                        this.refreshActiveMarks(ed);
+                    },
+                    onUploadFile: (file, ed) => {
+                        this.uploadFileDirectlyToEditor(file, ed);
+                    },
+                    onRequestMedia: () => {
+                        this.openMediaModal();
+                    },
+                    onRequestVideo: () => {
+                        this.openVideoModal();
+                    },
+                });
+                this.tiptapReady = true;
+                this.refreshActiveMarks(this._tiptapEditor);
+            },
+
+            refreshActiveMarks(ed) {
+                if (!ed) return;
+                this.activeMarks = {
+                    bold: ed.isActive('bold'),
+                    italic: ed.isActive('italic'),
+                    underline: ed.isActive('underline'),
+                    strike: ed.isActive('strike'),
+                    highlight: ed.isActive('highlight'),
+                    bulletList: ed.isActive('bulletList'),
+                    orderedList: ed.isActive('orderedList'),
+                    blockquote: ed.isActive('blockquote'),
+                    codeBlock: ed.isActive('codeBlock'),
+                    link: ed.isActive('link'),
+                    table: ed.isActive('table'),
+                    h2: ed.isActive('heading', { level: 2 }),
+                    h3: ed.isActive('heading', { level: 3 }),
+                    h4: ed.isActive('heading', { level: 4 }),
+                };
+            },
+
+            convertMarkdownToVisualBlocks() {
+                const md = String(this.content || '');
+                const lines = md.split(/\r?\n/);
+                let html = '';
+                let inList = false;
+
+                for (const rawLine of lines) {
+                    const line = rawLine.trim();
+                    if (!line) {
+                        if (inList) { html += '<\/ul>'; inList = false; }
+                        continue;
+                    }
+                    if (/^###\s+/.test(line)) {
+                        if (inList) { html += '<\/ul>'; inList = false; }
+                        html += `<h3>${this.escapeHtml(line.replace(/^###\s+/, ''))}<\/h3>`;
+                    } else if (/^##\s+/.test(line)) {
+                        if (inList) { html += '<\/ul>'; inList = false; }
+                        html += `<h2>${this.escapeHtml(line.replace(/^##\s+/, ''))}<\/h2>`;
+                    } else if (/^#\s+/.test(line)) {
+                        if (inList) { html += '<\/ul>'; inList = false; }
+                        html += `<h2>${this.escapeHtml(line.replace(/^#\s+/, ''))}<\/h2>`;
+                    } else if (/^[-*]\s+/.test(line)) {
+                        if (!inList) { html += '<ul>'; inList = true; }
+                        html += `<li>${this.escapeHtml(line.replace(/^[-*]\s+/, ''))}<\/li>`;
+                    } else {
+                        if (inList) { html += '<\/ul>'; inList = false; }
+                        let safe = this.escapeHtml(line)
+                            .replace(/\*\*(.+?)\*\*/g, '<strong>$1<\/strong>')
+                            .replace(/\*(.+?)\*/g, '<em>$1<\/em>');
+                        html += `<p>${safe}<\/p>`;
+                    }
+                }
+                if (inList) html += '<\/ul>';
+
+                this.isMarkdownPost = false;
+                this.content = html || '<p><\/p>';
+                this.switchMode('visual');
+                this.markDirtyAndScheduleSaves();
+                this.showToast('Converted Markdown into editable Visual Blocks');
             },
 
             showToast(msg) {
@@ -326,8 +550,15 @@
                     this.slug = this.slugify(val);
                     this.tempSlug = this.slug;
                 }
+                this.markDirtyAndScheduleSaves();
+            },
+
+            markDirtyAndScheduleSaves() {
+                this.hasUncommittedChanges = true;
+                this.autoSaveStatus = this.isOnline ? 'Unsaved changes...' : 'Offline · Saving locally...';
                 this.scheduleAudit();
                 this.scheduleLocalSave();
+                this.scheduleServerAutosave();
             },
 
             saveSlug() {
@@ -335,7 +566,7 @@
                 this.tempSlug = this.slug;
                 this.slugCustomized = true;
                 this.isEditingSlug = false;
-                this.scheduleAudit();
+                this.markDirtyAndScheduleSaves();
                 this.showToast('Permalink slug updated');
             },
 
@@ -344,73 +575,45 @@
                 this.isEditingSlug = false;
             },
 
-            // Editor Input & Mode Switching (Zero Typing Lag)
-            onVisualInput() {
-                this.autoSaveStatus = 'Editing...';
-                clearTimeout(this._syncTimer);
-                this._syncTimer = setTimeout(() => {
-                    if (this.$refs.visualCanvas) {
-                        this.content = this.$refs.visualCanvas.innerHTML;
-                    }
-                    this.runFullAnalysis();
-                    this.scheduleLocalSave();
-                }, 180);
-            },
-
-            onVisualBlur() {
-                this.flushContentToWire();
-            },
-
             onHtmlInput() {
-                this.autoSaveStatus = 'Editing HTML...';
-                this.scheduleAudit();
-                this.scheduleLocalSave();
+                this.markDirtyAndScheduleSaves();
             },
 
             flushContentToWire() {
                 clearTimeout(this._syncTimer);
-                if (this.mode === 'visual' && this.$refs.visualCanvas) {
-                    this.content = this.$refs.visualCanvas.innerHTML;
+                if (this.mode === 'visual' && this._tiptapEditor && window.GetIntoFeedTipTap) {
+                    this.content = window.GetIntoFeedTipTap.serializeHtmlWithScrollableTablesAndToc(this._tiptapEditor);
+                    this.contentJson = this._tiptapEditor.getJSON();
                 } else if (this.mode === 'html' && this.$refs.htmlTextarea) {
                     this.content = this.$refs.htmlTextarea.value;
                 }
+                this.readabilityScore = Math.max(0, Math.min(100, Number(this.fleschScore || 0)));
                 this.runFullAnalysis();
             },
 
-            switchMode(newMode) {
+            async switchMode(newMode) {
                 if (newMode === this.mode) return;
                 if (newMode === 'html') {
-                    if (this.$refs.visualCanvas) {
-                        this.content = this.$refs.visualCanvas.innerHTML;
+                    if (this._tiptapEditor && window.GetIntoFeedTipTap) {
+                        this.content = window.GetIntoFeedTipTap.serializeHtmlWithScrollableTablesAndToc(this._tiptapEditor);
+                        this.contentJson = this._tiptapEditor.getJSON();
                     }
                     this.mode = 'html';
                 } else {
+                    if (this.isMarkdownPost) {
+                        this.convertMarkdownToVisualBlocks();
+                        return;
+                    }
                     this.mode = 'visual';
-                    this.$nextTick(() => {
-                        if (this.$refs.visualCanvas) {
-                            this.$refs.visualCanvas.innerHTML = this.content || '';
-                        }
-                    });
-                }
-                this.runFullAnalysis();
-            },
-
-            saveSelection() {
-                const sel = window.getSelection();
-                if (sel && sel.rangeCount > 0) {
-                    const range = sel.getRangeAt(0);
-                    if (this.$refs.visualCanvas && this.$refs.visualCanvas.contains(range.commonAncestorContainer)) {
-                        this.savedRange = range.cloneRange();
+                    await this.$nextTick();
+                    if (!this._tiptapEditor) {
+                        await this.mountTipTapEditor();
+                    } else {
+                        this._tiptapEditor.commands.setContent(this.content || '', false);
+                        this.contentJson = this._tiptapEditor.getJSON();
                     }
                 }
-            },
-
-            restoreSelection() {
-                if (this.savedRange && window.getSelection) {
-                    const sel = window.getSelection();
-                    sel.removeAllRanges();
-                    sel.addRange(this.savedRange);
-                }
+                this.runFullAnalysis();
             },
 
             exec(cmd, val = null) {
@@ -418,17 +621,49 @@
                     this.showToast('Switch to Visual mode to use formatting tools.');
                     return;
                 }
-                if (this.$refs.visualCanvas) {
-                    this.$refs.visualCanvas.focus();
-                    document.execCommand(cmd, false, val);
-                    this.flushContentToWire();
+                const ed = this._tiptapEditor;
+                if (!ed) return;
+                const chain = ed.chain().focus();
+                switch (cmd) {
+                    case 'bold': chain.toggleBold().run(); break;
+                    case 'italic': chain.toggleItalic().run(); break;
+                    case 'underline': chain.toggleUnderline().run(); break;
+                    case 'strikeThrough': chain.toggleStrike().run(); break;
+                    case 'highlight': chain.toggleHighlight().run(); break;
+                    case 'code': chain.toggleCode().run(); break;
+                    case 'insertUnorderedList': chain.toggleBulletList().run(); break;
+                    case 'insertOrderedList': chain.toggleOrderedList().run(); break;
+                    case 'justifyLeft': chain.setBlockAlign('left').run(); break;
+                    case 'justifyCenter': chain.setBlockAlign('center').run(); break;
+                    case 'justifyRight': chain.setBlockAlign('right').run(); break;
+                    case 'insertHorizontalRule': chain.setHorizontalRule().run(); break;
+                    case 'removeFormat': chain.unsetAllMarks().clearNodes().run(); break;
+                    case 'undo': chain.undo().run(); break;
+                    case 'redo': chain.redo().run(); break;
+                    case 'addTableRow': chain.addRowAfter().run(); break;
+                    case 'addTableCol': chain.addColumnAfter().run(); break;
+                    case 'deleteTable': chain.deleteTable().run(); break;
+                    default: break;
                 }
+                this.refreshActiveMarks(ed);
             },
 
             execFormatBlock(tag) {
-                // Strictly prevent H1 inside article body
+                if (this.mode === 'html') {
+                    this.showToast('Switch to Visual mode to change block styles.');
+                    return;
+                }
+                const ed = this._tiptapEditor;
+                if (!ed) return;
                 const safeTag = tag.toLowerCase() === 'h1' ? 'h2' : tag.toLowerCase();
-                this.exec('formatBlock', '<' + safeTag + '>');
+                const chain = ed.chain().focus();
+                if (safeTag === 'p') chain.setParagraph().run();
+                else if (safeTag === 'h2') chain.toggleHeading({ level: 2 }).run();
+                else if (safeTag === 'h3') chain.toggleHeading({ level: 3 }).run();
+                else if (safeTag === 'h4') chain.toggleHeading({ level: 4 }).run();
+                else if (safeTag === 'blockquote') chain.toggleBlockquote().run();
+                else if (safeTag === 'pre') chain.toggleCodeBlock().run();
+                this.refreshActiveMarks(ed);
             },
 
             insertHtmlSnippet(html) {
@@ -441,22 +676,13 @@
                     } else {
                         this.content = (this.content || '') + '\n' + html;
                     }
-                    this.runFullAnalysis();
+                    this.markDirtyAndScheduleSaves();
                     return;
                 }
-                if (this.$refs.visualCanvas) {
-                    this.$refs.visualCanvas.focus();
-                    if (this.savedRange) {
-                        try { this.restoreSelection(); } catch (e) {}
-                    }
-                    let ok = false;
-                    try {
-                        ok = document.execCommand('insertHTML', false, html);
-                    } catch (e) {}
-                    if (!ok) {
-                        this.$refs.visualCanvas.innerHTML += html;
-                    }
+                if (this._tiptapEditor) {
+                    this._tiptapEditor.chain().focus().insertContent(html).run();
                     this.flushContentToWire();
+                    this.markDirtyAndScheduleSaves();
                 }
             },
 
@@ -465,8 +691,8 @@
                     this.switchMode('visual');
                 }
                 this.$nextTick(() => {
-                    if (!this.$refs.visualCanvas) return;
-                    const headings = this.$refs.visualCanvas.querySelectorAll('h2, h3, h4');
+                    if (!this.$refs.tiptapMount) return;
+                    const headings = this.$refs.tiptapMount.querySelectorAll('h2, h3, h4');
                     const el = headings[index];
                     if (el) {
                         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -477,16 +703,61 @@
                 });
             },
 
-            // One-Click Custom SEO Blocks
+            // One-Click Custom SEO & TipTap Blocks
             insertBlock(type) {
                 if (type === 'alsoRead') {
                     this.openAlsoReadModal();
                     return;
                 }
+                if (type === 'video') {
+                    this.openVideoModal();
+                    return;
+                }
+
+                if (this.mode === 'visual' && this._tiptapEditor) {
+                    const ed = this._tiptapEditor;
+                    if (type === 'table') {
+                        ed.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+                    } else if (type === 'faq') {
+                        const initialFaqs = this.faqItems.length > 0
+                            ? this.faqItems
+                            : [{
+                                q: 'How does ' + (this.focusKeyphrase || 'this strategy') + ' improve results?',
+                                a: 'It aligns search intent with structured, high-converting user journeys to maximize qualified leads.',
+                            }];
+                        ed.chain().focus().insertContent({ type: 'faqBlock', attrs: { items: initialFaqs } }).run();
+                    } else if (type === 'cta') {
+                        ed.chain().focus().insertContent({ type: 'ctaButton' }).run();
+                    } else if (type === 'toc') {
+                        ed.chain().focus().insertContent({ type: 'tocBlock' }).run();
+                    } else if (type === 'proTip') {
+                        ed.chain().focus().insertContent({
+                            type: 'callout',
+                            attrs: { type: 'tip' },
+                            content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Pro Growth Tip: Use your primary focus keyphrase naturally in the opening 60 words and inside at least one H2 subheading.' }] }],
+                        }).run();
+                    } else if (type === 'takeaways') {
+                        ed.chain().focus().insertContent({
+                            type: 'callout',
+                            attrs: { type: 'info' },
+                            content: [
+                                { type: 'paragraph', content: [{ type: 'text', marks: [{ type: 'bold' }], text: 'Key Takeaways' }] },
+                                { type: 'bulletList', content: [
+                                    { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Core insight backed by verified benchmarks.' }] }] },
+                                    { type: 'listItem', content: [{ type: 'paragraph', content: [{ type: 'text', text: 'Actionable step for higher conversion ROI.' }] }] },
+                                ] },
+                            ],
+                        }).run();
+                    }
+                    this.flushContentToWire();
+                    this.markDirtyAndScheduleSaves();
+                    this.showToast('Block inserted into article');
+                    return;
+                }
 
                 let html = '';
                 if (type === 'takeaways') {
-                    html = `<div class="gif-block-takeaways" style="background-color:#f8fafc;border-left:4px solid #2563eb;border-radius:10px;padding:18px 20px;margin:24px 0;"><div style="font-weight:800;font-size:13px;text-transform:uppercase;color:#1e3a8a;letter-spacing:0.05em;margin-bottom:8px;">📌 Key Takeaways<\/div><ul style="margin:0;padding-left:20px;color:#334155;line-height:1.65;"><li>Core insight backed by verified industry benchmarks.<\/li><li>Actionable implementation step for higher conversion ROI.<\/li><li>Key metric to monitor after rolling out changes.<\/li><\/ul><\/div><p><br><\/p>`;
+                    html = `<div class="gif-callout gif-callout-info" data-callout="true" data-type="info"><p><strong>Key Takeaways<\/strong><\/p><ul><li>Core insight backed by verified industry benchmarks.<\/li><li>Actionable implementation step for higher conversion ROI.<\/li><\/ul><\/div>`;
                 } else if (type === 'faq') {
                     if (this.faqItems.length === 0) {
                         this.faqItems.push({
@@ -494,18 +765,19 @@
                             a: 'It aligns search intent with structured, high-converting user journeys to maximize qualified leads and organic visibility.',
                         });
                     }
-                    html = `<div class="gif-block-faq" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:20px;margin:28px 0;"><h2 style="font-size:20px;font-weight:800;color:#0f172a;margin-top:0;margin-bottom:14px;">Frequently Asked Questions<\/h2><div style="margin-bottom:12px;"><h3 style="font-size:16px;font-weight:700;color:#1e3a8a;margin:0 0 4px 0;">How does ${this.escapeHtml(this.focusKeyphrase || 'this strategy')} improve results?<\/h3><p style="margin:0;color:#475569;line-height:1.6;">It aligns search intent with structured, high-converting user journeys to maximize qualified leads and organic visibility.<\/p><\/div><\/div><p><br><\/p>`;
+                    html = `<div class="gif-faq-block" data-faq="true"><p><strong>Frequently Asked Questions<\/strong><\/p><div class="gif-faq-item"><h4>How does ${this.escapeHtml(this.focusKeyphrase || 'this strategy')} improve results?<\/h4><p>It aligns search intent with structured, high-converting user journeys to maximize qualified leads and organic visibility.<\/p><\/div><\/div>`;
                 } else if (type === 'table') {
-                    html = `<div style="overflow-x:auto;margin:24px 0;border-radius:10px;border:1px solid #e2e8f0;"><table style="width:100%;border-collapse:collapse;min-width:480px;"><thead><tr style="background:#f8fafc;text-align:left;"><th style="padding:11px 14px;border-bottom:1px solid #e2e8f0;font-weight:700;color:#0f172a;">Feature / Metric<\/th><th style="padding:11px 14px;border-bottom:1px solid #e2e8f0;font-weight:700;color:#0f172a;">Traditional Approach<\/th><th style="padding:11px 14px;border-bottom:1px solid #e2e8f0;font-weight:700;color:#2563eb;">Optimized Approach<\/th><\/tr><\/thead><tbody><tr><td style="padding:10px 14px;border-bottom:1px solid #f1f5f9;">Execution Velocity<\/td><td style="padding:10px 14px;border-bottom:1px solid #f1f5f9;">4–6 Weeks<\/td><td style="padding:10px 14px;border-bottom:1px solid #f1f5f9;font-weight:600;color:#059669;">7-Day Sprint<\/td><\/tr><tr><td style="padding:10px 14px;">Conversion Impact<\/td><td style="padding:10px 14px;">Baseline<\/td><td style="padding:10px 14px;font-weight:600;color:#059669;">+35% to +120% Lift<\/td><\/tr><\/tbody><\/table><\/div><p><br><\/p>`;
-                } else if (type === 'adsense') {
-                    html = `<div class="gif-adsense-shortcode" data-adsense-slot="in-article" style="margin:24px 0;padding:12px 16px;border:1px dashed #94a3b8;border-radius:8px;background:#f8fafc;text-align:center;font-family:monospace;font-size:12px;color:#475569;">[adsense_in_article]<\/div><p><br><\/p>`;
+                    html = `<div class="gif-table-scroll"><table><thead><tr><th>Feature / Metric<\/th><th>Traditional Approach<\/th><th>Optimized Approach<\/th><\/tr><\/thead><tbody><tr><td>Execution Velocity<\/td><td>4–6 Weeks<\/td><td>7-Day Sprint<\/td><\/tr><tr><td>Conversion Impact<\/td><td>Baseline<\/td><td>+35% to +120% Lift<\/td><\/tr><\/tbody><\/table><\/div>`;
+                } else if (type === 'cta') {
+                    html = `<div class="gif-cta-block" data-cta="button"><p><strong>Ready to scale organic &amp; paid growth?<\/strong><\/p><a class="gif-cta-btn" data-cta="true" href="https://getintofeed.com/contact" target="_blank" rel="noopener noreferrer">Book Free Strategy Audit<\/a><\/div>`;
+                } else if (type === 'toc') {
+                    html = `<div class="gif-toc-block" data-toc="true" aria-label="Table of Contents"><p><strong>Table of Contents<\/strong><\/p><\/div>`;
                 } else if (type === 'proTip') {
-                    html = `<div class="gif-block-protip" style="background-color:#ecfdf5;border-left:4px solid #10b981;border-radius:10px;padding:16px 18px;margin:22px 0;"><div style="font-weight:800;font-size:12px;text-transform:uppercase;color:#065f46;margin-bottom:4px;">💡 Pro Growth Tip<\/div><p style="margin:0;color:#047857;font-size:14px;line-height:1.6;">Use your primary focus keyphrase naturally in the opening 60 words and inside at least one H2 subheading.<\/p><\/div><p><br><\/p>`;
+                    html = `<div class="gif-callout gif-callout-tip" data-callout="true" data-type="tip"><p><strong>Pro Growth Tip:<\/strong> Use your primary focus keyphrase naturally in the opening 60 words and inside at least one H2 subheading.<\/p><\/div>`;
                 }
 
-                this.saveSelection();
                 this.insertHtmlSnippet(html);
-                this.showToast('SEO block inserted into article');
+                this.showToast('Block inserted into article');
             },
 
             // Also Read Internal Link Card Picker
@@ -548,9 +820,60 @@
                 this.showToast('Inserted "Also Read" internal link card');
             },
 
+            uploadFileDirectlyToEditor(file, ed) {
+                if (!file || !file.type.startsWith('image/')) return;
+                if (file.size > 5 * 1024 * 1024) {
+                    this.showToast('Dropped/pasted image exceeds 5 MB limit.');
+                    return;
+                }
+                const derivedAlt = (file.name || 'article visual').replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ').trim() || (this.focusKeyphrase || 'Article visual');
+                const altText = window.prompt('Enter SEO Alt Text for uploaded image:', derivedAlt);
+                if (altText === null || !altText.trim()) {
+                    this.showToast('Upload cancelled — Alt text is required for editorial images.');
+                    return;
+                }
+
+                this.autoSaveStatus = 'Uploading image...';
+                const fd = new FormData();
+                fd.append('image', file);
+                fd.append('alt', altText.trim());
+
+                fetch(this.uploadEndpoint, {
+                    method: 'POST',
+                    headers: { Accept: 'application/json', 'X-CSRF-TOKEN': this.csrfToken },
+                    body: fd,
+                })
+                    .then(async (res) => {
+                        const data = await res.json().catch(() => ({}));
+                        if (!res.ok || !data.url) throw new Error(data.message || 'Upload failed');
+                        return data;
+                    })
+                    .then((data) => {
+                        if (ed) {
+                            ed.chain().focus().insertContent({
+                                type: 'imageFigure',
+                                attrs: {
+                                    src: data.url,
+                                    alt: data.alt || altText.trim(),
+                                    width: data.width || null,
+                                    height: data.height || null,
+                                    loading: 'lazy',
+                                    srcset: data.srcset || null,
+                                    mediaId: data.media_id || null,
+                                },
+                            }).run();
+                        }
+                        this.refreshMediaLibrary();
+                        this.markDirtyAndScheduleSaves();
+                        this.showToast('Image uploaded (WebP) & inserted!');
+                    })
+                    .catch((err) => {
+                        this.showToast(err.message || 'Image upload failed');
+                    });
+            },
+
             // Media Modal (Auto-WebP Upload + Media Library Browser + Mandatory Alt Text)
             openMediaModal() {
-                this.saveSelection();
                 this.mediaModal.open = true;
                 this.mediaModal.url = '';
                 this.mediaModal.alt = this.focusKeyphrase ? (this.focusKeyphrase + ' guide visual') : '';
@@ -558,6 +881,8 @@
                 this.mediaModal.lazy = true;
                 this.mediaModal.width = null;
                 this.mediaModal.height = null;
+                this.mediaModal.mediaId = null;
+                this.mediaModal.srcset = null;
                 this.mediaModal.sizeLabel = '';
                 this.mediaModal.error = '';
                 this.refreshMediaLibrary();
@@ -645,6 +970,8 @@
                         this.mediaModal.url = data.url;
                         this.mediaModal.width = data.width || null;
                         this.mediaModal.height = data.height || null;
+                        this.mediaModal.mediaId = data.media_id || null;
+                        this.mediaModal.srcset = data.srcset || null;
                         this.mediaModal.sizeLabel = (data.width && data.height ? `${data.width}×${data.height}px · ` : '') + (data.formatted_size || `${Math.round((data.size || 0) / 1024)} KB`) + ' (WebP)';
                         if (!this.mediaModal.alt && data.alt) {
                             this.mediaModal.alt = data.alt;
@@ -670,6 +997,27 @@
                     return;
                 }
 
+                if (this.mode === 'visual' && this._tiptapEditor) {
+                    this._tiptapEditor.chain().focus().insertContent({
+                        type: 'imageFigure',
+                        attrs: {
+                            src: this.mediaModal.url.trim(),
+                            alt: this.mediaModal.alt.trim(),
+                            caption: this.mediaModal.caption.trim(),
+                            width: this.mediaModal.width || null,
+                            height: this.mediaModal.height || null,
+                            loading: this.mediaModal.lazy ? 'lazy' : 'eager',
+                            srcset: this.mediaModal.srcset || null,
+                            mediaId: this.mediaModal.mediaId || null,
+                        },
+                    }).run();
+                    this.flushContentToWire();
+                    this.markDirtyAndScheduleSaves();
+                    this.mediaModal.open = false;
+                    this.showToast('Media inserted with SEO Alt Text & lazy loading');
+                    return;
+                }
+
                 const src = this.escapeHtml(this.mediaModal.url.trim());
                 const alt = this.escapeHtml(this.mediaModal.alt.trim());
                 const lazyAttr = this.mediaModal.lazy ? ' loading="lazy"' : '';
@@ -677,11 +1025,11 @@
                     ? ` width="${Number(this.mediaModal.width)}" height="${Number(this.mediaModal.height)}"`
                     : '';
 
-                let html = `<figure style="margin:24px auto;text-align:center;"><img src="${src}" alt="${alt}"${lazyAttr}${dimAttrs} style="max-width:100%;height:auto;border-radius:10px;" />`;
+                let html = `<figure class="gif-image-figure"><img src="${src}" alt="${alt}"${lazyAttr}${dimAttrs} />`;
                 if (this.mediaModal.caption.trim()) {
-                    html += `<figcaption style="font-size:12px;color:#64748b;margin-top:8px;">${this.escapeHtml(this.mediaModal.caption.trim())}<\/figcaption>`;
+                    html += `<figcaption>${this.escapeHtml(this.mediaModal.caption.trim())}<\/figcaption>`;
                 }
-                html += `<\/figure><p><br><\/p>`;
+                html += `<\/figure>`;
 
                 this.insertHtmlSnippet(html);
                 this.mediaModal.open = false;
@@ -690,16 +1038,17 @@
 
             // Link Modal (with Quick Internal Post Search + Nofollow + Target Blank)
             openLinkModal() {
-                this.saveSelection();
                 this.linkModal.url = '';
                 this.linkModal.text = '';
                 this.linkModal.newTab = false;
                 this.linkModal.nofollow = false;
                 this.linkModal.search = '';
 
-                const sel = window.getSelection();
-                if (sel && sel.rangeCount > 0 && this.$refs.visualCanvas && this.$refs.visualCanvas.contains(sel.anchorNode)) {
-                    this.linkModal.text = sel.toString();
+                if (this._tiptapEditor) {
+                    const { from, to } = this._tiptapEditor.state.selection;
+                    this.linkModal.text = this._tiptapEditor.state.doc.textBetween(from, to, ' ');
+                    const attrs = this._tiptapEditor.getAttributes('link');
+                    if (attrs && attrs.href) this.linkModal.url = attrs.href;
                 }
 
                 this.linkModal.open = true;
@@ -751,11 +1100,63 @@
 
                 const targetAttr = this.linkModal.newTab ? ' target="_blank"' : '';
                 const relAttr = relParts.length > 0 ? ` rel="${relParts.join(' ')}"` : '';
+
+                if (this.mode === 'visual' && this._tiptapEditor) {
+                    const ed = this._tiptapEditor;
+                    const { from, to } = ed.state.selection;
+                    const linkAttrs = {
+                        href: rawUrl,
+                        target: this.linkModal.newTab ? '_blank' : null,
+                        rel: relParts.length > 0 ? relParts.join(' ') : null,
+                    };
+                    if (from === to) {
+                        ed.chain().focus().insertContent(`<a href="${safeUrl}"${targetAttr}${relAttr}>${anchor}<\/a>`).run();
+                    } else {
+                        ed.chain().focus().extendMarkRange('link').setLink(linkAttrs).run();
+                    }
+                    this.flushContentToWire();
+                    this.markDirtyAndScheduleSaves();
+                    this.linkModal.open = false;
+                    this.showToast('Hyperlink inserted');
+                    return;
+                }
+
                 const html = `<a href="${safeUrl}"${targetAttr}${relAttr}>${anchor}<\/a>`;
 
                 this.insertHtmlSnippet(html);
                 this.linkModal.open = false;
                 this.showToast('Hyperlink inserted');
+            },
+
+            openVideoModal() {
+                this.videoModal.open = true;
+                this.videoModal.url = '';
+                this.videoModal.title = 'Article Video';
+                this.videoModal.error = '';
+            },
+
+            insertVideoEmbed() {
+                const rawUrl = (this.videoModal.url || '').trim();
+                const normalized = window.GetIntoFeedTipTap
+                    ? window.GetIntoFeedTipTap.normalizeVideoEmbedUrl(rawUrl)
+                    : null;
+                if (!normalized) {
+                    this.videoModal.error = 'Enter a valid HTTPS YouTube or Vimeo video URL.';
+                    return;
+                }
+                const title = (this.videoModal.title || 'Embedded Video').trim();
+                if (this.mode === 'visual' && this._tiptapEditor) {
+                    this._tiptapEditor.chain().focus().insertContent({
+                        type: 'videoEmbed',
+                        attrs: { src: normalized, title },
+                    }).run();
+                    this.flushContentToWire();
+                    this.markDirtyAndScheduleSaves();
+                } else {
+                    this.insertHtmlSnippet(`<figure class="gif-video-embed" data-video-embed="true"><iframe src="${this.escapeHtml(normalized)}" title="${this.escapeHtml(title)}" loading="lazy" allowfullscreen="allowfullscreen"><\/iframe><\/figure>`);
+                }
+                this.videoModal.open = false;
+                this.showToast('Video embed inserted safely');
             },
 
             // Smart Internal Linking Suggestions (SEO Studio PRO)
@@ -1012,11 +1413,11 @@
                     this.content = (this.content || '')
                         .replace(/<h1(\b[^>]*)>/gi, '<h2$1>')
                         .replace(/<\/h1>/gi, '<\/h2>');
-                    if (this.mode === 'visual' && this.$refs.visualCanvas) {
-                        this.$refs.visualCanvas.innerHTML = this.content;
+                    if (this.mode === 'visual' && this._tiptapEditor) {
+                        this._tiptapEditor.commands.setContent(this.content, false);
                     }
                     this.runFullAnalysis();
-                    this.showToast('Converted body <h1> headings to <h2> for strict SEO hierarchy');
+                    this.showToast('Converted body h1 headings to h2 for strict SEO hierarchy');
                 } else if (action === 'fixCanonical') {
                     this.canonicalUrl = 'https://getintofeed.com/blog/' + (this.slug || this.slugify(this.title) || 'post');
                     this.runFullAnalysis();
@@ -1413,7 +1814,9 @@
                     if (parsed.excerpt) this.excerpt = parsed.excerpt;
                     if (parsed.content) {
                         this.content = parsed.content;
-                        if (this.$refs.visualCanvas) this.$refs.visualCanvas.innerHTML = parsed.content;
+                        if (this.mode === 'visual' && this._tiptapEditor) {
+                            this._tiptapEditor.commands.setContent(parsed.content, false);
+                        }
                     }
                     this.hasRecoverableDraft = false;
                     this.runFullAnalysis();
@@ -1424,6 +1827,226 @@
             clearLocalDraft() {
                 try { localStorage.removeItem(this.localStorageKey()); } catch (e) {}
                 this.hasRecoverableDraft = false;
+            },
+
+            scheduleServerAutosave() {
+                if (!this.recordId || !this.autosaveEndpoint || !this.isOnline) return;
+                clearTimeout(this._serverAutosaveTimer);
+                this._serverAutosaveTimer = setTimeout(() => {
+                    this.triggerServerAutosave(false);
+                }, 1800);
+            },
+
+            async triggerServerAutosave(showFeedback = false) {
+                if (!this.recordId || !this.autosaveEndpoint || !this.isOnline) return;
+                this.flushContentToWire();
+                this.autosaveState = 'saving';
+                this.autoSaveStatus = 'Saving…';
+
+                try {
+                    const res = await fetch(this.autosaveEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                            'X-CSRF-TOKEN': this.csrfToken,
+                        },
+                        body: JSON.stringify({
+                            title: this.title,
+                            slug: this.slug,
+                            excerpt: this.excerpt,
+                            content_html: this.content,
+                            content_json: this.contentJson || null,
+                            base_version: Number(this.version || 1),
+                            meta_title: this.seoTitle,
+                            meta_description: this.metaDescription,
+                            focus_keyphrase: this.focusKeyphrase,
+                            canonical_url: this.canonicalUrl,
+                            visibility: this.visibility || 'public',
+                            faq_json: this.faqItems || [],
+                            featured_media_id: this.featuredMediaId || null,
+                            featured_image_alt: this.featuredImageAlt || null,
+                        }),
+                    });
+
+                    const data = await res.json().catch(() => ({}));
+                    if (res.status === 409 || data.version_conflict) {
+                        this.autosaveState = 'conflict';
+                        this.autoSaveStatus = 'Version conflict';
+                        this.versionConflict = {
+                            serverVersion: data.server_version || data.current_version || 'newer',
+                            baseVersion: this.version,
+                        };
+                        return;
+                    }
+
+                    if (!res.ok) {
+                        throw new Error(data.message || 'Autosave failed');
+                    }
+
+                    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    this.autosaveState = 'saved';
+                    this.autoSaveStatus = 'Saved ' + timeStr;
+                    if (showFeedback) {
+                        this.showToast('Draft autosaved at ' + timeStr);
+                    }
+                } catch (e) {
+                    this.autosaveState = 'offline';
+                    this.autoSaveStatus = 'Saved locally (retry pending)';
+                }
+            },
+
+            reloadPageLatest() {
+                this.hasUncommittedChanges = false;
+                window.location.reload();
+            },
+
+            async openRevisionsDrawer() {
+                if (!this.recordId || !this.revisionsEndpoint) {
+                    this.showToast('Save this draft once to enable revision history.');
+                    return;
+                }
+                this.revisionsDrawer.open = true;
+                this.revisionsDrawer.loading = true;
+                this.revisionsDrawer.error = '';
+                this.revisionsDrawer.diff = null;
+
+                try {
+                    const res = await fetch(this.revisionsEndpoint, { headers: { Accept: 'application/json' } });
+                    const payload = await res.json().catch(() => ({}));
+                    this.revisionsDrawer.items = Array.isArray(payload.data) ? payload.data : [];
+                    if (this.revisionsDrawer.items.length >= 2) {
+                        this.revisionsDrawer.selectedTo = this.revisionsDrawer.items[0].id;
+                        this.revisionsDrawer.selectedFrom = this.revisionsDrawer.items[1].id;
+                        await this.loadRevisionDiff();
+                    }
+                } catch (e) {
+                    this.revisionsDrawer.error = 'Failed to load revision history.';
+                } finally {
+                    this.revisionsDrawer.loading = false;
+                }
+            },
+
+            async loadRevisionDiff() {
+                if (!this.revisionsDiffEndpoint || !this.revisionsDrawer.selectedFrom || !this.revisionsDrawer.selectedTo) return;
+                this.revisionsDrawer.diffLoading = true;
+                try {
+                    const url = `${this.revisionsDiffEndpoint}?from=${encodeURIComponent(this.revisionsDrawer.selectedFrom)}&to=${encodeURIComponent(this.revisionsDrawer.selectedTo)}`;
+                    const res = await fetch(url, { headers: { Accept: 'application/json' } });
+                    const payload = await res.json().catch(() => ({}));
+                    this.revisionsDrawer.diff = payload.diff || null;
+                } catch (e) {
+                    this.revisionsDrawer.diff = null;
+                } finally {
+                    this.revisionsDrawer.diffLoading = false;
+                }
+            },
+
+            async restoreServerRevision(revisionId) {
+                if (!this.revisionsRestoreBase || !revisionId) return;
+                if (!window.confirm('Restore this revision into the editor?')) return;
+                this.revisionsDrawer.restoring = true;
+                this.revisionsDrawer.error = '';
+                try {
+                    const res = await fetch(`${this.revisionsRestoreBase}/${revisionId}/restore`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                            'X-CSRF-TOKEN': this.csrfToken,
+                        },
+                        body: JSON.stringify({ expected_version: Number(this.version || 1) }),
+                    });
+                    const payload = await res.json().catch(() => ({}));
+                    if (!res.ok || !payload.data) {
+                        throw new Error(payload.message || 'Could not restore revision.');
+                    }
+                    const post = payload.data;
+                    this.title = post.title || this.title;
+                    this.slug = post.slug || this.slug;
+                    this.tempSlug = this.slug;
+                    this.excerpt = post.excerpt || '';
+                    this.content = post.content_html || post.content || '';
+                    this.contentJson = post.content_json || null;
+                    this.version = Number(post.version || ((this.version || 1) + 1));
+                    if (Array.isArray(post.faq_json)) this.faqItems = post.faq_json;
+                    this.isMarkdownPost = Boolean(this.content.trim() && this.isContentMarkdownOnly(this.content));
+                    if (!this.isMarkdownPost && this.mode === 'visual' && this._tiptapEditor) {
+                        this._tiptapEditor.commands.setContent(this.content || '', false);
+                    }
+                    this.hasUncommittedChanges = false;
+                    this.versionConflict = null;
+                    this.revisionsDrawer.open = false;
+                    this.runFullAnalysis();
+                    this.showToast('Revision restored cleanly (v' + this.version + ')');
+                } catch (e) {
+                    this.revisionsDrawer.error = e.message || 'Restore failed.';
+                } finally {
+                    this.revisionsDrawer.restoring = false;
+                }
+            },
+
+            openPreviewModal() {
+                this.flushContentToWire();
+                this.previewModal.open = true;
+                this.previewModal.shareUrl = '';
+                this.previewModal.error = '';
+            },
+
+            async generateSignedPreviewLink() {
+                if (!this.recordId || !this.previewLinkEndpoint) {
+                    this.previewModal.error = 'Save this post once to generate an expiring share link.';
+                    return;
+                }
+                this.previewModal.loadingShare = true;
+                this.previewModal.error = '';
+                try {
+                    const res = await fetch(this.previewLinkEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'X-CSRF-TOKEN': this.csrfToken,
+                        },
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    if (!res.ok || !data.preview_url) {
+                        throw new Error(data.message || 'Failed to generate preview link.');
+                    }
+                    this.previewModal.shareUrl = data.preview_url;
+                    this.previewModal.expiresInMinutes = data.expires_in_minutes || 1440;
+                } catch (e) {
+                    this.previewModal.error = e.message || 'Could not generate preview link.';
+                } finally {
+                    this.previewModal.loadingShare = false;
+                }
+            },
+
+            copyPreviewShareUrl() {
+                if (!this.previewModal.shareUrl) return;
+                if (navigator.clipboard?.writeText) {
+                    navigator.clipboard.writeText(this.previewModal.shareUrl)
+                        .then(() => this.showToast('Signed preview link copied!'))
+                        .catch(() => {});
+                }
+            },
+
+            renderedPreviewBodyHtml() {
+                const raw = String(this.content || '');
+                if (!raw.trim()) return '<p style="color:var(--gif-text-muted);">No article content yet.<\/p>';
+                if (this.isContentMarkdownOnly(raw)) {
+                    return '<pre style="white-space:pre-wrap;font-family:inherit;background:transparent;color:inherit;padding:0;">' + this.escapeHtml(raw) + '<\/pre>';
+                }
+                return raw;
+            },
+
+            mobileSaveDraft() {
+                this.flushContentToWire();
+                window.dispatchEvent(new CustomEvent('gif-mobile-save-draft'));
+            },
+
+            mobilePublish() {
+                this.flushContentToWire();
+                window.dispatchEvent(new CustomEvent('gif-mobile-publish'));
             },
         }));
     }
@@ -1454,35 +2077,78 @@
         ogTitle: $wire.$entangle('data.og_title'),
         ogDescription: $wire.$entangle('data.og_description'),
         seoScore: $wire.$entangle('data.seo_score'),
+        readabilityScore: $wire.$entangle('data.readability_score'),
         wordCount: $wire.$entangle('data.word_count'),
         readingTime: $wire.$entangle('data.reading_time'),
         featuredImageAlt: $wire.$entangle('data.featured_image_alt'),
         featuredMediaId: $wire.$entangle('data.featured_media_id'),
+        visibility: $wire.$entangle('data.visibility'),
+        version: $wire.$entangle('data.version'),
+        contentJson: $wire.$entangle('data.content_json'),
         recordId: @js($recordId),
+        recordUuid: @js($recordUuid),
+        canPublish: @js($canPublish),
+        tiptapJsUrl: @js($tiptapJsUrl),
         csrfToken: @js(csrf_token()),
         uploadEndpoint: @js(route('admin.editor.upload-image')),
         internalLinksEndpoint: @js(route('admin.editor.internal-links')),
         mediaListEndpoint: @js(route('admin.media.list')),
+        autosaveEndpoint: @js($autosaveEndpoint),
+        revisionsEndpoint: @js($revisionsEndpoint),
+        revisionsDiffEndpoint: @js($revisionsDiffEndpoint),
+        revisionsRestoreBase: @js($revisionsRestoreBase),
+        previewLinkEndpoint: @js($previewLinkEndpoint),
         mediaAssets: @js($mediaAssets),
         mediaUrlMap: @js($mediaUrlMap),
         initialFeaturedUrl: @js($initialFeaturedUrl),
     })"
     x-init="initEditor()"
-    @keydown.escape.window="mediaModal.open = false; linkModal.open = false; alsoReadModal.open = false; isFocusMode = false;"
-    @keydown.ctrl.k.window.prevent="if ($refs.visualCanvas && document.activeElement === $refs.visualCanvas) openLinkModal()"
-    @keydown.meta.k.window.prevent="if ($refs.visualCanvas && document.activeElement === $refs.visualCanvas) openLinkModal()"
+    @keydown.escape.window="mediaModal.open = false; linkModal.open = false; alsoReadModal.open = false; videoModal.open = false; previewModal.open = false; revisionsDrawer.open = false; isFocusMode = false;"
+    @keydown.ctrl.k.window.prevent="if (mode === 'visual' && _tiptapEditor && _tiptapEditor.isFocused) openLinkModal()"
+    @keydown.meta.k.window.prevent="if (mode === 'visual' && _tiptapEditor && _tiptapEditor.isFocused) openLinkModal()"
+    @keydown.ctrl.s.window.prevent="recordId ? triggerServerAutosave(true) : mobileSaveDraft()"
+    @keydown.meta.s.window.prevent="recordId ? triggerServerAutosave(true) : mobileSaveDraft()"
     class="gif-editor-root"
     :class="{ 'is-focus-mode': isFocusMode }"
 >
+    <!-- Mobile Section Tabs Bar (< 1024px) -->
+    <nav class="gif-mobile-tabs-bar" aria-label="Editorial Studio Sections">
+        <button type="button" @click="setMobileTab('content')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'content' }">Content</button>
+        <button type="button" @click="setMobileTab('publish')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'publish' }">Publish</button>
+        <button type="button" @click="setMobileTab('seo')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'seo' }">SEO</button>
+        <button type="button" @click="setMobileTab('media')" class="gif-mobile-tab-btn" :class="{ 'is-active': mobileTab === 'media' }">Media</button>
+    </nav>
+
     <!-- Toast Notification -->
     <div x-show="toast.show" x-transition class="gif-toast" style="display: none;">
         <span class="gif-dot gif-dot-success"></span>
         <span x-text="toast.message"></span>
     </div>
 
+    <!-- Optimistic Lock Version Conflict Alert -->
+    <div x-show="versionConflict" style="display:none;" class="gif-status-banner is-danger" role="alert">
+        <span>
+            <strong>Version Conflict:</strong> A newer version (<span x-text="'v' + (versionConflict?.serverVersion || '')"></span>) was saved on another tab or device. Reload before saving so edits aren't lost.
+        </span>
+        <button type="button" @click="reloadPageLatest()" class="gif-btn gif-btn-primary gif-btn-xs">Reload Latest</button>
+    </div>
+
+    <!-- Offline Mode Indicator -->
+    <div x-show="!isOnline" style="display:none;" class="gif-status-banner is-warn" role="status">
+        <span><strong>Offline Mode:</strong> Internet disconnected. Edits are safely queued in local browser draft storage.</span>
+    </div>
+
+    <!-- Non-Destructive Legacy Markdown Preservation Banner -->
+    <div x-show="isMarkdownPost" style="display:none;" class="gif-status-banner is-info">
+        <span>
+            <strong>Legacy Markdown Post:</strong> Preserved untouched so existing Markdown formatting is never altered automatically.
+        </span>
+        <button type="button" @click="convertMarkdownToVisualBlocks()" class="gif-btn gif-btn-indigo gif-btn-xs">Convert to Visual Blocks</button>
+    </div>
+
     <!-- Local Draft Recovery Banner -->
     <div x-show="hasRecoverableDraft" style="display:none;" class="gif-recovery-banner">
-        <div style="margin-bottom:12px; padding:10px 14px; border-radius:10px; background:var(--gif-warn-bg); border:1px solid var(--gif-warn-border); display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:12px;">
+        <div class="gif-status-banner is-warn">
             <span>
                 <strong>Unsaved local backup found</strong>
                 <span x-show="recoverableDraftTime" x-text="' (' + recoverableDraftTime + ')'"></span>. Would you like to restore it?
@@ -1494,6 +2160,7 @@
         </div>
     </div>
 
+    <div id="gif-content-pane">
     {{-- =====================================================================
          1. H1 TITLE & PERMALINK CAPSULE
          ===================================================================== --}}
@@ -1564,6 +2231,27 @@
                                 <div style="font-size:10.5px; color:var(--gif-text-muted);">Structured Q&amp;A + JSON-LD sync</div>
                             </div>
                         </button>
+                        <button type="button" @click="insertBlock('toc'); open = false;" class="gif-dropdown-item">
+                            <span>📑</span>
+                            <div>
+                                <div style="font-weight:700; font-size:12px;">Auto Table of Contents</div>
+                                <div style="font-size:10.5px; color:var(--gif-text-muted);">Synced live from H2/H3 headings</div>
+                            </div>
+                        </button>
+                        <button type="button" @click="insertBlock('cta'); open = false;" class="gif-dropdown-item">
+                            <span>🚀</span>
+                            <div>
+                                <div style="font-weight:700; font-size:12px;">CTA Conversion Banner</div>
+                                <div style="font-size:10.5px; color:var(--gif-text-muted);">Headline + action button card</div>
+                            </div>
+                        </button>
+                        <button type="button" @click="insertBlock('video'); open = false;" class="gif-dropdown-item">
+                            <span>🎬</span>
+                            <div>
+                                <div style="font-weight:700; font-size:12px;">Video Embed (YouTube / Vimeo)</div>
+                                <div style="font-size:10.5px; color:var(--gif-text-muted);">Responsive allow-listed iframe</div>
+                            </div>
+                        </button>
                         <button type="button" @click="insertBlock('alsoRead'); open = false;" class="gif-dropdown-item">
                             <span>📖</span>
                             <div>
@@ -1578,13 +2266,6 @@
                                 <div style="font-size:10.5px; color:var(--gif-text-muted);">Mobile-scrollable feature matrix</div>
                             </div>
                         </button>
-                        <button type="button" @click="insertBlock('adsense'); open = false;" class="gif-dropdown-item">
-                            <span>💰</span>
-                            <div>
-                                <div style="font-weight:700; font-size:12px;">AdSense In-Article Shortcode</div>
-                                <div style="font-size:10.5px; color:var(--gif-text-muted);">Inserts [adsense_in_article] marker</div>
-                            </div>
-                        </button>
                         <button type="button" @click="insertBlock('proTip'); open = false;" class="gif-dropdown-item">
                             <span>💡</span>
                             <div>
@@ -1594,26 +2275,36 @@
                         </button>
                     </div>
                 </div>
+
+                <button type="button" x-show="recordId" @click="openRevisionsDrawer()" class="gif-btn gif-btn-secondary gif-btn-xs" title="Inspect Revision History & Diff">
+                    <span>🕒 Revisions</span>
+                </button>
+                <button type="button" @click="openPreviewModal()" class="gif-btn gif-btn-secondary gif-btn-xs" title="Mobile / Tablet / Desktop Preview">
+                    <span>👁 Preview</span>
+                </button>
             </div>
 
-            <!-- Focus Mode & Visual/HTML Toggle -->
-            <div class="gif-row-gap-2">
+            <!-- Autosave Status, Focus Mode & Visual/HTML Toggle -->
+            <div class="gif-row-gap-2" style="flex-wrap: wrap;">
+                <span class="gif-autosave-pill" :class="{ 'is-saving': autosaveState === 'saving', 'is-offline': !isOnline || autosaveState === 'offline', 'is-conflict': autosaveState === 'conflict' }" x-text="autoSaveStatus">Synced</span>
+
                 <button type="button" @click="isFocusMode = !isFocusMode" class="gif-btn gif-btn-secondary gif-btn-xs" :title="isFocusMode ? 'Exit Focus Mode (Esc)' : 'Distraction-Free Focus Mode'">
                     <span x-text="isFocusMode ? '✕ Exit Focus' : '⛶ Focus Mode'"></span>
                 </button>
 
-                <div class="gif-mode-switch">
+                <div class="gif-mode-switch" role="group" aria-label="Editor Mode">
                     <button type="button" @click="switchMode('visual')" class="gif-mode-btn" :class="{ 'is-active': mode === 'visual' }">Visual</button>
-                    <button type="button" @click="switchMode('html')" class="gif-mode-btn" :class="{ 'is-active': mode === 'html' }">Raw HTML</button>
+                    <button type="button" @click="switchMode('html')" class="gif-mode-btn" :class="{ 'is-active': mode === 'html' }" x-text="isMarkdownPost ? 'Markdown' : 'Raw HTML'">Raw HTML</button>
                 </div>
             </div>
         </div>
 
-        <!-- Sticky Formatting Toolbar (H1 Disabled Intentionally for Strict SEO Hierarchy) -->
-        <div class="gif-sticky-toolbar">
+        <!-- Sticky & Mobile Keyboard-Pinned Formatting Toolbar -->
+        <div class="gif-sticky-toolbar" :class="{ 'is-keyboard-pinned': isKeyboardOpen && mode === 'visual' }" role="toolbar" aria-label="Text Formatting Toolbar">
             <select
                 @change="execFormatBlock($event.target.value); $event.target.value = 'p';"
                 class="gif-tb-select"
+                aria-label="Block Format"
                 title="Paragraph & Subheadings (H1 disabled for SEO)"
             >
                 <option value="p">Paragraph</option>
@@ -1626,44 +2317,67 @@
 
             <span class="gif-tb-sep"></span>
 
-            <button type="button" @click="exec('bold')" class="gif-tb-btn" style="font-weight:800;" title="Bold (Ctrl+B)">B</button>
-            <button type="button" @click="exec('italic')" class="gif-tb-btn" style="font-style:italic;font-family:serif;" title="Italic (Ctrl+I)">I</button>
-            <button type="button" @click="exec('underline')" class="gif-tb-btn" style="text-decoration:underline;" title="Underline (Ctrl+U)">U</button>
-            <button type="button" @click="exec('strikeThrough')" class="gif-tb-btn" style="text-decoration:line-through;" title="Strikethrough">S</button>
+            <button type="button" @click="exec('bold')" class="gif-tb-btn" :class="{ 'is-active': activeMarks.bold }" style="font-weight:800;" aria-label="Bold" title="Bold (Ctrl+B)">B</button>
+            <button type="button" @click="exec('italic')" class="gif-tb-btn" :class="{ 'is-active': activeMarks.italic }" style="font-style:italic;font-family:serif;" aria-label="Italic" title="Italic (Ctrl+I)">I</button>
+            <button type="button" @click="exec('underline')" class="gif-tb-btn" :class="{ 'is-active': activeMarks.underline }" style="text-decoration:underline;" aria-label="Underline" title="Underline (Ctrl+U)">U</button>
+            <button type="button" @click="exec('strikeThrough')" class="gif-tb-btn" :class="{ 'is-active': activeMarks.strike }" style="text-decoration:line-through;" aria-label="Strikethrough" title="Strikethrough">S</button>
+            <button type="button" @click="exec('highlight')" class="gif-tb-btn" :class="{ 'is-active': activeMarks.highlight }" aria-label="Highlight" title="Highlight Text">🖍</button>
+            <button type="button" @click="exec('code')" class="gif-tb-btn" aria-label="Inline Code" title="Inline Code">&lt;/&gt;</button>
 
             <span class="gif-tb-sep"></span>
 
-            <button type="button" @click="exec('insertUnorderedList')" class="gif-tb-btn" title="Bullet List">• List</button>
-            <button type="button" @click="exec('insertOrderedList')" class="gif-tb-btn" title="Numbered List">1. List</button>
-            <button type="button" @click="execFormatBlock('blockquote')" class="gif-tb-btn" title="Blockquote">❝ Quote</button>
+            <button type="button" @click="exec('insertUnorderedList')" class="gif-tb-btn" :class="{ 'is-active': activeMarks.bulletList }" aria-label="Bullet List" title="Bullet List">• List</button>
+            <button type="button" @click="exec('insertOrderedList')" class="gif-tb-btn" :class="{ 'is-active': activeMarks.orderedList }" aria-label="Numbered List" title="Numbered List">1. List</button>
+            <button type="button" @click="execFormatBlock('blockquote')" class="gif-tb-btn" :class="{ 'is-active': activeMarks.blockquote }" aria-label="Blockquote" title="Blockquote">❝ Quote</button>
 
             <span class="gif-tb-sep"></span>
 
-            <button type="button" @click="exec('justifyLeft')" class="gif-tb-btn" title="Align Left">⫷</button>
-            <button type="button" @click="exec('justifyCenter')" class="gif-tb-btn" title="Align Center">☰</button>
-            <button type="button" @click="exec('justifyRight')" class="gif-tb-btn" title="Align Right">⫸</button>
+            <button type="button" @click="exec('justifyLeft')" class="gif-tb-btn" aria-label="Align Left" title="Align Left">⫷</button>
+            <button type="button" @click="exec('justifyCenter')" class="gif-tb-btn" aria-label="Align Center" title="Align Center">☰</button>
+            <button type="button" @click="exec('justifyRight')" class="gif-tb-btn" aria-label="Align Right" title="Align Right">⫸</button>
 
             <span class="gif-tb-sep"></span>
 
-            <button type="button" @click="openLinkModal()" class="gif-tb-btn" style="color:var(--gif-accent);" title="Insert Link (Ctrl+K)">🔗 Link</button>
-            <button type="button" @click="exec('insertHorizontalRule')" class="gif-tb-btn" title="Horizontal Rule">― HR</button>
-            <button type="button" @click="exec('removeFormat')" class="gif-tb-btn" title="Clear Formatting">✕ Clear</button>
+            <button type="button" @click="openLinkModal()" class="gif-tb-btn" :class="{ 'is-active': activeMarks.link }" style="color:var(--gif-accent);" aria-label="Insert Link" title="Insert Link (Ctrl+K)">🔗 Link</button>
+            <button type="button" @click="openMediaModal()" class="gif-tb-btn" aria-label="Insert Image" title="Insert Image">🖼 Image</button>
+            <button type="button" @click="insertBlock('table')" class="gif-tb-btn" aria-label="Insert Table" title="Insert Table">📊 Table</button>
+
+            <template x-if="activeMarks.table">
+                <span class="gif-row-gap-2" style="margin-left:4px;">
+                    <button type="button" @click="exec('addTableRow')" class="gif-tb-btn" title="Add Row">+Row</button>
+                    <button type="button" @click="exec('addTableCol')" class="gif-tb-btn" title="Add Column">+Col</button>
+                    <button type="button" @click="exec('deleteTable')" class="gif-tb-btn" style="color:var(--gif-danger);" title="Remove Table">✕Tbl</button>
+                </span>
+            </template>
 
             <span class="gif-tb-sep"></span>
 
-            <button type="button" @click="exec('undo')" class="gif-tb-btn" title="Undo (Ctrl+Z)">↩</button>
-            <button type="button" @click="exec('redo')" class="gif-tb-btn" title="Redo (Ctrl+Y)">↪</button>
+            <button type="button" @click="exec('insertHorizontalRule')" class="gif-tb-btn" aria-label="Divider" title="Horizontal Rule">― HR</button>
+            <button type="button" @click="exec('removeFormat')" class="gif-tb-btn" aria-label="Clear Formatting" title="Clear Formatting">✕ Clear</button>
+
+            <span class="gif-tb-sep"></span>
+
+            <button type="button" @click="exec('undo')" class="gif-tb-btn" aria-label="Undo" title="Undo (Ctrl+Z)">↩</button>
+            <button type="button" @click="exec('redo')" class="gif-tb-btn" aria-label="Redo" title="Redo (Ctrl+Y)">↪</button>
         </div>
 
-        <!-- Writing Canvas -->
+        <!-- TipTap Floating Bubble Selection Toolbar -->
+        <div x-ref="bubbleMenu" class="gif-bubble-menu" style="display:none;" aria-label="Selection Formatting Bar">
+            <button type="button" @click="exec('bold')" class="gif-bubble-btn" :class="{ 'is-active': activeMarks.bold }">B</button>
+            <button type="button" @click="exec('italic')" class="gif-bubble-btn" :class="{ 'is-active': activeMarks.italic }" style="font-style:italic;">I</button>
+            <button type="button" @click="exec('underline')" class="gif-bubble-btn" :class="{ 'is-active': activeMarks.underline }" style="text-decoration:underline;">U</button>
+            <button type="button" @click="exec('strikeThrough')" class="gif-bubble-btn" :class="{ 'is-active': activeMarks.strike }" style="text-decoration:line-through;">S</button>
+            <button type="button" @click="exec('highlight')" class="gif-bubble-btn" :class="{ 'is-active': activeMarks.highlight }">Hi</button>
+            <button type="button" @click="exec('code')" class="gif-bubble-btn">&lt;/&gt;</button>
+            <button type="button" @click="openLinkModal()" class="gif-bubble-btn" :class="{ 'is-active': activeMarks.link }">Link</button>
+        </div>
+
+        <!-- TipTap Writing Canvas + Raw Code Mode -->
         <div>
             <div
                 x-show="mode === 'visual'"
-                x-ref="visualCanvas"
-                contenteditable="true"
-                @input="onVisualInput()"
-                @blur="onVisualBlur()"
-                class="gif-article-canvas"
+                x-ref="tiptapMount"
+                class="gif-tiptap-host"
             ></div>
 
             <textarea
@@ -1673,7 +2387,7 @@
                 @input="onHtmlInput()"
                 class="gif-code-textarea"
                 style="display: none;"
-                placeholder="Write or paste semantic HTML here..."
+                :placeholder="isMarkdownPost ? 'Write Markdown cleanly...' : 'Write or paste semantic HTML here...'"
             ></textarea>
         </div>
 
@@ -1714,12 +2428,13 @@
         <div x-show="isExcerptOpen" style="display:none; padding:14px 16px; border-top:1px solid var(--gif-border);">
             <textarea
                 x-model="excerpt"
-                @input="scheduleAudit(); scheduleLocalSave();"
+                @input="markDirtyAndScheduleSaves()"
                 rows="2"
                 placeholder="Write a concise 1–2 sentence teaser displayed on the blog hub and fallback meta snippet..."
                 class="gif-input"
             ></textarea>
         </div>
+    </div>
     </div>
 
     {{-- =====================================================================
@@ -2273,8 +2988,12 @@
                         style="display:block;"
                     >
                         <input type="file" accept="image/*" @change="handleMediaFileInput($event)" style="display:none;" />
-                        <div style="font-weight:700; font-size:13px; margin-bottom:4px;" x-text="mediaModal.isUploading ? 'Converting & optimizing to WebP...' : 'Drop image here or click to upload'"></div>
-                        <div style="font-size:11px; color:var(--gif-text-muted);">JPG, PNG, WebP, GIF · Max 5 MB · Automatically resized (&le;1400px) &amp; converted to WebP</div>
+                        <div style="font-weight:700; font-size:13px; margin-bottom:4px;" x-text="mediaModal.isUploading ? 'Converting & optimizing to WebP...' : 'Drop image here, paste in canvas, or tap to choose gallery file'"></div>
+                        <div style="font-size:11px; color:var(--gif-text-muted);">JPG, PNG, WebP, GIF · Max 5 MB · Automatically stripped of EXIF &amp; converted to WebP</div>
+                    </label>
+                    <label class="gif-btn gif-btn-secondary" style="margin-top:8px; width:100%; cursor:pointer;">
+                        <input type="file" accept="image/*" capture="environment" @change="handleMediaFileInput($event)" style="display:none;" />
+                        <span>📷 Capture Photo with Camera</span>
                     </label>
                 </div>
 
@@ -2435,5 +3154,166 @@
                 <button type="button" @click="alsoReadModal.open = false" class="gif-btn gif-btn-secondary">Close</button>
             </div>
         </div>
+    </div>
+
+    {{-- =====================================================================
+         MODAL 4: VIDEO EMBED (YOUTUBE / VIMEO ALLOW-LIST)
+         ===================================================================== --}}
+    <div x-show="videoModal.open" style="display:none;" class="gif-modal-backdrop" @click.self="videoModal.open = false">
+        <div class="gif-modal-window" style="max-width: 480px;">
+            <div class="gif-modal-header">
+                <span style="font-weight:800; font-size:14px;">Embed Video (YouTube / Vimeo)</span>
+                <button type="button" @click="videoModal.open = false" class="gif-btn gif-btn-secondary gif-btn-xs">✕</button>
+            </div>
+            <div class="gif-modal-body" style="display:flex; flex-direction:column; gap:12px;">
+                <div x-show="videoModal.error" style="display:none; padding:8px 12px; border-radius:8px; background:var(--gif-danger-bg); border:1px solid var(--gif-danger-border); color:var(--gif-danger); font-size:12px;" x-text="videoModal.error"></div>
+                <div>
+                    <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">YouTube or Vimeo HTTPS URL</label>
+                    <input type="url" x-model="videoModal.url" placeholder="https://www.youtube.com/watch?v=..." class="gif-input" />
+                </div>
+                <div>
+                    <label style="display:block; font-size:12px; font-weight:700; margin-bottom:4px;">Video Accessibility Title</label>
+                    <input type="text" x-model="videoModal.title" placeholder="Video walkthrough..." class="gif-input" />
+                </div>
+            </div>
+            <div class="gif-modal-footer">
+                <button type="button" @click="videoModal.open = false" class="gif-btn gif-btn-secondary">Cancel</button>
+                <button type="button" @click="insertVideoEmbed()" class="gif-btn gif-btn-primary">Insert Video</button>
+            </div>
+        </div>
+    </div>
+
+    {{-- =====================================================================
+         MODAL 5: RESPONSIVE DEVICE PREVIEW + SIGNED SHARE LINK
+         ===================================================================== --}}
+    <div x-show="previewModal.open" style="display:none;" class="gif-modal-backdrop" @click.self="previewModal.open = false">
+        <div class="gif-modal-window" style="max-width: 960px;">
+            <div class="gif-modal-header" style="flex-wrap:wrap; gap:8px;">
+                <div class="gif-row-gap-2">
+                    <span style="font-weight:800; font-size:14px;">Responsive Article Preview</span>
+                    <div class="gif-mode-switch" role="group" aria-label="Preview Device Width">
+                        <button type="button" @click="previewModal.device = 'mobile'" class="gif-mode-btn" :class="{ 'is-active': previewModal.device === 'mobile' }">Mobile 375px</button>
+                        <button type="button" @click="previewModal.device = 'tablet'" class="gif-mode-btn" :class="{ 'is-active': previewModal.device === 'tablet' }">Tablet 768px</button>
+                        <button type="button" @click="previewModal.device = 'desktop'" class="gif-mode-btn" :class="{ 'is-active': previewModal.device === 'desktop' }">Desktop</button>
+                    </div>
+                </div>
+                <button type="button" @click="previewModal.open = false" class="gif-btn gif-btn-secondary gif-btn-xs">✕</button>
+            </div>
+
+            <div class="gif-modal-body" style="display:flex; flex-direction:column; gap:12px;">
+                <div x-show="recordId" style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; padding:8px 12px; border-radius:10px; background:var(--gif-bg-soft); border:1px solid var(--gif-border);">
+                    <div style="font-size:12px;">
+                        <strong>Shareable Unlisted Draft Link:</strong>
+                        <span x-show="!previewModal.shareUrl" style="color:var(--gif-text-muted);">Generate a signed temporary URL to share with clients or editors.</span>
+                        <a x-show="previewModal.shareUrl" :href="previewModal.shareUrl" target="_blank" rel="noopener noreferrer" style="color:var(--gif-accent); font-family:monospace; word-break:break-all;" x-text="previewModal.shareUrl"></a>
+                    </div>
+                    <div class="gif-row-gap-2">
+                        <button type="button" @click="generateSignedPreviewLink()" class="gif-btn gif-btn-indigo gif-btn-xs" :disabled="previewModal.loadingShare">
+                            <span x-text="previewModal.loadingShare ? 'Generating...' : 'Generate Link'"></span>
+                        </button>
+                        <button type="button" x-show="previewModal.shareUrl" @click="copyPreviewShareUrl()" class="gif-btn gif-btn-secondary gif-btn-xs">Copy</button>
+                    </div>
+                </div>
+
+                <div x-show="previewModal.error" style="display:none; padding:8px 12px; border-radius:8px; background:var(--gif-danger-bg); color:var(--gif-danger); font-size:12px;" x-text="previewModal.error"></div>
+
+                <div class="gif-preview-stage">
+                    <article class="gif-preview-frame" :class="'is-' + previewModal.device">
+                        <div style="font-size:11px; color:var(--gif-text-muted); margin-bottom:6px;" x-text="'URL: /blog/' + (slug || 'untitled-post') + ' · Visibility: ' + (visibility || 'public')"></div>
+                        <h1 style="font-size:1.65rem; font-weight:800; line-height:1.25; margin:0 0 12px;" x-text="title || 'Untitled Article'"></h1>
+                        <p x-show="excerpt" style="color:var(--gif-text-muted); margin:0 0 16px; font-size:14px;" x-text="excerpt"></p>
+                        <div x-html="renderedPreviewBodyHtml()" style="font-size:15px; line-height:1.7;"></div>
+                    </article>
+                </div>
+            </div>
+
+            <div class="gif-modal-footer">
+                <button type="button" @click="previewModal.open = false" class="gif-btn gif-btn-secondary">Close Preview</button>
+            </div>
+        </div>
+    </div>
+
+    {{-- =====================================================================
+         DRAWER: SLIDE-OVER REVISIONS HISTORY + DIFF + 1-CLICK RESTORE
+         ===================================================================== --}}
+    <div x-show="revisionsDrawer.open" style="display:none;" class="gif-drawer-backdrop" @click.self="revisionsDrawer.open = false">
+        <div class="gif-drawer-panel" role="dialog" aria-label="Post Revision History">
+            <div class="gif-modal-header">
+                <div>
+                    <div style="font-weight:800; font-size:14px;">Revision History &amp; Diff</div>
+                    <div style="font-size:11px; color:var(--gif-text-muted);">Compare snapshots or restore any version safely</div>
+                </div>
+                <button type="button" @click="revisionsDrawer.open = false" class="gif-btn gif-btn-secondary gif-btn-xs">✕</button>
+            </div>
+
+            <div class="gif-modal-body" style="display:flex; flex-direction:column; gap:12px;">
+                <div x-show="revisionsDrawer.error" style="padding:8px 12px; border-radius:8px; background:var(--gif-danger-bg); color:var(--gif-danger); font-size:12px;" x-text="revisionsDrawer.error"></div>
+                <div x-show="revisionsDrawer.loading" style="font-size:12px; color:var(--gif-text-muted);">Loading saved revisions...</div>
+
+                <template x-if="!revisionsDrawer.loading && revisionsDrawer.items.length >= 2">
+                    <div class="gif-panel-box">
+                        <div style="font-size:12px; font-weight:700; margin-bottom:8px;">Compare Revisions</div>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr auto; gap:8px; align-items:center;">
+                            <select x-model="revisionsDrawer.selectedFrom" class="gif-input" aria-label="Compare From Revision">
+                                <template x-for="r in revisionsDrawer.items" :key="'from-' + r.id">
+                                    <option :value="r.id" x-text="'v' + r.revision_number + ' · ' + (r.type || 'manual')"></option>
+                                </template>
+                            </select>
+                            <select x-model="revisionsDrawer.selectedTo" class="gif-input" aria-label="Compare To Revision">
+                                <template x-for="r in revisionsDrawer.items" :key="'to-' + r.id">
+                                    <option :value="r.id" x-text="'v' + r.revision_number + ' · ' + (r.type || 'manual')"></option>
+                                </template>
+                            </select>
+                            <button type="button" @click="loadRevisionDiff()" class="gif-btn gif-btn-primary gif-btn-xs">Diff</button>
+                        </div>
+
+                        <div x-show="revisionsDrawer.diffLoading" style="font-size:11.5px; color:var(--gif-text-muted); margin-top:8px;">Computing line diff...</div>
+
+                        <template x-if="revisionsDrawer.diff && !revisionsDrawer.diffLoading">
+                            <div style="margin-top:10px; max-height:200px; overflow-y:auto; padding:8px; border-radius:8px; background:var(--gif-bg); border:1px solid var(--gif-border);">
+                                <template x-if="revisionsDrawer.diff.fields?.title?.changed">
+                                    <div style="font-size:11.5px; margin-bottom:6px;">
+                                        <strong>Title changed:</strong>
+                                        <span class="gif-diff-line is-removed" x-text="'- ' + revisionsDrawer.diff.fields.title.from"></span>
+                                        <span class="gif-diff-line is-added" x-text="'+ ' + revisionsDrawer.diff.fields.title.to"></span>
+                                    </div>
+                                </template>
+                                <template x-for="(line, lIdx) in (revisionsDrawer.diff.content_lines || [])" :key="'dl-' + lIdx">
+                                    <div
+                                        x-show="line.type !== 'unchanged'"
+                                        class="gif-diff-line"
+                                        :class="line.type === 'added' ? 'is-added' : 'is-removed'"
+                                        x-text="(line.type === 'added' ? '+ ' : '- ') + line.text"
+                                    ></div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <template x-for="rev in revisionsDrawer.items" :key="'rev-' + rev.id">
+                        <div style="padding:10px 12px; border-radius:10px; border:1px solid var(--gif-border); background:var(--gif-bg-soft); display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                            <div style="min-width:0; flex:1;">
+                                <div style="font-size:12.5px; font-weight:700;" x-text="'Revision #' + rev.revision_number + ' · ' + (rev.title || 'Untitled')"></div>
+                                <div style="font-size:11px; color:var(--gif-text-muted);" x-text="(rev.type || 'manual').toUpperCase() + ' · ' + (rev.author?.name || 'System') + ' · ' + (rev.change_summary || 'Snapshot')"></div>
+                            </div>
+                            <button type="button" @click="restoreServerRevision(rev.id)" :disabled="revisionsDrawer.restoring" class="gif-btn gif-btn-secondary gif-btn-xs">
+                                Restore
+                            </button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- =====================================================================
+         MOBILE STICKY BOTTOM ACTION BAR (< 1024px)
+         ===================================================================== --}}
+    <div class="gif-mobile-bottom-bar" x-show="!isKeyboardOpen" aria-label="Mobile Quick Actions">
+        <button type="button" @click="mobileSaveDraft()" class="gif-btn gif-btn-secondary">Save Draft</button>
+        <button type="button" @click="openPreviewModal()" class="gif-btn gif-btn-secondary">Preview</button>
+        <button type="button" @click="mobilePublish()" class="gif-btn gif-btn-primary" x-text="canPublish ? 'Publish' : 'Submit'"></button>
     </div>
 </div>

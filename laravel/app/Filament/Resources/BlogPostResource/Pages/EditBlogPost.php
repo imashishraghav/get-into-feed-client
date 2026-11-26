@@ -4,7 +4,10 @@ namespace App\Filament\Resources\BlogPostResource\Pages;
 
 use App\Filament\Resources\BlogPostResource;
 use App\Models\AuditLog;
+use App\Models\PostAutosave;
 use App\Models\Revision;
+use App\Services\BlogPostService;
+use App\Services\HtmlSanitizerService;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
@@ -57,7 +60,7 @@ class EditBlogPost extends EditRecord
         // Safe fallbacks from legacy polymorphic SeoMetadata when new blog_posts columns are null
         $data['title'] = (string) ($data['title'] ?? '');
         $data['slug'] = (string) ($data['slug'] ?? '');
-        $data['content'] = (string) ($data['content'] ?? '');
+        $data['content'] = (string) ($data['content'] ?: ($data['content_html'] ?? ''));
         $data['excerpt'] = (string) ($data['excerpt'] ?? '');
         $data['featured_image_alt'] = (string) ($data['featured_image_alt'] ?: ($this->record->featuredMedia?->alt_text ?? ''));
         $data['focus_keyphrase'] = (string) ($data['focus_keyphrase'] ?: ($seo?->focus_keyword ?? ''));
@@ -68,7 +71,7 @@ class EditBlogPost extends EditRecord
         }
         $data['secondary_keyphrases'] = array_values(array_filter(array_map('strval', $secondary)));
 
-        $data['seo_title'] = (string) ($data['seo_title'] ?: ($seo?->seo_title ?? ''));
+        $data['seo_title'] = (string) ($data['seo_title'] ?: ($data['meta_title'] ?: ($seo?->seo_title ?? '')));
         $data['meta_description'] = (string) ($data['meta_description'] ?: ($seo?->meta_description ?? ''));
         $data['canonical_url'] = (string) ($data['canonical_url'] ?: ($seo?->canonical_url ?? ''));
         $data['schema_type'] = $hasDirectSeo
@@ -80,12 +83,17 @@ class EditBlogPost extends EditRecord
         $data['robots_follow'] = $hasDirectSeo
             ? ($data['robots_follow'] ?? ($seo?->robots_follow ?? true))
             : ($seo?->robots_follow ?? ($data['robots_follow'] ?? true));
-        $data['faq_items'] = is_array($data['faq_items'] ?? null) ? $data['faq_items'] : [];
+        $rawFaqs = $data['faq_items'] ?? ($data['faq_json'] ?? []);
+        $data['faq_items'] = is_array($rawFaqs) ? $rawFaqs : [];
         $data['og_title'] = (string) ($data['og_title'] ?: ($seo?->og_title ?? ''));
         $data['og_description'] = (string) ($data['og_description'] ?: ($seo?->og_description ?? ''));
         $data['seo_score'] = (int) ($data['seo_score'] ?? ($seo?->seo_score ?? 0));
+        $data['readability_score'] = (int) ($data['readability_score'] ?? 0);
         $data['word_count'] = (int) ($data['word_count'] ?? 0);
         $data['reading_time'] = (int) ($data['reading_time'] ?? 0);
+        $data['visibility'] = (string) ($data['visibility'] ?: 'public');
+        $data['version'] = max(1, (int) ($data['version'] ?? 1));
+        $data['scheduled_for'] = $data['scheduled_for'] ?? $data['scheduled_at'] ?? null;
 
         return $data;
     }
@@ -97,6 +105,19 @@ class EditBlogPost extends EditRecord
 
     protected function mutateFormDataBeforeSave(array $data): array
     {
+        $submittedVersion = isset($data['version']) ? (int) $data['version'] : null;
+        $currentVersion = max(1, (int) ($this->record->version ?: 1));
+        if ($submittedVersion !== null && $submittedVersion !== $currentVersion) {
+            Notification::make()
+                ->title('Save Conflict Detected')
+                ->body("This article was updated on another device (server version v{$currentVersion}, your tab has v{$submittedVersion}). Refresh before saving to avoid overwriting newer edits.")
+                ->danger()
+                ->persistent()
+                ->send();
+
+            $this->halt();
+        }
+
         if (! auth()->user()?->hasCmsPermission('blog.publish')) {
             $data['status'] = $this->record->status;
             $data['published_at'] = $this->record->published_at;
@@ -105,7 +126,11 @@ class EditBlogPost extends EditRecord
 
         $data['slug'] = ! empty($data['slug']) ? Str::slug((string) $data['slug']) : $this->record->slug;
 
-        $plain = trim(strip_tags((string) ($data['content'] ?? '')));
+        $sanitizedContent = app(HtmlSanitizerService::class)->sanitize((string) ($data['content'] ?? ''));
+        $data['content'] = $sanitizedContent;
+        $data['content_html'] = $sanitizedContent;
+
+        $plain = trim(strip_tags($sanitizedContent));
         $computedWords = $plain !== '' ? str_word_count($plain) : 0;
         $data['word_count'] = max($computedWords, (int) ($data['word_count'] ?? 0));
         $data['reading_time'] = max(1, (int) ceil($data['word_count'] / 200));
@@ -118,10 +143,18 @@ class EditBlogPost extends EditRecord
             : [];
 
         $data['faq_items'] = self::normalizeFaqItems($data['faq_items'] ?? []);
+        $data['faq_json'] = $data['faq_items'];
+        $data['meta_title'] = $data['seo_title'] ?? '';
+        $data['scheduled_at'] = $data['scheduled_for'] ?? null;
         $data['schema_type'] = $data['schema_type'] ?: 'BlogPosting';
         $data['robots_index'] = $data['robots_index'] === null ? true : (bool) $data['robots_index'];
         $data['robots_follow'] = $data['robots_follow'] === null ? true : (bool) $data['robots_follow'];
         $data['seo_score'] = max(0, min(100, (int) ($data['seo_score'] ?? 0)));
+        $data['readability_score'] = max(0, min(100, (int) ($data['readability_score'] ?? 0)));
+        $data['visibility'] = in_array($data['visibility'] ?? ($this->record->visibility ?? 'public'), ['public', 'unlisted', 'private'], true)
+            ? ($data['visibility'] ?? ($this->record->visibility ?? 'public'))
+            : 'public';
+        $data['version'] = $currentVersion + 1;
 
         return $data;
     }
@@ -129,50 +162,23 @@ class EditBlogPost extends EditRecord
     protected function afterSave(): void
     {
         $record = $this->record;
+        $service = app(BlogPostService::class);
+        $service->syncSeoAndSchema($record);
 
-        // Keep Polymorphic SeoMetadata synchronized for API, Sitemap & Legacy consumers
-        $existingSeo = $record->seo;
-        $record->seo()->updateOrCreate(
-            [
-                'seoble_type' => get_class($record),
-                'seoble_id' => $record->id,
-            ],
-            [
-                'seo_title' => $record->seo_title ?: null,
-                'meta_description' => $record->meta_description ?: null,
-                'focus_keyword' => $record->focus_keyphrase ?: null,
-                'target_keywords' => $record->secondary_keyphrases ?? [],
-                'canonical_url' => $record->canonical_url ?: null,
-                'robots_index' => (bool) ($record->robots_index ?? true),
-                'robots_follow' => (bool) ($record->robots_follow ?? true),
-                'og_title' => $record->og_title ?: null,
-                'og_description' => $record->og_description ?: null,
-                'og_media_id' => $existingSeo?->og_media_id ?: ($record->featured_media_id ?: null),
-                'twitter_title' => $existingSeo?->twitter_title ?: ($record->og_title ?: null),
-                'twitter_description' => $existingSeo?->twitter_description ?: ($record->og_description ?: null),
-                'twitter_media_id' => $existingSeo?->twitter_media_id,
-                'schema_type' => $record->schema_type ?: 'BlogPosting',
-                'seo_score' => (int) ($record->seo_score ?? 0),
-                'in_sitemap' => $existingSeo?->in_sitemap ?? true,
-                'sitemap_priority' => $existingSeo?->sitemap_priority ?? 0.8,
-                'sitemap_changefreq' => $existingSeo?->sitemap_changefreq ?? 'weekly',
-            ]
-        );
+        if (auth()->id()) {
+            PostAutosave::query()
+                ->where('blog_post_id', $record->id)
+                ->where('user_id', auth()->id())
+                ->delete();
+        }
+
+        $revType = ($record->status === 'published' && ($this->previousValues['status'] ?? null) !== 'published')
+            ? 'publish'
+            : 'manual';
+        $service->captureRevision($record, auth()->user(), $revType, 'Saved in Editorial Studio');
 
         Cache::forget('api_blog_public_list');
         AuditLog::log('UPDATE', $record, $this->previousValues, $record->toArray());
-
-        $version = Revision::where('revisable_type', get_class($record))
-            ->where('revisable_id', $record->id)
-            ->count() + 1;
-
-        Revision::create([
-            'revisable_type' => get_class($record),
-            'revisable_id' => $record->id,
-            'user_id' => auth()->id(),
-            'version_number' => $version,
-            'payload' => $record->toArray(),
-        ]);
     }
 
     public function restoreRevision(int $revisionId): void
