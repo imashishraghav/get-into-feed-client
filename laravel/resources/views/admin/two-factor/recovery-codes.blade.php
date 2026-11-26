@@ -161,7 +161,7 @@
                 @if (($graceDaysDefault ?? 7) > 0)
                     <label style="display:flex; align-items:flex-start; gap:0.65rem; padding:0.65rem 0.75rem; border-radius:0.5rem; background:#0b0f19; border:1px solid rgba(255,255,255,0.08); font-size:0.8rem; color:#94a3b8; cursor:pointer;">
                         <input type="checkbox" name="skip_grace_period" value="1" style="width:18px; height:18px; margin-top:2px;" />
-                        <span>Enforce TOTP challenge immediately (skip {{ $graceDaysDefault }}-day transition grace period).</span>
+                        <span>Enforce Email OTP challenge immediately (skip {{ $graceDaysDefault }}-day transition grace period).</span>
                     </label>
                 @endif
 

@@ -69,11 +69,13 @@ Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('admin/api')->name(
     Route::post('/operations/queue/retry/{uuidOrAll}', [SystemOperationsController::class, 'retryFailedJob'])->name('operations.queue.retry');
 });
 
-// Two-Factor Authentication Routes
+// Two-Factor Authentication Routes (Email OTP)
 Route::middleware(['web', 'auth'])->prefix('admin/two-factor')->name('admin.two-factor.')->group(function () {
     Route::get('/', [TwoFactorAuthController::class, 'challenge'])->name('challenge');
     Route::post('/verify', [TwoFactorAuthController::class, 'verify'])->name('verify');
+    Route::post('/send-otp', [TwoFactorAuthController::class, 'sendOtp'])->name('send-otp');
     Route::get('/setup', [TwoFactorAuthController::class, 'setup'])->name('setup');
+    Route::get('/confirm', fn () => redirect()->route('admin.two-factor.setup'));
     Route::post('/confirm', [TwoFactorAuthController::class, 'confirm'])->name('confirm');
     Route::post('/recovery-codes/confirm', [TwoFactorAuthController::class, 'confirmRecoveryCodes'])->name('confirm-recovery');
     Route::post('/recovery-codes/regenerate', [TwoFactorAuthController::class, 'regenerateRecoveryCodes'])->name('regenerate-recovery');

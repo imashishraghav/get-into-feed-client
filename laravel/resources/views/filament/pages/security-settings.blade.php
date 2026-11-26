@@ -9,7 +9,7 @@
     <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
         <div class="gif-card" style="padding: 20px;">
             <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px;">
-                <h2 style="font-size:15px; font-weight:800; margin:0;">Two-Factor Authentication (TOTP)</h2>
+                <h2 style="font-size:15px; font-weight:800; margin:0;">Two-Factor Authentication (Email OTP)</h2>
                 <span class="gif-badge {{ $has2fa ? 'gif-badge-success' : 'gif-badge-warn' }}">
                     {{ $has2fa ? ($inGrace ? 'Active (Grace)' : 'Active') : 'Not Enrolled' }}
                 </span>
@@ -17,12 +17,12 @@
 
             <p style="font-size:13px; color:var(--gif-text-muted); line-height:1.55; margin-bottom:14px;">
                 @if ($has2fa)
-                    TOTP protection is active with local QR enrollment, single-use recovery codes, and same-timestep replay protection.
+                    Email OTP protection is active with 10-minute single-use verification codes and 8 emergency recovery codes.
                     @if ($inGrace && $user->two_factor_grace_until)
                         Grace window ends <strong>{{ $user->two_factor_grace_until->timezone('Asia/Kolkata')->format('M d, Y H:i') }} IST</strong>.
                     @endif
                 @else
-                    Protect your admin account with an authenticator app and 8 emergency single-use recovery codes.
+                    Protect your admin account with 6-digit Email OTP verification codes and 8 emergency recovery codes.
                 @endif
             </p>
 

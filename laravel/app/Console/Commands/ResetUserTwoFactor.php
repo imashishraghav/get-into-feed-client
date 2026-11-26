@@ -13,7 +13,7 @@ class ResetUserTwoFactor extends Command
                             {email : Email address of the user whose 2FA should be reset}
                             {--force : Skip confirmation prompt}';
 
-    protected $description = 'Emergency CLI reset for a user\'s two-factor authentication (TOTP secret & recovery codes)';
+    protected $description = 'Emergency CLI reset for a user\'s two-factor authentication (Email OTP & recovery codes)';
 
     public function handle(TwoFactorAuthService $tfaService): int
     {

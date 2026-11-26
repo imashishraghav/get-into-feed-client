@@ -18,9 +18,9 @@ class TwoFactorAuthController extends Controller
         protected TwoFactorAuthService $tfaService
     ) {}
 
-    public function challenge()
+    public function challenge(Request $request)
     {
-        $user = auth()->user();
+        $user = $request->user();
         if (! $user || ! $user->requiresTwoFactorChallenge()) {
             return redirect('/admin');
         }
@@ -29,7 +29,17 @@ class TwoFactorAuthController extends Controller
             return redirect('/admin');
         }
 
-        return view('admin.two-factor.challenge');
+        $mailResult = null;
+        if (! $this->tfaService->hasActiveEmailOtp($user, 'login')) {
+            $mailResult = $this->tfaService->sendEmailOtp($user, 'login', respectCooldown: false);
+        }
+
+        return view('admin.two-factor.challenge', [
+            'maskedEmail' => $user->getMaskedEmail(),
+            'ttlMinutes' => (int) config('cms.two_factor.email_otp_ttl_minutes', 10),
+            'cooldownRemaining' => $this->tfaService->getEmailOtpCooldownRemaining($user),
+            'mailError' => $mailResult['mail_error'] ?? null,
+        ]);
     }
 
     public function verify(Request $request)
@@ -54,7 +64,10 @@ class TwoFactorAuthController extends Controller
         if ($recoveryCode !== '') {
             if ($this->tfaService->verifyAndConsumeRecoveryCode($user, $recoveryCode)) {
                 RateLimiter::clear($throttleKey);
-                session(['auth.two_factor_verified' => true]);
+                session([
+                    'auth.two_factor_verified' => true,
+                    'auth.reauthenticated_at' => time(),
+                ]);
 
                 return $this->completeVerificationRedirect($user, $request, $trustDevice);
             }
@@ -65,8 +78,7 @@ class TwoFactorAuthController extends Controller
             ]);
         }
 
-        $secret = $user->getTwoFactorSecret();
-        if ($secret && $this->tfaService->verifyCodeForUser($user, $secret, $code)) {
+        if ($this->tfaService->verifyEmailOtp($user, $code, 'login')) {
             RateLimiter::clear($throttleKey);
             session([
                 'auth.two_factor_verified' => true,
@@ -75,6 +87,7 @@ class TwoFactorAuthController extends Controller
 
             AuditLog::log('MFA_LOGIN_SUCCESS', $user, null, [
                 'user_email' => $user->email,
+                'method' => 'email_otp',
                 'ip' => $request->ip(),
                 'trusted_device_issued' => $trustDevice,
             ]);
@@ -97,8 +110,40 @@ class TwoFactorAuthController extends Controller
         ]);
 
         throw ValidationException::withMessages([
-            'code' => ['The provided 6-digit authenticator code is incorrect or expired.'],
+            'code' => ['The provided 6-digit email OTP is incorrect or expired. Request a new code if needed.'],
         ]);
+    }
+
+    public function sendOtp(Request $request)
+    {
+        $user = $request->user();
+        $purpose = in_array($request->input('purpose'), ['setup', 'login', 'reauth'], true)
+            ? (string) $request->input('purpose')
+            : ($user->hasTwoFactorEnabled() ? 'login' : 'setup');
+
+        $throttleKey = 'mfa-send:'.$user->id.'|'.$purpose.'|'.$request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            return back()->withErrors([
+                'code' => "Too many OTP requests. Please try again in {$seconds} seconds.",
+            ]);
+        }
+
+        $result = $this->tfaService->sendEmailOtp($user, $purpose, respectCooldown: true);
+        if (! $result['sent'] && $result['mail_error'] === null) {
+            return back()->withErrors([
+                'code' => "Please wait {$result['cooldown_remaining']} seconds before requesting a new email OTP.",
+            ]);
+        }
+
+        RateLimiter::hit($throttleKey, 300);
+
+        if ($result['mail_error'] !== null) {
+            return back()->withErrors(['code' => $result['mail_error']]);
+        }
+
+        return back()->with('status', "A fresh 6-digit verification OTP has been sent to {$user->getMaskedEmail()}.");
     }
 
     private function completeVerificationRedirect($user, Request $request, bool $trustDevice)
@@ -128,24 +173,19 @@ class TwoFactorAuthController extends Controller
     {
         $user = $request->user();
         $has2fa = $user->hasTwoFactorEnabled();
-        $secret = null;
-        $qrUri = null;
-        $qrCodeSvg = null;
+        $mailResult = null;
 
-        if (! $has2fa) {
-            $secret = session('mfa_pending_secret') ?: $this->tfaService->generateSecretKey();
-            session(['mfa_pending_secret' => $secret]);
-            $issuer = config('app.name', 'GetIntoFeed Admin');
-            $qrUri = $this->tfaService->getQrCodeUrl($issuer, $user->email, $secret);
-            $qrCodeSvg = $this->tfaService->getQrCodeSvg($issuer, $user->email, $secret);
+        if (! $has2fa && ! $this->tfaService->hasActiveEmailOtp($user, 'setup')) {
+            $mailResult = $this->tfaService->sendEmailOtp($user, 'setup', respectCooldown: false);
         }
 
         return view('admin.two-factor.setup', [
             'has2fa' => $has2fa,
-            'secret' => $secret,
-            'qrUri' => $qrUri,
-            'qrCodeSvg' => $qrCodeSvg,
             'user' => $user,
+            'maskedEmail' => $user->getMaskedEmail(),
+            'ttlMinutes' => (int) config('cms.two_factor.email_otp_ttl_minutes', 10),
+            'cooldownRemaining' => $this->tfaService->getEmailOtpCooldownRemaining($user),
+            'mailError' => $mailResult['mail_error'] ?? null,
             'graceUntil' => $user->two_factor_grace_until,
             'isInGracePeriod' => $user->isInTwoFactorGracePeriod(),
             'recoveryConfirmed' => $user->hasConfirmedRecoveryCodes(),
@@ -155,32 +195,26 @@ class TwoFactorAuthController extends Controller
     }
 
     /**
-     * Step 1 of activation: Verify first TOTP code and display recovery codes for explicit save confirmation.
+     * Step 1 of activation: Verify the 6-digit Email OTP and display recovery codes for save confirmation.
      * Does NOT enforce mandatory challenge until recovery codes are explicitly confirmed saved.
      */
     public function confirm(Request $request)
     {
         $user = $request->user();
-        $secret = session('mfa_pending_secret');
-
-        if (! $secret) {
-            return redirect()->route('admin.two-factor.setup')
-                ->withErrors(['code' => 'MFA setup session expired. Please scan the new QR code cleanly.']);
-        }
-
         $code = trim((string) $request->input('code', ''));
-        if (! $this->tfaService->verifyCode($secret, $code)) {
-            return back()->withErrors(['code' => 'Invalid code. Enter the 6-digit code shown in your authenticator app.']);
+
+        if (! $this->tfaService->verifyEmailOtp($user, $code, 'setup')) {
+            return redirect()->route('admin.two-factor.setup')
+                ->withErrors(['code' => 'Invalid or expired 6-digit Email OTP. Please check your inbox or click Resend OTP.']);
         }
 
         $recoveryCodes = $this->tfaService->generateRecoveryCodes(8);
         session([
             'mfa_pending_enrollment' => [
-                'secret' => $secret,
+                'method' => 'email',
                 'hashed' => $recoveryCodes['hashed'],
             ],
         ]);
-        session()->forget('mfa_pending_secret');
 
         return view('admin.two-factor.recovery-codes', [
             'codes' => $recoveryCodes['plain'],
@@ -190,7 +224,7 @@ class TwoFactorAuthController extends Controller
     }
 
     /**
-     * Step 2 of activation: Complete enrollment only after user confirms recovery codes are saved.
+     * Step 2 of activation: Complete Email OTP enrollment only after recovery codes are confirmed saved.
      */
     public function confirmRecoveryCodes(Request $request)
     {
@@ -204,18 +238,19 @@ class TwoFactorAuthController extends Controller
         $user = $request->user();
         $pending = session('mfa_pending_enrollment');
 
-        if (! is_array($pending) || empty($pending['secret']) || empty($pending['hashed'])) {
+        if (! is_array($pending) || empty($pending['hashed'])) {
             return redirect()->route('admin.two-factor.setup')
-                ->withErrors(['code' => 'No pending 2FA setup found. Please verify your authenticator app again.']);
+                ->withErrors(['code' => 'No pending 2FA setup found. Please verify your email OTP again.']);
         }
 
         $graceDays = $request->boolean('skip_grace_period') ? 0 : (int) config('cms.two_factor.grace_days', 7);
         $this->tfaService->enableTwoFactor(
             $user,
-            (string) $pending['secret'],
+            null,
             ['hashed' => $pending['hashed']],
             recoverySavedConfirmed: true,
-            graceDays: $graceDays
+            graceDays: $graceDays,
+            method: 'email'
         );
 
         session()->forget('mfa_pending_enrollment');
@@ -223,12 +258,13 @@ class TwoFactorAuthController extends Controller
 
         AuditLog::log('MFA_RECOVERY_CODES_CONFIRMED', $user, null, [
             'user_email' => $user->email,
+            'method' => 'email',
             'grace_days' => $graceDays,
         ]);
 
         $statusMsg = $graceDays > 0
-            ? "Two-Factor Authentication activated cleanly with a {$graceDays}-day transition grace period."
-            : 'Two-Factor Authentication is now active and enforced on future logins.';
+            ? "Email Two-Factor Authentication activated cleanly with a {$graceDays}-day transition grace period."
+            : 'Email Two-Factor Authentication is now active and enforced on future logins.';
 
         return redirect()->route('admin.two-factor.setup')->with('status', $statusMsg);
     }
@@ -285,9 +321,17 @@ class TwoFactorAuthController extends Controller
     public function reauth(Request $request)
     {
         $user = $request->user();
+        $mailResult = null;
+
+        if ($user->hasTwoFactorEnabled() && ! $this->tfaService->hasActiveEmailOtp($user, 'reauth')) {
+            $mailResult = $this->tfaService->sendEmailOtp($user, 'reauth', respectCooldown: false);
+        }
 
         return view('admin.two-factor.reauth', [
-            'requiresTotp' => $user->hasTwoFactorEnabled(),
+            'requiresOtp' => $user->hasTwoFactorEnabled(),
+            'maskedEmail' => $user->getMaskedEmail(),
+            'ttlMinutes' => (int) config('cms.two_factor.email_otp_ttl_minutes', 10),
+            'mailError' => $mailResult['mail_error'] ?? null,
         ]);
     }
 
@@ -302,9 +346,8 @@ class TwoFactorAuthController extends Controller
 
         if ($user->hasTwoFactorEnabled()) {
             $code = trim((string) $request->input('code', ''));
-            $secret = (string) $user->getTwoFactorSecret();
-            if (! $this->tfaService->verifyCodeForUser($user, $secret, $code)) {
-                return back()->withErrors(['code' => 'Invalid or already-used 6-digit authenticator code.']);
+            if (! $this->tfaService->verifyEmailOtp($user, $code, 'reauth')) {
+                return back()->withErrors(['code' => 'Invalid or expired 6-digit email OTP.']);
             }
         }
 

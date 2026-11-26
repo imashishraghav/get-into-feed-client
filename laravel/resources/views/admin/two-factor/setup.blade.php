@@ -197,16 +197,20 @@
     <div class="card">
         <div class="header">
             @if ($has2fa)
-                <span class="badge badge-enabled">Active & Enforced</span>
+                <span class="badge badge-enabled">Active (Email OTP)</span>
             @else
                 <span class="badge badge-disabled">Not Configured</span>
             @endif
             <h1>Two-Factor Authentication</h1>
-            <p class="subtitle">Protect your GetIntoFeed admin account with industry-standard TOTP MFA.</p>
+            <p class="subtitle">Protect your GetIntoFeed admin account with 6-digit one-time verification codes sent directly to your registered email.</p>
         </div>
 
         @if (session('status'))
             <div class="status-msg">{{ session('status') }}</div>
+        @endif
+
+        @if (! empty($mailError))
+            <div class="error-msg">{{ $mailError }}</div>
         @endif
 
         @if ($errors->any())
@@ -218,39 +222,44 @@
         @endif
 
         @if (! $has2fa)
-            <!-- Setup steps -->
+            <!-- Setup steps (Email OTP) -->
             <div class="step">
-                <div class="step-title"><span class="step-num">1</span> Scan this QR Code with your Authenticator App</div>
-                <p style="font-size: 0.8rem; color: #94a3b8;">Rendered locally with zero third-party requests. Compatible with Google Authenticator, Microsoft Authenticator, 1Password, or Authy.</p>
-                <div class="qr-wrap" aria-label="TOTP Authenticator QR Code">
-                    {!! $qrCodeSvg !!}
-                </div>
-                <div style="font-size: 0.75rem; color: #94a3b8; text-align: center;">Or manually enter this secret key:</div>
-                <div class="secret-box" aria-label="Manual TOTP Secret">{{ implode(' ', str_split((string) $secret, 4)) }}</div>
+                <div class="step-title"><span class="step-num">1</span> Check your email inbox for the 6-digit OTP</div>
+                <p style="font-size: 0.85rem; color: #94a3b8; line-height: 1.55;">
+                    We have sent a one-time 6-digit verification code to <strong style="color:#f8fafc;">{{ $maskedEmail }}</strong>.
+                    It remains valid for <strong>{{ $ttlMinutes }} minutes</strong>.
+                </p>
+                <form method="POST" action="{{ route('admin.two-factor.send-otp') }}" style="margin-top: 0.9rem;">
+                    @csrf
+                    <input type="hidden" name="purpose" value="setup">
+                    <button type="submit" class="btn-submit" style="min-height:44px; background:#334155;">
+                        Resend Email OTP
+                    </button>
+                </form>
             </div>
 
             <div class="step">
-                <div class="step-title"><span class="step-num">2</span> Enter 6-digit confirmation code</div>
+                <div class="step-title"><span class="step-num">2</span> Enter the 6-digit Email OTP</div>
                 <form method="POST" action="{{ route('admin.two-factor.confirm') }}">
                     @csrf
                     <div class="form-group">
-                        <label for="code">Verification Code</label>
+                        <label for="code">6-Digit Email Verification Code</label>
                         <input type="text" id="code" name="code" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" style="min-height:44px; text-align:center; letter-spacing:0.2em; font-family:monospace;" required>
                     </div>
-                    <button type="submit" class="btn-submit" style="min-height:44px;">Verify Code &amp; View Recovery Codes</button>
+                    <button type="submit" class="btn-submit" style="min-height:44px;">Verify Email OTP &amp; View Recovery Codes</button>
                 </form>
             </div>
         @else
             <!-- Already enabled: status + grace info + device revocation + regenerate + disable -->
             <div class="step" style="background: rgba(34, 197, 94, 0.05); border-color: rgba(34, 197, 94, 0.2);">
                 <div style="font-size: 0.95rem; font-weight: 600; color: #4ade80; margin-bottom: 0.5rem;">
-                    ✓ Two-Factor Authentication is configured
+                    ✓ Email Two-Factor Authentication is configured
                 </div>
                 <p style="font-size: 0.825rem; color: #94a3b8; line-height: 1.5;">
                     @if ($isInGracePeriod && $graceUntil)
                         Transition grace window active until <strong>{{ $graceUntil->timezone('Asia/Kolkata')->format('M d, Y H:i') }} IST</strong>. Mandatory challenge begins once grace ends.
                     @else
-                        Your account requires a 6-digit TOTP code on every new untrusted browser sign-in.
+                        Your account receives a fresh 6-digit verification OTP at <strong>{{ $maskedEmail }}</strong> on every untrusted browser sign-in.
                     @endif
                     <br>Remaining emergency recovery codes: <strong>{{ $remainingCodesCount ?? 0 }}</strong>.
                 </p>

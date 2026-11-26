@@ -14,13 +14,13 @@
 - **HTML Sanitization & Mixed Content Safety**: `HtmlSanitizerService` (powered by `symfony/html-sanitizer`) + `classifyContent()` keeps legacy Markdown and mixed Markdown+HTML posts safely in Code/Markdown mode by default.
 - **Public SPA Parity**: Styled TipTap custom blocks in `frontend/src/styles.css` and updated `frontend/src/utils/markdownRenderer.jsx` DOMPurify hooks to allow sanitized TipTap video iframes and `data-*` block attributes.
 
-## Phase 3: Core Two-Factor Authentication (TOTP MFA)
-- **RFC 6238 TOTP & Local SVG QR**: Built `TwoFactorAuthService` + `bacon/bacon-qr-code` inline SVG QR generation (zero external Google Charts/QR network calls).
+## Phase 3: Core Two-Factor Authentication (Email OTP MFA)
+- **Single-Use 6-Digit Email OTP**: Replaced TOTP QR with synchronous 6-digit one-time verification codes emailed directly to the admin's registered address (`EmailOtpNotification`, 10-minute expiry, bcrypt-hashed storage, 30s resend cooldown).
 - **Safe Enrollment & Recovery Guardrail**: Mandatory two-step activation requiring explicit emergency recovery code confirmation (`confirmRecoveryCodes`) plus configurable 7-day transition grace period (`config('cms.two_factor.grace_days')`).
-- **Challenge UX & Trusted Devices**: Dark-themed challenge screen (`44px` touch targets, `inputmode="numeric"`, `autocomplete="one-time-code"`), 30-day HMAC-SHA256 `HttpOnly` `gif_mfa_trust` cookie (`two_factor_trusted_token_version`), per-user rate limiting, and audit logs.
+- **Challenge UX & Trusted Devices**: Dark-themed Email OTP challenge screen (`44px` touch targets, `inputmode="numeric"`, `autocomplete="one-time-code"`, Resend OTP), 30-day HMAC-SHA256 `HttpOnly` `gif_mfa_trust` cookie (`two_factor_trusted_token_version`), per-user rate limiting, and audit logs.
 
 ## Phase 4: Final Security Hardening & Handover
-- **TOTP Replay Protection**: Persists `two_factor_last_used_timestep` per user (`verifyCodeForUser`) to reject same-timestep code replay.
+- **Single-Use Email OTP Replay Protection**: Consumes and clears `two_factor_email_otp_hash`, `two_factor_email_otp_purpose`, and `two_factor_email_otp_expires_at` immediately upon verification, isolating `setup`, `login`, and `reauth` codes.
 - **Superadmin Recovery UI & Notifications**: Added `Reset 2FA` confirmation table action in `UserResource` recording `two_factor_reset_by`/`two_factor_reset_at`, `MFA_ADMIN_RESET` audit event, and queued `TwoFactorDisabledAlert` + masked-IP `NewDeviceLoginAlert` mail notifications.
 - **Account Security Hub & Re-Authentication**: Added Filament `SecuritySettings` page (`/admin/security-settings`, session invalidation via `Auth::logoutOtherDevices`, trusted-device revocation, security event log) and `RequireRecentAuthentication` middleware protecting `/admin/system-backups/{id}/download` via `/admin/two-factor/reauth`.
 
@@ -34,6 +34,7 @@ All schema changes across Phases 1–4 are additive and reversible:
 3. `2026_11_26_000003_upgrade_media_and_operations_indexes.php` (Phase 1)
 4. `2026_11_27_000001_add_two_factor_phase3_columns_to_users_table.php` (Phase 3)
 5. `2026_11_27_000002_add_totp_replay_and_audit_columns_to_users_table.php` (Phase 4)
+6. `2026_11_27_000003_add_email_otp_columns_to_users_table.php` (Email OTP columns)
 
 ### Staging / Production Migration Order (Always back up MySQL first!)
 ```bash
@@ -49,17 +50,17 @@ php artisan optimize:clear
 ```
 
 ### Emergency Rollback Commands
-- Roll back only Phase 4 column additions (1 migration):
+- Roll back only Email OTP columns (1 migration):
   ```bash
   php artisan migrate:rollback --step=1 --force
   ```
-- Roll back Phases 3–4 (2 migrations):
+- Roll back Phases 3–4 + Email OTP (3 migrations):
   ```bash
-  php artisan migrate:rollback --step=2 --force
+  php artisan migrate:rollback --step=3 --force
   ```
-- Roll back all Phases 1–4 schema migrations cleanly (5 migrations):
+- Roll back all Phases 1–4 schema migrations cleanly (6 migrations):
   ```bash
-  php artisan migrate:rollback --step=5 --force
+  php artisan migrate:rollback --step=6 --force
   ```
 
 ## Production Host Checklist

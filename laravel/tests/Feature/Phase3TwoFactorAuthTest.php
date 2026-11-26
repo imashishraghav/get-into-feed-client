@@ -3,9 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Notifications\EmailOtpNotification;
 use App\Services\TwoFactorAuthService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class Phase3TwoFactorAuthTest extends TestCase
@@ -23,33 +25,43 @@ class Phase3TwoFactorAuthTest extends TestCase
         ], $overrides));
     }
 
-    private function currentTotp(TwoFactorAuthService $service, string $secret): string
+    private function captureSentEmailOtp(User $user): string
     {
-        $method = new \ReflectionMethod($service, 'base32Decode');
-        $decoded = $method->invoke($service, $secret);
-        $step = (int) floor(time() / 30);
+        $capturedOtp = '';
+        Notification::assertSentTo(
+            $user,
+            EmailOtpNotification::class,
+            function (EmailOtpNotification $notification) use ($user, &$capturedOtp): bool {
+                $mail = $notification->toMail($user);
+                if (preg_match('/^(\d{6})\s+is your/i', (string) $mail->subject, $matches)) {
+                    $capturedOtp = $matches[1];
+                }
 
-        return $service->calculateTotp($decoded, $step);
+                return $capturedOtp !== '';
+            }
+        );
+
+        $this->assertMatchesRegularExpression('/^\d{6}$/', $capturedOtp);
+
+        return $capturedOtp;
     }
 
-    public function test_local_qr_svg_and_two_step_recovery_code_confirmation_guardrail(): void
+    public function test_email_otp_enrollment_and_two_step_recovery_code_confirmation_guardrail(): void
     {
+        Notification::fake();
         $admin = $this->makeAdmin();
-        $tfa = app(TwoFactorAuthService::class);
 
         $this->actingAs($admin);
 
-        // Setup page renders inline SVG locally (never calls external qrserver.com)
+        // Setup page sends a 6-digit Email OTP automatically and renders masked email UI (no TOTP QR)
         $setupResponse = $this->get(route('admin.two-factor.setup'))->assertOk();
-        $setupResponse->assertSee('<svg', false);
+        $setupResponse->assertSee($admin->getMaskedEmail(), false);
         $setupResponse->assertDontSee('api.qrserver.com', false);
 
-        $secret = session('mfa_pending_secret');
-        $this->assertNotEmpty($secret);
+        $otp = $this->captureSentEmailOtp($admin);
 
-        // Step 1: Confirm TOTP shows recovery codes, but login is NOT locked yet until saved confirmation
-        $code = $this->currentTotp($tfa, $secret);
-        $this->post(route('admin.two-factor.confirm'), ['code' => $code])
+        // Step 1: Confirm Email OTP displays emergency recovery codes, but login stays unlocked until confirmed saved
+        $this->post(route('admin.two-factor.confirm'), ['code' => $otp])
             ->assertOk()
             ->assertSee('I have securely saved these emergency recovery codes');
 
@@ -81,24 +93,29 @@ class Phase3TwoFactorAuthTest extends TestCase
         $this->get('/admin/blog-posts')->assertRedirect(route('admin.two-factor.challenge'));
     }
 
-    public function test_totp_verify_trusted_device_cookie_and_revoke_all_devices(): void
+    public function test_email_otp_verify_trusted_device_cookie_and_revoke_all_devices(): void
     {
+        Notification::fake();
         $tfa = app(TwoFactorAuthService::class);
-        $secret = $tfa->generateSecretKey();
         $recovery = $tfa->generateRecoveryCodes(4);
 
         $admin = $this->makeAdmin();
-        $tfa->enableTwoFactor($admin, $secret, $recovery, recoverySavedConfirmed: true, graceDays: 0);
+        $tfa->enableTwoFactor($admin, null, $recovery, recoverySavedConfirmed: true, graceDays: 0);
 
         $this->actingAs($admin);
 
         // Blocked before verifying
         $this->get('/admin/blog-posts')->assertRedirect(route('admin.two-factor.challenge'));
 
-        // Verify with TOTP + "Trust this browser for 30 days"
-        $code = $this->currentTotp($tfa, $secret);
+        // Opening challenge triggers a fresh 6-digit login Email OTP
+        $this->get(route('admin.two-factor.challenge'))
+            ->assertOk()
+            ->assertSee($admin->getMaskedEmail(), false);
+        $otp = $this->captureSentEmailOtp($admin);
+
+        // Verify with Email OTP + "Trust this browser for 30 days"
         $verifyResponse = $this->post(route('admin.two-factor.verify'), [
-            'code' => $code,
+            'code' => $otp,
             'trust_device' => '1',
         ]);
         $verifyResponse->assertRedirect('/admin');
@@ -126,12 +143,12 @@ class Phase3TwoFactorAuthTest extends TestCase
 
     public function test_recovery_code_single_use_rate_limit_regenerate_disable_and_cli_reset(): void
     {
+        Notification::fake();
         $tfa = app(TwoFactorAuthService::class);
-        $secret = $tfa->generateSecretKey();
         $recovery = $tfa->generateRecoveryCodes(4);
 
         $admin = $this->makeAdmin();
-        $tfa->enableTwoFactor($admin, $secret, $recovery, recoverySavedConfirmed: true, graceDays: 0);
+        $tfa->enableTwoFactor($admin, null, $recovery, recoverySavedConfirmed: true, graceDays: 0);
 
         $this->actingAs($admin);
 
@@ -158,7 +175,7 @@ class Phase3TwoFactorAuthTest extends TestCase
         $rateLimited->assertSessionHasErrors('code');
         $this->assertStringContainsString('Too many failed authentication attempts', session('errors')->first('code'));
 
-        // Verify with valid TOTP after clearing limiter OR log in via emergency CLI reset
+        // Emergency CLI reset unlocks account
         $this->artisan('user:reset-2fa', ['email' => $admin->email, '--force' => true])
             ->assertExitCode(0);
 
@@ -169,7 +186,7 @@ class Phase3TwoFactorAuthTest extends TestCase
         $this->actingAs($fresh)->get('/admin/blog-posts')->assertOk();
 
         // Re-enable, regenerate codes (requires password), then disable (requires password)
-        $tfa->enableTwoFactor($fresh, $secret, $recovery, recoverySavedConfirmed: true, graceDays: 0);
+        $tfa->enableTwoFactor($fresh, null, $recovery, recoverySavedConfirmed: true, graceDays: 0);
         session(['auth.two_factor_verified' => true]);
 
         $this->post(route('admin.two-factor.regenerate-recovery'), ['password' => 'WrongPassword'])

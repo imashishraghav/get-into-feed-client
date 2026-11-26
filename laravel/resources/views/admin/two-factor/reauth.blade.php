@@ -68,6 +68,16 @@
         <h1>Confirm Your Password</h1>
         <p class="subtitle">Please verify your identity before completing this sensitive security or data export action.</p>
 
+        @if (session('status'))
+            <div style="background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); color: #4ade80; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.85rem; margin-bottom: 1rem;">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        @if (! empty($mailError))
+            <div class="error-msg">{{ $mailError }}</div>
+        @endif
+
         @if ($errors->any())
             <div class="error-msg">
                 @foreach ($errors->all() as $error)
@@ -83,15 +93,25 @@
                 <input type="password" id="password" name="password" required autofocus autocomplete="current-password">
             </div>
 
-            @if ($requiresTotp)
+            @if ($requiresOtp)
                 <div class="form-group">
-                    <label for="code">Authenticator 6-Digit Code</label>
+                    <label for="code">6-Digit Email OTP (sent to {{ $maskedEmail }})</label>
                     <input type="text" id="code" name="code" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" required>
                 </div>
             @endif
 
             <button type="submit" class="btn-submit">Confirm Identity</button>
         </form>
+
+        @if ($requiresOtp)
+            <form method="POST" action="{{ route('admin.two-factor.send-otp') }}" style="margin-top: 0.75rem;">
+                @csrf
+                <input type="hidden" name="purpose" value="reauth">
+                <button type="submit" class="btn-submit" style="background:#1e293b; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1;">
+                    Resend Email OTP
+                </button>
+            </form>
+        @endif
     </div>
 </body>
 </html>

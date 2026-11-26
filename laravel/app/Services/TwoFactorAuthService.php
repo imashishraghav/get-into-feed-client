@@ -4,168 +4,114 @@ namespace App\Services;
 
 use App\Models\AuditLog;
 use App\Models\User;
+use App\Notifications\EmailOtpNotification;
 use App\Notifications\TwoFactorDisabledAlert;
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
-use BaconQrCode\Renderer\ImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Writer;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class TwoFactorAuthService
 {
-    private const BASE32_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-
     /**
-     * Generate a cryptographically secure Base32 secret key (16 or 32 chars).
+     * Send a fresh 6-digit single-use Email OTP to the user's email address.
+     *
+     * @return array{sent: bool, cooldown_remaining: int, expires_at: mixed, mail_error: ?string}
      */
-    public function generateSecretKey(int $length = 16): string
+    public function sendEmailOtp(User $user, string $purpose = 'login', bool $respectCooldown = true): array
     {
-        $secret = '';
-        $max = strlen(self::BASE32_CHARS) - 1;
-        for ($i = 0; $i < $length; $i++) {
-            $secret .= self::BASE32_CHARS[random_int(0, $max)];
+        $ttlMinutes = max(1, (int) config('cms.two_factor.email_otp_ttl_minutes', 10));
+        $cooldownSeconds = max(5, (int) config('cms.two_factor.email_otp_resend_cooldown_seconds', 30));
+        $cooldownRemaining = $this->getEmailOtpCooldownRemaining($user);
+
+        if ($respectCooldown && $this->hasActiveEmailOtp($user, $purpose) && $cooldownRemaining > 0) {
+            return [
+                'sent' => false,
+                'cooldown_remaining' => $cooldownRemaining,
+                'expires_at' => $user->two_factor_email_otp_expires_at,
+                'mail_error' => null,
+            ];
         }
 
-        return $secret;
-    }
+        $otp = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $expiresAt = now()->addMinutes($ttlMinutes);
 
-    /**
-     * Generate an otpauth:// URL suitable for Google Authenticator / 1Password / Authy.
-     */
-    public function getQrCodeUrl(string $issuer, string $accountName, string $secret): string
-    {
-        $encodedIssuer = rawurlencode($issuer);
-        $encodedAccount = rawurlencode($accountName);
-
-        return "otpauth://totp/{$encodedIssuer}:{$encodedAccount}?secret={$secret}&issuer={$encodedIssuer}&algorithm=SHA1&digits=6&period=30";
-    }
-
-    /**
-     * Render a crisp inline SVG QR code locally via bacon/bacon-qr-code (zero third-party leakage).
-     */
-    public function getQrCodeSvg(string $issuer, string $accountName, string $secret): string
-    {
-        $otpAuthUri = $this->getQrCodeUrl($issuer, $accountName, $secret);
-        $renderer = new ImageRenderer(
-            new RendererStyle(196, 1),
-            new SvgImageBackEnd
-        );
-
-        return (new Writer($renderer))->writeString($otpAuthUri);
-    }
-
-    /**
-     * Verify a 6-digit TOTP code against a Base32 secret key.
-     * Allows a configurable time window (default 1 = +/- 30 seconds drift tolerance).
-     */
-    public function verifyCode(string $secret, string $code, int $window = 1): bool
-    {
-        return $this->matchTotpTimestep($secret, $code, $window) !== null;
-    }
-
-    /**
-     * Verify a 6-digit TOTP code for a specific user and block same-timestep replay attacks.
-     */
-    public function verifyCodeForUser(User $user, string $secret, string $code, int $window = 1): bool
-    {
-        $matchedStep = $this->matchTotpTimestep($secret, $code, $window);
-        if ($matchedStep === null) {
-            return false;
-        }
-
-        $lastStep = $user->two_factor_last_used_timestep !== null
-            ? (int) $user->two_factor_last_used_timestep
-            : null;
-
-        if ($lastStep !== null && $matchedStep <= $lastStep) {
-            return false;
-        }
-
-        $user->two_factor_last_used_timestep = $matchedStep;
+        $user->two_factor_email_otp_hash = Hash::make($otp);
+        $user->two_factor_email_otp_purpose = $purpose;
+        $user->two_factor_email_otp_expires_at = $expiresAt;
+        $user->two_factor_email_otp_sent_at = now();
         $user->save();
+
+        $mailError = null;
+        try {
+            $user->notifyNow(new EmailOtpNotification($otp, $purpose, $ttlMinutes));
+        } catch (\Throwable) {
+            $mailError = 'Email delivery could not be completed. Check mail/SMTP configuration on the server.';
+        }
+
+        AuditLog::log('MFA_EMAIL_OTP_SENT', $user, null, [
+            'user_email' => $user->email,
+            'purpose' => $purpose,
+            'delivery_ok' => $mailError === null,
+        ]);
+
+        return [
+            'sent' => $mailError === null,
+            'cooldown_remaining' => $cooldownSeconds,
+            'expires_at' => $expiresAt,
+            'mail_error' => $mailError,
+        ];
+    }
+
+    public function hasActiveEmailOtp(User $user, string $purpose): bool
+    {
+        return ! empty($user->two_factor_email_otp_hash)
+            && $user->two_factor_email_otp_purpose === $purpose
+            && $user->two_factor_email_otp_expires_at !== null
+            && $user->two_factor_email_otp_expires_at->isFuture();
+    }
+
+    public function getEmailOtpCooldownRemaining(User $user): int
+    {
+        if (! $user->two_factor_email_otp_sent_at) {
+            return 0;
+        }
+
+        $cooldownSeconds = max(5, (int) config('cms.two_factor.email_otp_resend_cooldown_seconds', 30));
+        $elapsed = now()->timestamp - $user->two_factor_email_otp_sent_at->timestamp;
+
+        return max(0, $cooldownSeconds - $elapsed);
+    }
+
+    /**
+     * Verify a 6-digit Email OTP and consume it immediately to prevent replay attacks.
+     */
+    public function verifyEmailOtp(User $user, string $code, string $purpose): bool
+    {
+        $normalized = preg_replace('/\D+/', '', trim($code)) ?? '';
+        if (strlen($normalized) !== 6) {
+            return false;
+        }
+
+        if (! $this->hasActiveEmailOtp($user, $purpose)) {
+            return false;
+        }
+
+        if (! Hash::check($normalized, (string) $user->two_factor_email_otp_hash)) {
+            return false;
+        }
+
+        $this->clearPendingEmailOtp($user);
 
         return true;
     }
 
-    private function matchTotpTimestep(string $secret, string $code, int $window = 1): ?int
+    public function clearPendingEmailOtp(User $user): void
     {
-        $code = trim($code);
-        if (strlen($code) !== 6 || ! ctype_digit($code)) {
-            return null;
-        }
-
-        $decodedSecret = $this->base32Decode($secret);
-        if (empty($decodedSecret)) {
-            return null;
-        }
-
-        $currentTimestamp = time();
-        $timeStep = 30;
-        $currentStep = (int) floor($currentTimestamp / $timeStep);
-
-        for ($i = -$window; $i <= $window; $i++) {
-            $step = $currentStep + $i;
-            $calculatedCode = $this->calculateTotp($decodedSecret, $step);
-            if (hash_equals($calculatedCode, $code)) {
-                return $step;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Calculate 6-digit TOTP code for a given step using RFC 6238 HMAC-SHA1.
-     */
-    public function calculateTotp(string $decodedSecret, int $step): string
-    {
-        // 64-bit big-endian representation of time step
-        $timeBinary = pack('N*', 0).pack('N*', $step);
-        $hash = hash_hmac('sha1', $timeBinary, $decodedSecret, true);
-
-        // Dynamic truncation: take last 4 bits of the 20-byte hash
-        $offset = ord($hash[19]) & 0x0F;
-
-        // Extract 4 bytes from offset
-        $part = substr($hash, $offset, 4);
-        $value = unpack('N', $part)[1] & 0x7FFFFFFF;
-
-        $totp = $value % 1000000;
-
-        return str_pad((string) $totp, 6, '0', STR_PAD_LEFT);
-    }
-
-    /**
-     * Decode a Base32 encoded string into raw binary bytes.
-     */
-    protected function base32Decode(string $b32): string
-    {
-        $b32 = strtoupper(trim($b32));
-        $buffer = 0;
-        $bitsLeft = 0;
-        $binary = '';
-
-        for ($i = 0, $len = strlen($b32); $i < $len; $i++) {
-            $char = $b32[$i];
-            if ($char === '=') {
-                break;
-            }
-            $val = strpos(self::BASE32_CHARS, $char);
-            if ($val === false) {
-                continue;
-            }
-            $buffer = ($buffer << 5) | $val;
-            $bitsLeft += 5;
-
-            if ($bitsLeft >= 8) {
-                $bitsLeft -= 8;
-                $binary .= chr(($buffer >> $bitsLeft) & 0xFF);
-            }
-        }
-
-        return $binary;
+        $user->two_factor_email_otp_hash = null;
+        $user->two_factor_email_otp_purpose = null;
+        $user->two_factor_email_otp_expires_at = null;
+        $user->two_factor_email_otp_sent_at = null;
+        $user->save();
     }
 
     /**
@@ -206,7 +152,6 @@ class TwoFactorAuthService
 
         foreach ($codes as $index => $hashedCode) {
             if (Hash::check($code, $hashedCode)) {
-                // Remove used recovery code
                 unset($codes[$index]);
                 $user->two_factor_recovery_codes = Crypt::encryptString(json_encode(array_values($codes)));
                 $user->save();
@@ -224,26 +169,33 @@ class TwoFactorAuthService
     }
 
     /**
-     * Enable 2FA for a user with the confirmed secret key and recovery codes.
+     * Enable Email OTP 2FA for a user with emergency recovery codes.
      */
     public function enableTwoFactor(
         User $user,
-        string $secret,
+        ?string $secret,
         array $recoveryCodes,
         bool $recoverySavedConfirmed = true,
-        ?int $graceDays = null
+        ?int $graceDays = null,
+        string $method = 'email'
     ): void {
         $resolvedGraceDays = $graceDays ?? (int) config('cms.two_factor.grace_days', 7);
 
-        $user->two_factor_secret = Crypt::encryptString($secret);
+        $user->two_factor_method = $method;
+        $user->two_factor_secret = $secret ? Crypt::encryptString($secret) : null;
         $user->two_factor_recovery_codes = Crypt::encryptString(json_encode($recoveryCodes['hashed']));
         $user->two_factor_confirmed_at = now();
         $user->two_factor_recovery_confirmed_at = $recoverySavedConfirmed ? now() : null;
         $user->two_factor_grace_until = $resolvedGraceDays > 0 ? now()->addDays($resolvedGraceDays) : null;
+        $user->two_factor_email_otp_hash = null;
+        $user->two_factor_email_otp_purpose = null;
+        $user->two_factor_email_otp_expires_at = null;
+        $user->two_factor_email_otp_sent_at = null;
         $user->save();
 
         AuditLog::log('MFA_ENABLED', $user, null, [
             'user_email' => $user->email,
+            'method' => $method,
             'confirmed_at' => now()->toIso8601String(),
             'recovery_confirmed' => $recoverySavedConfirmed,
             'grace_until' => $user->two_factor_grace_until?->toIso8601String(),
@@ -251,7 +203,7 @@ class TwoFactorAuthService
     }
 
     /**
-     * Regenerate emergency recovery codes and require explicit save confirmation.
+     * Regenerate emergency recovery codes.
      *
      * @return array{plain: array<int, string>, hashed: array<int, string>}
      */
@@ -334,6 +286,10 @@ class TwoFactorAuthService
         $user->two_factor_recovery_confirmed_at = null;
         $user->two_factor_grace_until = null;
         $user->two_factor_last_used_timestep = null;
+        $user->two_factor_email_otp_hash = null;
+        $user->two_factor_email_otp_purpose = null;
+        $user->two_factor_email_otp_expires_at = null;
+        $user->two_factor_email_otp_sent_at = null;
         $user->two_factor_trusted_token_version = max(1, (int) ($user->two_factor_trusted_token_version ?? 1)) + 1;
         $user->save();
 
@@ -364,6 +320,10 @@ class TwoFactorAuthService
         $target->two_factor_recovery_confirmed_at = null;
         $target->two_factor_grace_until = null;
         $target->two_factor_last_used_timestep = null;
+        $target->two_factor_email_otp_hash = null;
+        $target->two_factor_email_otp_purpose = null;
+        $target->two_factor_email_otp_expires_at = null;
+        $target->two_factor_email_otp_sent_at = null;
         $target->two_factor_trusted_token_version = max(1, (int) ($target->two_factor_trusted_token_version ?? 1)) + 1;
         $target->two_factor_reset_by = $actor->id;
         $target->two_factor_reset_at = now();

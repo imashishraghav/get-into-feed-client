@@ -6,6 +6,7 @@ use App\Filament\Pages\SecuritySettings;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\AuditLog;
 use App\Models\User;
+use App\Notifications\EmailOtpNotification;
 use App\Notifications\NewDeviceLoginAlert;
 use App\Notifications\TwoFactorDisabledAlert;
 use App\Services\TwoFactorAuthService;
@@ -30,38 +31,55 @@ class Phase4SecurityHardeningTest extends TestCase
         ], $overrides));
     }
 
-    private function currentTotp(TwoFactorAuthService $service, string $secret): string
+    private function captureSentEmailOtp(User $user): string
     {
-        $method = new \ReflectionMethod($service, 'base32Decode');
-        $decoded = $method->invoke($service, $secret);
-        $step = (int) floor(time() / 30);
+        $capturedOtp = '';
+        Notification::assertSentTo(
+            $user,
+            EmailOtpNotification::class,
+            function (EmailOtpNotification $notification) use ($user, &$capturedOtp): bool {
+                $mail = $notification->toMail($user);
+                if (preg_match('/^(\d{6})\s+is your/i', (string) $mail->subject, $matches)) {
+                    $capturedOtp = $matches[1];
+                }
 
-        return $service->calculateTotp($decoded, $step);
+                return $capturedOtp !== '';
+            }
+        );
+
+        $this->assertMatchesRegularExpression('/^\d{6}$/', $capturedOtp);
+
+        return $capturedOtp;
     }
 
-    public function test_totp_replay_in_same_timestep_is_blocked_and_login_sends_masked_alert(): void
+    public function test_email_otp_replay_is_blocked_cooldown_enforced_and_login_sends_masked_alert(): void
     {
         Notification::fake();
 
         $service = app(TwoFactorAuthService::class);
-        $secret = $service->generateSecretKey();
         $codes = $service->generateRecoveryCodes(4);
 
         $user = $this->makeUser();
-        $service->enableTwoFactor($user, $secret, $codes, recoverySavedConfirmed: true, graceDays: 0);
+        $service->enableTwoFactor($user, null, $codes, recoverySavedConfirmed: true, graceDays: 0);
 
-        $code = $this->currentTotp($service, $secret);
+        $this->actingAs($user)->get(route('admin.two-factor.challenge'))->assertOk();
+        $otp = $this->captureSentEmailOtp($user);
 
-        // First verification succeeds and sends masked NewDeviceLoginAlert
+        // Resend cooldown immediately blocks spam within cooldown window
+        $this->actingAs($user)
+            ->post(route('admin.two-factor.send-otp'), ['purpose' => 'login'])
+            ->assertSessionHasErrors('code');
+
+        // First verification succeeds, consumes OTP, and sends masked NewDeviceLoginAlert
         $this->actingAs($user)
             ->post('/admin/two-factor/verify', [
-                'code' => $code,
+                'code' => $otp,
                 'trust_device' => true,
             ])
             ->assertRedirect('/admin');
 
         $user->refresh();
-        $this->assertNotNull($user->two_factor_last_used_timestep);
+        $this->assertNull($user->two_factor_email_otp_hash);
 
         Notification::assertSentTo(
             $user,
@@ -74,11 +92,11 @@ class Phase4SecurityHardeningTest extends TestCase
             }
         );
 
-        // Replay of the exact same TOTP code within the same 30-second window must be rejected
+        // Replaying the exact same OTP must be rejected
         $this->actingAs($user)
             ->withSession(['auth.two_factor_verified' => false])
             ->post('/admin/two-factor/verify', [
-                'code' => $code,
+                'code' => $otp,
             ])
             ->assertSessionHasErrors('code');
     }
@@ -91,9 +109,8 @@ class Phase4SecurityHardeningTest extends TestCase
         $editor = $this->makeUser(['role' => 'author']);
 
         $service = app(TwoFactorAuthService::class);
-        $secret = $service->generateSecretKey();
         $codes = $service->generateRecoveryCodes(4);
-        $service->enableTwoFactor($editor, $secret, $codes, recoverySavedConfirmed: true, graceDays: 0);
+        $service->enableTwoFactor($editor, null, $codes, recoverySavedConfirmed: true, graceDays: 0);
 
         $this->assertTrue($editor->fresh()->hasTwoFactorEnabled());
 
@@ -120,7 +137,7 @@ class Phase4SecurityHardeningTest extends TestCase
     {
         $user = $this->makeUser();
         $service = app(TwoFactorAuthService::class);
-        $service->enableTwoFactor($user, $service->generateSecretKey(), $service->generateRecoveryCodes(4), true, 0);
+        $service->enableTwoFactor($user, null, $service->generateRecoveryCodes(4), true, 0);
 
         AuditLog::log('MFA_LOGIN_SUCCESS', $user, null, ['user_email' => $user->email]);
 
@@ -128,7 +145,7 @@ class Phase4SecurityHardeningTest extends TestCase
             ->withSession(['auth.two_factor_verified' => true])
             ->get('/admin/security-settings')
             ->assertOk()
-            ->assertSee('Two-Factor Authentication (TOTP)')
+            ->assertSee('Two-Factor Authentication (Email OTP)')
             ->assertSee('Manage 2FA & Recovery Codes');
 
         Livewire::test(SecuritySettings::class)
@@ -142,30 +159,32 @@ class Phase4SecurityHardeningTest extends TestCase
         ]);
     }
 
-    public function test_recent_reauthentication_guard_protects_backup_download_and_accepts_reauth(): void
+    public function test_recent_reauthentication_guard_protects_backup_download_and_accepts_email_otp_reauth(): void
     {
+        Notification::fake();
         $user = $this->makeUser();
         $service = app(TwoFactorAuthService::class);
-        $secret = $service->generateSecretKey();
-        $service->enableTwoFactor($user, $secret, $service->generateRecoveryCodes(4), true, 0);
+        $service->enableTwoFactor($user, null, $service->generateRecoveryCodes(4), true, 0);
 
         // Stale or missing auth.reauthenticated_at redirects to reauth prompt
         $this->actingAs($user)
             ->get('/admin/system-backups/999999/download')
             ->assertRedirect(route('admin.two-factor.reauth'));
 
-        // Reauth screen renders password + TOTP input cleanly
+        // Reauth screen automatically sends reauth Email OTP and renders password + Email OTP form
         $this->actingAs($user)
             ->get(route('admin.two-factor.reauth'))
             ->assertOk()
             ->assertSee('Confirm Your Password')
-            ->assertSee('Authenticator 6-Digit Code');
+            ->assertSee('6-Digit Email OTP');
+
+        $reauthOtp = $this->captureSentEmailOtp($user);
 
         // Completing reauth sets auth.reauthenticated_at and redirects back to the intended protected route
         $this->actingAs($user)
             ->post(route('admin.two-factor.reauth.verify'), [
                 'password' => 'StrongSecretPass123!',
-                'code' => $this->currentTotp($service, $secret),
+                'code' => $reauthOtp,
             ])
             ->assertRedirect('/admin/system-backups/999999/download');
 

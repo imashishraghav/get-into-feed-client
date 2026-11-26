@@ -28,6 +28,11 @@ class User extends Authenticatable implements FilamentUser
         'two_factor_secret',
         'two_factor_recovery_codes',
         'two_factor_confirmed_at',
+        'two_factor_method',
+        'two_factor_email_otp_hash',
+        'two_factor_email_otp_purpose',
+        'two_factor_email_otp_expires_at',
+        'two_factor_email_otp_sent_at',
         'two_factor_recovery_confirmed_at',
         'two_factor_grace_until',
         'two_factor_trusted_token_version',
@@ -42,6 +47,7 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'remember_token',
         'two_factor_secret',
+        'two_factor_email_otp_hash',
         'two_factor_recovery_codes',
     ];
 
@@ -51,6 +57,8 @@ class User extends Authenticatable implements FilamentUser
         'is_active' => 'boolean',
         'last_login_at' => 'datetime',
         'two_factor_confirmed_at' => 'datetime',
+        'two_factor_email_otp_expires_at' => 'datetime',
+        'two_factor_email_otp_sent_at' => 'datetime',
         'two_factor_recovery_confirmed_at' => 'datetime',
         'two_factor_grace_until' => 'datetime',
         'two_factor_trusted_token_version' => 'integer',
@@ -60,7 +68,20 @@ class User extends Authenticatable implements FilamentUser
 
     public function hasTwoFactorEnabled(): bool
     {
-        return ! empty($this->two_factor_secret) && ! is_null($this->two_factor_confirmed_at);
+        return ! is_null($this->two_factor_confirmed_at);
+    }
+
+    public function getMaskedEmail(): string
+    {
+        $email = (string) $this->email;
+        if (! str_contains($email, '@')) {
+            return '***';
+        }
+
+        [$local, $domain] = explode('@', $email, 2);
+        $prefix = substr($local, 0, min(2, strlen($local)));
+
+        return $prefix.str_repeat('*', max(3, strlen($local) - strlen($prefix))).'@'.$domain;
     }
 
     public function hasConfirmedRecoveryCodes(): bool

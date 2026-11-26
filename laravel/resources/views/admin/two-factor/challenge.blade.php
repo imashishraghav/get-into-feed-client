@@ -161,10 +161,20 @@
             </div>
         </div>
 
-        <h1>Two-Factor Verification</h1>
+        <h1>Email OTP Verification</h1>
         <p class="subtitle" id="subtitle-text">
-            Enter the 6-digit code from your authenticator app (Google Authenticator, Microsoft Authenticator, or 1Password).
+            Enter the 6-digit verification OTP sent to <strong>{{ $maskedEmail }}</strong> (valid for {{ $ttlMinutes }} minutes).
         </p>
+
+        @if (session('status'))
+            <div style="background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); color: #4ade80; padding: 0.75rem 1rem; border-radius: 0.5rem; font-size: 0.85rem; margin-bottom: 1.25rem;">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        @if (! empty($mailError))
+            <div class="error-msg">{{ $mailError }}</div>
+        @endif
 
         @if ($errors->any())
             <div class="error-msg">
@@ -177,14 +187,14 @@
         <form method="POST" action="{{ route('admin.two-factor.verify') }}">
             @csrf
 
-            <div id="totp-group" class="form-group">
-                <label for="code">Authentication Code</label>
-                <input type="text" id="code" name="code" maxlength="6" inputmode="numeric" autocomplete="one-time-code" autofocus placeholder="123456">
+            <div id="otp-group" class="form-group">
+                <label for="code">6-Digit Email OTP</label>
+                <input type="text" id="code" name="code" maxlength="6" inputmode="numeric" autocomplete="one-time-code" autofocus placeholder="123456" style="min-height:44px;">
             </div>
 
             <div id="recovery-group" class="form-group hidden">
                 <label for="recovery_code">Emergency Recovery Code</label>
-                <input type="text" id="recovery_code" name="recovery_code" maxlength="14" placeholder="XXXX-XXXX-XXXX" style="letter-spacing: 0.1em;">
+                <input type="text" id="recovery_code" name="recovery_code" maxlength="14" placeholder="XXXX-XXXX-XXXX" style="letter-spacing: 0.1em; min-height:44px;">
             </div>
 
             <label style="display:flex; align-items:center; gap:0.55rem; margin-bottom:1.15rem; font-size:0.825rem; color:#cbd5e1; cursor:pointer; min-height:44px;">
@@ -193,6 +203,14 @@
             </label>
 
             <button type="submit" class="btn-submit" style="min-height:44px;">Verify &amp; Continue</button>
+        </form>
+
+        <form method="POST" action="{{ route('admin.two-factor.send-otp') }}" style="margin-top: 0.75rem;">
+            @csrf
+            <input type="hidden" name="purpose" value="login">
+            <button type="submit" class="btn-submit" style="min-height:44px; background:#1e293b; border:1px solid rgba(255,255,255,0.12); color:#cbd5e1;">
+                Resend Email OTP
+            </button>
         </form>
 
         <a href="javascript:void(0)" class="toggle-link" id="toggle-recovery" onclick="toggleMode()">
@@ -213,25 +231,25 @@
         let isRecovery = false;
         function toggleMode() {
             isRecovery = !isRecovery;
-            const totpGroup = document.getElementById('totp-group');
+            const otpGroup = document.getElementById('otp-group');
             const recoveryGroup = document.getElementById('recovery-group');
             const toggleLink = document.getElementById('toggle-recovery');
             const subtitleText = document.getElementById('subtitle-text');
 
             if (isRecovery) {
-                totpGroup.classList.add('hidden');
+                otpGroup.classList.add('hidden');
                 recoveryGroup.classList.remove('hidden');
                 document.getElementById('code').value = '';
                 document.getElementById('recovery_code').focus();
-                toggleLink.textContent = 'Use standard 6-digit authenticator code instead';
+                toggleLink.textContent = 'Use 6-digit email OTP instead';
                 subtitleText.textContent = 'Enter one of your saved emergency recovery codes to regain access.';
             } else {
-                totpGroup.classList.remove('hidden');
+                otpGroup.classList.remove('hidden');
                 recoveryGroup.classList.add('hidden');
                 document.getElementById('recovery_code').value = '';
                 document.getElementById('code').focus();
                 toggleLink.textContent = 'Use an emergency recovery code instead';
-                subtitleText.textContent = 'Enter the 6-digit code from your authenticator app.';
+                subtitleText.textContent = 'Enter the 6-digit verification OTP sent to {{ $maskedEmail }}.';
             }
         }
     </script>

@@ -24,9 +24,12 @@ return [
     ],
 
     'two_factor' => [
+        'method' => 'email',
         'grace_days' => (int) env('CMS_2FA_GRACE_DAYS', 7),
         'trust_device_days' => (int) env('CMS_2FA_TRUST_DAYS', 30),
         'cookie_name' => 'gif_mfa_trust',
         'reauth_ttl_minutes' => (int) env('CMS_REAUTH_TTL_MINUTES', 15),
+        'email_otp_ttl_minutes' => (int) env('CMS_EMAIL_OTP_TTL_MINUTES', 10),
+        'email_otp_resend_cooldown_seconds' => (int) env('CMS_EMAIL_OTP_COOLDOWN_SECONDS', 30),
     ],
 ];
