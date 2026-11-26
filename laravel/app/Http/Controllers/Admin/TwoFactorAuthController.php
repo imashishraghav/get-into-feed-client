@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AuditLog;
 use App\Services\TwoFactorAuthService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Validation\ValidationException;
@@ -16,13 +17,10 @@ class TwoFactorAuthController extends Controller
         protected TwoFactorAuthService $tfaService
     ) {}
 
-    /**
-     * Show the 2FA authentication challenge screen.
-     */
     public function challenge()
     {
         $user = auth()->user();
-        if (! $user || ! $user->hasTwoFactorEnabled()) {
+        if (! $user || ! $user->requiresTwoFactorChallenge()) {
             return redirect('/admin');
         }
 
@@ -33,9 +31,6 @@ class TwoFactorAuthController extends Controller
         return view('admin.two-factor.challenge');
     }
 
-    /**
-     * Verify the entered TOTP code or recovery code.
-     */
     public function verify(Request $request)
     {
         $user = $request->user();
@@ -43,8 +38,7 @@ class TwoFactorAuthController extends Controller
             return redirect('/admin');
         }
 
-        // Rate limit verification attempts (5 per minute per IP + User)
-        $throttleKey = 'mfa-verify:' . $user->id . '|' . $request->ip();
+        $throttleKey = 'mfa-verify:'.$user->id.'|'.$request->ip();
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             throw ValidationException::withMessages([
@@ -52,15 +46,16 @@ class TwoFactorAuthController extends Controller
             ]);
         }
 
-        $code = trim($request->input('code', ''));
-        $recoveryCode = trim($request->input('recovery_code', ''));
+        $code = trim((string) $request->input('code', ''));
+        $recoveryCode = trim((string) $request->input('recovery_code', ''));
+        $trustDevice = $request->boolean('trust_device');
 
-        // Case 1: Recovery code provided
-        if (! empty($recoveryCode)) {
+        if ($recoveryCode !== '') {
             if ($this->tfaService->verifyAndConsumeRecoveryCode($user, $recoveryCode)) {
                 RateLimiter::clear($throttleKey);
                 session(['auth.two_factor_verified' => true]);
-                return redirect()->intended('/admin');
+
+                return $this->completeVerificationRedirect($user, $request, $trustDevice);
             }
 
             RateLimiter::hit($throttleKey, 60);
@@ -69,7 +64,6 @@ class TwoFactorAuthController extends Controller
             ]);
         }
 
-        // Case 2: 6-digit TOTP code provided
         $secret = $user->getTwoFactorSecret();
         if ($secret && $this->tfaService->verifyCode($secret, $code)) {
             RateLimiter::clear($throttleKey);
@@ -78,9 +72,10 @@ class TwoFactorAuthController extends Controller
             AuditLog::log('MFA_LOGIN_SUCCESS', $user, null, [
                 'user_email' => $user->email,
                 'ip' => $request->ip(),
+                'trusted_device_issued' => $trustDevice,
             ]);
 
-            return redirect()->intended('/admin');
+            return $this->completeVerificationRedirect($user, $request, $trustDevice);
         }
 
         RateLimiter::hit($throttleKey, 60);
@@ -96,36 +91,62 @@ class TwoFactorAuthController extends Controller
         ]);
     }
 
-    /**
-     * Show MFA setup screen with TOTP secret and QR code.
-     */
+    private function completeVerificationRedirect($user, Request $request, bool $trustDevice)
+    {
+        if ($trustDevice) {
+            $days = max(1, (int) config('cms.two_factor.trust_device_days', 30));
+            $token = $this->tfaService->createTrustedDeviceToken($user, $days);
+            $cookieName = (string) config('cms.two_factor.cookie_name', 'gif_mfa_trust');
+
+            Cookie::queue(cookie(
+                name: $cookieName,
+                value: $token,
+                minutes: $days * 24 * 60,
+                path: '/admin',
+                domain: config('session.domain'),
+                secure: $request->isSecure() || app()->isProduction(),
+                httpOnly: true,
+                raw: false,
+                sameSite: 'lax'
+            ));
+        }
+
+        return redirect()->intended('/admin');
+    }
+
     public function setup(Request $request)
     {
         $user = $request->user();
-        $isEnabled = $user->hasTwoFactorEnabled();
+        $has2fa = $user->hasTwoFactorEnabled();
         $secret = null;
+        $qrUri = null;
         $qrCodeSvg = null;
 
-        if (! $isEnabled) {
-            $secret = $this->tfaService->generateSecretKey();
+        if (! $has2fa) {
+            $secret = session('mfa_pending_secret') ?: $this->tfaService->generateSecretKey();
             session(['mfa_pending_secret' => $secret]);
-            $qrCodeSvg = $this->tfaService->getQrCodeSvg(
-                config('app.name', 'GetIntoFeed Enterprise CMS'),
-                $user->email,
-                $secret
-            );
+            $issuer = config('app.name', 'GetIntoFeed Admin');
+            $qrUri = $this->tfaService->getQrCodeUrl($issuer, $user->email, $secret);
+            $qrCodeSvg = $this->tfaService->getQrCodeSvg($issuer, $user->email, $secret);
         }
 
         return view('admin.two-factor.setup', [
-            'isEnabled' => $isEnabled,
+            'has2fa' => $has2fa,
             'secret' => $secret,
+            'qrUri' => $qrUri,
             'qrCodeSvg' => $qrCodeSvg,
             'user' => $user,
+            'graceUntil' => $user->two_factor_grace_until,
+            'isInGracePeriod' => $user->isInTwoFactorGracePeriod(),
+            'recoveryConfirmed' => $user->hasConfirmedRecoveryCodes(),
+            'remainingCodesCount' => $user->getRemainingRecoveryCodesCount(),
+            'graceDaysDefault' => (int) config('cms.two_factor.grace_days', 7),
         ]);
     }
 
     /**
-     * Confirm MFA setup with the first valid TOTP code.
+     * Step 1 of activation: Verify first TOTP code and display recovery codes for explicit save confirmation.
+     * Does NOT enforce mandatory challenge until recovery codes are explicitly confirmed saved.
      */
     public function confirm(Request $request)
     {
@@ -133,34 +154,111 @@ class TwoFactorAuthController extends Controller
         $secret = session('mfa_pending_secret');
 
         if (! $secret) {
-            return redirect()->route('admin.two-factor.setup')->withErrors(['code' => 'MFA setup session expired. Please try again.']);
+            return redirect()->route('admin.two-factor.setup')
+                ->withErrors(['code' => 'MFA setup session expired. Please scan the new QR code cleanly.']);
         }
 
-        $code = trim($request->input('code', ''));
+        $code = trim((string) $request->input('code', ''));
         if (! $this->tfaService->verifyCode($secret, $code)) {
             return back()->withErrors(['code' => 'Invalid code. Enter the 6-digit code shown in your authenticator app.']);
         }
 
-        // Generate recovery codes
         $recoveryCodes = $this->tfaService->generateRecoveryCodes(8);
-        $this->tfaService->enableTwoFactor($user, $secret, $recoveryCodes);
-
-        // Mark current session as verified
+        session([
+            'mfa_pending_enrollment' => [
+                'secret' => $secret,
+                'hashed' => $recoveryCodes['hashed'],
+            ],
+        ]);
         session()->forget('mfa_pending_secret');
-        session(['auth.two_factor_verified' => true]);
 
         return view('admin.two-factor.recovery-codes', [
             'codes' => $recoveryCodes['plain'],
+            'requiresSaveConfirmation' => true,
+            'graceDaysDefault' => (int) config('cms.two_factor.grace_days', 7),
         ]);
     }
 
     /**
-     * Disable 2FA.
+     * Step 2 of activation: Complete enrollment only after user confirms recovery codes are saved.
      */
+    public function confirmRecoveryCodes(Request $request)
+    {
+        $request->validate([
+            'confirmed_saved' => ['required', 'accepted'],
+            'skip_grace_period' => ['nullable', 'boolean'],
+        ], [
+            'confirmed_saved.accepted' => 'Please confirm that you have safely saved your emergency recovery codes before activating 2FA.',
+        ]);
+
+        $user = $request->user();
+        $pending = session('mfa_pending_enrollment');
+
+        if (! is_array($pending) || empty($pending['secret']) || empty($pending['hashed'])) {
+            return redirect()->route('admin.two-factor.setup')
+                ->withErrors(['code' => 'No pending 2FA setup found. Please verify your authenticator app again.']);
+        }
+
+        $graceDays = $request->boolean('skip_grace_period') ? 0 : (int) config('cms.two_factor.grace_days', 7);
+        $this->tfaService->enableTwoFactor(
+            $user,
+            (string) $pending['secret'],
+            ['hashed' => $pending['hashed']],
+            recoverySavedConfirmed: true,
+            graceDays: $graceDays
+        );
+
+        session()->forget('mfa_pending_enrollment');
+        session(['auth.two_factor_verified' => true]);
+
+        AuditLog::log('MFA_RECOVERY_CODES_CONFIRMED', $user, null, [
+            'user_email' => $user->email,
+            'grace_days' => $graceDays,
+        ]);
+
+        $statusMsg = $graceDays > 0
+            ? "Two-Factor Authentication activated cleanly with a {$graceDays}-day transition grace period."
+            : 'Two-Factor Authentication is now active and enforced on future logins.';
+
+        return redirect()->route('admin.two-factor.setup')->with('status', $statusMsg);
+    }
+
+    public function regenerateRecoveryCodes(Request $request)
+    {
+        $user = $request->user();
+        if (! $user->hasTwoFactorEnabled()) {
+            return redirect()->route('admin.two-factor.setup');
+        }
+
+        if (! Hash::check((string) $request->input('password', ''), $user->password)) {
+            return back()->withErrors(['password' => 'Incorrect password. Cannot regenerate recovery codes.']);
+        }
+
+        $codes = $this->tfaService->regenerateRecoveryCodes($user);
+
+        return view('admin.two-factor.recovery-codes', [
+            'codes' => $codes['plain'],
+            'requiresSaveConfirmation' => false,
+            'graceDaysDefault' => 0,
+        ]);
+    }
+
+    public function revokeTrustedDevices(Request $request)
+    {
+        $user = $request->user();
+        $this->tfaService->revokeTrustedDevices($user);
+
+        $cookieName = (string) config('cms.two_factor.cookie_name', 'gif_mfa_trust');
+        Cookie::queue(Cookie::forget($cookieName, '/admin', config('session.domain')));
+
+        return redirect()->route('admin.two-factor.setup')
+            ->with('status', 'All trusted browser sessions for Two-Factor Authentication have been revoked.');
+    }
+
     public function disable(Request $request)
     {
         $user = $request->user();
-        $password = $request->input('password');
+        $password = (string) $request->input('password', '');
 
         if (! Hash::check($password, $user->password)) {
             return back()->withErrors(['password' => 'Incorrect password. Cannot disable 2FA.']);
@@ -168,6 +266,8 @@ class TwoFactorAuthController extends Controller
 
         $this->tfaService->disableTwoFactor($user);
         session()->forget('auth.two_factor_verified');
+        $cookieName = (string) config('cms.two_factor.cookie_name', 'gif_mfa_trust');
+        Cookie::queue(Cookie::forget($cookieName, '/admin', config('session.domain')));
 
         return redirect()->route('admin.two-factor.setup')->with('status', 'Two-Factor Authentication has been successfully disabled.');
     }

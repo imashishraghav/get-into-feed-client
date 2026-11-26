@@ -28,6 +28,9 @@ class User extends Authenticatable implements FilamentUser
         'two_factor_secret',
         'two_factor_recovery_codes',
         'two_factor_confirmed_at',
+        'two_factor_recovery_confirmed_at',
+        'two_factor_grace_until',
+        'two_factor_trusted_token_version',
         'last_login_at',
         'last_login_ip',
     ];
@@ -45,11 +48,60 @@ class User extends Authenticatable implements FilamentUser
         'is_active' => 'boolean',
         'last_login_at' => 'datetime',
         'two_factor_confirmed_at' => 'datetime',
+        'two_factor_recovery_confirmed_at' => 'datetime',
+        'two_factor_grace_until' => 'datetime',
+        'two_factor_trusted_token_version' => 'integer',
     ];
 
     public function hasTwoFactorEnabled(): bool
     {
         return ! empty($this->two_factor_secret) && ! is_null($this->two_factor_confirmed_at);
+    }
+
+    public function hasConfirmedRecoveryCodes(): bool
+    {
+        return ! is_null($this->two_factor_recovery_confirmed_at);
+    }
+
+    public function isInTwoFactorGracePeriod(): bool
+    {
+        return $this->two_factor_grace_until !== null && $this->two_factor_grace_until->isFuture();
+    }
+
+    /**
+     * Mandatory 2FA challenge applies only when user is enrolled,
+     * recovery codes are saved (when grace policy is active), and grace period has elapsed.
+     */
+    public function requiresTwoFactorChallenge(): bool
+    {
+        if (! $this->hasTwoFactorEnabled()) {
+            return false;
+        }
+
+        if ($this->isInTwoFactorGracePeriod()) {
+            return false;
+        }
+
+        if ($this->two_factor_grace_until !== null && ! $this->hasConfirmedRecoveryCodes()) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function getRemainingRecoveryCodesCount(): int
+    {
+        if (empty($this->two_factor_recovery_codes)) {
+            return 0;
+        }
+
+        try {
+            $codes = json_decode(Crypt::decryptString($this->two_factor_recovery_codes), true);
+
+            return is_array($codes) ? count($codes) : 0;
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 
     public function getTwoFactorSecret(): ?string

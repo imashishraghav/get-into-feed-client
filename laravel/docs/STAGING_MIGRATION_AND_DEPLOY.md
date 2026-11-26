@@ -45,7 +45,7 @@ ORDER BY id;
    ```
 4. **Verify Rollback cleanly on staging** (before touching production):
    ```bash
-   php artisan migrate:rollback --step=3
+   php artisan migrate:rollback --step=4
    php artisan migrate:status
    php artisan migrate --force
    ```

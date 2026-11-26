@@ -56,4 +56,4 @@ All `/admin/api/*` routes require authenticated session + CSRF token (`throttle:
 - `POST /admin/api/operations/queue/retry/{uuidOrAll}` — Retry failed queue job(s) (audited).
 - `GET /admin/system-backups/{id}/download` — SuperAdmin backup download (`BackupController`, audited).
 - `GET /admin/leads/export-csv`, `GET /admin/leads/export-pdf` — Audited lead exports (`LeadExportController`, `LeadPolicy::export`).
-- `GET/POST /admin/two-factor/*` — Existing 2FA challenge/setup/confirm/disable routes (CLI emergency reset: `php artisan user:reset-2fa {email}`).
+- `GET/POST /admin/two-factor/*` — Phase 3 Core 2FA flow: local SVG QR code setup (`/setup`), first TOTP check (`/confirm`), mandatory recovery-codes save confirmation gate (`/recovery-codes/confirm`), single-use recovery code / TOTP challenge + 30-day HttpOnly trusted device cookie (`/verify`), recovery regeneration (`/recovery-codes/regenerate`), trusted device revocation (`/revoke-devices`), password-confirmed disable (`/disable`), and emergency CLI reset (`php artisan user:reset-2fa {email}`).

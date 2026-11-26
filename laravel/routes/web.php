@@ -74,6 +74,9 @@ Route::middleware(['web', 'auth'])->prefix('admin/two-factor')->name('admin.two-
     Route::post('/verify', [TwoFactorAuthController::class, 'verify'])->name('verify');
     Route::get('/setup', [TwoFactorAuthController::class, 'setup'])->name('setup');
     Route::post('/confirm', [TwoFactorAuthController::class, 'confirm'])->name('confirm');
+    Route::post('/recovery-codes/confirm', [TwoFactorAuthController::class, 'confirmRecoveryCodes'])->name('confirm-recovery');
+    Route::post('/recovery-codes/regenerate', [TwoFactorAuthController::class, 'regenerateRecoveryCodes'])->name('regenerate-recovery');
+    Route::post('/revoke-devices', [TwoFactorAuthController::class, 'revokeTrustedDevices'])->name('revoke-devices');
     Route::post('/disable', [TwoFactorAuthController::class, 'disable'])->name('disable');
 });
 

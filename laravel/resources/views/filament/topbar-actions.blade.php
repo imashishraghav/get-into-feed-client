@@ -5,6 +5,25 @@
         <span>Site Live</span>
     </div>
 
+    <!-- 2FA Security Status Chip -->
+    @if(auth()->user()?->hasTwoFactorEnabled())
+        <a
+            href="/admin/two-factor/setup"
+            style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:9999px; font-size:11px; font-weight:700; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; text-decoration:none; white-space:nowrap;"
+            title="Two-Factor Security configured"
+        >
+            <span>{{ auth()->user()?->isInTwoFactorGracePeriod() ? '2FA Grace' : '2FA Active' }}</span>
+        </a>
+    @else
+        <a
+            href="/admin/two-factor/setup"
+            style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:9999px; font-size:11px; font-weight:700; background:#fffbeb; color:#b45309; border:1px solid #fde68a; text-decoration:none; white-space:nowrap;"
+            title="Recommended: Enable Two-Factor Authentication"
+        >
+            <span>Setup 2FA</span>
+        </a>
+    @endif
+
     <!-- Quick Add New Post Shortcut (WordPress Style) -->
     <a
         href="/admin/blog-posts/create"

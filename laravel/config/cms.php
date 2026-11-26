@@ -22,4 +22,10 @@ return [
         'preview_ttl_minutes' => (int) env('BLOG_PREVIEW_TTL_MINUTES', 1440),
         'revisions_limit' => (int) env('BLOG_REVISIONS_LIMIT', 50),
     ],
+
+    'two_factor' => [
+        'grace_days' => (int) env('CMS_2FA_GRACE_DAYS', 7),
+        'trust_device_days' => (int) env('CMS_2FA_TRUST_DAYS', 30),
+        'cookie_name' => 'gif_mfa_trust',
+    ],
 ];
