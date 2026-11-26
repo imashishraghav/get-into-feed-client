@@ -34,10 +34,14 @@ class TwoFactorAuthController extends Controller
             $mailResult = $this->tfaService->sendEmailOtp($user, 'login', respectCooldown: false);
         }
 
+        $throttleKey = 'mfa-verify:'.$user->id.'|'.$request->ip();
+        $attemptsRemaining = RateLimiter::remaining($throttleKey, 5);
+
         return view('admin.two-factor.challenge', [
             'maskedEmail' => $user->getMaskedEmail(),
             'ttlMinutes' => (int) config('cms.two_factor.email_otp_ttl_minutes', 10),
             'cooldownRemaining' => $this->tfaService->getEmailOtpCooldownRemaining($user),
+            'attemptsRemaining' => $attemptsRemaining,
             'mailError' => $mailResult['mail_error'] ?? null,
         ]);
     }
@@ -150,7 +154,12 @@ class TwoFactorAuthController extends Controller
     {
         if ($trustDevice) {
             $days = max(1, (int) config('cms.two_factor.trust_device_days', 30));
-            $token = $this->tfaService->createTrustedDeviceToken($user, $days);
+            $token = $this->tfaService->createTrustedDeviceToken(
+                $user,
+                $days,
+                $request->userAgent(),
+                $request->ip()
+            );
             $cookieName = (string) config('cms.two_factor.cookie_name', 'gif_mfa_trust');
 
             Cookie::queue(cookie(

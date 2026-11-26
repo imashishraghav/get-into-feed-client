@@ -35,6 +35,7 @@ All schema changes across Phases 1–4 are additive and reversible:
 4. `2026_11_27_000001_add_two_factor_phase3_columns_to_users_table.php` (Phase 3)
 5. `2026_11_27_000002_add_totp_replay_and_audit_columns_to_users_table.php` (Phase 4)
 6. `2026_11_27_000003_add_email_otp_columns_to_users_table.php` (Email OTP columns)
+7. `2026_11_27_000004_create_user_trusted_devices_table.php` (Per-device trusted browser tracking)
 
 ### Staging / Production Migration Order (Always back up MySQL first!)
 ```bash

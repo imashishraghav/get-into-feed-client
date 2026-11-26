@@ -1,220 +1,245 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Two-Factor Authentication Setup — GetIntoFeed Admin</title>
+    <title>Two-step verification setup — GetIntoFeed</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-            background: #080c14;
-            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem 1.5rem;
+            padding: 24px 16px;
         }
         .card {
-            background: #0f172a;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 1rem;
-            max-width: 520px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            max-width: 480px;
             width: 100%;
-            padding: 2.25rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: 34px 32px 28px;
+            box-shadow: 0 4px 24px rgba(15, 23, 42, 0.04);
         }
-        .header {
-            margin-bottom: 1.75rem;
-            text-align: center;
-        }
-        .badge {
-            display: inline-block;
-            padding: 0.35rem 0.85rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            margin-bottom: 0.75rem;
-        }
-        .badge-enabled {
-            background: rgba(34, 197, 94, 0.15);
-            color: #4ade80;
-            border: 1px solid rgba(34, 197, 94, 0.3);
-        }
-        .badge-disabled {
-            background: rgba(239, 68, 68, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-        h1 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.5rem;
-        }
-        p.subtitle {
-            color: #94a3b8;
-            font-size: 0.875rem;
-            line-height: 1.5;
-        }
-        .step {
-            margin-bottom: 1.5rem;
-            padding: 1.25rem;
-            background: #1e293b;
-            border-radius: 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .step-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #cbd5e1;
-            margin-bottom: 0.75rem;
+        .top-bar {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
-        .step-num {
-            background: #254bdb;
-            color: #ffffff;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
+        .brand-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: #0f172a;
+            color: #a3e635;
+            font-weight: 800;
+            font-size: 1.25rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
+        }
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 11px;
+            border-radius: 9999px;
             font-size: 0.75rem;
-        }
-        .qr-wrap {
-            display: flex;
-            justify-content: center;
-            margin: 1rem auto;
-            padding: 0.75rem;
-            background: #ffffff;
-            border-radius: 0.5rem;
-            width: fit-content;
-            max-width: 100%;
-        }
-        .qr-wrap svg {
-            width: 100%;
-            max-width: 196px;
-            height: auto;
-            display: block;
-        }
-        @media (max-width: 480px) {
-            body { padding: 1rem 0.75rem; }
-            .card { padding: 1.35rem 1rem; }
-            .step { padding: 1rem 0.85rem; }
-        }
-        .secret-box {
-            background: #0b0f19;
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.1rem;
-            letter-spacing: 0.15em;
-            color: #38bdf8;
-            user-select: all;
-            margin-top: 0.75rem;
-        }
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-        label {
-            display: block;
-            font-size: 0.825rem;
             font-weight: 600;
-            color: #cbd5e1;
-            margin-bottom: 0.5rem;
         }
-        input[type="text"], input[type="password"] {
+        .pill-on { background: #dcfce7; color: #166534; }
+        .pill-off { background: #f1f5f9; color: #475569; }
+        h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+        p.subtitle {
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 22px;
+        }
+        .otp-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .otp-box {
             width: 100%;
-            padding: 0.75rem 1rem;
-            background: #0b0f19;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 0.5rem;
-            color: #ffffff;
-            font-size: 1.1rem;
+            height: 54px;
+            min-height: 44px;
+            text-align: center;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: #0f172a;
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
             outline: none;
+            transition: border-color 0.15s ease, box-shadow 0.15s ease;
         }
-        input[type="text"]:focus, input[type="password"]:focus {
-            border-color: #3b82f6;
+        .otp-box:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
         }
-        .btn-submit {
+        .btn-primary {
             width: 100%;
-            padding: 0.85rem 1.25rem;
-            background: #254bdb;
+            min-height: 46px;
+            background: #1d4ed8;
             color: #ffffff;
             border: none;
-            border-radius: 0.6rem;
-            font-weight: 600;
+            border-radius: 10px;
             font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        .btn-submit:hover { background: #1d3bb8; }
-        .btn-danger {
-            background: #dc2626;
+        .btn-primary:hover { background: #1e40af; }
+        .btn-outline {
+            width: 100%;
+            min-height: 44px;
+            background: #ffffff;
+            color: #0f172a;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0 14px;
         }
-        .btn-danger:hover { background: #b91c1c; }
-        .error-msg {
-            background: rgba(239, 68, 68, 0.12);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #f87171;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
+        .btn-outline:hover { background: #f8fafc; }
+        .btn-danger-outline {
+            width: 100%;
+            min-height: 44px;
+            background: #ffffff;
+            color: #dc2626;
+            border: 1px solid #fca5a5;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-danger-outline:hover { background: #fef2f2; }
+        .panel-box {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+            background: #ffffff;
+        }
+        .panel-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+        .panel-desc {
+            font-size: 0.825rem;
+            color: #64748b;
+            line-height: 1.45;
+            margin-bottom: 12px;
+        }
+        input[type="password"] {
+            width: 100%;
+            min-height: 44px;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #0f172a;
+            margin-bottom: 10px;
+            outline: none;
+        }
+        input[type="password"]:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+        }
+        .footer-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: 16px;
             font-size: 0.85rem;
-            margin-bottom: 1.25rem;
         }
-        .status-msg {
-            background: rgba(34, 197, 94, 0.15);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            color: #4ade80;
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
+        .link-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            color: #2563eb;
             font-size: 0.85rem;
-            margin-bottom: 1.25rem;
+            font-weight: 500;
+            text-decoration: underline;
+            cursor: pointer;
         }
-        .back-link {
-            display: inline-block;
-            margin-top: 1.5rem;
-            color: #94a3b8;
-            font-size: 0.85rem;
-            text-decoration: none;
+        .muted-meta { color: #64748b; font-size: 0.85rem; }
+        .alert {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.84rem;
+            margin-bottom: 16px;
+            line-height: 1.45;
         }
-        .back-link:hover { color: #ffffff; }
+        .alert-error { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; }
+        .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+        .back-row {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.84rem;
+        }
+        .back-row a { color: #475569; text-decoration: none; }
+        .back-row a:hover { color: #0f172a; }
+        @media (max-width: 420px) {
+            .card { padding: 26px 18px 22px; }
+            .otp-grid { gap: 6px; }
+            .otp-box { height: 48px; font-size: 1.15rem; }
+        }
     </style>
 </head>
 <body>
     <div class="card">
-        <div class="header">
+        <div class="top-bar">
+            <div class="brand-badge" aria-hidden="true">G</div>
             @if ($has2fa)
-                <span class="badge badge-enabled">Active (Email OTP)</span>
+                <span class="pill pill-on">On</span>
             @else
-                <span class="badge badge-disabled">Not Configured</span>
+                <span class="pill pill-off">Not enabled</span>
             @endif
-            <h1>Two-Factor Authentication</h1>
-            <p class="subtitle">Protect your GetIntoFeed admin account with 6-digit one-time verification codes sent directly to your registered email.</p>
         </div>
 
+        <h1>{{ $has2fa ? 'Two-step verification' : 'Verify your email' }}</h1>
+        <p class="subtitle">
+            @if ($has2fa)
+                Email OTP protection is active for <strong>{{ $maskedEmail }}</strong>.
+            @else
+                Enter the 6-digit code sent to <strong>{{ $maskedEmail }}</strong> to enable Email OTP verification.
+            @endif
+        </p>
+
         @if (session('status'))
-            <div class="status-msg">{{ session('status') }}</div>
+            <div class="alert alert-success">{{ session('status') }}</div>
         @endif
 
         @if (! empty($mailError))
-            <div class="error-msg">{{ $mailError }}</div>
+            <div class="alert alert-error">{{ $mailError }}</div>
         @endif
 
         @if ($errors->any())
-            <div class="error-msg">
+            <div class="alert alert-error">
                 @foreach ($errors->all() as $error)
                     <div>{{ $error }}</div>
                 @endforeach
@@ -222,94 +247,141 @@
         @endif
 
         @if (! $has2fa)
-            <!-- Setup steps (Email OTP) -->
-            <div class="step">
-                <div class="step-title"><span class="step-num">1</span> Check your email inbox for the 6-digit OTP</div>
-                <p style="font-size: 0.85rem; color: #94a3b8; line-height: 1.55;">
-                    We have sent a one-time 6-digit verification code to <strong style="color:#f8fafc;">{{ $maskedEmail }}</strong>.
-                    It remains valid for <strong>{{ $ttlMinutes }} minutes</strong>.
-                </p>
-                <form method="POST" action="{{ route('admin.two-factor.send-otp') }}" style="margin-top: 0.9rem;">
+            <form method="POST" action="{{ route('admin.two-factor.confirm') }}">
+                @csrf
+                <input type="hidden" id="code" name="code" value="">
+
+                <div class="otp-grid" role="group" aria-label="6-digit email verification code">
+                    @for ($i = 0; $i < 6; $i++)
+                        <input
+                            type="text"
+                            class="otp-box"
+                            maxlength="1"
+                            inputmode="numeric"
+                            pattern="[0-9]*"
+                            autocomplete="{{ $i === 0 ? 'one-time-code' : 'off' }}"
+                            aria-label="Digit {{ $i + 1 }}"
+                            {{ $i === 0 ? 'autofocus' : '' }}
+                        >
+                    @endfor
+                </div>
+
+                <button type="submit" class="btn-primary">Verify email OTP &amp; continue</button>
+            </form>
+
+            <div class="footer-row">
+                <form method="POST" action="{{ route('admin.two-factor.send-otp') }}">
                     @csrf
                     <input type="hidden" name="purpose" value="setup">
-                    <button type="submit" class="btn-submit" style="min-height:44px; background:#334155;">
-                        Resend Email OTP
-                    </button>
+                    <button type="submit" class="link-btn">Resend code</button>
                 </form>
-            </div>
-
-            <div class="step">
-                <div class="step-title"><span class="step-num">2</span> Enter the 6-digit Email OTP</div>
-                <form method="POST" action="{{ route('admin.two-factor.confirm') }}">
-                    @csrf
-                    <div class="form-group">
-                        <label for="code">6-Digit Email Verification Code</label>
-                        <input type="text" id="code" name="code" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="123456" style="min-height:44px; text-align:center; letter-spacing:0.2em; font-family:monospace;" required>
-                    </div>
-                    <button type="submit" class="btn-submit" style="min-height:44px;">Verify Email OTP &amp; View Recovery Codes</button>
-                </form>
+                <span class="muted-meta">Expires in {{ $ttlMinutes }} min</span>
             </div>
         @else
-            <!-- Already enabled: status + grace info + device revocation + regenerate + disable -->
-            <div class="step" style="background: rgba(34, 197, 94, 0.05); border-color: rgba(34, 197, 94, 0.2);">
-                <div style="font-size: 0.95rem; font-weight: 600; color: #4ade80; margin-bottom: 0.5rem;">
-                    ✓ Email Two-Factor Authentication is configured
-                </div>
-                <p style="font-size: 0.825rem; color: #94a3b8; line-height: 1.5;">
+            <div class="panel-box">
+                <div class="panel-title">Status &amp; recovery codes</div>
+                <div class="panel-desc" style="margin-bottom:0;">
                     @if ($isInGracePeriod && $graceUntil)
-                        Transition grace window active until <strong>{{ $graceUntil->timezone('Asia/Kolkata')->format('M d, Y H:i') }} IST</strong>. Mandatory challenge begins once grace ends.
+                        Transition grace ends <strong>{{ $graceUntil->timezone('Asia/Kolkata')->format('M d, Y H:i') }} IST</strong>.
                     @else
-                        Your account receives a fresh 6-digit verification OTP at <strong>{{ $maskedEmail }}</strong> on every untrusted browser sign-in.
+                        Required on every new untrusted sign-in.
                     @endif
-                    <br>Remaining emergency recovery codes: <strong>{{ $remainingCodesCount ?? 0 }}</strong>.
-                </p>
+                    <br>{{ $remainingCodesCount ?? 0 }} of 8 unused emergency recovery codes.
+                </div>
             </div>
 
-            <div class="step">
-                <div class="step-title">Trusted Browsers &amp; Sessions</div>
-                <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 0.9rem;">
-                    Revoke all "Trust this browser for 30 days" tokens across your devices.
-                </p>
+            <div class="panel-box">
+                <div class="panel-title">Trusted devices</div>
+                <div class="panel-desc">Revoke all "Remember this device for 30 days" tokens across your browsers.</div>
                 <form method="POST" action="{{ route('admin.two-factor.revoke-devices') }}">
                     @csrf
-                    <button type="submit" class="btn-submit" style="min-height:44px; background:#334155;">Revoke All Trusted Devices</button>
+                    <button type="submit" class="btn-outline">Revoke trusted devices</button>
                 </form>
             </div>
 
-            <div class="step">
-                <div class="step-title">Regenerate Recovery Codes</div>
-                <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 0.9rem;">
-                    Generate 8 fresh recovery codes (previous codes become invalid immediately).
-                </p>
+            <div class="panel-box">
+                <div class="panel-title">Regenerate recovery codes</div>
+                <div class="panel-desc">Generates 8 fresh single-use codes and invalidates older codes.</div>
                 <form method="POST" action="{{ route('admin.two-factor.regenerate-recovery') }}">
                     @csrf
-                    <div class="form-group">
-                        <label for="regen_password">Confirm Current Password</label>
-                        <input type="password" id="regen_password" name="password" style="min-height:44px;" required>
-                    </div>
-                    <button type="submit" class="btn-submit" style="min-height:44px;">Generate New Recovery Codes</button>
+                    <input type="password" name="password" placeholder="Current password" required>
+                    <button type="submit" class="btn-outline">Regenerate recovery codes</button>
                 </form>
             </div>
 
-            <div class="step">
-                <div class="step-title" style="color: #f87171;">Disable Two-Factor Authentication</div>
-                <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 1rem;">
-                    To disable 2FA, enter your current administrator password to confirm.
-                </p>
+            <div class="panel-box">
+                <div class="panel-title" style="color:#b91c1c;">Disable two-step verification</div>
+                <div class="panel-desc">Enter your current administrator password to turn off Email OTP protection.</div>
                 <form method="POST" action="{{ route('admin.two-factor.disable') }}">
                     @csrf
-                    <div class="form-group">
-                        <label for="password">Confirm Current Password</label>
-                        <input type="password" id="password" name="password" style="min-height:44px;" required>
-                    </div>
-                    <button type="submit" class="btn-submit btn-danger" style="min-height:44px;">Disable 2FA Protection</button>
+                    <input type="password" name="password" placeholder="Current password" required>
+                    <button type="submit" class="btn-danger-outline">Disable two-step verification</button>
                 </form>
             </div>
         @endif
 
-        <div style="text-align: center;">
-            <a href="/admin" class="back-link">← Return to Admin Dashboard</a>
+        <div class="back-row">
+            <a href="/admin">← Return to Admin</a>
+            <a href="/admin/security-settings">Security settings →</a>
         </div>
     </div>
+
+    @if (! $has2fa)
+        <script>
+            (function () {
+                const boxes = Array.from(document.querySelectorAll('.otp-box'));
+                const hiddenInput = document.getElementById('code');
+
+                function syncOtp() {
+                    hiddenInput.value = boxes.map((box) => box.value.replace(/\D/g, '')).join('');
+                }
+
+                boxes.forEach((box, idx) => {
+                    box.addEventListener('input', (e) => {
+                        const digits = (e.target.value || '').replace(/\D/g, '');
+                        if (!digits) {
+                            box.value = '';
+                            syncOtp();
+                            return;
+                        }
+                        if (digits.length > 1) {
+                            digits.slice(0, 6).split('').forEach((d, offset) => {
+                                if (boxes[idx + offset]) boxes[idx + offset].value = d;
+                            });
+                            syncOtp();
+                            boxes[Math.min(5, idx + digits.length)].focus();
+                            return;
+                        }
+                        box.value = digits;
+                        syncOtp();
+                        if (idx < boxes.length - 1) boxes[idx + 1].focus();
+                    });
+
+                    box.addEventListener('keydown', (e) => {
+                        if (e.key === 'Backspace' && !box.value && idx > 0) {
+                            boxes[idx - 1].focus();
+                            boxes[idx - 1].value = '';
+                            syncOtp();
+                        } else if (e.key === 'ArrowLeft' && idx > 0) {
+                            boxes[idx - 1].focus();
+                        } else if (e.key === 'ArrowRight' && idx < boxes.length - 1) {
+                            boxes[idx + 1].focus();
+                        }
+                    });
+
+                    box.addEventListener('paste', (e) => {
+                        const pasted = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '');
+                        if (!pasted) return;
+                        e.preventDefault();
+                        pasted.slice(0, 6).split('').forEach((d, offset) => {
+                            if (boxes[offset]) boxes[offset].value = d;
+                        });
+                        syncOtp();
+                        boxes[Math.min(5, pasted.length - 1)].focus();
+                    });
+                });
+            })();
+        </script>
+    @endif
 </body>
 </html>

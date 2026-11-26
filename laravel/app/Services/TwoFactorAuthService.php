@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Models\AuditLog;
 use App\Models\User;
+use App\Models\UserTrustedDevice;
 use App\Notifications\EmailOtpNotification;
 use App\Notifications\TwoFactorDisabledAlert;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class TwoFactorAuthService
@@ -220,12 +222,31 @@ class TwoFactorAuthService
         return $codes;
     }
 
-    public function createTrustedDeviceToken(User $user, int $days = 30): string
-    {
+    public function createTrustedDeviceToken(
+        User $user,
+        int $days = 30,
+        ?string $userAgent = null,
+        ?string $ipAddress = null
+    ): string {
+        $tokenId = Str::random(32);
+        $expiresAt = now()->addDays(max(1, $days));
+
+        if (Schema::hasTable('user_trusted_devices')) {
+            UserTrustedDevice::create([
+                'user_id' => $user->id,
+                'token_id' => $tokenId,
+                'device_name' => self::describeDevice($userAgent),
+                'location_hint' => self::maskIpForDisplay($ipAddress),
+                'last_used_at' => now(),
+                'expires_at' => $expiresAt,
+            ]);
+        }
+
         $payload = [
             'uid' => (int) $user->id,
             'ver' => max(1, (int) ($user->two_factor_trusted_token_version ?? 1)),
-            'exp' => now()->addDays(max(1, $days))->timestamp,
+            'tid' => $tokenId,
+            'exp' => $expiresAt->timestamp,
             'nonce' => Str::random(12),
         ];
 
@@ -258,10 +279,57 @@ class TwoFactorAuthService
         }
 
         $expectedVersion = max(1, (int) ($user->two_factor_trusted_token_version ?? 1));
-
-        return (int) ($data['uid'] ?? 0) === (int) $user->id
+        $validPayload = (int) ($data['uid'] ?? 0) === (int) $user->id
             && (int) ($data['ver'] ?? 0) === $expectedVersion
             && (int) ($data['exp'] ?? 0) > time();
+
+        if (! $validPayload) {
+            return false;
+        }
+
+        if (! empty($data['tid']) && Schema::hasTable('user_trusted_devices')) {
+            $device = UserTrustedDevice::query()
+                ->where('user_id', $user->id)
+                ->where('token_id', (string) $data['tid'])
+                ->whereNull('revoked_at')
+                ->where('expires_at', '>', now())
+                ->first();
+
+            if (! $device) {
+                return false;
+            }
+
+            $device->forceFill(['last_used_at' => now()])->save();
+        }
+
+        return true;
+    }
+
+    public function revokeSingleTrustedDevice(User $user, int $deviceId): bool
+    {
+        if (! Schema::hasTable('user_trusted_devices')) {
+            return false;
+        }
+
+        $device = UserTrustedDevice::query()
+            ->where('user_id', $user->id)
+            ->where('id', $deviceId)
+            ->whereNull('revoked_at')
+            ->first();
+
+        if (! $device) {
+            return false;
+        }
+
+        $device->revoked_at = now();
+        $device->save();
+
+        AuditLog::log('MFA_TRUSTED_DEVICE_REVOKED', $user, null, [
+            'device_id' => $device->id,
+            'device_name' => $device->device_name,
+        ]);
+
+        return true;
     }
 
     public function revokeTrustedDevices(User $user): void
@@ -269,10 +337,52 @@ class TwoFactorAuthService
         $user->two_factor_trusted_token_version = max(1, (int) ($user->two_factor_trusted_token_version ?? 1)) + 1;
         $user->save();
 
+        if (Schema::hasTable('user_trusted_devices')) {
+            UserTrustedDevice::query()
+                ->where('user_id', $user->id)
+                ->whereNull('revoked_at')
+                ->update(['revoked_at' => now()]);
+        }
+
         AuditLog::log('MFA_TRUSTED_DEVICES_REVOKED', $user, null, [
             'user_email' => $user->email,
             'new_token_version' => $user->two_factor_trusted_token_version,
         ]);
+    }
+
+    public static function describeDevice(?string $userAgent): string
+    {
+        $ua = (string) $userAgent;
+        $browser = match (true) {
+            str_contains($ua, 'Edg') => 'Edge',
+            str_contains($ua, 'Chrome') => 'Chrome',
+            str_contains($ua, 'Firefox') => 'Firefox',
+            str_contains($ua, 'Safari') => 'Safari',
+            default => 'Browser',
+        };
+        $os = match (true) {
+            str_contains($ua, 'iPhone') => 'iPhone',
+            str_contains($ua, 'Android') => 'Android',
+            str_contains($ua, 'Mac OS') => 'macOS',
+            str_contains($ua, 'Windows') => 'Windows',
+            str_contains($ua, 'Linux') => 'Linux',
+            default => 'Desktop',
+        };
+
+        return "{$browser} on {$os}";
+    }
+
+    public static function maskIpForDisplay(?string $ip): string
+    {
+        $ip = (string) $ip;
+        if (str_contains($ip, '.')) {
+            $parts = explode('.', $ip);
+            if (count($parts) === 4) {
+                return "{$parts[0]}.{$parts[1]}.{$parts[2]}.xxx";
+            }
+        }
+
+        return 'Local network';
     }
 
     /**

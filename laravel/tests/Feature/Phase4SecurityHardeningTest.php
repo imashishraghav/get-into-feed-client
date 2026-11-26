@@ -6,6 +6,7 @@ use App\Filament\Pages\SecuritySettings;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\AuditLog;
 use App\Models\User;
+use App\Models\UserTrustedDevice;
 use App\Notifications\EmailOtpNotification;
 use App\Notifications\NewDeviceLoginAlert;
 use App\Notifications\TwoFactorDisabledAlert;
@@ -145,8 +146,21 @@ class Phase4SecurityHardeningTest extends TestCase
             ->withSession(['auth.two_factor_verified' => true])
             ->get('/admin/security-settings')
             ->assertOk()
-            ->assertSee('Two-Factor Authentication (Email OTP)')
-            ->assertSee('Manage 2FA & Recovery Codes');
+            ->assertSee('Two-step verification')
+            ->assertSee('Trusted devices')
+            ->assertSee('Active sessions')
+            ->assertSee('Re-authentication');
+
+        // Record a real trusted device and revoke it individually via SecuritySettings
+        $token = $service->createTrustedDeviceToken($user, 30, 'Mozilla/5.0 Chrome/130.0 Windows NT 10.0', '103.42.10.5');
+        $this->assertTrue($service->hasValidTrustedDeviceToken($user, $token));
+        $device = UserTrustedDevice::query()->where('user_id', $user->id)->firstOrFail();
+
+        Livewire::test(SecuritySettings::class)
+            ->assertSee('Chrome on Windows')
+            ->call('revokeTrustedDevice', $device->id);
+
+        $this->assertFalse($service->hasValidTrustedDeviceToken($user, $token));
 
         Livewire::test(SecuritySettings::class)
             ->set('logoutOtherPassword', 'StrongSecretPass123!')
