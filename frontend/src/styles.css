@@ -164,6 +164,30 @@ h1, h2, h3, h4, h5, h6, .font-space {
   animation: marquee 25s linear infinite;
 }
 
+/* Accessibility: Respect OS and User Reduced-Motion Preferences (WCAG 2.2 AA) */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-marquee {
+    animation: none !important;
+    transform: none !important;
+  }
+  .animate-float-slow,
+  .animate-float-medium,
+  .animate-float-fast,
+  .animate-float-phone,
+  .animate-float-dark-glass,
+  .floating-bubble,
+  .floating-mini {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
 /* Scroll reveal utilities */
 .reveal {
   opacity: 1;

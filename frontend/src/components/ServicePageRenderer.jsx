@@ -76,7 +76,7 @@ const BLUEPRINTS = {
     sidebarModalTarget: "Talk about Google Ads",
     sidebarAgreementNote: "Direct sales agreement available",
     priceKicker: "SMALL PROJECTS / MILESTONE",
-    priceAmount: "From \u20b910,999* onwards",
+    priceAmount: "From \u20b910,500* onwards",
     priceDesc: "Proposed service fee for defined scope. Final quote depends on the actual scope. Ad spend is separate.",
     priceModalTarget: "Get my starter quote",
     issuesTag: "PROBLEMS WE HELP SOLVE",
@@ -113,7 +113,7 @@ const BLUEPRINTS = {
     faqs: [
       {
         q: "Are your Google Ads services affordable?",
-        a: "Yes. You can start from \u20b910,999* onwards for a focused single-campaign setup or cleanup. We agree on the exact deliverables up front so you never pay for bloated agency retainers."
+        a: "Yes. You can start from \u20b910,500* onwards for a focused single-campaign setup or cleanup. We agree on the exact deliverables up front so you never pay for bloated agency retainers."
       },
       {
         q: "Is advertising spend included in your fee?",
@@ -791,7 +791,7 @@ export default function ServicePageRenderer({ service = {}, allServices = [], on
               <div className="pt-1 flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] sm:text-xs text-slate-300">
                 <span className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 px-2.5 py-1 rounded-md">
                   <Check className="w-3 h-3 text-[#C5F82A]" />
-                  <span>{service.pricing_tier || bp.priceAmount || "From ₹10,999*"}</span>
+                  <span>{service.pricing_tier || bp.priceAmount || "From ₹10,500*"}</span>
                 </span>
                 <span className="inline-flex items-center gap-1.5 bg-white/5 border border-white/10 px-2.5 py-1 rounded-md">
                   <Check className="w-3 h-3 text-[#C5F82A]" />
@@ -850,7 +850,7 @@ export default function ServicePageRenderer({ service = {}, allServices = [], on
               {bp.priceKicker || "STARTER SPRINT"}
             </span>
             <span className="text-base sm:text-lg font-black text-slate-900" id="pricing-amount-mobile">
-              {service.pricing_tier || bp.priceAmount || "From ₹10,999*"}
+              {service.pricing_tier || bp.priceAmount || "From ₹10,500*"}
             </span>
           </div>
           <div>
@@ -1199,7 +1199,7 @@ export default function ServicePageRenderer({ service = {}, allServices = [], on
             {service.hero_badge || bp.badgeKicker || "Search Ads"}
           </span>
           <span className="text-sm font-extrabold text-[#C5F82A] block truncate">
-            {service.pricing_tier || bp.priceAmount || "From ₹10,999*"}
+            {service.pricing_tier || bp.priceAmount || "From ₹10,500*"}
           </span>
         </div>
         <div className="flex items-center gap-2 shrink-0">

@@ -10,8 +10,18 @@ PassengerEnabled off
 
 DirectoryIndex agent_router.php index.html index.php
 
-# 0. BLOCK DIRECT DOWNLOADS OF SENSITIVE EXTENSIONS & ARCHIVES
-<FilesMatch "(^\.|\.(env|log|sql|bak|tar|gz|zip|sh|yml|yaml|ini|git)$)">
+# 0. BLOCK DIRECT DOWNLOADS OF SENSITIVE EXTENSIONS, ARCHIVES & DATABASES
+<FilesMatch "(^\.|\.(env|log|sql|bak|tar|gz|zip|sh|yml|yaml|ini|git|sqlite|sqlite3|db|csv|md)$)">
+  Require all denied
+</FilesMatch>
+
+# Allow public discovery text files for AI agents (llms.txt and llms-full.txt)
+<FilesMatch "^(llms|llms-full)\.txt$">
+  Require all granted
+</FilesMatch>
+
+# Block sensitive config, lock, build, credential and deployment files
+<FilesMatch "(^package(-lock)?\.json$|composer\.(json|lock)$|mcp_config\.json$|service-account.*\.json$|\.sync_needed$)">
   Require all denied
 </FilesMatch>
 
@@ -19,10 +29,6 @@ DirectoryIndex agent_router.php index.html index.php
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-
-  # ── LITESPEED / APACHE BOT PROTECTION & RATE LIMIT BYPASS ──
-  RewriteCond %{HTTP_USER_AGENT} (GPTBot|ChatGPT|ClaudeBot|Claude-Web|anthropic-ai|PerplexityBot|Google-Extended|Applebot|Bytespider|CCBot|cohere-ai|Diffbot|FacebookBot|Meta-ExternalAgent|AI-Agent|AgentBot|Amazonbot|YouBot|OAI-SearchBot) [NC]
-  RewriteRule .* - [E=nothrottle:1,E=noabort:1]
 
   # FORCE HTTPS (SSL & CLOUDFLARE PROXY AWARE)
   RewriteCond %{HTTPS} off
@@ -35,15 +41,22 @@ DirectoryIndex agent_router.php index.html index.php
   RewriteRule ^(.*)$ https://getintofeed.com/$1 [R=301,L]
 
   # ── 0. DEFENSE-IN-DEPTH ACCESS RESTRICTIONS ──
+  # Block path-info execution bypass tricks (e.g. /script.php/agent_router.php or /anything.php/...)
+  RewriteCond %{THE_REQUEST} \.php/ [NC]
+  RewriteRule ^.*$ - [F,L]
+
   # Block all hidden dotfiles and dotdirs (e.g. .env, .git) EXCEPT .well-known
   RewriteRule ^\.(?!well-known(/.*)?$) - [F,L,NC]
+
+  # Block direct external HTTP access into internal directories (backups, staging, tests, scratch, docs, tools)
+  RewriteRule ^(_backup.*|backup.*|_staging.*|tests|scratch|tools|docs)(/.*)?$ - [F,L,NC]
 
   # Block direct external HTTP access into the internal laravel application directory
   RewriteCond %{THE_REQUEST} \s/+laravel(/|\s|\?|$) [NC]
   RewriteRule ^laravel(/.*)?$ - [F,L,NC]
 
-  # Block any test, debug, clear, view, or deploy script execution
-  RewriteRule ^(test_.*|debug_.*|clear_.*|view_.*|deploy_.*|check_.*)\.php$ - [F,L,NC]
+  # Block any test, debug, clear, view, deploy, check, read, clean, verify script execution
+  RewriteRule ^(read_|clean_|verify_|test_|debug_|clear_|view_|deploy_|check_).*\.php$ - [F,L,NC]
 
   # Allow .well-known agent discovery and SSL challenges
   RewriteRule ^\.well-known(/.*)?$ - [L]
@@ -51,10 +64,9 @@ DirectoryIndex agent_router.php index.html index.php
   # Only allow authorized router bridges to execute PHP directly
   RewriteRule ^/?(laravel_bridge|agent_router)\.php$ - [L]
 
-  # Block direct external HTTP execution of any other arbitrary .php file
-  RewriteCond %{THE_REQUEST} \.php[\s?] [NC]
-  RewriteCond %{THE_REQUEST} !/(laravel_bridge|agent_router)\.php [NC]
-  RewriteRule \.php$ - [F,L,NC]
+  # Block direct external HTTP execution of any other arbitrary .php file (prevents PATH_INFO and trailing bypasses)
+  RewriteCond %{THE_REQUEST} \s/+(?!agent_router\.php|laravel_bridge\.php)[^\s\?]+\.php [NC]
+  RewriteRule ^.*\.php$ - [F,L,NC]
 
   # ── 0.6 DEDICATED CRM SUBDOMAIN ROUTING (crm.getintofeed.com) ──
   RewriteCond %{HTTP_HOST} ^crm\.getintofeed\.com$ [NC]
@@ -151,12 +163,11 @@ DirectoryIndex agent_router.php index.html index.php
   Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
-  Header set X-XSS-Protection "1; mode=block"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
 
-  # CONTENT SECURITY POLICY (ENTERPRISE DEFENSE-IN-DEPTH HARDENING WITH SHA-256 HASHES)
+  # CONTENT SECURITY POLICY (ENTERPRISE DEFENSE-IN-DEPTH HARDENING WITH SHA-256 HASHES, NO UNSAFE-INLINE / UNSAFE-EVAL)
   <FilesMatch "\.(html|htm|php)$">
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net; font-src 'self' data: https://fonts.gstatic.com https://fonts.bunny.net; img-src 'self' data: blob: https://getintofeed.com https://images.unsplash.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://*.gravatar.com; connect-src 'self' https://getintofeed.com https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://cloudflareinsights.com https://static.cloudflareinsights.com; frame-src 'self' https://www.googletagmanager.com https://challenges.cloudflare.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://getintofeed.com; manifest-src 'self'; upgrade-insecure-requests;"
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-we0y7jDYLu8niAr07XY93qSbzaRBVWV1jg2sFu2nZq0=' 'sha256-IrRMOPcpLB5ZqXJ5H5IZaBlXx01rJ1rifWsaljZQLyA=' 'sha256-7mY+0gTJrS1eIpivdOJrxRqm3VdhUEBwND8PSVwIaKc=' 'sha256-DbkGA4bRmdTtZArA2whAUFkdVLPHyu58NOlTZjqYVNc=' https://www.googletagmanager.com https://www.google-analytics.com https://static.cloudflareinsights.com https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.bunny.net; font-src 'self' data: https://fonts.gstatic.com https://fonts.bunny.net; img-src 'self' data: blob: https://getintofeed.com https://images.unsplash.com https://www.googletagmanager.com https://www.google-analytics.com https://region1.google-analytics.com https://*.gravatar.com; connect-src 'self' https://getintofeed.com https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://cloudflareinsights.com https://static.cloudflareinsights.com; frame-src 'self' https://www.googletagmanager.com https://challenges.cloudflare.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://getintofeed.com; manifest-src 'self'; upgrade-insecure-requests;"
   </FilesMatch>
 
   # RELAX CSP SPECIFICALLY FOR FILAMENT ADMIN DASHBOARD (LIVEWIRE 3 & ALPINE JS)
@@ -191,8 +202,8 @@ DirectoryIndex agent_router.php index.html index.php
     Header set Cache-Control "public, max-age=31536000"
   </FilesMatch>
 
-  # OPEN DISCOVERY FILES FOR AI AGENTS & APIS
-  <FilesMatch "\.(json|txt)$">
+  # OPEN DISCOVERY FILES FOR AI AGENTS & APIS (RESTRICTED TO SAFE DISCOVERY FILES)
+  <FilesMatch "^(manifest|site\.webmanifest|robots\.txt|sitemap\.xml)$">
     Header set Access-Control-Allow-Origin "*"
     Header set Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
     Header set Access-Control-Allow-Headers "Accept, Content-Type, Authorization, User-Agent"
@@ -205,12 +216,6 @@ DirectoryIndex agent_router.php index.html index.php
     Header set Pragma "no-cache"
     Header set Expires "0"
   </FilesMatch>
-
-  # SECURITY HEADERS (OWASP RECOMMENDATIONS)
-  Header set X-Content-Type-Options "nosniff"
-  Header set X-Frame-Options "SAMEORIGIN"
-  Header set Referrer-Policy "strict-origin-when-cross-origin"
-  Header set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
 
   # NOINDEX ADMIN & CRM PANELS — PREVENT CRAWLING & SEARCH INDEXATION
   <If "%{REQUEST_URI} =~ m#^/(admin|crm|api/v1/crm)#">
@@ -225,11 +230,6 @@ DirectoryIndex agent_router.php index.html index.php
   AddType text/markdown .md
   AddType text/plain .txt
   AddType application/json .json
-</IfModule>
-
-# 6. LITESPEED / APACHE AI AGENT EXEMPTION FROM THROTTLING & ABORT
-<IfModule mod_setenvif.c>
-  SetEnvIfNoCase User-Agent "(GPTBot|ChatGPT|ClaudeBot|Claude-Web|anthropic-ai|PerplexityBot|Google-Extended|Applebot|Bytespider|CCBot|cohere-ai|Diffbot|FacebookBot|Meta-ExternalAgent|AI-Agent|AgentBot|Amazonbot|YouBot|OAI-SearchBot)" nothrottle=1 noabort=1
 </IfModule>
 
 # Force Phusion Passenger OFF so LiteSpeed serves static React SPA & PHP API directly

@@ -4,12 +4,17 @@ dist/
 .DS_Store
 *.log
 **/service-account.json
+**/service-account*.json
+!**/service-account.example.json
 !.env.example
 laravel/.env
 laravel/vendor/
 laravel/storage/*.key
 laravel/storage/app/public/
 laravel/bootstrap/cache/*.php
+*.sqlite
+*.sqlite3
+*.db
 laravel/database/*.sqlite
 backend/data/leads.json.tmp
 backend/data/applications.json.tmp
@@ -23,4 +28,7 @@ hostinger_deploy/
 .pnpm-store/
 .phpunit.result.cache
 laravel/.phpunit.result.cache
-
+scratch/
+CMS_AUDIT.md
+GETINTOFEED_FINAL_PRODUCTION_READINESS_REPORT.md
+seo_ranking_tracker_getintofeed.csv

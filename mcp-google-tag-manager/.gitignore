@@ -1,0 +1,5 @@
+node_modules/
+service-account.json
+!service-account.example.json
+.env
+*.log

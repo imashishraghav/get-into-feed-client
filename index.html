@@ -7,6 +7,30 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
 
+    <!-- Google Consent Mode v2 (Gated Tracking — Default Denied until Explicit Consent) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      var savedConsent = null;
+      try { savedConsent = localStorage.getItem('gif_cookie_consent'); } catch(e) {}
+      if (savedConsent) {
+        gtag('consent', 'default', {
+          'ad_storage': 'granted',
+          'analytics_storage': 'granted',
+          'ad_user_data': 'granted',
+          'ad_personalization': 'granted'
+        });
+      } else {
+        gtag('consent', 'default', {
+          'ad_storage': 'denied',
+          'analytics_storage': 'denied',
+          'ad_user_data': 'denied',
+          'ad_personalization': 'denied',
+          'wait_for_update': 500
+        });
+      }
+    </script>
+
     <!-- Google Tag Manager (Sole GA4 Source of Truth — Zero-Blocking Interaction-Driven Loading) -->
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -40,7 +64,7 @@
          PRIMARY SEO TAGS
     ═══════════════════════════════════════════ -->
     <title>GetIntoFeed | Creative Marketing &amp; Performance Growth Agency</title>
-    <meta name="description" content="Premier creative performance marketing studio in India. We engineer thumb-stopping video reels, high-converting funnels, and algorithmic paid media for ambitious brands. Trusted by founders and CMOs." />
+    <meta name="description" content="Premier creative performance marketing studio in India. We engineer thumb-stopping reels, high-converting funnels, and paid media for ambitious brands." />
     <meta name="author" content="GetIntoFeed" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow" />
@@ -387,6 +411,46 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PHJF6JHM"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
+
+    <!-- Non-JS Semantic Crawlers & Accessibility Fallback (Zero visual impact on real users) -->
+    <noscript id="seo-fallback-content">
+      <header>
+        <nav aria-label="Main Navigation">
+          <a href="/">Home</a>
+          <a href="/services">Services</a>
+          <a href="/case-studies">Work</a>
+          <a href="/pricing">Pricing</a>
+          <a href="/about">About Us</a>
+          <a href="/blog">Blog</a>
+          <a href="/contact">Contact</a>
+        </nav>
+      </header>
+      <main id="main-content">
+        <h1>Your business is online. But is it getting noticed?</h1>
+        <p>Digital marketing services in Delhi NCR for businesses ready to get noticed. We handle Google Ads, SEO, social media and web design without the big-agency overhead.</p>
+        <section>
+          <h2>Core Services</h2>
+          <ul>
+            <li><a href="/services/performance-marketing-delhi-ncr">Performance Marketing &amp; Paid Ads</a></li>
+            <li><a href="/services/short-form-video-reels-delhi-ncr">Short-Form Video &amp; Reels</a></li>
+            <li><a href="/services/seo-services-delhi-ncr">SEO &amp; Organic Search</a></li>
+            <li><a href="/services/web-development-delhi-ncr">Web Development &amp; Engineering</a></li>
+            <li><a href="/services/brand-strategy-delhi-ncr">Brand Strategy &amp; Positioning</a></li>
+            <li><a href="/services/social-media-marketing-delhi-ncr">Social Media Marketing</a></li>
+            <li><a href="/services/influencer-marketing-delhi-ncr">Influencer Marketing</a></li>
+            <li><a href="/services/analytics-reporting-delhi-ncr">Analytics &amp; Growth Reporting</a></li>
+          </ul>
+        </section>
+      </main>
+      <footer>
+        <nav aria-label="Legal Navigation">
+          <a href="/about">About Us</a>
+          <a href="/contact">Contact</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/privacy">Privacy Policy</a>
+        </nav>
+      </footer>
+    </noscript>
 
     <div id="root"><!-- SSR_CONTENT_INJECTION --></div>
   </body>

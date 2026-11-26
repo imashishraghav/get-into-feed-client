@@ -398,6 +398,26 @@ export function CookieConsentBanner({ onNavigate }) {
     try {
       localStorage.setItem("gif_cookie_consent", all ? "all" : JSON.stringify(cookiePrefs));
     } catch {}
+
+    if (typeof window !== "undefined") {
+      const grantAnalytics = all || !!cookiePrefs.analytics;
+      const grantMarketing = all || !!cookiePrefs.marketing;
+      if (typeof window.gtag === "function") {
+        window.gtag("consent", "update", {
+          ad_storage: grantMarketing ? "granted" : "denied",
+          analytics_storage: grantAnalytics ? "granted" : "denied",
+          ad_user_data: grantMarketing ? "granted" : "denied",
+          ad_personalization: grantMarketing ? "granted" : "denied",
+        });
+      }
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: "cookie_consent_updated",
+        consent_analytics: grantAnalytics,
+        consent_marketing: grantMarketing,
+      });
+    }
+
     setCookieBannerVisible(false);
     setCookiePrefsOpen(false);
   };

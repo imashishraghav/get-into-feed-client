@@ -1,0 +1,171 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  "name": "getintofeed/agency-mcp",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) server for GetIntoFeed — Performance Marketing & Web Engineering Studio. Exposes tools for digital marketing service listings, pricing tiers, client case studies, and business consultation inquiries.",
+  "endpoint": "https://getintofeed.com/api/mcp",
+  "capabilities": {
+    "tools": true,
+    "resources": true,
+    "prompts": false,
+    "logging": false
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://getintofeed.com/api/mcp",
+      "protocolVersion": "2025-06-18"
+    }
+  ],
+  "resources": [
+    {
+      "uri": "https://getintofeed.com/llms.txt",
+      "name": "LLMs Summary",
+      "description": "Concise summary of GetIntoFeed services, pricing, and contact information for LLMs.",
+      "mimeType": "text/markdown"
+    },
+    {
+      "uri": "https://getintofeed.com/llms-full.txt",
+      "name": "LLMs Full Context",
+      "description": "Comprehensive knowledge base and service specifications for GetIntoFeed.",
+      "mimeType": "text/markdown"
+    }
+  ],
+  "tools": [
+    {
+      "name": "get_agency_services",
+      "description": "Retrieve active digital growth services, deliverables, and capabilities from Get Into Feed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional keyword filter (e.g. 'ads', 'seo', 'web', 'creative')"
+          }
+        }
+      }
+    },
+    {
+      "name": "list_services",
+      "description": "Retrieve the full list of performance marketing, creative, and engineering services.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Optional keyword filter (e.g. 'ads', 'seo', 'web')"
+          }
+        }
+      }
+    },
+    {
+      "name": "get_case_studies",
+      "description": "Get verified client performance outcomes and case studies from Get Into Feed.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "industry": {
+            "type": "string",
+            "description": "Optional industry filter: 'd2c', 'b2b', 'edtech', 'realestate', or 'all'"
+          }
+        }
+      }
+    },
+    {
+      "name": "calculate_growth_roi",
+      "description": "Calculate expected high-intent traffic, qualified leads, ROAS multiplier, and projected revenue growth.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "monthlyBudgetInr": {
+            "type": "number",
+            "description": "Monthly digital marketing ad spend in INR"
+          },
+          "industry": {
+            "type": "string",
+            "enum": ["d2c", "b2b", "realestate", "edtech", "healthcare", "services"],
+            "description": "Target commercial industry sector"
+          }
+        },
+        "required": ["monthlyBudgetInr", "industry"]
+      }
+    },
+    {
+      "name": "create_growth_lead",
+      "description": "Submit a new inbound qualified client lead, growth consultation request, or project inquiry.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Lead / Founder full name" },
+          "email": { "type": "string", "description": "Work or business email address" },
+          "phone": { "type": "string", "description": "WhatsApp or phone number with country code" },
+          "company": { "type": "string", "description": "Company or Brand name" },
+          "website": { "type": "string", "description": "Website URL or domain" },
+          "service": { "type": "string", "description": "Desired service" },
+          "budget": { "type": "string", "description": "Monthly ad budget range" },
+          "message": { "type": "string", "description": "Growth targets or project requirements" }
+        },
+        "required": ["name", "email", "service"]
+      }
+    },
+    {
+      "name": "submit_lead_inquiry",
+      "description": "Submit a business growth inquiry or project consultation request.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Full name of the contact person" },
+          "email": { "type": "string", "format": "email", "description": "Business or personal email address" },
+          "phone": { "type": "string", "description": "Phone number with country code" },
+          "website": { "type": "string", "description": "Company website or social handle" },
+          "service": { "type": "string", "description": "Service of interest" },
+          "message": { "type": "string", "description": "Project goals and requirements" }
+        },
+        "required": ["name", "email", "phone"]
+      }
+    },
+    {
+      "name": "request_360_growth_audit",
+      "description": "Generate and submit a 360° Digital Growth Diagnostic Audit request for a business website or domain.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "company": { "type": "string", "description": "Brand or company name" },
+          "website": { "type": "string", "description": "Website URL" },
+          "growthBlockers": { "type": "array", "items": { "type": "string" }, "description": "List of bottlenecks" },
+          "name": { "type": "string", "description": "Contact person name" },
+          "email": { "type": "string", "description": "Contact email" },
+          "phone": { "type": "string", "description": "WhatsApp contact number" },
+          "budget": { "type": "string", "description": "Current monthly spend range" }
+        },
+        "required": ["company", "name", "email", "phone"]
+      }
+    },
+    {
+      "name": "get_pricing_tiers",
+      "description": "Get transparent pricing tiers and deliverables for digital marketing packages.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_company_info",
+      "description": "Retrieve verified company profile, leadership, contact info, and headquarters location.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_blog_posts",
+      "description": "Retrieve published growth marketing playbooks, guides, and insight articles.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string", "description": "Optional category filter" }
+        }
+      }
+    }
+  ]
+}

@@ -32,11 +32,12 @@ class McpController extends Controller
 
     /**
      * Verify whether caller has valid MCP Bearer or X-MCP-Key authorization.
+     * Requires an explicitly configured MCP_API_KEY. Never falls back to APP_KEY or any derived digest.
      */
     protected function isAuthorized(Request $request): bool
     {
         $expectedKey = (string) (config('cms.mcp_api_key') ?: config('services.mcp.key') ?: '');
-        if ($expectedKey === '') {
+        if ($expectedKey === '' || strlen($expectedKey) < 16) {
             return false;
         }
 
@@ -49,6 +50,15 @@ class McpController extends Controller
 
         if (empty($token)) {
             return false;
+        }
+
+        // Explicitly reject any attempt to authenticate using APP_KEY or sha256(APP_KEY)
+        $appKey = (string) config('app.key');
+        if ($appKey !== '') {
+            $derivedKey = hash('sha256', $appKey);
+            if (hash_equals($derivedKey, $token) || hash_equals($appKey, $token)) {
+                return false;
+            }
         }
 
         return hash_equals($expectedKey, $token);
@@ -122,6 +132,19 @@ class McpController extends Controller
                 ],
             ],
             [
+                'name' => 'list_services',
+                'description' => 'Alias for get_agency_services: Retrieve full list of performance marketing, creative, and engineering services.',
+                'inputSchema' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'category' => [
+                            'type' => 'string',
+                            'description' => "Optional keyword filter (e.g. 'ads', 'seo', 'web')",
+                        ],
+                    ],
+                ],
+            ],
+            [
                 'name' => 'get_case_studies',
                 'description' => 'Get verified client performance outcomes and case studies from Get Into Feed (e.g. Veloura Organics 4.8x ROAS, SkillCraft Academy +312% leads, Zentura Cloud $1.4M pipeline).',
                 'inputSchema' => [
@@ -169,6 +192,22 @@ class McpController extends Controller
                         'message' => ['type' => 'string', 'description' => 'Growth targets, current bottlenecks or project requirements'],
                     ],
                     'required' => ['name', 'email', 'service'],
+                ],
+            ],
+            [
+                'name' => 'submit_lead_inquiry',
+                'description' => 'Alias for create_growth_lead: Submit a business growth inquiry or project consultation request.',
+                'inputSchema' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'name' => ['type' => 'string', 'description' => 'Full name of the contact person'],
+                        'email' => ['type' => 'string', 'format' => 'email', 'description' => 'Business or personal email address'],
+                        'phone' => ['type' => 'string', 'description' => 'Phone number with country code'],
+                        'website' => ['type' => 'string', 'description' => 'Company website or social handle'],
+                        'service' => ['type' => 'string', 'description' => 'Service of interest'],
+                        'message' => ['type' => 'string', 'description' => 'Project goals and requirements'],
+                    ],
+                    'required' => ['name', 'email', 'phone'],
                 ],
             ],
             [
@@ -332,7 +371,7 @@ class McpController extends Controller
             [
                 'uri' => 'mcp://getintofeed/pricing',
                 'name' => 'Growth Sprint Pricing & Packages',
-                'description' => 'Transparent sprint tiers (Starter at ₹39k/mo, Scale Engine at ₹79k/mo, Enterprise at ₹1.49L/mo) with full deliverable lists.',
+                'description' => 'Transparent sprint tiers (Starter Support from ₹10,500*, Performance Marketing from ₹24,999/mo*, Creative Reels at ₹29,999/mo*, Full-Funnel Growth at ₹49,999/mo*) with full deliverable lists.',
                 'mimeType' => 'application/json',
             ],
             [
@@ -850,42 +889,51 @@ class McpController extends Controller
                     'currency' => 'INR (₹)',
                     'tiers' => [
                         [
-                            'name' => 'Starter Sprint',
-                            'price' => '₹39,000 / month',
-                            'idealFor' => 'Early-stage founders & local brands validating acquisition',
+                            'name' => 'Starter Single-Discipline Support',
+                            'price' => 'From ₹10,500 onwards*',
+                            'idealFor' => 'Early-stage founders & local businesses validating a single channel',
                             'deliverables' => [
-                                'Meta or Google Ads Setup & Management',
-                                'Conversion-Optimized Landing Page Audit',
-                                'Weekly KPI Reporting & ROAS Dashboard',
-                                'Ad Spend Management up to ₹1,50,000/mo',
+                                'Single Focused Campaign Setup (Google Search or Meta)',
+                                'Conversion Tracking & Lead Routing Setup',
+                                'Clear Deliverables Agreed Upfront',
+                                'Ad Spend Billed Directly to Client Account',
                             ],
                         ],
                         [
-                            'name' => 'Scale Engine (Most Popular)',
-                            'price' => '₹79,000 / month',
-                            'idealFor' => 'Scaling D2C, B2B, and high-ticket service brands',
+                            'name' => 'Performance Marketing Sprint',
+                            'price' => 'Starting from ₹24,999 / month*',
+                            'idealFor' => 'Growing brands wanting 3.5x - 5x Blended ROAS across paid media',
                             'deliverables' => [
-                                'Omnichannel Ads (Meta + Google + YouTube Retargeting)',
-                                '12 Custom UGC Video Ads & High-CTR Banners',
-                                'Full Technical SEO + AI Search Citation Optimization',
-                                'Bi-Weekly Strategy Calls with Growth Lead',
-                                'Ad Spend Management up to ₹7,00,000/mo',
+                                'Meta & Google Ads Account Architecture',
+                                '10 Custom Ad Creatives per Month',
+                                'CAPI Server-Side Attribution Setup',
+                                'Weekly Sprint Reporting & Optimization',
                             ],
                         ],
                         [
-                            'name' => 'Enterprise Domination',
-                            'price' => '₹1,49,000 / month',
-                            'idealFor' => 'Market leaders & funded companies wanting aggressive growth',
+                            'name' => 'Creative Content & Reels Sprint',
+                            'price' => 'Starting from ₹29,999 / month*',
+                            'idealFor' => 'D2C and service brands scaling organic & paid short-form video',
                             'deliverables' => [
-                                'Dedicated Cross-Functional Growth Squad',
-                                'High-Velocity Creative Studio (24+ Creatives/mo)',
-                                'Continuous Conversion Rate Optimization (CRO)',
-                                'Custom Next.js Web Feature Engineering',
-                                'Unlimited Managed Ad Spend & 24/7 Slack Access',
+                                '12 High-Retention Vertical Video Reels / Month',
+                                'Full Hook Scripting, Editing & Motion Sound Design',
+                                'Batch Creative Production Testing',
+                                'Direct Upload Formatting for IG Reels & YT Shorts',
+                            ],
+                        ],
+                        [
+                            'name' => 'Full-Funnel Growth Retainer',
+                            'price' => 'Starting from ₹49,999 / month*',
+                            'idealFor' => 'Scaling brands requiring dedicated omnichannel growth lead',
+                            'deliverables' => [
+                                'Blended Paid Media Management (Meta + Google)',
+                                'Video Creative Engine & High-CTR Banners',
+                                'Landing Page & Funnel CRO Optimization',
+                                'Dedicated Senior Growth Strategist & Direct Slack Desk',
                             ],
                         ],
                     ],
-                    'commitment' => '45-Day Performance Commitment: If strategic agreed KPIs are not hit in Month 1, we work free until delivered.',
+                    'commitment' => 'Sprint Performance Commitment: Transparent weekly reporting, dedicated strategist support, and zero hidden retainers.',
                 ];
 
             case 'get_company_info':
