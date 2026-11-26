@@ -4,7 +4,7 @@
  * and Income-tax Act, 2025 Section 393 Withholding Tax (TDS) Table Items.
  */
 
-import { SAC_PRICE_BOOK, SECTION_393_TDS_RATES } from './priceBook.ts';
+import { SAC_PRICE_BOOK, SECTION_393_TDS_RATES } from './priceBook.js';
 
 export const AGENCY_GSTIN = '07AAAAA0000A1Z5';
 export const AGENCY_STATE_CODE = '07'; // Delhi State

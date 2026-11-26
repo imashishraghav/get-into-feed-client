@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { X, Plus, User, Building, Phone, MapPin, IndianRupee, ShieldCheck, AlertTriangle } from 'lucide-react';
-import { AGENCY_SERVICES, SAC_PRICE_BOOK } from '../utils/priceBook.ts';
+import { AGENCY_SERVICES, SAC_PRICE_BOOK } from '../utils/priceBook.js';
 import { ModalFocusTrap } from './ui/ModalFocusTrap.jsx';
 
 export function QuickAddModal({ isOpen, onClose, onAddLead, onShowToast }) {

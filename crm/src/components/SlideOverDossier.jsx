@@ -19,7 +19,7 @@ import { whatsAppAdapter, telephonyAdapter, paymentAdapter } from '../adapters/i
 import { maskSensitiveLeadData } from '../utils/rbac.js';
 import { SlaCountdown } from './ui/SlaCountdown.jsx';
 import { resolveSlaOnFirstContact } from '../utils/slaManager.js';
-import { SAC_PRICE_BOOK, SECTION_393_TDS_RATES } from '../utils/priceBook.ts';
+import { SAC_PRICE_BOOK, SECTION_393_TDS_RATES } from '../utils/priceBook.js';
 
 export function SlideOverDossier({
   lead,

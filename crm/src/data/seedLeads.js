@@ -11,7 +11,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import { SAC_PRICE_BOOK, AGENCY_SERVICES } from '../utils/priceBook.ts';
+import { SAC_PRICE_BOOK, AGENCY_SERVICES } from '../utils/priceBook.js';
 
 const LOCATIONS = [
   { city: 'Gurugram', locality: 'Golf Course Road, DL', stateCode: '07' },

@@ -59,7 +59,7 @@ async function runTests() {
 
   // Test 4: Pipeline Stages, 4 Deal Types & 8 Services
   console.log('\nTest 4: Verifying Pipeline Deal Types and 8 Agency Services...');
-  const { AGENCY_SERVICES } = await import('../crm/src/utils/priceBook.ts');
+  const { AGENCY_SERVICES } = await import('../crm/src/utils/priceBook.js');
   assert.strictEqual(AGENCY_SERVICES.length, 8, 'Must map all 8 agency disciplines');
 
   const dealTypesFound = new Set(seedLeads.map(l => l.dealType));
@@ -71,7 +71,7 @@ async function runTests() {
 
   // Test 5: Compliance — SAC Price Book & Income-tax Act 2025 Section 393
   console.log('\nTest 5: Validating SAC Price Book with CA Flags & Section 393 TDS...');
-  const { SAC_PRICE_BOOK, SECTION_393_TDS_RATES } = await import('../crm/src/utils/priceBook.ts');
+  const { SAC_PRICE_BOOK, SECTION_393_TDS_RATES } = await import('../crm/src/utils/priceBook.js');
   const { calculateGstInvoice } = await import('../crm/src/utils/gstEngine.js');
 
   // Verify CA review flags
@@ -120,7 +120,7 @@ async function runTests() {
 
   // Test 7: Security & Formula Injection Neutralization
   console.log('\nTest 7: Validating CSV Formula Injection Neutralization...');
-  const { sanitizeCsvCell, generateSafeCsv } = await import('../crm/src/utils/csvSanitizer.ts');
+  const { sanitizeCsvCell, generateSafeCsv } = await import('../crm/src/utils/csvSanitizer.js');
 
   // Formula trigger characters: =, +, -, @
   assert.strictEqual(sanitizeCsvCell('=SUM(A1:A10)'), '"\'=SUM(A1:A10)"', 'Must prepend single quote on = formula');
@@ -132,7 +132,7 @@ async function runTests() {
 
   // Test 8: Zod Schema Validation
   console.log('\nTest 8: Validating Runtime Input Validation with Zod...');
-  const { LeadInputSchema } = await import('../crm/src/schemas/leadSchema.ts');
+  const { LeadInputSchema } = await import('../crm/src/schemas/leadSchema.js');
 
   const validLeadInput = {
     brand: 'DLF CyberCity Brand',

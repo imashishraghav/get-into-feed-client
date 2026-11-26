@@ -24,7 +24,7 @@ import {
   calculateGstInvoice, 
   generateInvoiceNumber 
 } from '../utils/gstEngine.js';
-import { SAC_PRICE_BOOK, SECTION_393_TDS_RATES, AGENCY_SERVICES } from '../utils/priceBook.ts';
+import { SAC_PRICE_BOOK, SECTION_393_TDS_RATES, AGENCY_SERVICES } from '../utils/priceBook.js';
 import { paymentAdapter, whatsAppAdapter } from '../adapters/index.js';
 
 export function BillingStudioView({ leads = [], onShowToast }) {

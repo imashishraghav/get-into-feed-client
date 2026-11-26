@@ -18,9 +18,9 @@ import {
 } from 'lucide-react';
 import { maskSensitiveLeadData, ROLES } from '../utils/rbac.js';
 import { SlaCountdown } from './ui/SlaCountdown.jsx';
-import { downloadSafeCsv } from '../utils/csvSanitizer.ts';
+import { downloadSafeCsv } from '../utils/csvSanitizer.js';
 import { LostReasonModal } from './LostReasonModal.jsx';
-import { SAC_PRICE_BOOK } from '../utils/priceBook.ts';
+import { SAC_PRICE_BOOK } from '../utils/priceBook.js';
 
 export function LeadPipelineView({ 
   leads = [], 

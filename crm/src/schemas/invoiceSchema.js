@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
 /**
- * Invoice Validation Schema with Section 393 TDS & Delhi 07 GST
+ * Invoice Validation Schema with Section 393 TDS & Delhi 07 GST.
+ *
+ * @typedef {z.infer<typeof InvoiceCreateSchema>} InvoiceCreateInput
  */
 export const InvoiceCreateSchema = z.object({
   lead_id: z.string().uuid().or(z.string().min(1)),
@@ -15,9 +17,17 @@ export const InvoiceCreateSchema = z.object({
     'sec_393_item_1_ind',
     'sec_393_item_1_corp',
     'sec_393_item_4_tech',
-    'sec_393_item_4_prof'
+    'sec_393_item_4_prof',
   ]),
-  dueDate: z.string().min(10)
+  dueDate: z.string().min(10),
 });
 
-export type InvoiceCreateInput = z.infer<typeof InvoiceCreateSchema>;
+/**
+ * Validates invoice creation payloads.
+ *
+ * @param {unknown} payload
+ * @returns {import('zod').SafeParseReturnType<unknown, InvoiceCreateInput>}
+ */
+export function validateInvoiceCreate(payload) {
+  return InvoiceCreateSchema.safeParse(payload);
+}

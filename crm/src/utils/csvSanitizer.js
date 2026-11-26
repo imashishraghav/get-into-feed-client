@@ -9,40 +9,48 @@ const FORMULA_TRIGGER_CHARS = ['=', '+', '-', '@', '\t', '\r'];
 /**
  * Sanitizes a single cell value against spreadsheet formula injection.
  * If the value starts with '=', '+', '-', '@', or a tab/return, a single quote (') is prepended.
+ *
+ * @param {string | number | boolean | null | undefined} value
+ * @returns {string}
  */
-export function sanitizeCsvCell(value: any): string {
+export function sanitizeCsvCell(value) {
   if (value === null || value === undefined) {
     return '""';
   }
 
   let str = String(value).trim();
 
-  // Check if first character is a formula trigger
   if (str.length > 0 && FORMULA_TRIGGER_CHARS.includes(str[0])) {
     str = `'${str}`;
   }
 
-  // Escape any existing double quotes by doubling them
   const escaped = str.replace(/"/g, '""');
   return `"${escaped}"`;
 }
 
 /**
  * Generates an RFC-4180 compliant, injection-safe CSV string from headers and rows.
+ *
+ * @param {string[]} headers
+ * @param {(string | number | boolean | null | undefined)[][]} rows
+ * @returns {string}
  */
-export function generateSafeCsv(headers: string[], rows: (string | number | boolean | null | undefined)[][]): string {
-  const safeHeaderRow = headers.map(h => sanitizeCsvCell(h)).join(',');
-  const safeDataRows = rows.map(row => 
-    row.map(cell => sanitizeCsvCell(cell)).join(',')
-  );
+export function generateSafeCsv(headers, rows) {
+  const safeHeaderRow = headers.map((h) => sanitizeCsvCell(h)).join(',');
+  const safeDataRows = rows.map((row) => row.map((cell) => sanitizeCsvCell(cell)).join(','));
 
   return [safeHeaderRow, ...safeDataRows].join('\r\n');
 }
 
 /**
- * Initiates an immediate client-side safe CSV file download with audit logging.
+ * Initiates a client-side safe CSV file download.
+ *
+ * @param {string} filename
+ * @param {string[]} headers
+ * @param {(string | number | boolean | null | undefined)[][]} rows
+ * @returns {void}
  */
-export function downloadSafeCsv(filename: string, headers: string[], rows: (string | number | boolean | null | undefined)[][]): void {
+export function downloadSafeCsv(filename, headers, rows) {
   const csvContent = generateSafeCsv(headers, rows);
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);

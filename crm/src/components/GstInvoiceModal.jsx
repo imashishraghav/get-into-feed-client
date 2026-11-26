@@ -7,7 +7,7 @@ import {
   calculateGstInvoice,
   generateInvoiceNumber
 } from '../utils/gstEngine.js';
-import { SAC_PRICE_BOOK, SECTION_393_TDS_RATES } from '../utils/priceBook.ts';
+import { SAC_PRICE_BOOK, SECTION_393_TDS_RATES } from '../utils/priceBook.js';
 import { paymentAdapter, whatsAppAdapter } from '../adapters/index.js';
 import { automationEngine } from '../utils/automationEngine.js';
 import { ModalFocusTrap } from './ui/ModalFocusTrap.jsx';
