@@ -17,11 +17,18 @@ function assert(condition, testName) {
     }
 }
 
-// 1. CRM API Lockdown
+// 1. CRM API Lockdown (only hardened throttled /ingest allowed in website API until feedos-api Phase 3)
 const apiRoutes = fs.readFileSync('laravel/routes/api.php', 'utf8');
+const crmPrefixMatch = apiRoutes.match(/Route::prefix\('crm'\)->group\(function\s*\(\)\s*\{([\s\S]*?)\}\);/);
+const crmBlock = crmPrefixMatch ? crmPrefixMatch[1] : '';
 assert(
-    apiRoutes.includes("prefix('crm')") && apiRoutes.includes("['auth:sanctum', 'throttle:60,1']"),
-    'TASK-1: CRM API endpoints locked down under auth:sanctum & throttle middleware'
+    crmBlock.includes("Route::post('/ingest'") &&
+    crmBlock.includes('throttle:') &&
+    !crmBlock.includes('/leads') &&
+    !crmBlock.includes('/pipeline') &&
+    !crmBlock.includes('/stats') &&
+    !crmBlock.includes('/auth/login'),
+    'TASK-1: Website CRM route block locked down to throttled POST /ingest only (all read/list/update/auth routes removed)'
 );
 
 // 2. SSR Delivery & Single Unique H1

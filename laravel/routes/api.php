@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\AwardController;
 use App\Http\Controllers\Api\V1\BlogController;
 use App\Http\Controllers\Api\V1\BootstrapController;
 use App\Http\Controllers\Api\V1\CaseStudyController;
+use App\Http\Controllers\Api\V1\CrmIngestController;
 use App\Http\Controllers\Api\V1\CrmWebhookController;
 use App\Http\Controllers\Api\V1\FaqController;
 use App\Http\Controllers\Api\V1\HealthController;
@@ -59,6 +60,12 @@ Route::prefix('v1')->group(function () {
 
     // ── EXTERNAL CRM WEBHOOK INBOUND CALLBACK ───────────────────────────
     Route::post('/webhooks/crm-status', [CrmWebhookController::class, 'handleStatusUpdate'])->middleware('throttle:30,1');
+
+    // ── HARDENED WEBSITE LEAD INGESTION BRIDGE (Removed in Phase 3 when feedos-api is live) ──
+    Route::prefix('crm')->group(function () {
+        Route::post('/ingest', [CrmIngestController::class, 'store'])
+            ->middleware('throttle:10,1');
+    });
 
     // Model Context Protocol (MCP) Streamable HTTP & JSON-RPC Endpoints (Throttled & Protected)
     Route::middleware('throttle:60,1')->group(function () {
