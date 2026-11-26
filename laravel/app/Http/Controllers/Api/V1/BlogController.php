@@ -30,8 +30,8 @@ class BlogController extends Controller
 
     protected function fetchPosts(Request $request): array
     {
-        $query = BlogPost::with(['featuredMedia', 'author', 'seo.ogMedia', 'seo.twitterMedia'])
-            ->where('status', 'published')
+        $query = BlogPost::withEditorialRelations()
+            ->publiclyListed()
             ->orderBy('published_at', 'desc');
 
         $category = $request->query('category');
@@ -85,23 +85,35 @@ class BlogController extends Controller
         $posts = $rawPosts->map(function ($b) {
             return [
                 'id' => $b->id,
+                'uuid' => $b->uuid,
                 'title' => $b->title,
                 'slug' => $b->slug,
                 'excerpt' => $b->excerpt,
+                'visibility' => $b->visibility ?? 'public',
                 'image' => $b->featuredMedia?->url ?: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?q=80&w=1600&auto=format&fit=crop',
                 'cover_image' => $b->featuredMedia?->url ?: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?q=80&w=1600&auto=format&fit=crop',
+                'srcset' => $b->featuredMedia?->srcset,
+                'featured_image_alt' => $b->featured_image_alt ?: $b->featuredMedia?->alt_text ?: $b->title,
                 'author' => $b->author_name,
                 'authorRole' => $b->author_role,
                 'category' => $b->category,
                 'tags' => $b->tags ?? [],
                 'readTime' => $b->read_time,
+                'reading_time' => $b->reading_time,
+                'word_count' => $b->word_count,
+                'readability_score' => $b->readability_score,
                 'date' => $b->published_at ? $b->published_at->format('M d, Y') : 'Recent',
                 'published_at' => $b->published_at?->toIso8601String(),
                 'is_featured' => $b->is_featured,
                 'editor_mode' => $b->editor_mode ?? 'classic',
-                'content' => $b->content,
+                'content' => $b->content ?? $b->content_html,
+                'content_html' => $b->content_html ?? $b->content,
+                'content_json' => $b->content_json,
                 'content_blocks' => $b->content_blocks,
-                'seo' => $this->seoPayload($b->seo, $b->title, $b->featuredMedia?->url),
+                'faq_items' => $b->faq_items ?? ($b->faq_json ?? []),
+                'faq_json' => $b->faq_json ?? ($b->faq_items ?? []),
+                'schema_json' => $b->schema_json,
+                'seo' => $this->seoPayload($b, $b->seo, $b->title, $b->featuredMedia?->url),
             ];
         });
 
@@ -131,11 +143,11 @@ class BlogController extends Controller
         ];
         $targetSlug = $aliases[$slug] ?? $slug;
 
-        $b = BlogPost::with(['featuredMedia', 'author', 'seo.ogMedia', 'seo.twitterMedia'])
+        $b = BlogPost::withEditorialRelations()
             ->where(function ($q) use ($slug, $targetSlug) {
                 $q->where('slug', $slug)->orWhere('slug', $targetSlug);
             })
-            ->where('status', 'published')
+            ->accessiblePublished()
             ->first();
 
         if (! $b) {
@@ -147,23 +159,35 @@ class BlogController extends Controller
 
         $data = [
             'id' => $b->id,
+            'uuid' => $b->uuid,
             'title' => $b->title,
             'slug' => $b->slug,
             'excerpt' => $b->excerpt,
+            'visibility' => $b->visibility ?? 'public',
             'image' => $b->featuredMedia?->url ?: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?q=80&w=1600&auto=format&fit=crop',
             'cover_image' => $b->featuredMedia?->url ?: 'https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?q=80&w=1600&auto=format&fit=crop',
+            'srcset' => $b->featuredMedia?->srcset,
+            'featured_image_alt' => $b->featured_image_alt ?: $b->featuredMedia?->alt_text ?: $b->title,
             'author' => $b->author_name,
             'authorRole' => $b->author_role,
             'category' => $b->category,
             'tags' => $b->tags ?? [],
             'readTime' => $b->read_time,
+            'reading_time' => $b->reading_time,
+            'word_count' => $b->word_count,
+            'readability_score' => $b->readability_score,
             'date' => $b->published_at ? $b->published_at->format('M d, Y') : 'Recent',
             'published_at' => $b->published_at?->toIso8601String(),
             'editor_mode' => $b->editor_mode ?? 'classic',
-            'content' => $b->content,
+            'content' => $b->content ?? $b->content_html,
+            'content_html' => $b->content_html ?? $b->content,
+            'content_json' => $b->content_json,
             'content_blocks' => $b->content_blocks,
+            'faq_items' => $b->faq_items ?? ($b->faq_json ?? []),
+            'faq_json' => $b->faq_json ?? ($b->faq_items ?? []),
+            'schema_json' => $b->schema_json,
             'views_count' => $b->views_count,
-            'seo' => $this->seoPayload($b->seo, $b->title, $b->featuredMedia?->url),
+            'seo' => $this->seoPayload($b, $b->seo, $b->title, $b->featuredMedia?->url),
         ];
 
         return response()->json([
@@ -201,21 +225,25 @@ class BlogController extends Controller
         ], 501);
     }
 
-    private function seoPayload(?SeoMetadata $seo, string $fallbackTitle, ?string $fallbackImage): array
+    private function seoPayload(BlogPost $post, ?SeoMetadata $seo, string $fallbackTitle, ?string $fallbackImage): array
     {
         return [
-            'seo_title' => $seo?->seo_title ?? $fallbackTitle,
-            'meta_description' => $seo?->meta_description,
-            'canonical_url' => $seo?->canonical_url,
-            'robots_index' => $seo?->robots_index ?? true,
-            'robots_follow' => $seo?->robots_follow ?? true,
-            'og_title' => $seo?->og_title,
-            'og_description' => $seo?->og_description,
+            'seo_title' => $post->seo_title ?: ($seo?->seo_title ?? $fallbackTitle),
+            'meta_description' => $post->meta_description ?: $seo?->meta_description,
+            'focus_keyphrase' => $post->focus_keyphrase ?: $seo?->focus_keyword,
+            'secondary_keyphrases' => $post->secondary_keyphrases ?? ($seo?->target_keywords ?? []),
+            'canonical_url' => $post->canonical_url ?: $seo?->canonical_url,
+            'robots_index' => $post->robots_index !== null ? (bool) $post->robots_index : ($seo?->robots_index ?? true),
+            'robots_follow' => $post->robots_follow !== null ? (bool) $post->robots_follow : ($seo?->robots_follow ?? true),
+            'og_title' => $post->og_title ?: $seo?->og_title,
+            'og_description' => $post->og_description ?: $seo?->og_description,
             'og_image' => $seo?->ogMedia?->url ?? $fallbackImage,
-            'twitter_title' => $seo?->twitter_title,
-            'twitter_description' => $seo?->twitter_description,
-            'twitter_image' => $seo?->twitterMedia?->url,
-            'schema_type' => $seo?->schema_type,
+            'twitter_title' => $seo?->twitter_title ?: ($post->og_title ?: $seo?->og_title),
+            'twitter_description' => $seo?->twitter_description ?: ($post->og_description ?: $seo?->og_description),
+            'twitter_image' => $seo?->twitterMedia?->url ?? ($seo?->ogMedia?->url ?? $fallbackImage),
+            'schema_type' => $post->schema_type ?: ($seo?->schema_type ?? 'BlogPosting'),
+            'faq_items' => $post->faq_items ?? [],
+            'seo_score' => $post->effectiveSeoScore(),
             'custom_schema_json' => $seo?->custom_schema_json,
         ];
     }

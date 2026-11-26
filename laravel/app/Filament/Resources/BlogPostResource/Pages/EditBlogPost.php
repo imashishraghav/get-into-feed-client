@@ -9,14 +9,22 @@ use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\MaxWidth;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 
 class EditBlogPost extends EditRecord
 {
     protected static string $resource = BlogPostResource::class;
 
     protected ?array $previousValues = null;
+
+    public function getMaxContentWidth(): MaxWidth|string|null
+    {
+        return MaxWidth::Full;
+    }
 
     public function getBreadcrumbs(): array
     {
@@ -28,10 +36,11 @@ class EditBlogPost extends EditRecord
         $createUrl = BlogPostResource::getUrl('create');
 
         return new HtmlString('
-            <div style="display: inline-flex; align-items: center; gap: 12px;">
-                <span style="font-size: 22px; font-weight: 400; color: #1d2327; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif;">Edit Post</span>
-                <a href="'.$createUrl.'" style="display: inline-flex; align-items: center; justify-content: center; height: 26px; padding: 0 10px; font-size: 13px; font-weight: 400; line-height: 1; border: 1px solid #2271b1; border-radius: 3px; background: #ffffff; color: #2271b1; text-decoration: none; cursor: pointer; transition: all 0.15s ease-in-out; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Oxygen-Sans, Ubuntu, Cantarell, \'Helvetica Neue\', sans-serif;" onmouseover="this.style.background=\'#f0f6fc\'" onmouseout="this.style.background=\'#ffffff\'">
-                    Add New
+            <div class="flex flex-wrap items-center gap-3">
+                <span class="text-xl font-bold tracking-tight text-slate-900 dark:text-zinc-100">Edit Post</span>
+                <span class="gif-studio-pill">Editorial Studio + SEO PRO</span>
+                <a href="'.$createUrl.'" class="gif-add-new-btn">
+                    + Add New
                 </a>
             </div>
         ');
@@ -40,29 +49,43 @@ class EditBlogPost extends EditRecord
     protected function mutateFormDataBeforeFill(array $data): array
     {
         $seo = $this->record->seo;
-        if ($seo) {
-            $data['seo'] = [
-                'seo_title' => $seo->seo_title,
-                'meta_description' => $seo->meta_description,
-                'focus_keyword' => $seo->focus_keyword,
-                'canonical_url' => $seo->canonical_url,
-                'backlinks' => $seo->backlinks ?? [],
-                'robots_index' => $seo->robots_index ?? true,
-                'robots_follow' => $seo->robots_follow ?? true,
-                'og_title' => $seo->og_title,
-                'og_description' => $seo->og_description,
-                'og_media_id' => $seo->og_media_id,
-                'twitter_title' => $seo->twitter_title,
-                'twitter_description' => $seo->twitter_description,
-                'twitter_media_id' => $seo->twitter_media_id,
-                'schema_type' => $seo->schema_type ?? 'Article',
-                'target_keywords' => $seo->target_keywords ?? [],
-                'seo_score' => $seo->seo_score ?? 95,
-                'in_sitemap' => $seo->in_sitemap ?? true,
-                'sitemap_priority' => (string) ($seo->sitemap_priority ?? '0.8'),
-                'sitemap_changefreq' => $seo->sitemap_changefreq ?? 'weekly',
-            ];
+        $hasDirectSeo = ! empty($data['seo_title'])
+            || ! empty($data['meta_title'])
+            || ! empty($data['meta_description'])
+            || ! empty($data['focus_keyphrase']);
+
+        // Safe fallbacks from legacy polymorphic SeoMetadata when new blog_posts columns are null
+        $data['title'] = (string) ($data['title'] ?? '');
+        $data['slug'] = (string) ($data['slug'] ?? '');
+        $data['content'] = (string) ($data['content'] ?? '');
+        $data['excerpt'] = (string) ($data['excerpt'] ?? '');
+        $data['featured_image_alt'] = (string) ($data['featured_image_alt'] ?: ($this->record->featuredMedia?->alt_text ?? ''));
+        $data['focus_keyphrase'] = (string) ($data['focus_keyphrase'] ?: ($seo?->focus_keyword ?? ''));
+
+        $secondary = $data['secondary_keyphrases'] ?? null;
+        if (! is_array($secondary) || $secondary === []) {
+            $secondary = is_array($seo?->target_keywords) ? $seo->target_keywords : [];
         }
+        $data['secondary_keyphrases'] = array_values(array_filter(array_map('strval', $secondary)));
+
+        $data['seo_title'] = (string) ($data['seo_title'] ?: ($seo?->seo_title ?? ''));
+        $data['meta_description'] = (string) ($data['meta_description'] ?: ($seo?->meta_description ?? ''));
+        $data['canonical_url'] = (string) ($data['canonical_url'] ?: ($seo?->canonical_url ?? ''));
+        $data['schema_type'] = $hasDirectSeo
+            ? (string) ($data['schema_type'] ?: ($seo?->schema_type ?? 'BlogPosting'))
+            : (string) ($seo?->schema_type ?: ($data['schema_type'] ?? 'BlogPosting'));
+        $data['robots_index'] = $hasDirectSeo
+            ? ($data['robots_index'] ?? ($seo?->robots_index ?? true))
+            : ($seo?->robots_index ?? ($data['robots_index'] ?? true));
+        $data['robots_follow'] = $hasDirectSeo
+            ? ($data['robots_follow'] ?? ($seo?->robots_follow ?? true))
+            : ($seo?->robots_follow ?? ($data['robots_follow'] ?? true));
+        $data['faq_items'] = is_array($data['faq_items'] ?? null) ? $data['faq_items'] : [];
+        $data['og_title'] = (string) ($data['og_title'] ?: ($seo?->og_title ?? ''));
+        $data['og_description'] = (string) ($data['og_description'] ?: ($seo?->og_description ?? ''));
+        $data['seo_score'] = (int) ($data['seo_score'] ?? ($seo?->seo_score ?? 0));
+        $data['word_count'] = (int) ($data['word_count'] ?? 0);
+        $data['reading_time'] = (int) ($data['reading_time'] ?? 0);
 
         return $data;
     }
@@ -80,55 +103,75 @@ class EditBlogPost extends EditRecord
             $data['scheduled_for'] = $this->record->scheduled_for;
         }
 
+        $data['slug'] = ! empty($data['slug']) ? Str::slug((string) $data['slug']) : $this->record->slug;
+
+        $plain = trim(strip_tags((string) ($data['content'] ?? '')));
+        $computedWords = $plain !== '' ? str_word_count($plain) : 0;
+        $data['word_count'] = max($computedWords, (int) ($data['word_count'] ?? 0));
+        $data['reading_time'] = max(1, (int) ceil($data['word_count'] / 200));
+        if (empty($data['read_time']) || preg_match('/^\d+\s+min\s+read$/i', (string) $data['read_time'])) {
+            $data['read_time'] = $data['reading_time'].' min read';
+        }
+
+        $data['secondary_keyphrases'] = is_array($data['secondary_keyphrases'] ?? null)
+            ? array_values(array_filter(array_map('trim', $data['secondary_keyphrases'])))
+            : [];
+
+        $data['faq_items'] = self::normalizeFaqItems($data['faq_items'] ?? []);
+        $data['schema_type'] = $data['schema_type'] ?: 'BlogPosting';
+        $data['robots_index'] = $data['robots_index'] === null ? true : (bool) $data['robots_index'];
+        $data['robots_follow'] = $data['robots_follow'] === null ? true : (bool) $data['robots_follow'];
+        $data['seo_score'] = max(0, min(100, (int) ($data['seo_score'] ?? 0)));
+
         return $data;
     }
 
     protected function afterSave(): void
     {
-        // 1. Sync Polymorphic SEO Metadata
-        $seoData = $this->data['seo'] ?? null;
-        if (is_array($seoData)) {
-            $this->record->seo()->updateOrCreate(
-                [
-                    'seoble_type' => get_class($this->record),
-                    'seoble_id' => $this->record->id,
-                ],
-                [
-                    'seo_title' => $seoData['seo_title'] ?? null,
-                    'meta_description' => $seoData['meta_description'] ?? null,
-                    'focus_keyword' => $seoData['focus_keyword'] ?? null,
-                    'target_keywords' => $seoData['target_keywords'] ?? [],
-                    'canonical_url' => $seoData['canonical_url'] ?? null,
-                    'backlinks' => $seoData['backlinks'] ?? [],
-                    'robots_index' => (bool) ($seoData['robots_index'] ?? true),
-                    'robots_follow' => (bool) ($seoData['robots_follow'] ?? true),
-                    'in_sitemap' => (bool) ($seoData['in_sitemap'] ?? true),
-                    'sitemap_priority' => $seoData['sitemap_priority'] ?? 0.8,
-                    'sitemap_changefreq' => $seoData['sitemap_changefreq'] ?? 'weekly',
-                    'og_title' => $seoData['og_title'] ?? null,
-                    'og_description' => $seoData['og_description'] ?? null,
-                    'og_media_id' => $seoData['og_media_id'] ?? null,
-                    'twitter_title' => $seoData['twitter_title'] ?? null,
-                    'twitter_description' => $seoData['twitter_description'] ?? null,
-                    'twitter_media_id' => $seoData['twitter_media_id'] ?? null,
-                    'schema_type' => $seoData['schema_type'] ?? 'Article',
-                ]
-            );
-        }
+        $record = $this->record;
 
-        // 2. Log Audit
-        AuditLog::log('UPDATE', $this->record, $this->previousValues, $this->record->toArray());
+        // Keep Polymorphic SeoMetadata synchronized for API, Sitemap & Legacy consumers
+        $existingSeo = $record->seo;
+        $record->seo()->updateOrCreate(
+            [
+                'seoble_type' => get_class($record),
+                'seoble_id' => $record->id,
+            ],
+            [
+                'seo_title' => $record->seo_title ?: null,
+                'meta_description' => $record->meta_description ?: null,
+                'focus_keyword' => $record->focus_keyphrase ?: null,
+                'target_keywords' => $record->secondary_keyphrases ?? [],
+                'canonical_url' => $record->canonical_url ?: null,
+                'robots_index' => (bool) ($record->robots_index ?? true),
+                'robots_follow' => (bool) ($record->robots_follow ?? true),
+                'og_title' => $record->og_title ?: null,
+                'og_description' => $record->og_description ?: null,
+                'og_media_id' => $existingSeo?->og_media_id ?: ($record->featured_media_id ?: null),
+                'twitter_title' => $existingSeo?->twitter_title ?: ($record->og_title ?: null),
+                'twitter_description' => $existingSeo?->twitter_description ?: ($record->og_description ?: null),
+                'twitter_media_id' => $existingSeo?->twitter_media_id,
+                'schema_type' => $record->schema_type ?: 'BlogPosting',
+                'seo_score' => (int) ($record->seo_score ?? 0),
+                'in_sitemap' => $existingSeo?->in_sitemap ?? true,
+                'sitemap_priority' => $existingSeo?->sitemap_priority ?? 0.8,
+                'sitemap_changefreq' => $existingSeo?->sitemap_changefreq ?? 'weekly',
+            ]
+        );
 
-        $version = Revision::where('revisable_type', get_class($this->record))
-            ->where('revisable_id', $this->record->id)
+        Cache::forget('api_blog_public_list');
+        AuditLog::log('UPDATE', $record, $this->previousValues, $record->toArray());
+
+        $version = Revision::where('revisable_type', get_class($record))
+            ->where('revisable_id', $record->id)
             ->count() + 1;
 
         Revision::create([
-            'revisable_type' => get_class($this->record),
-            'revisable_id' => $this->record->id,
+            'revisable_type' => get_class($record),
+            'revisable_id' => $record->id,
             'user_id' => auth()->id(),
             'version_number' => $version,
-            'payload' => $this->record->toArray(),
+            'payload' => $record->toArray(),
         ]);
     }
 
@@ -174,5 +217,29 @@ class EditBlogPost extends EditRecord
                 }),
             DeleteAction::make()->label('Archive'),
         ];
+    }
+
+    /**
+     * @return array<int, array{q: string, a: string}>
+     */
+    protected static function normalizeFaqItems(mixed $items): array
+    {
+        if (! is_array($items)) {
+            return [];
+        }
+
+        $clean = [];
+        foreach ($items as $item) {
+            if (! is_array($item)) {
+                continue;
+            }
+            $q = trim((string) ($item['q'] ?? ($item['question'] ?? '')));
+            $a = trim((string) ($item['a'] ?? ($item['answer'] ?? '')));
+            if ($q !== '' || $a !== '') {
+                $clean[] = ['q' => $q, 'a' => $a];
+            }
+        }
+
+        return $clean;
     }
 }

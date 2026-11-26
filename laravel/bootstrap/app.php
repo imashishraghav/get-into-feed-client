@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\OptimisticLockException;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -52,8 +53,12 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $e, Request $request) {
-            if (! $request->is('api/*') && ! $request->is('cms-preview-data/*') && ! $request->expectsJson()) {
+            if (! $request->is('api/*') && ! $request->is('cms-preview-data/*') && ! $request->is('admin/api/*') && ! $request->expectsJson()) {
                 return null;
+            }
+
+            if ($e instanceof OptimisticLockException) {
+                return $e->render();
             }
 
             if ($e instanceof ValidationException) {

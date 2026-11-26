@@ -70,7 +70,7 @@ class BootstrapController extends Controller
 
             // 3. Blog Posts
             $posts = BlogPost::with(['featuredMedia', 'author'])
-                ->where('status', 'published')
+                ->publiclyListed()
                 ->orderBy('published_at', 'desc')
                 ->take(12)
                 ->get()

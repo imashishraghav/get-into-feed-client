@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SystemHealthResource;
 use App\Models\Lead;
 use App\Models\SystemBackup;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +21,7 @@ class HealthController extends Controller
         $hasValidToken = $configuredToken !== '' && $providedToken !== '' && hash_equals($configuredToken, $providedToken);
 
         $user = $request->user();
-        $isAdmin = $user && in_array($user->role, ['superadmin', 'admin'], true);
+        $isAdmin = $user && $user->isAdminOrHigher();
 
         if (! $isAdmin && ! $hasValidToken) {
             return response()->json([
@@ -73,20 +74,16 @@ class HealthController extends Controller
             ? SystemBackup::latest()->first(['filename', 'status', 'created_at'])
             : null;
 
-        $ok = $dbConnected && $cacheOk;
-
-        return response()->json([
-            'success' => $ok,
-            'status' => $ok ? 'ok' : 'degraded',
-            'service' => 'get-into-feed-cms',
+        $payload = [
+            'ok' => $dbConnected && $cacheOk,
             'database' => $dbStatus,
             'cache' => $cacheOk ? 'ok' : 'degraded',
             'queue' => [
-                'driver' => config('queue.default', 'database'),
                 'pending_jobs' => $pendingJobs,
                 'failed_jobs' => $failedJobs,
             ],
             'telemetry' => [
+                'queue_driver' => config('queue.default', 'database'),
                 'php_version' => PHP_VERSION,
                 'laravel_version' => app()->version(),
                 'crm_sync' => $crmStats,
@@ -97,6 +94,8 @@ class HealthController extends Controller
                 ] : null,
             ],
             'timestamp' => now()->toIso8601String(),
-        ], $dbConnected ? 200 : 503);
+        ];
+
+        return (new SystemHealthResource($payload))->response()->setStatusCode($dbConnected ? 200 : 503);
     }
 }

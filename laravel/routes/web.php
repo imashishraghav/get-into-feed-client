@@ -1,16 +1,17 @@
 <?php
 
+use App\Http\Controllers\Admin\BackupController;
+use App\Http\Controllers\Admin\EditorController;
+use App\Http\Controllers\Admin\LeadExportController;
+use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\RedirectController;
+use App\Http\Controllers\Admin\SystemOperationsController;
 use App\Http\Controllers\Admin\TwoFactorAuthController;
 use App\Http\Controllers\Api\V1\PageController;
 use App\Http\Controllers\Api\V1\SitemapController;
 use App\Http\Controllers\FrontendSsrController;
-use App\Models\AuditLog;
-use App\Models\Lead;
-use App\Models\Media;
-use App\Models\SystemBackup;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 
 // XML Sitemap for Search Engines
 Route::get('/sitemap.xml', [SitemapController::class, 'xml']);
@@ -18,81 +19,54 @@ Route::get('/sitemap.xml', [SitemapController::class, 'xml']);
 // Web Authentication Fallback (Redirects browser requests to Filament admin login)
 Route::get('/login', fn () => redirect('/admin/login'))->name('login');
 
-// Quick Media Upload for Classic Post Editor (Exact WordPress "Add media" Modal)
-Route::post('/admin/media/quick-upload', function (Request $request) {
-    $user = auth()->user();
-    if (! $user || ! $user->is_active) {
-        return response()->json(['success' => false, 'error' => 'Unauthenticated'], 401);
-    }
+// Quick Media Upload & Library List for Post Editor
+Route::post('/admin/media/quick-upload', [MediaController::class, 'store'])
+    ->middleware(['web', 'auth', 'throttle:60,1'])
+    ->name('admin.media.quick-upload');
 
-    if (! $user->isSuperAdmin() && ! $user->hasCmsPermission('media.upload') && ! in_array($user->role, ['superadmin', 'admin', 'content_manager', 'editor'])) {
-        return response()->json(['success' => false, 'error' => 'Forbidden. Media upload permission required.'], 403);
-    }
+Route::get('/admin/media/list', [MediaController::class, 'index'])
+    ->middleware(['web', 'auth'])
+    ->name('admin.media.list');
 
-    $request->validate([
-        'file' => 'required|file|max:32768|mimes:jpeg,jpg,png,webp,avif,gif,pdf',
-    ]);
+// Editorial Studio Pro Endpoints (Auto-WebP Image Upload & Live Internal Links Search)
+Route::middleware(['web', 'auth', 'throttle:60,1'])->prefix('admin/editor')->name('admin.editor.')->group(function () {
+    Route::post('/upload-image', [EditorController::class, 'uploadImage'])->name('upload-image');
+    Route::get('/internal-links', [EditorController::class, 'internalLinks'])->name('internal-links');
+});
 
-    $file = $request->file('file');
-    $originalName = $file->getClientOriginalName();
-    $cleanBaseName = preg_replace('/[^a-zA-Z0-9_\.-]/', '_', pathinfo($originalName, PATHINFO_FILENAME));
-    $extension = strtolower($file->getClientOriginalExtension());
-    $sanitizedFileName = $cleanBaseName.'_'.Str::random(8).'.'.$extension;
+// Phase 1 Layered Admin CMS & Operations REST API (Session + CSRF + Policy Protected)
+Route::middleware(['web', 'auth', 'throttle:120,1'])->prefix('admin/api')->name('admin.api.')->group(function () {
+    // Posts & Editorial Studio API
+    Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::post('/posts/analyze', [PostController::class, 'analyze'])->name('posts.analyze');
+    Route::get('/posts/tags', [PostController::class, 'tagsAutocomplete'])->name('posts.tags.index');
+    Route::post('/posts/tags', [PostController::class, 'quickCreateTag'])->name('posts.tags.store');
+    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+    Route::match(['put', 'patch'], '/posts/{post}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::post('/posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
+    Route::post('/posts/{post}/publish', [PostController::class, 'publish'])->name('posts.publish');
+    Route::post('/posts/{post}/schedule', [PostController::class, 'schedule'])->name('posts.schedule');
+    Route::match(['post', 'patch'], '/posts/{post}/autosave', [PostController::class, 'autosave'])->name('posts.autosave');
+    Route::get('/posts/{post}/revisions', [PostController::class, 'revisions'])->name('posts.revisions.index');
+    Route::get('/posts/{post}/revisions/diff', [PostController::class, 'diffRevision'])->name('posts.revisions.diff');
+    Route::post('/posts/{post}/revisions/{revisionId}/restore', [PostController::class, 'restoreRevision'])->name('posts.revisions.restore');
+    Route::post('/posts/{post}/preview-link', [PostController::class, 'createSignedPreviewUrl'])->name('posts.preview-link');
 
-    $path = $file->storeAs('media', $sanitizedFileName, 'public');
-    $mimeType = $file->getMimeType();
-    $fileSize = $file->getSize();
+    // Media Pipeline API
+    Route::get('/media', [MediaController::class, 'index'])->name('media.index');
+    Route::post('/media', [MediaController::class, 'store'])->name('media.store');
 
-    $media = Media::create([
-        'file_name' => $sanitizedFileName,
-        'file_path' => $path,
-        'disk' => 'public',
-        'file_size' => $fileSize,
-        'mime_type' => $mimeType,
-        'alt_text' => ucwords(str_replace(['-', '_'], ' ', $cleanBaseName)),
-        'title' => ucwords(str_replace(['-', '_'], ' ', $cleanBaseName)),
-        'uploaded_by_user_id' => $user->id,
-    ]);
+    // Redirects Management API
+    Route::get('/redirects', [RedirectController::class, 'index'])->name('redirects.index');
+    Route::post('/redirects', [RedirectController::class, 'store'])->name('redirects.store');
 
-    return response()->json([
-        'success' => true,
-        'media' => [
-            'id' => $media->id,
-            'name' => $media->file_name,
-            'url' => $media->url,
-            'alt' => $media->alt_text ?: $media->file_name,
-            'size' => $media->formatted_size,
-            'dimensions' => $media->dimensions,
-            'created_at' => $media->created_at ? $media->created_at->format('F j, Y') : '',
-        ],
-    ]);
-})->middleware(['web', 'auth'])->name('admin.media.quick-upload');
-
-// Fetch Media List for Classic Post Editor Add Media Modal
-Route::get('/admin/media/list', function () {
-    $user = auth()->user();
-    if (! $user || ! $user->is_active) {
-        return response()->json(['success' => false, 'error' => 'Unauthenticated'], 401);
-    }
-
-    if (! $user->isSuperAdmin() && ! $user->hasCmsPermission('media.view') && ! in_array($user->role, ['superadmin', 'admin', 'content_manager', 'editor', 'viewer'])) {
-        return response()->json(['success' => false, 'error' => 'Forbidden. Media view permission required.'], 403);
-    }
-
-    $media = Media::latest()->take(100)->get()->map(function ($m) {
-        return [
-            'id' => $m->id,
-            'name' => $m->file_name,
-            'url' => $m->url,
-            'alt' => $m->alt_text ?: $m->file_name,
-            'size' => $m->formatted_size,
-            'dimensions' => $m->dimensions,
-            'created_at' => $m->created_at ? $m->created_at->format('F j, Y') : '',
-        ];
-    });
-
-    return response()->json(['success' => true, 'media' => $media]);
-})->middleware(['web', 'auth'])->name('admin.media.list');
+    // System Operations API (Cache/Sitemap/Queue)
+    Route::post('/operations/purge-cache', [SystemOperationsController::class, 'purgeCache'])->name('operations.purge-cache');
+    Route::get('/operations/queue', [SystemOperationsController::class, 'queueStatus'])->name('operations.queue.status');
+    Route::post('/operations/queue/retry/{uuidOrAll}', [SystemOperationsController::class, 'retryFailedJob'])->name('operations.queue.retry');
+});
 
 // Two-Factor Authentication Routes
 Route::middleware(['web', 'auth'])->prefix('admin/two-factor')->name('admin.two-factor.')->group(function () {
@@ -103,170 +77,28 @@ Route::middleware(['web', 'auth'])->prefix('admin/two-factor')->name('admin.two-
     Route::post('/disable', [TwoFactorAuthController::class, 'disable'])->name('disable');
 });
 
-// Secure CMS Preview signed endpoint
+// Secure CMS Preview signed endpoints
 Route::get('/cms-preview-data/pages/{slug}', [PageController::class, 'preview'])
     ->middleware(['auth', 'signed'])
     ->name('cms.preview.data');
 
+Route::get('/cms-preview-data/blog/{uuid}', [PostController::class, 'signedPreview'])
+    ->middleware(['signed'])
+    ->name('admin.posts.signed-preview');
+
 // Secure Database Backup Download (Super Administrator Only)
-Route::get('/admin/system-backups/{id}/download', function ($id) {
-    $user = auth()->user();
-    if (! $user || ! $user->isSuperAdmin()) {
-        abort(403, 'Unauthorized. Super Administrator access required.');
-    }
-    $backup = SystemBackup::findOrFail($id);
-    if (! file_exists($backup->file_path)) {
-        abort(404, 'Backup file missing on disk.');
-    }
-    AuditLog::create([
-        'user_id' => $user->id,
-        'user_email' => $user->email,
-        'action' => 'BACKUP_DOWNLOADED',
-        'auditable_type' => SystemBackup::class,
-        'auditable_id' => $backup->id,
-        'new_values' => ['filename' => $backup->filename, 'size' => $backup->file_size_bytes],
-        'ip_address' => request()->ip(),
-        'user_agent' => request()->userAgent(),
-    ]);
+Route::get('/admin/system-backups/{id}/download', [BackupController::class, 'download'])
+    ->middleware(['web', 'auth'])
+    ->name('admin.system-backups.download');
 
-    return response()->download($backup->file_path, $backup->filename);
-})->middleware(['web', 'auth'])->name('admin.system-backups.download');
+// Secure Inbound Leads Exports (Audited via AuditLogService)
+Route::get('/admin/leads/export-csv', [LeadExportController::class, 'exportCsv'])
+    ->middleware(['web', 'auth'])
+    ->name('admin.leads.csv');
 
-// Secure Inbound Leads CSV Export (Excel Compatible UTF-8 BOM)
-Route::get('/admin/leads/export-csv', function () {
-    $user = auth()->user();
-    if (! $user || ! $user->is_active) {
-        abort(403, 'Unauthorized. Active admin account required.');
-    }
-
-    $canExport = $user->isSuperAdmin()
-        || $user->hasCmsPermission('leads.manage')
-        || in_array($user->role, ['superadmin', 'admin', 'sales_crm']);
-
-    if (! $canExport) {
-        abort(403, 'Forbidden. You do not have permission to export CRM leads.');
-    }
-
-    $ids = request()->query('ids');
-    $query = Lead::query();
-    if (! empty($ids)) {
-        $idArray = is_array($ids) ? $ids : explode(',', $ids);
-        $query->whereIn('id', $idArray);
-    }
-    $leads = $query->orderBy('created_at', 'desc')->get();
-
-    AuditLog::create([
-        'user_id' => $user->id,
-        'user_email' => $user->email,
-        'action' => 'LEADS_EXPORTED',
-        'auditable_type' => Lead::class,
-        'auditable_id' => null,
-        'new_values' => [
-            'format' => 'CSV',
-            'count' => $leads->count(),
-            'ids_filtered' => ! empty($ids),
-        ],
-        'ip_address' => request()->ip(),
-        'user_agent' => request()->userAgent(),
-    ]);
-
-    return response()->streamDownload(function () use ($leads) {
-        $handle = fopen('php://output', 'w');
-        // UTF-8 BOM for seamless Microsoft Excel rendering
-        fwrite($handle, "\xEF\xBB\xBF");
-        fputcsv($handle, [
-            'ID',
-            'Lead Code',
-            'Contact Name',
-            'Email Address',
-            'Phone',
-            'WhatsApp',
-            'Company / Brand',
-            'Website',
-            'Interested Service',
-            'Budget Range',
-            'Status',
-            'Priority',
-            'Origin Page',
-            'Form Identifier',
-            'Marketing Source',
-            'Referrer',
-            'IP Address',
-            'Client Message',
-            'Submitted At',
-        ]);
-
-        foreach ($leads as $lead) {
-            fputcsv($handle, [
-                $lead->id,
-                $lead->lead_code,
-                $lead->name,
-                $lead->email,
-                $lead->phone,
-                $lead->whatsapp,
-                $lead->company,
-                $lead->website,
-                $lead->interested_service,
-                $lead->budget,
-                $lead->status,
-                $lead->priority,
-                $lead->page_url,
-                $lead->form_type,
-                $lead->source,
-                $lead->referrer,
-                $lead->ip_address,
-                $lead->message,
-                $lead->created_at ? $lead->created_at->format('Y-m-d H:i:s') : '',
-            ]);
-        }
-
-        fclose($handle);
-    }, 'getintofeed-leads-'.date('Y-m-d-His').'.csv', [
-        'Content-Type' => 'text/csv; charset=UTF-8',
-        'Content-Disposition' => 'attachment; filename="getintofeed-leads-'.date('Y-m-d-His').'.csv"',
-    ]);
-})->middleware(['web', 'auth'])->name('admin.leads.csv');
-
-// Secure Inbound Leads High-Resolution Printable PDF Report
-Route::get('/admin/leads/export-pdf', function () {
-    $user = auth()->user();
-    if (! $user || ! $user->is_active) {
-        abort(403, 'Unauthorized. Active admin account required.');
-    }
-
-    $canExport = $user->isSuperAdmin()
-        || $user->hasCmsPermission('leads.manage')
-        || in_array($user->role, ['superadmin', 'admin', 'sales_crm']);
-
-    if (! $canExport) {
-        abort(403, 'Forbidden. You do not have permission to export CRM leads.');
-    }
-
-    $ids = request()->query('ids');
-    $query = Lead::query();
-    if (! empty($ids)) {
-        $idArray = is_array($ids) ? $ids : explode(',', $ids);
-        $query->whereIn('id', $idArray);
-    }
-    $leads = $query->orderBy('created_at', 'desc')->get();
-
-    AuditLog::create([
-        'user_id' => $user->id,
-        'user_email' => $user->email,
-        'action' => 'LEADS_EXPORTED',
-        'auditable_type' => Lead::class,
-        'auditable_id' => null,
-        'new_values' => [
-            'format' => 'PDF',
-            'count' => $leads->count(),
-            'ids_filtered' => ! empty($ids),
-        ],
-        'ip_address' => request()->ip(),
-        'user_agent' => request()->userAgent(),
-    ]);
-
-    return view('admin.leads-pdf', compact('leads'));
-})->middleware(['web', 'auth'])->name('admin.leads.pdf');
+Route::get('/admin/leads/export-pdf', [LeadExportController::class, 'exportPdf'])
+    ->middleware(['web', 'auth'])
+    ->name('admin.leads.pdf');
 
 // Primary Frontend Routes (SSR Dynamic Metadata Injection + React SPA)
 Route::get('/', [FrontendSsrController::class, 'render'])->name('home');

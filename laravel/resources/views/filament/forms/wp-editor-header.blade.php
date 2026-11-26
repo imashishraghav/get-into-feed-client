@@ -68,102 +68,97 @@
     class="wp-classic-editor-suite font-sans"
     style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;"
 >
-    <!-- 1. Title Input Box (Exact WordPress #titlediv input) -->
-    <div class="relative mb-2" wire:ignore>
+    <!-- 1. Title Input Box (Executive Clean Styling) -->
+    <div class="relative mb-2.5" wire:ignore>
         <input
             type="text"
             x-model="title"
             @input="onTitleInput($event.target.value)"
-            placeholder="Enter title here"
+            placeholder="Enter article title here..."
             autocomplete="off"
             spellcheck="true"
-            class="w-full bg-white text-[#1d2327] border border-[#ccd0d4] rounded-[2px] px-3.5 py-2 text-[20px] font-normal shadow-none focus:border-[#2271b1] focus:ring-1 focus:ring-[#2271b1] outline-none transition"
-            style="font-size: 21px; font-weight: 400; line-height: 1.4; padding: 7px 12px; border-color: #ccd0d4;"
+            class="w-full bg-white dark:bg-zinc-900 text-slate-900 dark:text-white border border-slate-200 dark:border-zinc-800 rounded-xl px-4 py-3 text-[22px] font-bold tracking-tight shadow-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition placeholder:text-slate-300 dark:placeholder:text-zinc-600"
         />
     </div>
 
-    <!-- 2. Permalink Line (Exact WordPress #edit-slug-box) -->
-    <div class="flex items-center flex-wrap gap-1.5 text-[13px] text-[#50575e] pl-0.5 mb-3.5 select-none" wire:ignore>
-        <span class="font-normal text-[#50575e]">Permalink:</span>
+    <!-- 2. Permalink Capsule -->
+    <div class="inline-flex items-center flex-wrap gap-2 text-xs bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700/80 rounded-lg px-3 py-1.5 mb-3 select-none" wire:ignore>
+        <span class="font-medium text-slate-400 dark:text-zinc-500">Permalink:</span>
+        <span class="text-slate-500 font-mono">https://getintofeed.com/blog/</span>
         <a
             :href="'https://getintofeed.com/blog/' + slug"
             target="_blank"
-            class="text-[#2271b1] underline hover:text-[#135e96] font-normal break-all"
-            x-text="'https://getintofeed.com/blog/' + slug"
+            class="text-blue-600 dark:text-blue-400 font-bold font-mono hover:underline break-all no-underline"
+            x-text="slug || 'your-slug'"
         ></a>
 
         <button
             type="button"
             @click="isEditingSlug = !isEditingSlug"
-            class="px-2 py-0.5 rounded-[3px] border border-[#2271b1] text-[#2271b1] bg-white hover:bg-[#f0f6fc] text-[12px] font-normal transition cursor-pointer shadow-2xs"
+            class="px-2 py-0.5 rounded-md border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 hover:bg-slate-100 text-[11px] font-semibold transition cursor-pointer shadow-2xs"
         >
-            Edit
+            Edit Slug
         </button>
 
         <!-- Inline Slug Edit Flyout -->
         <div x-show="isEditingSlug" style="display:none;" class="flex items-center gap-1.5 ml-1">
-            <span class="text-xs text-slate-500">https://getintofeed.com/blog/</span>
             <input
                 type="text"
                 x-model="tempSlug"
-                class="px-2 py-0.5 text-xs rounded border border-slate-300 bg-white text-slate-800 font-mono"
+                class="px-2 py-0.5 text-xs rounded-md border border-slate-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-slate-800 dark:text-white font-mono"
             />
             <button
                 type="button"
                 @click="saveSlug()"
-                class="px-2 py-0.5 bg-[#2271b1] text-white rounded text-xs font-semibold hover:bg-[#135e96] cursor-pointer"
+                class="px-2.5 py-0.5 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 cursor-pointer shadow-xs"
             >
                 OK
             </button>
             <button
                 type="button"
                 @click="cancelSlug()"
-                class="text-xs text-[#2271b1] hover:underline cursor-pointer bg-transparent border-none"
+                class="text-xs text-slate-500 hover:underline cursor-pointer bg-transparent border-none"
             >
                 Cancel
             </button>
         </div>
     </div>
 
-    <!-- 3. Classic WordPress Top Bar: Add Media Button + Visual / Code Tabs -->
-    <div class="flex items-end justify-between select-none">
-        <!-- Left: Classic Add Media Button with Camera & Music Note icon -->
+    <!-- 3. Modern Toolbar Top Bar: Add Media Button + Segmented Visual / Code Tabs -->
+    <div class="flex items-end justify-between select-none mb-1.5">
+        <!-- Left: Modern Add Media Asset Button -->
         <button
             type="button"
             @click="openMediaModal()"
-            class="inline-flex items-center gap-1.5 px-3 py-1.5 mb-2 rounded-[3px] border border-[#2271b1] text-[#2271b1] bg-white hover:bg-[#f0f6fc] text-[13px] font-semibold transition cursor-pointer shadow-2xs"
+            class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 hover:bg-slate-50 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-200 text-xs font-semibold transition cursor-pointer shadow-2xs"
         >
-            <!-- WordPress Dashicon Camera & Music Note -->
-            <svg class="w-4 h-4 text-[#2271b1] shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M4 4a2 2 0 00-2 2v7a2 2 0 002 2h3.2a1 1 0 00.8-.4l1.2-1.6H16a2 2 0 002-2V6a2 2 0 00-2-2h-2.2a1 1 0 00-.8-.4l-1.2-1.6H8.2a1 1 0 00-.8.4L6.2 4H4zm6 3a3 3 0 110 6 3 3 0 010-6z"/>
-                <path d="M15 12a1 1 0 011 1v2.5a1.5 1.5 0 11-1-1.41V13a1 1 0 010-1z"/>
-            </svg>
-            <span>Add Media</span>
+            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <span>Add Media Asset</span>
         </button>
 
-        <!-- Right: Visual / Code Tabs sitting directly on top of the editor border -->
-        <div class="flex items-end text-xs">
+        <!-- Right: Segmented Visual / Code Mode Tabs -->
+        <div class="flex items-center bg-slate-100 dark:bg-zinc-800 p-0.5 rounded-lg border border-slate-200 dark:border-zinc-700 text-xs">
             <button
                 type="button"
                 @click="switchMode('visual')"
-                :class="editorMode === 'visual' ? 'bg-white border-t border-l border-r border-[#ccd0d4] text-[#1d2327] font-semibold -mb-px z-10' : 'bg-[#f6f7f7] border border-[#ccd0d4] text-[#50575e] hover:bg-slate-100'"
-                class="px-3.5 py-1.5 rounded-t-[3px] cursor-pointer transition select-none"
+                :class="editorMode === 'visual' ? 'bg-white dark:bg-zinc-900 text-slate-900 dark:text-white shadow-2xs font-bold' : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 font-medium'"
+                class="px-3 py-1 rounded-md cursor-pointer transition select-none"
             >
-                Visual
+                Visual Editor
             </button>
             <button
                 type="button"
                 @click="switchMode('code')"
-                :class="editorMode === 'code' ? 'bg-white border-t border-l border-r border-[#ccd0d4] text-[#1d2327] font-semibold -mb-px z-10' : 'bg-[#f6f7f7] border border-[#ccd0d4] text-[#50575e] hover:bg-slate-100'"
-                class="px-3.5 py-1.5 rounded-t-[3px] cursor-pointer transition select-none -ml-px"
+                :class="editorMode === 'code' ? 'bg-white dark:bg-zinc-900 text-slate-900 dark:text-white shadow-2xs font-bold' : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 font-medium'"
+                class="px-3 py-1 rounded-md cursor-pointer transition select-none"
             >
-                Code
+                Code / HTML
             </button>
         </div>
     </div>
 
-    <!-- 4. Classic WordPress Editor Box (Toolbar + Writing Canvas + Status Bar) -->
-    <div class="border border-[#ccd0d4] rounded-[2px] bg-white shadow-2xs overflow-hidden">
+    <!-- 4. Modern Content Canvas Container -->
+    <div class="border border-slate-200 dark:border-zinc-800 rounded-xl bg-white dark:bg-zinc-900 shadow-xs overflow-hidden">
         <!-- Visual Mode Toolbar (Row 1: Exact Classic WordPress TinyMCE Tools) -->
         <div x-show="editorMode === 'visual'" class="wp-toolbar-row">
             <!-- 1. Format Block / Paragraph Select Dropdown -->
@@ -921,7 +916,7 @@
             },
 
             insertMoreTag() {
-                this.exec('insertHTML', '<hr class="wp-more-tag" title="Read More" /><p><br></p>');
+                this.exec('insertHTML', '<hr class="wp-more-tag" title="Read More" /><p><br><\/p>');
             },
 
             toggleFullscreen() {
@@ -986,7 +981,7 @@
             },
 
             insertImageHtml(url, alt) {
-                const html = `<p><img src="${url}" alt="${alt || ''}" style="max-width: 100%; height: auto; border-radius: 4px; margin: 16px 0;" /></p><p><br></p>`;
+                const html = `<p><img src="${url}" alt="${alt || ''}" style="max-width: 100%; height: auto; border-radius: 4px; margin: 16px 0;" /><\/p><p><br><\/p>`;
                 
                 if (this.editorMode === 'code') {
                     this.codeContent += '\n' + html;
