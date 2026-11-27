@@ -269,7 +269,7 @@
 
         <div class="footer">
             <p style="margin: 0 0 6px 0;">This is an automated notification from the <strong>GetIntoFeed.com</strong> Production Lead Engine.</p>
-            <p style="margin: 0;">© {{ date('Y') }} GetIntoFeed Creative Studio · All Rights Reserved.</p>
+            <p style="margin: 0;">© {{ date('Y') }} GetIntoFeed · All Rights Reserved.</p>
         </div>
     </div>
 </body>

@@ -62,8 +62,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@getintofeed.com'),
-        'name' => env('MAIL_FROM_NAME', 'GetIntoFeed Creative Studio'),
+        'address' => env('MAIL_FROM_ADDRESS', 'admin@getintofeed.com'),
+        'name' => env('MAIL_FROM_NAME', 'GetIntoFeed'),
     ],
 
 ];
