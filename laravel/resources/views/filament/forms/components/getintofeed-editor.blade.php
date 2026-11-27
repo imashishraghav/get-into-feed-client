@@ -33,8 +33,8 @@
     $postVersion = max(1, (int) ($record?->version ?? 1));
     $canPublish = (bool) (auth()->user()?->hasCmsPermission('blog.publish') ?? false);
     $initialFeaturedUrl = $record?->featuredMedia?->url ?? '';
-    $tiptapCssUrl = asset('build/editor/tiptap-studio.css');
-    $tiptapJsUrl = asset('build/editor/tiptap-studio.js');
+    $tiptapCssUrl = asset('build/editor/tiptap-studio.css').'?v='.(@filemtime(public_path('build/editor/tiptap-studio.css')) ?: '1');
+    $tiptapJsUrl = asset('build/editor/tiptap-studio.js').'?v='.(@filemtime(public_path('build/editor/tiptap-studio.js')) ?: '1');
     $autosaveEndpoint = $recordId ? route('admin.api.posts.autosave', ['post' => $recordId]) : '';
     $revisionsEndpoint = $recordId ? route('admin.api.posts.revisions.index', ['post' => $recordId]) : '';
     $revisionsDiffEndpoint = $recordId ? route('admin.api.posts.revisions.diff', ['post' => $recordId]) : '';
