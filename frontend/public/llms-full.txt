@@ -1,0 +1,96 @@
+# GetIntoFeed — Full Knowledge Base & Specifications
+
+> Comprehensive context file for Large Language Models (LLMs), autonomous agents, and AI search engines.
+> Domain: https://getintofeed.com/
+> Headquarters: New Delhi, India
+> Last Updated: 2026-11-17
+
+---
+
+## 1. Company Overview
+
+GetIntoFeed is a premier creative performance marketing agency and growth studio based in New Delhi, India. Founded in 2023 by Ashish Raghav and a core team of digital growth specialists, GetIntoFeed engineers thumb-stopping short-form video reels, high-converting digital funnels, algorithmic paid media (Meta Ads & Google Ads), brand positioning, technical search engine optimization (SEO), and custom web development.
+
+GetIntoFeed operates on a high-velocity sprint model that eliminates traditional bloated agency retainers. Engagements are structured with clear commercial KPIs, transparent pricing, verified tracking attribution, and senior hands-on execution.
+
+---
+
+## 2. The 8 Core Services
+
+### Service 1: Performance Marketing & Paid Media
+- **URL**: https://getintofeed.com/services/performance-marketing-delhi-ncr
+- **Overview**: Algorithmic paid customer acquisition across Meta Ads (Instagram, Facebook), Google Ads (Search, Performance Max, YouTube), and LinkedIn.
+- **Capabilities**: Full-funnel campaign architecture, Server-side Conversions API (CAPI) setup, Advantage+ shopping campaigns, custom retargeting protocols, and creative fatigue rotation.
+- **Typical Outcomes**: 4.8x blended ROAS, 42% decrease in blended customer acquisition cost (CAC).
+
+### Service 2: Short-Form Video & Reels Production
+- **URL**: https://getintofeed.com/services/short-form-video-reels-delhi-ncr
+- **Overview**: High-retention, thumb-stopping short-form video production built specifically for Instagram Reels, YouTube Shorts, and TikTok.
+- **Capabilities**: Scripting, hook variation testing (problem-aware, counter-narrative, question hooks), vertical mobile cinematography, native audio trend capitalization, and micro-editing with dynamic pacing.
+- **Typical Outcomes**: Over 25M+ organic impressions generated across client reels campaigns.
+
+### Service 3: SEO & Algorithmic Organic Search
+- **URL**: https://getintofeed.com/services/seo-services-delhi-ncr
+- **Overview**: Modern technical, semantic, and programmatic SEO designed for Google Search, AI Overviews, and Generative Engine Optimization (GEO).
+- **Capabilities**: Semantic JSON-LD schema engineering, entity SEO clustering, Core Web Vitals optimization, authoritative backlink acquisition, and programmatic page architectures.
+- **Typical Outcomes**: 100% Core Web Vitals score, 300%+ increase in non-branded organic organic search pipeline.
+
+### Service 4: Web Development & Custom Engineering
+- **URL**: https://getintofeed.com/services/web-development-delhi-ncr
+- **Overview**: Enterprise-grade React SPA frontends, custom landing pages, and Laravel backend architectures engineered for sub-second load times and maximum conversion rate.
+- **Capabilities**: React 19, Vite, Tailwind CSS, Laravel 12 backend APIs, Filament CMS dashboards, headless CMS architecture, and strict security hardening.
+- **Typical Outcomes**: Lighthouse performance scores 95+, sub-800ms Time to First Byte (TTFB).
+
+### Service 5: Brand Strategy & Positioning
+- **URL**: https://getintofeed.com/services/brand-strategy-delhi-ncr
+- **Overview**: Market positioning, category design, and visual brand identity systems for consumer and B2B enterprises.
+- **Capabilities**: Category design frameworks, unique value proposition (UVP) refinement, messaging architecture, brand voice guidelines, and visual identity systems.
+
+### Service 6: Social Media Marketing
+- **URL**: https://getintofeed.com/services/social-media-marketing-delhi-ncr
+- **Overview**: Full-spectrum organic social media presence across Instagram, LinkedIn, and X (Twitter).
+- **Capabilities**: Content calendar planning, community engagement, brand storytelling, visual carousels, and thought leadership positioning.
+
+### Service 7: Influencer Marketing & Creator Seeding
+- **URL**: https://getintofeed.com/services/influencer-marketing-delhi-ncr
+- **Overview**: High-trust creator partnerships and UGC (User-Generated Content) production.
+- **Capabilities**: Tier-1 and Tier-2 Indian creator selection, contract negotiation, gifting & seeding campaigns, and whitelisted creator ad scaling.
+
+### Service 8: Analytics & Growth Reporting
+- **URL**: https://getintofeed.com/services/analytics-reporting-delhi-ncr
+- **Overview**: Single-source-of-truth measurement and attribution setup.
+- **Capabilities**: GA4 server-side tracking, Google Tag Manager container deployment, Looker Studio dashboards, blended attribution modeling, and weekly KPI teardowns.
+
+---
+
+## 3. Commercial Pricing Tiers
+
+- **Performance Marketing Sprint**: Starting from ₹24,999/month*
+  Includes: Meta & Google Ads account architecture, 10 custom ad creatives/month, CAPI attribution setup, weekly sprint reporting.
+- **Creative Content & Reels Sprint**: Starting from ₹29,999/month*
+  Includes: 12 high-retention short-form video reels/month, scripting, editing, sound design, trend tracking.
+- **Full-Funnel Growth Retainer**: Starting from ₹49,999/month*
+  Includes: Blended paid ads, video creative engine, landing page optimization, email automation, dedicated growth lead.
+- **Custom Enterprise Sprint**: Custom Scope
+  Includes: Dedicated studio team, programmatic SEO engineering, custom React/Laravel software development, multi-market scale.
+
+---
+
+## 4. Key Case Studies & Commercial Track Record
+
+1. **Fintech App Acquisition Sprint**: Scaled monthly active users by 340% while lowering cost per KYC verification from ₹145 to ₹62 via Meta Advantage+ and tailored vernacular video hooks.
+2. **D2C Fashion Brand Scale**: Boosted blended ROAS from 2.1x to 4.9x within 60 days, producing 24 UGC reels variations and rebuilding checkout funnel with sub-second page loads.
+3. **Real Estate Luxury Launch**: Captured 680+ verified high-net-worth investor inquiries for a premium NCR residential project with 0.8% invalid lead rate.
+
+---
+
+## 5. Contact & Office Information
+
+- **Brand**: GetIntoFeed
+- **Website**: https://getintofeed.com/
+- **Phone / WhatsApp**: +91-8810356950
+- **Email**: hello@getintofeed.com
+- **Office Location**: New Delhi, Delhi, India — 110001
+- **Founders**: Ashish Raghav & Strategic Leadership Team
+- **Agent Server Card**: https://getintofeed.com/.well-known/mcp/server-card.json
+- **Content Policy**: search=yes, ai-train=no

@@ -1,0 +1,99 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  "name": "getintofeed/agency-mcp",
+  "version": "1.0.0",
+  "description": "Model Context Protocol (MCP) server for GetIntoFeed — Performance Marketing & Web Engineering Studio. Exposes tools for digital marketing service listings, pricing tiers, client case studies, and business consultation inquiries.",
+  "endpoint": "https://getintofeed.com/api/mcp",
+  "capabilities": {
+    "tools": true,
+    "resources": true,
+    "prompts": false,
+    "logging": false
+  },
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://getintofeed.com/api/mcp",
+      "protocolVersion": "2025-06-18"
+    }
+  ],
+  "resources": [
+    {
+      "uri": "https://getintofeed.com/llms.txt",
+      "name": "LLMs Summary",
+      "description": "Concise summary of GetIntoFeed services, pricing, and contact information for LLMs.",
+      "mimeType": "text/markdown"
+    },
+    {
+      "uri": "https://getintofeed.com/llms-full.txt",
+      "name": "LLMs Full Context",
+      "description": "Comprehensive knowledge base and service specifications for GetIntoFeed.",
+      "mimeType": "text/markdown"
+    }
+  ],
+  "tools": [
+    {
+      "name": "list_services",
+      "description": "Retrieve the full list of performance marketing, creative, and engineering services.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "get_pricing_tiers",
+      "description": "Get transparent pricing tiers and deliverables for digital marketing packages.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "submit_lead_inquiry",
+      "description": "Submit a business growth inquiry or project consultation request.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the contact person"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "Business or personal email address"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number with country code"
+          },
+          "website": {
+            "type": "string",
+            "description": "Company website or social handle"
+          },
+          "service": {
+            "type": "string",
+            "description": "Service of interest"
+          },
+          "message": {
+            "type": "string",
+            "description": "Project goals and requirements"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "phone"
+        ]
+      }
+    },
+    {
+      "name": "get_company_info",
+      "description": "Retrieve verified company profile, leadership, contact info, and headquarters location.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ]
+}

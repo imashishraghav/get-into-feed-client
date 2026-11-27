@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 32" width="140" height="32">
+  <defs>
+    <linearGradient id="dmcaGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00a651" />
+      <stop offset="100%" stop-color="#00753a" />
+    </linearGradient>
+  </defs>
+  <rect width="140" height="32" rx="6" fill="#011422" stroke="rgba(255,255,255,0.25)" stroke-width="1" />
+  <rect x="2" y="2" width="54" height="28" rx="4" fill="url(#dmcaGrad)" />
+  <path d="M14 9 L20 6 L26 9 C26 15 20 18 20 18 C20 18 14 15 14 9 Z" fill="#ffffff" />
+  <text x="29" y="20" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-weight="900" font-size="12" fill="#ffffff" letter-spacing="0.04em">DMCA</text>
+  <text x="62" y="20" font-family="'Plus Jakarta Sans', -apple-system, sans-serif" font-weight="800" font-size="10.5" fill="#a7f3d0" letter-spacing="0.08em">PROTECTED</text>
+</svg>

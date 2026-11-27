@@ -27,10 +27,11 @@
     $metaDesc = trim((string)($resolver('seo.meta_description') ?: ($resolver('short_description') ?: ($resolver('hero_description') ?: ''))));
     $schemaType = $resolver('seo.schema_type') ?: 'Article';
     $content = (string)($resolver('content') ?: ($resolver('body') ?: ($resolver('overview') ?: '')));
-    $wordCount = str_word_count(strip_tags($content));
+    $plainContent = trim(strip_tags($content));
+    $wordCount = str_word_count($plainContent);
     $slug = (string)($resolver('slug') ?? '');
 
-    // Real-time SEO Scoring Algorithm (0-100)
+    // Real-time AI & SEO Scoring Algorithm (0-100)
     $score = 0;
     $checksPassed = 0;
     $totalChecks = 6;
@@ -75,11 +76,15 @@
         $score += 8;
     }
 
-    // 6. Content Depth or Schema
-    $contentOptimal = ($wordCount >= 300 || !empty($schemaType));
+    // 6. Direct Answer Definition or Schema Depth
+    $first150Words = implode(' ', array_slice(explode(' ', $plainContent), 0, 150));
+    $hasDirectAnswer = (bool) preg_match('/\b(is|are|refers to|defined as|means|helps|allows|works by)\b/i', $first150Words);
+    $contentOptimal = ($wordCount >= 300 && $hasDirectAnswer);
     if ($contentOptimal) {
         $score += 15;
         $checksPassed++;
+    } elseif ($wordCount >= 200) {
+        $score += 8;
     }
 
     // State styling
@@ -88,7 +93,7 @@
         $scoreBg = 'bg-emerald-50 dark:bg-emerald-950/40';
         $scoreBadgeBg = 'bg-emerald-500';
         $scoreTextColor = 'text-emerald-700 dark:text-emerald-300';
-        $scoreLabel = 'Optimal';
+        $scoreLabel = 'AI Citations Ready';
     } elseif ($score >= 50) {
         $scoreBorder = 'border-amber-200 dark:border-amber-800/60';
         $scoreBg = 'bg-amber-50 dark:bg-amber-950/40';
@@ -104,24 +109,24 @@
     }
 @endphp
 
-{{-- Compact, Sleek 1-Row Executive SEO Quick Status Strip --}}
-<div class="mb-3 px-3 py-2 rounded-lg bg-slate-50/90 dark:bg-zinc-900/90 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between flex-wrap gap-2 text-xs">
+{{-- Executive AI & Search Engine Status Strip (GetIntoFeed Studio) --}}
+<div class="mb-3.5 px-3.5 py-2.5 rounded-xl bg-slate-50/90 dark:bg-zinc-900/90 border border-slate-200/90 dark:border-zinc-800 flex items-center justify-between flex-wrap gap-2 text-xs">
     <!-- Left: Score + Keyphrase + Lengths -->
     <div class="flex items-center flex-wrap gap-2.5">
-        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold {{ $scoreBg }} {{ $scoreTextColor }} border {{ $scoreBorder }}">
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold {{ $scoreBg }} {{ $scoreTextColor }} border {{ $scoreBorder }} shadow-2xs">
             <span class="w-2 h-2 rounded-full {{ $scoreBadgeBg }} {{ $score >= 80 ? 'animate-pulse' : '' }}"></span>
-            {{ $score }}/100 • {{ $scoreLabel }}
+            <span>AI Readiness: <strong>{{ $score }}/100</strong> • {{ $scoreLabel }}</span>
         </span>
 
         @if(!empty($focusKeyword))
-            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-zinc-800 px-2.5 py-0.5 rounded border border-slate-200 dark:border-zinc-700">
+            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-zinc-800 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-zinc-700 shadow-2xs">
                 <span class="text-slate-400">Keyphrase:</span>
-                <span class="text-[#a4286a] dark:text-pink-400 font-bold">"{{ $focusKeyword }}"</span>
+                <span class="text-blue-600 dark:text-blue-400 font-bold">"{{ $focusKeyword }}"</span>
                 <span class="text-[10px] {{ $kwInTitle ? 'text-emerald-600 font-semibold' : 'text-amber-500' }}">({{ $kwInTitle ? '✓ In Title' : 'Missing in Title' }})</span>
             </span>
         @else
-            <span class="inline-flex items-center gap-1 text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded border border-amber-200/80 dark:border-amber-900">
-                ⚠️ No focus keyphrase set
+            <span class="inline-flex items-center gap-1 text-[11px] text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 rounded-lg border border-amber-200/80 dark:border-amber-900">
+                ⚡ Set Primary Keyphrase for LLM Citations
             </span>
         @endif
 
@@ -137,14 +142,14 @@
 
     <!-- Right: Quick Feature Chips -->
     <div class="flex items-center gap-1.5 text-[10px] font-semibold">
-        <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200/60 dark:border-blue-900">
+        <span class="px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 dark:bg-indigo-950/50 dark:text-indigo-300 border border-indigo-200/60 dark:border-indigo-900 shadow-2xs">
+            🤖 LLM Parseable
+        </span>
+        <span class="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300 border border-blue-200/60 dark:border-blue-900 shadow-2xs">
             Schema: {{ $schemaType }}
         </span>
-        <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-900">
-            Index, Follow
-        </span>
-        <span class="hidden lg:inline-flex px-2 py-0.5 rounded bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300 border border-purple-200/60 dark:border-purple-900">
-            AI Search Ready
+        <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-900 shadow-2xs">
+            Direct Answer Ready
         </span>
     </div>
 </div>

@@ -8,6 +8,8 @@
 /storage/framework/sessions/*
 /storage/framework/views/*
 /storage/logs/*
+/storage/framework/testing/*
+/composer.phar
 /database/*.sqlite
 /database/*.sqlite3
 /database/*.db

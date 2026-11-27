@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found | GetIntoFeed</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/space-grotesk.woff2" crossorigin />
+    <style>
+        @font-face {
+            font-family: 'Space Grotesk';
+            font-style: normal;
+            font-weight: 300 700;
+            font-display: swap;
+            src: url('/fonts/space-grotesk.woff2') format('woff2');
+        }
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 100 900;
+            font-display: swap;
+            src: url('/fonts/inter.woff2') format('woff2');
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: #09090B;
+            color: #FFFFFF;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .pattern-grid {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+        .blur-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 400px;
+            background: #D4FF00;
+            border-radius: 50%;
+            filter: blur(160px);
+            opacity: 0.12;
+            pointer-events: none;
+        }
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .badge {
+            display: inline-block;
+            background: #D4FF00;
+            color: #09090B;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 24px;
+        }
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(80px, 18vw, 140px);
+            font-weight: 900;
+            line-height: 0.9;
+            letter-spacing: -4px;
+            color: #FFFFFF;
+            margin-bottom: 16px;
+        }
+        h1 span { color: #D4FF00; }
+        h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(24px, 5vw, 36px);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            margin-bottom: 16px;
+        }
+        p {
+            color: #9CA3AF;
+            font-size: clamp(14px, 2.5vw, 16px);
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        .btn-primary {
+            background: #D4FF00;
+            color: #09090B;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background: #E2FF4D;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: #FFFFFF;
+            border: 1px solid rgba(255,255,255,0.2);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.05);
+            border-color: #FFFFFF;
+        }
+        .support-link {
+            margin-top: 36px;
+            font-size: 13px;
+            color: #6B7280;
+        }
+        .support-link a {
+            color: #D4FF00;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="pattern-grid"></div>
+    <div class="blur-glow"></div>
+    
+    <main class="container">
+        <div class="badge">Error 404</div>
+        <h1>4<span>0</span>4</h1>
+        <h2>Looks like you scrolled <span>too far.</span></h2>
+        <p>The page you are looking for has been moved, deleted, or never existed. Let's get you back to the content that matters.</p>
+        
+        <div class="buttons">
+            <a href="/" class="btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Back To Home
+            </a>
+            <a href="/services" class="btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                View Services
+            </a>
+        </div>
+        
+        <div class="support-link">
+            Need direct assistance? <a href="/contact">Contact Growth Desk</a>
+        </div>
+    </main>
+</body>
+</html>

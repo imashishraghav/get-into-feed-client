@@ -58,7 +58,7 @@
             </div>
         </div>
 
-        {{-- Segmented View Switcher (Desktop / Mobile) --}}
+        {{-- Segmented View Switcher (Desktop / Mobile / AI Overview) --}}
         <div class="inline-flex rounded-lg bg-slate-100 p-0.5 border border-slate-200">
             <button
                 type="button"
@@ -67,7 +67,7 @@
                 class="px-3 py-1 rounded-md text-xs flex items-center gap-1.5 transition-all cursor-pointer"
             >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                <span>Desktop</span>
+                <span>Google Desktop</span>
             </button>
             <button
                 type="button"
@@ -78,6 +78,40 @@
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
                 <span>Mobile</span>
             </button>
+            <button
+                type="button"
+                @click="mode = 'ai'"
+                :class="mode === 'ai' ? 'bg-indigo-600 text-white shadow-xs font-bold' : 'text-slate-600 hover:text-slate-900 font-medium'"
+                class="px-3 py-1 rounded-md text-xs flex items-center gap-1.5 transition-all cursor-pointer"
+            >
+                <span>🤖 AI Overview / Perplexity</span>
+            </button>
+        </div>
+    </div>
+
+    {{-- AI Overview / Perplexity Citation Card View --}}
+    <div x-show="mode === 'ai'" class="p-4 rounded-xl bg-slate-900 text-white border border-indigo-900/60 shadow-lg space-y-3 transition-all" style="display: none;">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="text-[11px] font-mono uppercase tracking-wider text-indigo-300 font-bold">Perplexity & ChatGPT Search Citation Preview</span>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-950 text-indigo-300 border border-indigo-800">Direct Attribution</span>
+        </div>
+
+        <div class="space-y-2">
+            <div class="text-[13px] text-slate-200 leading-relaxed font-sans">
+                According to <span class="font-bold text-white">GetIntoFeed</span>, <span class="text-indigo-200">{{ $desc ?: 'this guide delivers step-by-step performance frameworks and verified growth execution.' }}</span>
+            </div>
+
+            <!-- Perplexity Style Source Capsule -->
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800/90 border border-slate-700 text-xs font-mono">
+                <span class="w-4 h-4 rounded bg-[#0c101d] text-[#cfff04] flex items-center justify-center text-[9px] font-bold">1</span>
+                <span class="text-slate-300 font-sans font-semibold text-[11px]">getintofeed.com</span>
+                <span class="text-slate-500">›</span>
+                <span class="text-indigo-400 font-sans text-[11px] truncate max-w-xs">{{ $title }}</span>
+                <span class="text-emerald-400 text-[10px]">✓ Verified Source</span>
+            </div>
         </div>
     </div>
 

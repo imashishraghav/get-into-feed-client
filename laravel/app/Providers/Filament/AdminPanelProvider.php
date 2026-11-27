@@ -5,7 +5,6 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Dashboard;
 use App\Filament\Widgets\DashboardWelcomeWidget;
-use App\Filament\Widgets\RecentLeadsWidget;
 use App\Http\Middleware\EnforceTwoFactorAuthentication;
 use Filament\Enums\ThemeMode;
 use Filament\Http\Middleware\Authenticate;
@@ -58,7 +57,7 @@ class AdminPanelProvider extends PanelProvider
             ->darkMode(true)
             ->defaultThemeMode(ThemeMode::Light)
             ->sidebarCollapsibleOnDesktop()
-            ->sidebarWidth('16rem')
+            ->sidebarWidth('12rem')
             ->collapsedSidebarWidth('4.5rem')
             ->globalSearchKeyBindings(['mod+k', '/'])
             ->spa()
@@ -89,7 +88,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->widgets([
                 DashboardWelcomeWidget::class,
-                RecentLeadsWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

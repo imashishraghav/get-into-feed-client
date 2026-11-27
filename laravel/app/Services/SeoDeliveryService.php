@@ -8,6 +8,7 @@ use App\Models\Page;
 use App\Models\Redirect;
 use App\Models\Service;
 use App\Models\Setting;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -16,18 +17,24 @@ use Illuminate\Support\Str;
 class SeoDeliveryService
 {
     protected const DEFAULT_TITLE = 'GetIntoFeed | Creative Marketing & Performance Growth Agency';
-    protected const DEFAULT_DESC = 'Premier creative performance marketing studio in India. We engineer thumb-stopping video reels, high-converting funnels, and algorithmic paid media for ambitious brands.';
+
+    protected const DEFAULT_DESC = 'Premier creative performance marketing studio in India. We engineer thumb-stopping reels, high-converting funnels, and paid media for ambitious brands.';
+
     protected const DEFAULT_IMAGE = 'https://getintofeed.com/agency-hero.jpg';
+
     protected const SITE_NAME = 'GetIntoFeed';
+
     protected const TWITTER_HANDLE = '@getintofeed';
 
     /**
      * Resolve and render server-side SEO metadata injected into React SPA.
      */
-    public function render(Request $request): Response|\Illuminate\Http\RedirectResponse
+    public function render(Request $request): Response|RedirectResponse
     {
-        $path = '/' . trim($request->path(), '/');
-        if ($path === '//') $path = '/';
+        $path = '/'.trim($request->path(), '/');
+        if ($path === '//') {
+            $path = '/';
+        }
 
         // 1. Check redirects
         $redirectResponse = $this->checkRedirects($path, $request);
@@ -56,7 +63,7 @@ class SeoDeliveryService
     /**
      * Check redirects table and permanent legacy aliases.
      */
-    protected function checkRedirects(string $path, Request $request): ?\Illuminate\Http\RedirectResponse
+    protected function checkRedirects(string $path, Request $request): ?RedirectResponse
     {
         $rawPath = trim($path, '/');
 
@@ -105,11 +112,11 @@ class SeoDeliveryService
         }
 
         if (str_starts_with($rawPath, 'work/')) {
-            return redirect('/case-studies/' . substr($rawPath, 5), 301);
+            return redirect('/case-studies/'.substr($rawPath, 5), 301);
         }
 
         if (str_starts_with($rawPath, 'feed-notes/')) {
-            return redirect('/blog/' . substr($rawPath, 11), 301);
+            return redirect('/blog/'.substr($rawPath, 11), 301);
         }
 
         // Database redirects
@@ -117,8 +124,8 @@ class SeoDeliveryService
             $dbRedirect = Redirect::where('is_active', true)
                 ->where(function ($q) use ($path, $rawPath) {
                     $q->where('source_url', $path)
-                      ->orWhere('source_url', '/' . $rawPath)
-                      ->orWhere('source_url', $rawPath);
+                        ->orWhere('source_url', '/'.$rawPath)
+                        ->orWhere('source_url', $rawPath);
                 })
                 ->first();
 
@@ -126,10 +133,11 @@ class SeoDeliveryService
                 $dbRedirect->increment('hits');
                 $target = $dbRedirect->target_url;
                 $code = $dbRedirect->status_code ?: 301;
+
                 return redirect($target, $code);
             }
         } catch (\Throwable $e) {
-            Log::warning("[SeoDeliveryService] Redirect check skipped: " . $e->getMessage());
+            Log::warning('[SeoDeliveryService] Redirect check skipped: '.$e->getMessage());
         }
 
         return null;
@@ -155,6 +163,7 @@ class SeoDeliveryService
             if (empty($slug)) {
                 return $this->resolveServicesHubMetadata();
             }
+
             return $this->resolveServiceDetailMetadata($slug);
         }
 
@@ -164,6 +173,7 @@ class SeoDeliveryService
             if (empty($slug)) {
                 return $this->resolveBlogHubMetadata();
             }
+
             return $this->resolveBlogDetailMetadata($slug);
         }
 
@@ -173,6 +183,7 @@ class SeoDeliveryService
             if (empty($slug)) {
                 return $this->resolveCaseStudiesHubMetadata();
             }
+
             return $this->resolveCaseStudyDetailMetadata($slug);
         }
 
@@ -278,18 +289,18 @@ class SeoDeliveryService
         $service = Service::query()
             ->where(function ($q) use ($slug, $targetSlug) {
                 $q->where('slug', $slug)
-                  ->orWhere('slug', $targetSlug);
+                    ->orWhere('slug', $targetSlug);
             })
             ->where('status', 'published')
             ->with(['seo.ogMedia', 'seo.twitterMedia', 'heroMedia'])
             ->first();
 
         if (! $service) {
-            return $this->resolveNotFoundMetadata('/services/' . $slug);
+            return $this->resolveNotFoundMetadata('/services/'.$slug);
         }
 
         $seo = $service->seo;
-        $title = $seo?->seo_title ?: ($service->name . ' — Growth Services | GetIntoFeed');
+        $title = $seo?->seo_title ?: ($service->name.' — Growth Services | GetIntoFeed');
         $rawDesc = $seo?->meta_description ?: ($service->short_description ?: $service->description);
         $desc = $this->formatMetaDescription($rawDesc, 155);
         $canonical = $seo?->canonical_url ?: "https://getintofeed.com/services/{$service->slug}";
@@ -395,32 +406,150 @@ class SeoDeliveryService
         $blog = BlogPost::query()
             ->where(function ($q) use ($slug, $targetSlug) {
                 $q->where('slug', $slug)
-                    ->orWhere('slug', $targetSlug)
-                    ->orWhere('slug', 'increase-form-conversions-and-generate-more-leads')
-                    ->orWhere('slug', 'how-to-increase-form-conversions-generate-more-leads');
+                    ->orWhere('slug', $targetSlug);
             })
             ->where('status', 'published')
-            ->with(['seo.ogMedia', 'seo.twitterMedia', 'featuredMedia'])
+            ->with(['seo.ogMedia', 'seo.twitterMedia', 'featuredMedia', 'author'])
             ->first();
 
         if (! $blog) {
-            return $this->resolveNotFoundMetadata('/blog/' . $slug);
+            return $this->resolveNotFoundMetadata('/blog/'.$slug);
         }
 
         $seo = $blog->seo;
-        $title = $seo?->seo_title ?: ($blog->title . ' — Feed Notes | GetIntoFeed');
-        $rawDesc = $seo?->meta_description ?: ($blog->summary ?: $blog->content);
-        $desc = $this->formatMetaDescription($rawDesc, 155);
-        $canonical = $seo?->canonical_url ?: "https://getintofeed.com/blog/{$slug}";
+        $title = trim((string) ($blog->seo_title ?: $seo?->seo_title ?: ($blog->title.' — Feed Notes | GetIntoFeed')));
+
+        $explicitMetaDesc = trim((string) ($blog->meta_description ?: $seo?->meta_description ?: ''));
+        if ($explicitMetaDesc !== '') {
+            $desc = Str::limit(Str::squish($explicitMetaDesc), 160, '');
+        } else {
+            $desc = $this->formatMetaDescription($blog->excerpt ?: $blog->content, 155);
+        }
+
+        $canonical = trim((string) ($blog->canonical_url ?: $seo?->canonical_url ?: "https://getintofeed.com/blog/{$blog->slug}"));
 
         $imageUrl = $this->resolveImageUrl([
             $seo?->ogMedia?->url,
             $blog->featuredMedia?->url,
         ]);
+        $imageAlt = trim((string) ($blog->featured_image_alt ?: $blog->featuredMedia?->alt_text ?: $blog->title));
 
-        $robots = $this->resolveRobotsDirectives($seo);
-        $publishedAt = $blog->published_at ? date('c', strtotime($blog->published_at)) : date('c');
-        $modifiedAt = $blog->updated_at ? date('c', strtotime($blog->updated_at)) : $publishedAt;
+        $robotsIndex = $blog->robots_index !== null
+            ? (bool) $blog->robots_index
+            : ($seo ? (bool) ($seo->robots_index ?? true) : true);
+        $robotsFollow = $blog->robots_follow !== null
+            ? (bool) $blog->robots_follow
+            : ($seo ? (bool) ($seo->robots_follow ?? true) : true);
+        $robots = ($robotsIndex ? 'index' : 'noindex').', '.($robotsFollow ? 'follow' : 'nofollow').', max-image-preview:large';
+
+        $publishedAt = $blog->published_at ? date('c', strtotime((string) $blog->published_at)) : date('c');
+        $modifiedAt = $blog->updated_at ? date('c', strtotime((string) $blog->updated_at)) : $publishedAt;
+
+        $ogTitle = trim((string) ($blog->og_title ?: $seo?->og_title ?: $title));
+        $ogDesc = trim((string) ($blog->og_description ?: $seo?->og_description ?: $desc));
+
+        $selectedSchema = trim((string) ($blog->schema_type ?: $seo?->schema_type ?: 'BlogPosting'));
+        $allowedSchemas = ['BlogPosting', 'NewsArticle', 'HowTo', 'FAQPage', 'Article', 'TechArticle'];
+        if (! in_array($selectedSchema, $allowedSchemas, true)) {
+            $selectedSchema = 'BlogPosting';
+        }
+
+        $publisherNode = [
+            '@type' => 'Organization',
+            '@id' => 'https://getintofeed.com/#organization',
+            'name' => self::SITE_NAME,
+            'url' => 'https://getintofeed.com/',
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => 'https://getintofeed.com/favicon.svg',
+            ],
+        ];
+
+        $authorNode = [
+            '@type' => 'Person',
+            'name' => $blog->author_name ?: ($blog->author?->name ?: 'GetIntoFeed Collective'),
+            'jobTitle' => $blog->author_role ?: 'Growth Strategist',
+        ];
+
+        if ($selectedSchema === 'HowTo') {
+            $primaryNode = [
+                '@type' => 'HowTo',
+                '@id' => $canonical.'#howto',
+                'name' => $blog->title,
+                'description' => $desc,
+                'image' => [$imageUrl],
+                'url' => $canonical,
+                'datePublished' => $publishedAt,
+                'dateModified' => $modifiedAt,
+                'author' => $authorNode,
+                'publisher' => $publisherNode,
+            ];
+            if (($blog->reading_time ?? 0) > 0) {
+                $primaryNode['totalTime'] = 'PT'.((int) $blog->reading_time).'M';
+            }
+        } else {
+            $articleType = $selectedSchema === 'FAQPage' ? 'BlogPosting' : $selectedSchema;
+            $primaryNode = [
+                '@type' => $articleType,
+                '@id' => $canonical.'#article',
+                'headline' => $blog->title,
+                'description' => $desc,
+                'image' => [$imageUrl],
+                'url' => $canonical,
+                'datePublished' => $publishedAt,
+                'dateModified' => $modifiedAt,
+                'articleSection' => $blog->category ?: 'Performance Marketing',
+                'author' => $authorNode,
+                'publisher' => $publisherNode,
+                'mainEntityOfPage' => [
+                    '@type' => 'WebPage',
+                    '@id' => $canonical,
+                ],
+            ];
+            if (($blog->word_count ?? 0) > 0) {
+                $primaryNode['wordCount'] = (int) $blog->word_count;
+            }
+        }
+
+        $graph = [
+            $primaryNode,
+            array_merge(
+                ['@id' => $canonical.'#breadcrumb'],
+                $this->buildBreadcrumbs([
+                    ['name' => 'Home', 'url' => 'https://getintofeed.com/'],
+                    ['name' => 'Blog', 'url' => 'https://getintofeed.com/blog'],
+                    ['name' => $blog->title, 'url' => $canonical],
+                ])
+            ),
+        ];
+
+        $rawFaqs = is_array($blog->faq_items) ? $blog->faq_items : [];
+        $faqEntities = [];
+        foreach ($rawFaqs as $faq) {
+            if (! is_array($faq)) {
+                continue;
+            }
+            $question = trim((string) ($faq['q'] ?? ($faq['question'] ?? '')));
+            $answer = trim((string) ($faq['a'] ?? ($faq['answer'] ?? '')));
+            if ($question !== '' && $answer !== '') {
+                $faqEntities[] = [
+                    '@type' => 'Question',
+                    'name' => $question,
+                    'acceptedAnswer' => [
+                        '@type' => 'Answer',
+                        'text' => $answer,
+                    ],
+                ];
+            }
+        }
+
+        if ($faqEntities !== []) {
+            $graph[] = [
+                '@type' => 'FAQPage',
+                '@id' => $canonical.'#faq',
+                'mainEntity' => $faqEntities,
+            ];
+        }
 
         return [
             'status_code' => 200,
@@ -429,47 +558,23 @@ class SeoDeliveryService
             'canonical' => $canonical,
             'robots' => $robots,
             'og_type' => 'article',
-            'og_title' => $seo?->og_title ?: $title,
-            'og_description' => $seo?->og_description ?: $desc,
+            'og_title' => $ogTitle,
+            'og_description' => $ogDesc,
             'og_image' => $imageUrl,
+            'og_image_alt' => $imageAlt,
             'og_url' => $canonical,
             'article_published_time' => $publishedAt,
             'article_modified_time' => $modifiedAt,
             'article_author' => $blog->author_name ?: 'GetIntoFeed Growth Team',
             'article_section' => $blog->category ?: 'Performance Marketing',
-            'twitter_title' => $seo?->twitter_title ?: $title,
-            'twitter_description' => $seo?->twitter_description ?: $desc,
+            'twitter_card' => 'summary_large_image',
+            'twitter_title' => trim((string) ($seo?->twitter_title ?: $ogTitle)),
+            'twitter_description' => trim((string) ($seo?->twitter_description ?: $ogDesc)),
             'twitter_image' => $this->resolveImageUrl([$seo?->twitterMedia?->url, $imageUrl]),
+            'twitter_image_alt' => $imageAlt,
             'json_ld' => [
                 '@context' => 'https://schema.org',
-                '@type' => 'BlogPosting',
-                'headline' => $blog->title,
-                'description' => $desc,
-                'image' => [$imageUrl],
-                'datePublished' => $publishedAt,
-                'dateModified' => $modifiedAt,
-                'author' => [
-                    '@type' => 'Person',
-                    'name' => $blog->author_name ?: 'GetIntoFeed Collective',
-                    'jobTitle' => $blog->author_role ?: 'Growth Strategist',
-                ],
-                'publisher' => [
-                    '@type' => 'Organization',
-                    'name' => self::SITE_NAME,
-                    'logo' => [
-                        '@type' => 'ImageObject',
-                        'url' => 'https://getintofeed.com/favicon.svg',
-                    ],
-                ],
-                'mainEntityOfPage' => [
-                    '@type' => 'WebPage',
-                    '@id' => $canonical,
-                ],
-                'breadcrumb' => $this->buildBreadcrumbs([
-                    ['name' => 'Home', 'url' => 'https://getintofeed.com/'],
-                    ['name' => 'Blog', 'url' => 'https://getintofeed.com/blog'],
-                    ['name' => $blog->title, 'url' => $canonical],
-                ]),
+                '@graph' => $graph,
             ],
             'fallback_html' => $this->buildBlogDetailFallbackHtml($blog, $title, $desc, $canonical),
         ];
@@ -525,11 +630,11 @@ class SeoDeliveryService
             ->first();
 
         if (! $case) {
-            return $this->resolveNotFoundMetadata('/case-studies/' . $slug);
+            return $this->resolveNotFoundMetadata('/case-studies/'.$slug);
         }
 
         $seo = $case->seo;
-        $title = $seo?->seo_title ?: ($case->project_name . ' (' . $case->client_name . ') — Case Study | GetIntoFeed');
+        $title = $seo?->seo_title ?: ($case->project_name.' ('.$case->client_name.') — Case Study | GetIntoFeed');
         $desc = $seo?->meta_description ?: ($case->hero_description ?: ($case->challenge ?: "Client performance marketing case study for {$case->client_name} by GetIntoFeed."));
         $desc = mb_substr(trim(preg_replace('/\s+/', ' ', $desc)), 0, 160);
         $canonical = $seo?->canonical_url ?: "https://getintofeed.com/case-studies/{$slug}";
@@ -594,7 +699,7 @@ class SeoDeliveryService
 
         if ($page) {
             $seo = $page->seo;
-            $title = $seo?->seo_title ?: ($page->title . ' — GetIntoFeed');
+            $title = $seo?->seo_title ?: ($page->title.' — GetIntoFeed');
             $rawDesc = $seo?->meta_description ?: $page->content;
             $desc = $this->formatMetaDescription($rawDesc, 155);
             $canonical = $seo?->canonical_url ?: "https://getintofeed.com/{$slug}";
@@ -706,7 +811,7 @@ class SeoDeliveryService
         }
 
         // 3. Not found -> Real HTTP 404
-        return $this->resolveNotFoundMetadata('/' . $slug);
+        return $this->resolveNotFoundMetadata('/'.$slug);
     }
 
     /**
@@ -749,19 +854,22 @@ class SeoDeliveryService
     public function resolveImageUrl(array $candidates): string
     {
         foreach ($candidates as $url) {
-            if (empty($url)) continue;
+            if (empty($url)) {
+                continue;
+            }
 
             $url = trim($url);
             if (str_starts_with($url, 'https://')) {
                 return $url;
             }
             if (str_starts_with($url, 'http://')) {
-                return 'https://' . substr($url, 7);
+                return 'https://'.substr($url, 7);
             }
             if (str_starts_with($url, '//')) {
-                return 'https:' . $url;
+                return 'https:'.$url;
             }
-            return 'https://getintofeed.com/' . ltrim($url, '/');
+
+            return 'https://getintofeed.com/'.ltrim($url, '/');
         }
 
         return self::DEFAULT_IMAGE;
@@ -795,13 +903,13 @@ class SeoDeliveryService
     protected function resolveRobotsDirectives(?object $seo): string
     {
         if (! $seo) {
-            return 'index, follow';
+            return 'index, follow, max-image-preview:large';
         }
 
         $index = ($seo->robots_index ?? true) ? 'index' : 'noindex';
         $follow = ($seo->robots_follow ?? true) ? 'follow' : 'nofollow';
 
-        return "{$index}, {$follow}";
+        return "{$index}, {$follow}, max-image-preview:large";
     }
 
     /**
@@ -893,75 +1001,122 @@ class SeoDeliveryService
     }
 
     /**
-     * Inject dynamic metadata tags into HTML template.
+     * Replace the first matching head tag and strip any duplicate matches,
+     * or insert the tag cleanly before </head> if not yet present.
+     */
+    protected function upsertHeadTag(string $html, string $pattern, string $tagHtml): string
+    {
+        $count = 0;
+        $updated = preg_replace_callback($pattern, function () use (&$count, $tagHtml): string {
+            $count++;
+
+            return $count === 1 ? $tagHtml : '';
+        }, $html);
+
+        if ($count > 0 && is_string($updated)) {
+            return $updated;
+        }
+
+        if (str_contains($html, '</head>')) {
+            return str_replace('</head>', "    {$tagHtml}\n  </head>", $html);
+        }
+
+        return $html;
+    }
+
+    /**
+     * Inject dynamic metadata tags into HTML template with zero duplicate tags.
      */
     public function injectMetadata(string $html, array $data): string
     {
-        $title = htmlspecialchars($data['title'] ?? self::DEFAULT_TITLE, ENT_QUOTES, 'UTF-8');
-        $desc = htmlspecialchars($data['description'] ?? self::DEFAULT_DESC, ENT_QUOTES, 'UTF-8');
-        $canonical = htmlspecialchars($data['canonical'] ?? 'https://getintofeed.com/', ENT_QUOTES, 'UTF-8');
-        $robots = htmlspecialchars($data['robots'] ?? 'index, follow', ENT_QUOTES, 'UTF-8');
-        $ogType = htmlspecialchars($data['og_type'] ?? 'website', ENT_QUOTES, 'UTF-8');
-        $ogTitle = htmlspecialchars($data['og_title'] ?? $data['title'] ?? self::DEFAULT_TITLE, ENT_QUOTES, 'UTF-8');
-        $ogDesc = htmlspecialchars($data['og_description'] ?? $data['description'] ?? self::DEFAULT_DESC, ENT_QUOTES, 'UTF-8');
-        $ogImage = htmlspecialchars($data['og_image'] ?? self::DEFAULT_IMAGE, ENT_QUOTES, 'UTF-8');
-        $twTitle = htmlspecialchars($data['twitter_title'] ?? $ogTitle, ENT_QUOTES, 'UTF-8');
-        $twDesc = htmlspecialchars($data['twitter_description'] ?? $ogDesc, ENT_QUOTES, 'UTF-8');
-        $twImage = htmlspecialchars($data['twitter_image'] ?? $ogImage, ENT_QUOTES, 'UTF-8');
+        $rawTitle = (string) ($data['title'] ?? self::DEFAULT_TITLE);
+        $rawDesc = (string) ($data['description'] ?? self::DEFAULT_DESC);
+        $rawCanonical = (string) ($data['canonical'] ?? 'https://getintofeed.com/');
+        $rawRobots = (string) ($data['robots'] ?? 'index, follow, max-image-preview:large');
+        $rawOgType = (string) ($data['og_type'] ?? 'website');
+        $rawOgTitle = (string) ($data['og_title'] ?? $rawTitle);
+        $rawOgDesc = (string) ($data['og_description'] ?? $rawDesc);
+        $rawOgImage = (string) ($data['og_image'] ?? self::DEFAULT_IMAGE);
+        $rawOgImageAlt = (string) ($data['og_image_alt'] ?? 'GetIntoFeed — Creative Growth Studio');
+        $rawTwCard = (string) ($data['twitter_card'] ?? 'summary_large_image');
+        $rawTwTitle = (string) ($data['twitter_title'] ?? $rawOgTitle);
+        $rawTwDesc = (string) ($data['twitter_description'] ?? $rawOgDesc);
+        $rawTwImage = (string) ($data['twitter_image'] ?? $rawOgImage);
+        $rawTwImageAlt = (string) ($data['twitter_image_alt'] ?? $rawOgImageAlt);
 
-        // Replace Title
-        $html = preg_replace('/<title>.*?<\/title>/is', "<title>{$title}</title>", $html, 1);
+        $esc = fn (string $v): string => htmlspecialchars($v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 
-        // Replace Meta Description
-        $html = preg_replace('/<meta name="description" content=".*?"\s*\/?>/is', "<meta name=\"description\" content=\"{$desc}\" />", $html, 1);
+        $title = $esc($rawTitle);
+        $desc = $esc($rawDesc);
+        $canonical = $esc($rawCanonical);
+        $robots = $esc($rawRobots);
+        $ogType = $esc($rawOgType);
+        $ogTitle = $esc($rawOgTitle);
+        $ogDesc = $esc($rawOgDesc);
+        $ogImage = $esc($rawOgImage);
+        $ogImageAlt = $esc($rawOgImageAlt);
+        $twCard = $esc($rawTwCard);
+        $twTitle = $esc($rawTwTitle);
+        $twDesc = $esc($rawTwDesc);
+        $twImage = $esc($rawTwImage);
+        $twImageAlt = $esc($rawTwImageAlt);
 
-        // Replace Canonical
-        $html = preg_replace('/<link rel="canonical" href=".*?"(?:\s+id="canonical-tag")?\s*\/?>/is', "<link rel=\"canonical\" href=\"{$canonical}\" id=\"canonical-tag\" />", $html, 1);
+        // Primary SEO tags (deduplicated)
+        $html = $this->upsertHeadTag($html, '/<title>.*?<\/title>/is', "<title>{$title}</title>");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*name=["\']description["\'][^>]*>/is', "<meta name=\"description\" content=\"{$desc}\" />");
+        $html = $this->upsertHeadTag($html, '/<link\s+[^>]*rel=["\']canonical["\'][^>]*>/is', "<link rel=\"canonical\" href=\"{$canonical}\" id=\"canonical-tag\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*name=["\']robots["\'][^>]*>/is', "<meta name=\"robots\" content=\"{$robots}\" />");
 
-        // Replace Robots
-        $html = preg_replace('/<meta name="robots" content=".*?"\s*\/?>/is', "<meta name=\"robots\" content=\"{$robots}\" />", $html, 1);
+        // Open Graph tags (deduplicated)
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*property=["\']og:type["\'][^>]*>/is', "<meta property=\"og:type\" content=\"{$ogType}\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*property=["\']og:title["\'][^>]*>/is', "<meta property=\"og:title\" content=\"{$ogTitle}\" id=\"og-title\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*property=["\']og:description["\'][^>]*>/is', "<meta property=\"og:description\" content=\"{$ogDesc}\" id=\"og-desc\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*property=["\']og:url["\'][^>]*>/is', "<meta property=\"og:url\" content=\"{$canonical}\" id=\"og-url\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*property=["\']og:image["\'][^>]*>/is', "<meta property=\"og:image\" content=\"{$ogImage}\" id=\"og-image\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*property=["\']og:image:alt["\'][^>]*>/is', "<meta property=\"og:image:alt\" content=\"{$ogImageAlt}\" />");
 
-        // Replace Open Graph
-        $html = preg_replace('/<meta property="og:type" content=".*?"\s*\/?>/is', "<meta property=\"og:type\" content=\"{$ogType}\" />", $html, 1);
-        $html = preg_replace('/<meta property="og:title" content=".*?"(?:\s+id="og-title")?\s*\/?>/is', "<meta property=\"og:title\" content=\"{$ogTitle}\" id=\"og-title\" />", $html, 1);
-        $html = preg_replace('/<meta property="og:description" content=".*?"(?:\s+id="og-desc")?\s*\/?>/is', "<meta property=\"og:description\" content=\"{$ogDesc}\" id=\"og-desc\" />", $html, 1);
-        $html = preg_replace('/<meta property="og:url" content=".*?"(?:\s+id="og-url")?\s*\/?>/is', "<meta property=\"og:url\" content=\"{$canonical}\" id=\"og-url\" />", $html, 1);
-        $html = preg_replace('/<meta property="og:image" content=".*?"(?:\s+id="og-image")?\s*\/?>/is', "<meta property=\"og:image\" content=\"{$ogImage}\" id=\"og-image\" />", $html, 1);
+        // Twitter / X Card tags (deduplicated)
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*name=["\']twitter:card["\'][^>]*>/is', "<meta name=\"twitter:card\" content=\"{$twCard}\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*name=["\']twitter:title["\'][^>]*>/is', "<meta name=\"twitter:title\" content=\"{$twTitle}\" id=\"tw-title\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*name=["\']twitter:description["\'][^>]*>/is', "<meta name=\"twitter:description\" content=\"{$twDesc}\" id=\"tw-desc\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*name=["\']twitter:image["\'][^>]*>/is', "<meta name=\"twitter:image\" content=\"{$twImage}\" />");
+        $html = $this->upsertHeadTag($html, '/<meta\s+[^>]*name=["\']twitter:image:alt["\'][^>]*>/is', "<meta name=\"twitter:image:alt\" content=\"{$twImageAlt}\" />");
 
-        // Replace Twitter Cards
-        $html = preg_replace('/<meta name="twitter:title" content=".*?"(?:\s+id="tw-title")?\s*\/?>/is', "<meta name=\"twitter:title\" content=\"{$twTitle}\" id=\"tw-title\" />", $html, 1);
-        $html = preg_replace('/<meta name="twitter:description" content=".*?"(?:\s+id="tw-desc")?\s*\/?>/is', "<meta name=\"twitter:description\" content=\"{$twDesc}\" id=\"tw-desc\" />", $html, 1);
-        $html = preg_replace('/<meta name="twitter:image" content=".*?"\s*\/?>/is', "<meta name=\"twitter:image\" content=\"{$twImage}\" />", $html, 1);
-
-        // Replace or Append Article Metadata if present
-        if (!empty($data['article_published_time'])) {
-            $articleMeta = "\n    <meta property=\"article:published_time\" content=\"" . htmlspecialchars($data['article_published_time'], ENT_QUOTES, 'UTF-8') . "\" />"
-                         . "\n    <meta property=\"article:modified_time\" content=\"" . htmlspecialchars($data['article_modified_time'], ENT_QUOTES, 'UTF-8') . "\" />"
-                         . "\n    <meta property=\"article:author\" content=\"" . htmlspecialchars($data['article_author'] ?? 'GetIntoFeed', ENT_QUOTES, 'UTF-8') . "\" />"
-                         . "\n    <meta property=\"article:section\" content=\"" . htmlspecialchars($data['article_section'] ?? 'Marketing', ENT_QUOTES, 'UTF-8') . "\" />";
+        // Strip any pre-existing article:* tags before upserting
+        $html = preg_replace('/\s*<meta\s+[^>]*property=["\']article:(?:published_time|modified_time|author|section)["\'][^>]*>/is', '', $html);
+        if (! empty($data['article_published_time'])) {
+            $articleMeta = '    <meta property="article:published_time" content="'.$esc((string) $data['article_published_time']).'" />'
+                         ."\n    <meta property=\"article:modified_time\" content=\"".$esc((string) ($data['article_modified_time'] ?? $data['article_published_time'])).'" />'
+                         ."\n    <meta property=\"article:author\" content=\"".$esc((string) ($data['article_author'] ?? 'GetIntoFeed')).'" />'
+                         ."\n    <meta property=\"article:section\" content=\"".$esc((string) ($data['article_section'] ?? 'Marketing')).'" />';
             $html = str_replace('</head>', "{$articleMeta}\n  </head>", $html);
         }
 
-        // Replace JSON-LD
-        if (!empty($data['json_ld'])) {
-            $jsonString = json_encode($data['json_ld'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-            // Replace existing application/ld+json script if present, otherwise append before </head>
-            if (preg_match('/<script type="application\/ld\+json">.*?<\/script>/is', $html)) {
-                $html = preg_replace('/<script type="application\/ld\+json">.*?<\/script>/is', "<script type=\"application/ld+json\">\n{$jsonString}\n    </script>", $html, 1);
-            } else {
-                $html = str_replace('</head>', "    <script type=\"application/ld+json\">\n{$jsonString}\n    </script>\n  </head>", $html);
-            }
+        // Replace JSON-LD (deduplicated, safe against </script> injection)
+        if (! empty($data['json_ld'])) {
+            $jsonString = json_encode(
+                $data['json_ld'],
+                JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_PRETTY_PRINT
+            );
+            $jsonTag = "<script type=\"application/ld+json\">\n{$jsonString}\n    </script>";
+            $html = $this->upsertHeadTag($html, '/<script\s+[^>]*type=["\']application\/ld\+json["\'][^>]*>.*?<\/script>/is', $jsonTag);
         }
 
-        // Inject Route-Specific Server-Rendered Semantic Body HTML directly into #root
-        if (!empty($data['fallback_html'])) {
-            $ssrBlock = '<div id="root">' . "\n" . $data['fallback_html'] . "\n    </div>";
+        // Inject Route-Specific Server-Rendered Semantic Body HTML directly into #root and <noscript id="seo-fallback-content">
+        if (! empty($data['fallback_html'])) {
+            $ssrBlock = '<div id="root">'."\n".$data['fallback_html']."\n    </div>";
             if (str_contains($html, '<div id="root"><!-- SSR_CONTENT_INJECTION --></div>')) {
                 $html = str_replace('<div id="root"><!-- SSR_CONTENT_INJECTION --></div>', $ssrBlock, $html);
             } elseif (str_contains($html, '<div id="root"></div>')) {
                 $html = str_replace('<div id="root"></div>', $ssrBlock, $html);
             } else {
                 $html = preg_replace('/<div id="root">.*?<\/div>/is', $ssrBlock, $html, 1);
+            }
+
+            // Target specifically the non-JS crawler semantic fallback by unique ID (preserves Google Fonts noscript in <head> and GTM noscript in <body>)
+            $fallbackNoscript = "<noscript id=\"seo-fallback-content\">\n".$data['fallback_html']."\n    </noscript>";
+            if (preg_match('/<noscript\s+[^>]*id=["\']seo-fallback-content["\'][^>]*>.*?<\/noscript>/is', $html)) {
+                $html = preg_replace('/<noscript\s+[^>]*id=["\']seo-fallback-content["\'][^>]*>.*?<\/noscript>/is', $fallbackNoscript, $html, 1);
             }
         }
 
@@ -973,7 +1128,7 @@ class SeoDeliveryService
      */
     protected function buildHomepageFallbackHtml(): string
     {
-        return <<<HTML
+        return <<<'HTML'
       <header>
         <nav aria-label="Main Navigation">
           <a href="/">Home</a>
@@ -1081,12 +1236,12 @@ HTML;
     {
         $features = is_array($service->features) ? $service->features : (json_decode($service->features ?? '[]', true) ?: []);
         $featuresHtml = '';
-        if (!empty($features)) {
+        if (! empty($features)) {
             $featuresHtml .= '<ul>';
             foreach ($features as $f) {
-                $featureTitle = htmlspecialchars(is_array($f) ? ($f['title'] ?? $f['name'] ?? '') : (string)$f, ENT_QUOTES, 'UTF-8');
-                $featureDesc = is_array($f) && !empty($f['description']) ? ' — ' . htmlspecialchars($f['description'], ENT_QUOTES, 'UTF-8') : '';
-                if (!empty($featureTitle)) {
+                $featureTitle = htmlspecialchars(is_array($f) ? ($f['title'] ?? $f['name'] ?? '') : (string) $f, ENT_QUOTES, 'UTF-8');
+                $featureDesc = is_array($f) && ! empty($f['description']) ? ' — '.htmlspecialchars($f['description'], ENT_QUOTES, 'UTF-8') : '';
+                if (! empty($featureTitle)) {
                     $featuresHtml .= "<li><strong>{$featureTitle}</strong>{$featureDesc}</li>";
                 }
             }
@@ -1147,7 +1302,7 @@ HTML;
         $articlesHtml = '';
         foreach ($blogs as $b) {
             $bTitle = htmlspecialchars($b->title, ENT_QUOTES, 'UTF-8');
-            $bSummary = htmlspecialchars($b->summary ?: '', ENT_QUOTES, 'UTF-8');
+            $bSummary = htmlspecialchars($b->excerpt ?: '', ENT_QUOTES, 'UTF-8');
             $articlesHtml .= "<li><h3><a href=\"/blog/{$b->slug}\">{$bTitle}</a></h3><p>{$bSummary}</p></li>\n";
         }
 
@@ -1467,7 +1622,7 @@ HTML;
      */
     protected function buildNotFoundFallbackHtml(): string
     {
-        return <<<HTML
+        return <<<'HTML'
       <header>
         <nav aria-label="Main Navigation">
           <a href="/">Home</a>

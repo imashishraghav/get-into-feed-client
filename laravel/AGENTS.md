@@ -12,7 +12,7 @@ These rules apply strictly when working within the `laravel/` and website fronte
 - Use `env()` only inside configuration files (`config/*.php`); in application code, always use `config(...)`.
 
 ## 3. Environment, Testing & Destructive Commands
-- Local/staging environments only. Never run commands against production or a production database.
+- Production deploys and additive migrations (`php artisan migrate --force`) are allowed ONLY after taking a full MySQL backup and receiving explicit user approval in chat.
 - Strictly prohibited without explicit approval: `migrate:fresh`, `db:wipe`, or other destructive artisan commands.
 - Tests must run against a separate testing database (`phpunit.xml` / `.env.testing`). Never create test/bot leads or any fake data in the live database. Seed demo data only locally.
 

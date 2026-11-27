@@ -8,7 +8,7 @@ These baseline rules apply repository-wide across all applications (`crm/`, `lar
 - Use `env()` only inside configuration files (`config/*.php`); in application code, always use `config(...)`.
 
 ## 2. Environment Safety & Destructive Commands
-- Local/staging environments only. Never connect to or execute commands against production databases.
+- Production deploys and additive migrations (`php artisan migrate --force`) are allowed ONLY after taking a full MySQL backup and receiving explicit user approval in chat.
 - Strictly prohibited without explicit approval: `migrate:fresh`, `db:wipe`, `truncate`, or any destructive commands.
 
 ## 3. Testing & Data Integrity
