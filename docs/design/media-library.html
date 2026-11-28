@@ -1,0 +1,2453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Media Library — GetIntoFeed Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-page: #F4F6F9;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F8FAFC;
+      --bg-hover: #F8FAFC;
+      --bg-selected: #EEF3FE;
+      --border: #E2E6EC;
+      --border-strong: #CBD5E1;
+      --text-primary: #0F172A;
+      --text-secondary: #566074;
+      --text-muted: #64748B;
+      --blue: #2250E8;
+      --blue-hover: #1B42C4;
+      --blue-soft: #EEF3FE;
+      --red: #DC2626;
+      --red-hover: #FEF2F2;
+      --amber-bg: #FEF3C7;
+      --amber-text: #92400E;
+      --amber-border: #FCD34D;
+      --lime: #A3E635;
+      --focus-ring: 0 0 0 3px rgba(34, 80, 232, 0.24);
+      --radius-card: 16px;
+      --radius-control: 10px;
+      --radius-thumb: 8px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input, select {
+      font-family: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--blue);
+      outline-offset: 2px;
+    }
+
+    .btn:focus-visible,
+    .input:focus-visible,
+    .select:focus-visible,
+    .icon-btn:focus-visible,
+    .nav-item:focus-visible,
+    .folder-btn:focus-visible,
+    .page-btn:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-color: var(--blue);
+    }
+
+    /* App Shell */
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Slim Icon Sidebar */
+    .sidebar {
+      width: 68px;
+      flex-shrink: 0;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      gap: 24px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .logo-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #0F172A;
+      color: var(--lime);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      flex-shrink: 0;
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      align-items: center;
+    }
+
+    .nav-item {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.15s, color 0.15s;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-page);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Main Column */
+    .main-area {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Bar */
+    .topbar {
+      height: 64px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .breadcrumb-current {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.02em;
+      border: 1px solid var(--border);
+    }
+
+    /* Page Container */
+    .page-content {
+      max-width: 1372px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 32px 48px;
+    }
+
+    /* Page Header */
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .page-title {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+    }
+
+    .page-subtitle {
+      margin: 4px 0 0;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    /* Buttons */
+    .btn {
+      height: 40px;
+      padding: 0 16px;
+      border-radius: var(--radius-control);
+      font-size: 14px;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      white-space: nowrap;
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: var(--bg-subtle);
+      border-color: var(--border-strong);
+    }
+
+    .btn:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--blue-hover);
+      border-color: var(--blue-hover);
+    }
+
+    .btn-danger-text {
+      color: var(--red);
+    }
+
+    .btn-danger-text:hover:not(:disabled) {
+      background: var(--red-hover);
+      border-color: #FECACA;
+    }
+
+    .btn-ghost {
+      border-color: transparent;
+      background: transparent;
+      color: var(--text-secondary);
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--bg-page);
+      color: var(--text-primary);
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Main White Card */
+    .media-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+    }
+
+    /* Upload Dropzone Drawer (inside card top when active) */
+    .upload-panel {
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-subtle);
+      display: none;
+    }
+
+    .upload-panel.open {
+      display: block;
+    }
+
+    .upload-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .upload-panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      margin: 0;
+      color: var(--text-primary);
+    }
+
+    .dropzone {
+      border: 2px dashed var(--border-strong);
+      border-radius: 12px;
+      background: var(--bg-card);
+      padding: 32px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .dropzone:hover,
+    .dropzone.dragover {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .dropzone-icon {
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 12px;
+      border-radius: 10px;
+      background: var(--bg-page);
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dropzone-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin: 0 0 4px;
+    }
+
+    .dropzone-hint {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin: 0;
+    }
+
+    .upload-queue {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .upload-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .upload-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .upload-item-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .upload-progress-track {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--bg-page);
+      overflow: hidden;
+    }
+
+    .upload-progress-bar {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 999px;
+      transition: width 0.25s ease;
+    }
+
+    /* Card Body Layout: Folders Panel + Main Content */
+    .card-workspace {
+      display: flex;
+      min-height: 520px;
+    }
+
+    .folders-panel {
+      width: 224px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      padding: 16px 12px;
+      background: var(--bg-card);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .folders-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px 8px;
+    }
+
+    .folders-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+    }
+
+    .folder-add-link {
+      background: none;
+      border: none;
+      color: var(--blue);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+    }
+
+    .folder-add-link:hover {
+      background: var(--blue-soft);
+    }
+
+    .folder-btn {
+      width: 100%;
+      border: 1px solid transparent;
+      background: transparent;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .folder-btn:hover {
+      background: var(--bg-page);
+    }
+
+    .folder-btn.active {
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-weight: 600;
+    }
+
+    .folder-btn.nested {
+      padding-left: 28px;
+      font-size: 13px;
+    }
+
+    .folder-btn-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .folder-btn-left span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .folder-count {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .folder-btn.active .folder-count {
+      color: var(--blue);
+    }
+
+    .card-main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .selected-summary {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .selected-summary.has-selection {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      position: relative;
+      width: 264px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      pointer-events: none;
+      width: 16px;
+      height: 16px;
+    }
+
+    .input {
+      width: 100%;
+      height: 40px;
+      border-radius: var(--radius-control);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 13.5px;
+      padding: 0 12px 0 38px;
+    }
+
+    .input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .filter-chip-count {
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: var(--bg-page);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn.filter-active {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .btn.filter-active .filter-chip-count {
+      background: var(--blue);
+      color: #FFFFFF;
+    }
+
+    /* Filter Bar (expandable) */
+    .filter-bar {
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-subtle);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar.open {
+      display: flex;
+    }
+
+    .filter-bar-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-right: 4px;
+    }
+
+    .filter-pill {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .filter-pill:hover {
+      border-color: var(--border-strong);
+    }
+
+    .filter-pill.active {
+      background: var(--blue-soft);
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    /* View Toggle */
+    .view-toggle {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-control);
+      padding: 3px;
+      background: var(--bg-page);
+      height: 40px;
+      align-items: center;
+    }
+
+    .view-toggle-btn {
+      height: 32px;
+      padding: 0 10px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .view-toggle-btn.active {
+      background: var(--bg-card);
+      color: var(--blue);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+    }
+
+    /* Checkbox */
+    .checkbox {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      accent-color: var(--blue);
+      cursor: pointer;
+      margin: 0;
+    }
+
+    /* List View Table */
+    .table-wrap {
+      width: 100%;
+    }
+
+    .asset-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .asset-table thead th {
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+
+    .asset-table th.col-check,
+    .asset-table td.col-check {
+      width: 52px;
+      padding-left: 24px;
+      padding-right: 8px;
+    }
+
+    .asset-table th.col-asset,
+    .asset-table td.col-asset {
+      width: 40%;
+    }
+
+    .asset-table th.col-seo,
+    .asset-table td.col-seo {
+      width: auto;
+    }
+
+    .asset-table th.col-actions,
+    .asset-table td.col-actions {
+      width: 72px;
+      padding-right: 24px;
+      text-align: right;
+    }
+
+    .asset-row {
+      border-bottom: 1px solid var(--border);
+      transition: background-color 0.12s;
+    }
+
+    .asset-row:last-child {
+      border-bottom: none;
+    }
+
+    .asset-row:hover {
+      background-color: var(--bg-hover);
+    }
+
+    .asset-row.selected {
+      background-color: var(--bg-selected);
+    }
+
+    .asset-row td {
+      padding: 14px 16px;
+      vertical-align: middle;
+    }
+
+    .asset-cell {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .thumb-56 {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-thumb);
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      background: #0F172A;
+    }
+
+    .asset-meta {
+      min-width: 0;
+    }
+
+    .asset-filename {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .asset-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .seo-cell {
+      min-width: 0;
+    }
+
+    .seo-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .seo-alt {
+      margin-top: 3px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.4;
+    }
+
+    .alt-label {
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-right: 4px;
+    }
+
+    .badge-amber {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 4px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: var(--amber-bg);
+      color: var(--amber-text);
+      border: 1px solid var(--amber-border);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Row More Actions */
+    .action-menu-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-page);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 4px);
+      width: 176px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 6px;
+      z-index: 30;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      display: none;
+    }
+
+    .dropdown-menu.open {
+      display: block;
+    }
+
+    .dropdown-item {
+      width: 100%;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dropdown-item:hover {
+      background: var(--bg-page);
+    }
+
+    .dropdown-item.danger {
+      color: var(--red);
+    }
+
+    .dropdown-item.danger:hover {
+      background: var(--red-hover);
+    }
+
+    /* Grid View */
+    .grid-wrap {
+      padding: 24px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg-card);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.15s, background-color 0.15s;
+    }
+
+    .grid-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .grid-card.selected {
+      border-color: var(--blue);
+      background: var(--bg-selected);
+    }
+
+    .grid-thumb-box {
+      position: relative;
+      aspect-ratio: 16 / 10;
+      background: #0F172A;
+      overflow: hidden;
+    }
+
+    .grid-thumb-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .grid-check-wrap {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .grid-hover-details {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.88);
+      color: #FFFFFF;
+      padding: 12px 12px 12px 46px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      opacity: 0;
+      transition: opacity 0.15s;
+      pointer-events: none;
+    }
+
+    .grid-card:hover .grid-hover-details,
+    .grid-card:focus-within .grid-hover-details {
+      opacity: 1;
+    }
+
+    .grid-hover-title {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .grid-hover-alt {
+      font-size: 12px;
+      color: #CBD5E1;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .grid-body {
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .grid-meta {
+      min-width: 0;
+    }
+
+    .grid-filename {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .grid-size {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Empty State */
+    .empty-state {
+      padding: 64px 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--bg-page);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin: 0 0 4px;
+    }
+
+    .empty-text {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      margin: 0 0 20px;
+    }
+
+    /* Loading Skeleton */
+    .skeleton-list {
+      padding: 8px 0;
+    }
+
+    .skeleton-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .skeleton-row:last-child {
+      border-bottom: none;
+    }
+
+    .skel-box {
+      background: #E9EEF5;
+      border-radius: 6px;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* Footer Pagination */
+    .card-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    .footer-count {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .per-page-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .select {
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 13px;
+      padding: 0 10px;
+      cursor: pointer;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .page-btn {
+      height: 36px;
+      min-width: 36px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: var(--bg-subtle);
+    }
+
+    .page-btn.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #FFFFFF;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Modal for Edit Details / New Folder */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      padding: 24px;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 0 0 16px;
+    }
+
+    .field-group {
+      margin-bottom: 16px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .field-input {
+      width: 100%;
+      height: 40px;
+      border-radius: var(--radius-control);
+      border: 1px solid var(--border);
+      padding: 0 12px;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+
+    .field-textarea {
+      width: 100%;
+      min-height: 84px;
+      border-radius: var(--radius-control);
+      border: 1px solid var(--border);
+      padding: 10px 12px;
+      font-size: 14px;
+      color: var(--text-primary);
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 500;
+      z-index: 60;
+      display: none;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    /* Discreet State Switcher for Design Review */
+    .demo-bar {
+      margin-top: 24px;
+      padding: 12px 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .demo-bar-label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+    }
+
+    .demo-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .demo-pill {
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .demo-pill:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+    }
+
+    /* Mobile Folder Chips (hidden on desktop) */
+    .mobile-folders {
+      display: none;
+    }
+
+    /* Responsive below 1100px */
+    @media (max-width: 1100px) {
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+
+      .page-content {
+        padding: 20px 16px 40px;
+      }
+
+      .card-workspace {
+        flex-direction: column;
+      }
+
+      .folders-panel {
+        display: none;
+      }
+
+      .mobile-folders {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        overflow-x: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .mobile-folders::-webkit-scrollbar {
+        display: none;
+      }
+
+      .mobile-folder-chip {
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-primary);
+        font-size: 13px;
+        font-weight: 500;
+        white-space: nowrap;
+        cursor: pointer;
+      }
+
+      .mobile-folder-chip.active {
+        background: var(--blue-soft);
+        border-color: var(--blue);
+        color: var(--blue);
+      }
+
+      .toolbar {
+        padding: 14px 16px;
+      }
+
+      .toolbar-left,
+      .toolbar-right {
+        width: 100%;
+      }
+
+      .search-wrap {
+        flex: 1;
+        width: auto;
+        min-width: 160px;
+      }
+
+      /* Compact card rows in List view */
+      .asset-table thead {
+        display: none;
+      }
+
+      .asset-table,
+      .asset-table tbody,
+      .asset-table tr,
+      .asset-table td {
+        display: block;
+        width: 100%;
+      }
+
+      .asset-row {
+        position: relative;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .asset-row td {
+        padding: 0;
+      }
+
+      .asset-table th.col-check,
+      .asset-table td.col-check {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        width: auto;
+        padding: 0;
+        z-index: 2;
+      }
+
+      .asset-table td.col-asset {
+        width: 100%;
+        padding-left: 28px;
+        padding-right: 44px;
+      }
+
+      .asset-table td.col-seo {
+        width: 100%;
+        margin-top: 10px;
+      }
+
+      .asset-table td.col-actions {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: auto;
+        padding: 0;
+      }
+
+      /* Grid view: 2 cards per row */
+      .grid-wrap {
+        padding: 16px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .card-footer {
+        padding: 14px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Slim Icon Sidebar -->
+    <aside class="sidebar" aria-label="Admin navigation">
+      <a href="#" class="logo-mark" aria-label="GetIntoFeed Home">G</a>
+      <nav class="nav-list">
+        <button class="nav-item" type="button" aria-label="Inbox" title="Inbox">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+        </button>
+        <button class="nav-item" type="button" aria-label="Pages" title="Pages">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </button>
+        <button class="nav-item" type="button" aria-label="Files" title="Files">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </button>
+        <button class="nav-item active" type="button" aria-label="Media" aria-current="page" title="Media">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        </button>
+        <button class="nav-item" type="button" aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+        <button class="nav-item" type="button" aria-label="Team" title="Team">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main Area -->
+    <div class="main-area">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="breadcrumb" aria-label="Breadcrumb">
+          <span>Media</span>
+          <span>/</span>
+          <span class="breadcrumb-current" id="breadcrumbView">List</span>
+        </div>
+        <div class="avatar" aria-label="User profile AR">AR</div>
+      </header>
+
+      <!-- Page Content -->
+      <main class="page-content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Media</h1>
+            <p class="page-subtitle" id="pageSubtitle">14 assets. Keep titles and alt text complete for SEO and accessibility.</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn" type="button" id="btnNewFolder">New folder</button>
+            <button class="btn btn-primary" type="button" id="btnUploadMedia">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Upload media
+            </button>
+          </div>
+        </div>
+
+        <!-- Single Main White Card -->
+        <section class="media-card" aria-label="Media library">
+          <!-- Upload Drag-and-Drop Panel -->
+          <div class="upload-panel" id="uploadPanel">
+            <div class="upload-panel-header">
+              <h2 class="upload-panel-title">Upload images</h2>
+              <button class="btn btn-ghost" type="button" id="btnCloseUpload" aria-label="Close upload panel">Close</button>
+            </div>
+            <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Drop images here or browse to upload">
+              <div class="dropzone-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <p class="dropzone-text">Drop images here or browse</p>
+              <p class="dropzone-hint">PNG, JPG, WebP, or SVG up to 10 MB each</p>
+              <input type="file" id="fileInput" accept="image/*" multiple hidden />
+            </div>
+            <div class="upload-queue" id="uploadQueue"></div>
+          </div>
+
+          <div class="card-workspace">
+            <!-- Folders Left Panel (Desktop) -->
+            <aside class="folders-panel" aria-label="Media folders">
+              <div class="folders-header">
+                <span class="folders-label">Folders</span>
+                <button class="folder-add-link" type="button" id="btnSidebarNewFolder">+ New folder</button>
+              </div>
+              <div id="folderTree"></div>
+            </aside>
+
+            <div class="card-main">
+              <!-- Mobile Folder Chips -->
+              <div class="mobile-folders" id="mobileFolders" aria-label="Folders"></div>
+
+              <!-- Toolbar -->
+              <div class="toolbar" id="toolbar">
+                <div class="toolbar-left" id="toolbarLeft">
+                  <!-- Rendered by JS -->
+                </div>
+                <div class="toolbar-right">
+                  <div class="search-wrap">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input class="input" type="search" id="searchInput" placeholder="Search by file name or title" aria-label="Search by file name or title" />
+                  </div>
+                  <button class="btn" type="button" id="btnFilters" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                    Filters
+                    <span class="filter-chip-count" id="filterCount">0</span>
+                  </button>
+                  <div class="view-toggle" role="group" aria-label="View mode">
+                    <button class="view-toggle-btn active" type="button" id="btnViewList" aria-label="List view" aria-pressed="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    </button>
+                    <button class="view-toggle-btn" type="button" id="btnViewGrid" aria-label="Grid view" aria-pressed="false">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Expandable Filter Chips -->
+              <div class="filter-bar" id="filterBar">
+                <span class="filter-bar-label">Quick filters</span>
+                <button class="filter-pill" type="button" id="pillMissingAlt">Missing alt text</button>
+                <button class="filter-pill" type="button" id="pillPng">PNG only</button>
+              </div>
+
+              <!-- Dynamic Content Area (List / Grid / Empty / Loading) -->
+              <div id="assetContainer"></div>
+
+              <!-- Footer -->
+              <div class="card-footer" id="cardFooter">
+                <div class="footer-count" id="footerCount">Showing 1 to 10 of 14 results</div>
+                <div class="per-page-wrap">
+                  <label for="perPageSelect">Per page</label>
+                  <select class="select" id="perPageSelect">
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+                <nav class="pagination" aria-label="Pagination" id="paginationControls"></nav>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Interactive Design State Switcher -->
+        <div class="demo-bar" aria-label="Design state preview controls">
+          <span class="demo-bar-label">Preview states</span>
+          <div class="demo-pills">
+            <button class="demo-pill" type="button" onclick="setDemoState('list')">List view</button>
+            <button class="demo-pill" type="button" onclick="setDemoState('grid')">Grid view</button>
+            <button class="demo-pill" type="button" onclick="setDemoState('selected')">Selected (3)</button>
+            <button class="demo-pill" type="button" onclick="setDemoState('missingAlt')">Missing alt text</button>
+            <button class="demo-pill" type="button" onclick="setDemoState('upload')">Upload state</button>
+            <button class="demo-pill" type="button" onclick="setDemoState('empty')">Empty state</button>
+            <button class="demo-pill" type="button" onclick="setDemoState('loading')">Loading skeleton</button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Edit Details Modal -->
+  <div class="modal-backdrop" id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal">
+      <h2 class="modal-title" id="editModalTitle">Edit media details</h2>
+      <div class="field-group">
+        <label class="field-label" for="editTitleInput">Title</label>
+        <input class="field-input" type="text" id="editTitleInput" />
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="editAltInput">Alt text (SEO & accessibility)</label>
+        <textarea class="field-textarea" id="editAltInput" placeholder="Describe what the image shows..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" id="btnCancelEdit">Cancel</button>
+        <button class="btn btn-primary" type="button" id="btnSaveEdit">Save changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Folder Modal -->
+  <div class="modal-backdrop" id="folderModal" role="dialog" aria-modal="true" aria-labelledby="folderModalTitle">
+    <div class="modal">
+      <h2 class="modal-title" id="folderModalTitle">Create new folder</h2>
+      <div class="field-group">
+        <label class="field-label" for="folderNameInput">Folder name</label>
+        <input class="field-input" type="text" id="folderNameInput" placeholder="e.g. Case Studies" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn" type="button" id="btnCancelFolder">Cancel</button>
+        <button class="btn btn-primary" type="button" id="btnCreateFolder">Create folder</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    // Helper: generate crisp dark + lime-green SVG thumbnails matching GetIntoFeed's visual style
+    function makeThumb(label, motif) {
+      const motifs = {
+        guide: '<rect x="16" y="18" width="44" height="6" rx="2" fill="#A3E635"/><rect x="16" y="30" width="64" height="4" rx="2" fill="#334155"/><rect x="16" y="38" width="52" height="4" rx="2" fill="#334155"/><circle cx="76" cy="48" r="10" fill="none" stroke="#A3E635" stroke-width="2.5"/>',
+        funnel: '<polygon points="18,16 78,16 60,36 36,36" fill="none" stroke="#A3E635" stroke-width="2.2"/><polygon points="36,40 60,40 53,54 43,54" fill="#A3E635" opacity="0.85"/>',
+        scale: '<line x1="20" y1="42" x2="76" y2="28" stroke="#A3E635" stroke-width="2.5"/><polygon points="48,42 42,54 54,54" fill="#A3E635"/><circle cx="24" cy="34" r="6" fill="none" stroke="#94A3B8" stroke-width="2"/><circle cx="72" cy="20" r="7" fill="#A3E635"/>',
+        compare: '<rect x="14" y="18" width="28" height="34" rx="4" fill="none" stroke="#475569" stroke-width="2"/><rect x="54" y="18" width="28" height="34" rx="4" fill="none" stroke="#A3E635" stroke-width="2.2"/><line x1="60" y1="28" x2="76" y2="28" stroke="#A3E635" stroke-width="2.5"/>',
+        steps: '<rect x="14" y="18" width="68" height="6" rx="3" fill="#334155"/><rect x="14" y="18" width="44" height="6" rx="3" fill="#A3E635"/><rect x="14" y="32" width="20" height="18" rx="3" fill="#1E293B" stroke="#A3E635" stroke-width="1.5"/><rect x="38" y="32" width="20" height="18" rx="3" fill="#1E293B" stroke="#475569" stroke-width="1.5"/><rect x="62" y="32" width="20" height="18" rx="3" fill="#1E293B" stroke="#475569" stroke-width="1.5"/>',
+        timeline: '<line x1="16" y1="36" x2="80" y2="36" stroke="#334155" stroke-width="2"/><circle cx="24" cy="36" r="5" fill="#A3E635"/><circle cx="48" cy="36" r="5" fill="#A3E635"/><circle cx="72" cy="36" r="5" fill="#0F172A" stroke="#A3E635" stroke-width="2"/>',
+        button: '<rect x="18" y="20" width="60" height="6" rx="2" fill="#E2E8F0"/><rect x="24" y="34" width="48" height="16" rx="5" fill="#A3E635"/>',
+        trust: '<rect x="16" y="18" width="38" height="34" rx="4" fill="#1E293B" stroke="#475569" stroke-width="1.8"/><path d="M68 22l10 4v8c0 7-4 12-10 15-6-3-10-8-10-15v-8l10-4z" fill="none" stroke="#A3E635" stroke-width="2.2"/>',
+        mobile: '<rect x="34" y="12" width="28" height="46" rx="5" fill="#1E293B" stroke="#475569" stroke-width="2"/><rect x="39" y="42" width="18" height="8" rx="3" fill="#A3E635"/>',
+        realestate: '<path d="M18 48V28l18-12 18 12v20H18z" fill="none" stroke="#A3E635" stroke-width="2.2"/><rect x="58" y="22" width="20" height="26" rx="2" fill="none" stroke="#64748B" stroke-width="2"/><circle cx="36" cy="34" r="3" fill="#A3E635"/>'
+      };
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="64" viewBox="0 0 96 64"><rect width="96" height="64" fill="#0B1120"/>${motifs[motif] || motifs.guide}<text x="88" y="12" text-anchor="end" fill="#A3E635" font-family="Inter, sans-serif" font-size="7" font-weight="700">${label}</text></svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
+    const INITIAL_FOLDERS = [
+      { id: 'all', name: 'All media', parent: null },
+      { id: 'blog', name: 'Blog', parent: null },
+      { id: 'blog-guides', name: 'Conversion Guides', parent: 'blog' },
+      { id: 'blog-realestate', name: 'Real Estate', parent: 'blog' },
+      { id: 'website', name: 'Website', parent: null },
+      { id: 'website-hero', name: 'Hero Banners', parent: 'website' }
+    ];
+
+    const INITIAL_ASSETS = [
+      {
+        id: 1,
+        filename: 'thumbnail-form-conversions-2027.png',
+        type: 'PNG',
+        size: '143.4 KB',
+        title: 'Increase Form Conversions 2027 Guide',
+        alt: 'How to Increase Form Conversions and Generate More Leads in 2027 Guide Cover',
+        folder: 'blog-guides',
+        thumb: makeThumb('2027 GUIDE', 'guide')
+      },
+      {
+        id: 2,
+        filename: 'blog-image-1-find-the-leak-funnel.png',
+        type: 'PNG',
+        size: '200.5 KB',
+        title: 'Form Funnel Drop-off Diagram',
+        alt: 'Website Form Conversion Funnel — Pinpoint where drop-offs occur',
+        folder: 'blog-guides',
+        thumb: makeThumb('FIG 1', 'funnel')
+      },
+      {
+        id: 3,
+        filename: 'blog-image-2-reward-vs-effort-risk.png',
+        type: 'PNG',
+        size: '173.2 KB',
+        title: 'Reward vs Effort and Risk Formula',
+        alt: 'The Core Rule — Perceived Reward vs Effort and Risk conversion equation',
+        folder: 'blog-guides',
+        thumb: makeThumb('FIG 2', 'scale')
+      },
+      {
+        id: 4,
+        filename: 'blog-image-3-fewer-fields-before-after.png',
+        type: 'PNG',
+        size: '194.4 KB',
+        title: 'Fewer Form Fields Before and After',
+        alt: 'Before and After Form Field Reduction Comparison',
+        folder: 'blog-guides',
+        thumb: makeThumb('FIG 3', 'compare')
+      },
+      {
+        id: 5,
+        filename: 'blog-image-4-multi-step-form.png',
+        type: 'PNG',
+        size: '201.1 KB',
+        title: 'Multi-Step Form Architecture',
+        alt: 'Multi-Step Form Progression with Progress Bar and Low-Friction Steps',
+        folder: 'blog-guides',
+        thumb: makeThumb('FIG 4', 'steps')
+      },
+      {
+        id: 6,
+        filename: 'blog-image-5-follow-up-timeline.png',
+        type: 'PNG',
+        size: '207.1 KB',
+        title: 'Fast Lead Follow-Up Sequence',
+        alt: 'Post-Submission Speed-to-Lead Follow-Up Timeline',
+        folder: 'blog-guides',
+        thumb: makeThumb('FIG 5', 'timeline')
+      },
+      {
+        id: 7,
+        filename: 'blog-image-fix3-outcome-headline-and-button.png',
+        type: 'PNG',
+        size: '229.5 KB',
+        title: 'Fix 3: Promise an Outcome, Not a Feature',
+        alt: 'Figure 6: High-Converting Outcome Headlines vs Weak Submit Buttons',
+        folder: 'blog-guides',
+        thumb: makeThumb('FIG 6', 'button')
+      },
+      {
+        id: 8,
+        filename: 'blog-image-fix4-remove-doubt-near-form.png',
+        type: 'PNG',
+        size: '272.9 KB',
+        title: 'Fix 4: Remove Doubt Next to the Form',
+        alt: 'Figure 7: Removing Doubt and Placement of Trust Badges Near Form Fields',
+        folder: 'blog-guides',
+        thumb: makeThumb('FIG 7', 'trust')
+      },
+      {
+        id: 9,
+        filename: 'blog-image-fix5-mobile-friendly-form.png',
+        type: 'PNG',
+        size: '261.4 KB',
+        title: 'Fix 5: Design for Thumbs and Mobile',
+        alt: 'Figure 8: Mobile UX Thumb Zone Optimization for Higher Lead Conversions',
+        folder: 'blog-guides',
+        thumb: makeThumb('FIG 8', 'mobile')
+      },
+      {
+        id: 10,
+        filename: 'noida-real-estate-high-intent-leads-thumbnail.png',
+        type: 'PNG',
+        size: '154.1 KB',
+        title: 'High-Intent Property Leads in Noida',
+        alt: 'High-Intent Property Leads in Noida — Real Estate Digital Marketing Guide Cover',
+        folder: 'blog-realestate',
+        thumb: makeThumb('NOIDA', 'realestate')
+      },
+      // Page 2 assets (4 more to make 14 total, including missing alt text examples)
+      {
+        id: 11,
+        filename: 'agency-hero-performance-banner.png',
+        type: 'PNG',
+        size: '312.8 KB',
+        title: 'GetIntoFeed Agency Hero Banner',
+        alt: '',
+        folder: 'website-hero',
+        thumb: makeThumb('HERO', 'guide')
+      },
+      {
+        id: 12,
+        filename: 'meta-advantage-plus-roas-chart.png',
+        type: 'PNG',
+        size: '188.0 KB',
+        title: 'Meta Advantage+ ROAS Scaling Chart',
+        alt: '',
+        folder: 'blog',
+        thumb: makeThumb('ROAS', 'scale')
+      },
+      {
+        id: 13,
+        filename: 'saas-demo-funnel-architecture.png',
+        type: 'PNG',
+        size: '164.2 KB',
+        title: 'B2B SaaS Demo Booking Funnel',
+        alt: 'B2B SaaS demo booking funnel diagram showing ad click to qualified call',
+        folder: 'website',
+        thumb: makeThumb('SAAS', 'funnel')
+      },
+      {
+        id: 14,
+        filename: 'landing-page-speed-audit-2027.png',
+        type: 'PNG',
+        size: '149.6 KB',
+        title: 'Landing Page Speed Audit Checklist',
+        alt: 'Core Web Vitals checklist for paid search landing pages',
+        folder: 'website-hero',
+        thumb: makeThumb('SPEED', 'steps')
+      }
+    ];
+
+    const state = {
+      assets: [...INITIAL_ASSETS],
+      folders: [...INITIAL_FOLDERS],
+      activeFolder: 'all',
+      viewMode: 'list', // 'list' | 'grid'
+      search: '',
+      filterMissingAlt: false,
+      filterPngOnly: false,
+      filterOpen: false,
+      uploadOpen: false,
+      loading: false,
+      selectedIds: new Set(),
+      page: 1,
+      perPage: 10,
+      openMenuId: null,
+      editingId: null
+    };
+
+    // Elements
+    const toolbarLeft = document.getElementById('toolbarLeft');
+    const assetContainer = document.getElementById('assetContainer');
+    const footerCount = document.getElementById('footerCount');
+    const paginationControls = document.getElementById('paginationControls');
+    const pageSubtitle = document.getElementById('pageSubtitle');
+    const breadcrumbView = document.getElementById('breadcrumbView');
+    const folderTree = document.getElementById('folderTree');
+    const mobileFolders = document.getElementById('mobileFolders');
+    const searchInput = document.getElementById('searchInput');
+    const btnFilters = document.getElementById('btnFilters');
+    const filterBar = document.getElementById('filterBar');
+    const filterCount = document.getElementById('filterCount');
+    const pillMissingAlt = document.getElementById('pillMissingAlt');
+    const pillPng = document.getElementById('pillPng');
+    const btnViewList = document.getElementById('btnViewList');
+    const btnViewGrid = document.getElementById('btnViewGrid');
+    const perPageSelect = document.getElementById('perPageSelect');
+    const uploadPanel = document.getElementById('uploadPanel');
+    const uploadQueue = document.getElementById('uploadQueue');
+    const cardFooter = document.getElementById('cardFooter');
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function getFolderMatchIds(folderId) {
+      if (folderId === 'all') return null;
+      const children = state.folders.filter(f => f.parent === folderId).map(f => f.id);
+      return new Set([folderId, ...children]);
+    }
+
+    function getFilteredAssets() {
+      const folderIds = getFolderMatchIds(state.activeFolder);
+      const q = state.search.trim().toLowerCase();
+      return state.assets.filter(item => {
+        if (folderIds && !folderIds.has(item.folder)) return false;
+        if (state.filterMissingAlt && item.alt.trim() !== '') return false;
+        if (state.filterPngOnly && item.type !== 'PNG') return false;
+        if (q && !item.filename.toLowerCase().includes(q) && !item.title.toLowerCase().includes(q)) return false;
+        return true;
+      });
+    }
+
+    function countFolderAssets(folderId) {
+      const ids = getFolderMatchIds(folderId);
+      if (!ids) return state.assets.length;
+      return state.assets.filter(a => ids.has(a.folder)).length;
+    }
+
+    function renderFolders() {
+      const ordered = [];
+      state.folders.filter(f => f.parent === null).forEach(root => {
+        ordered.push(root);
+        state.folders.filter(c => c.parent === root.id).forEach(child => ordered.push(child));
+      });
+
+      folderTree.innerHTML = ordered.map(f => `
+        <button
+          type="button"
+          class="folder-btn ${f.parent ? 'nested' : ''} ${state.activeFolder === f.id ? 'active' : ''}"
+          data-folder="${f.id}"
+        >
+          <span class="folder-btn-left">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            <span>${f.name}</span>
+          </span>
+          <span class="folder-count">${countFolderAssets(f.id)}</span>
+        </button>
+      `).join('');
+
+      mobileFolders.innerHTML = ordered.map(f => `
+        <button
+          type="button"
+          class="mobile-folder-chip ${state.activeFolder === f.id ? 'active' : ''}"
+          data-folder="${f.id}"
+        >${f.name} (${countFolderAssets(f.id)})</button>
+      `).join('');
+
+      document.querySelectorAll('[data-folder]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeFolder = btn.dataset.folder;
+          state.page = 1;
+          render();
+        });
+      });
+    }
+
+    function renderToolbar() {
+      const count = state.selectedIds.size;
+      if (count > 0) {
+        toolbarLeft.innerHTML = `
+          <span class="selected-summary has-selection">${count} selected</span>
+          <button class="btn" type="button" id="btnBulkMove">Move to folder</button>
+          <button class="btn" type="button" id="btnBulkCopy">Copy URLs</button>
+          <button class="btn btn-danger-text" type="button" id="btnBulkDelete">Delete</button>
+          <button class="btn btn-ghost" type="button" id="btnClearSelection">Clear selection</button>
+        `;
+        document.getElementById('btnBulkMove').onclick = () => showToast(`Moved ${count} assets`);
+        document.getElementById('btnBulkCopy').onclick = () => showToast(`Copied ${count} asset URLs`);
+        document.getElementById('btnBulkDelete').onclick = () => {
+          state.assets = state.assets.filter(a => !state.selectedIds.has(a.id));
+          state.selectedIds.clear();
+          showToast(`Deleted ${count} assets`);
+          render();
+        };
+        document.getElementById('btnClearSelection').onclick = () => {
+          state.selectedIds.clear();
+          render();
+        };
+      } else {
+        toolbarLeft.innerHTML = `
+          <button class="btn" type="button" disabled>Bulk actions</button>
+          <span class="selected-summary">0 selected</span>
+        `;
+      }
+
+      const activeFilters = (state.filterMissingAlt ? 1 : 0) + (state.filterPngOnly ? 1 : 0);
+      filterCount.textContent = activeFilters;
+      btnFilters.classList.toggle('filter-active', activeFilters > 0 || state.filterOpen);
+      btnFilters.setAttribute('aria-expanded', String(state.filterOpen));
+      filterBar.classList.toggle('open', state.filterOpen);
+      pillMissingAlt.classList.toggle('active', state.filterMissingAlt);
+      pillPng.classList.toggle('active', state.filterPngOnly);
+
+      btnViewList.classList.toggle('active', state.viewMode === 'list');
+      btnViewList.setAttribute('aria-pressed', String(state.viewMode === 'list'));
+      btnViewGrid.classList.toggle('active', state.viewMode === 'grid');
+      btnViewGrid.setAttribute('aria-pressed', String(state.viewMode === 'grid'));
+      breadcrumbView.textContent = state.viewMode === 'list' ? 'List' : 'Grid';
+    }
+
+    function renderLoading() {
+      cardFooter.style.display = 'none';
+      const rows = Array.from({ length: 6 }).map(() => `
+        <div class="skeleton-row">
+          <div class="skel-box" style="width:18px;height:18px;"></div>
+          <div class="skel-box" style="width:56px;height:56px;border-radius:8px;"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+            <div class="skel-box" style="width:42%;height:14px;"></div>
+            <div class="skel-box" style="width:24%;height:12px;"></div>
+          </div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+            <div class="skel-box" style="width:65%;height:14px;"></div>
+            <div class="skel-box" style="width:85%;height:12px;"></div>
+          </div>
+        </div>
+      `).join('');
+      assetContainer.innerHTML = `<div class="skeleton-list" aria-busy="true" aria-label="Loading media assets">${rows}</div>`;
+    }
+
+    function renderEmpty() {
+      cardFooter.style.display = 'none';
+      const hasQuery = state.search.trim() !== '' || state.filterMissingAlt || state.filterPngOnly || state.activeFolder !== 'all';
+      assetContainer.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <h2 class="empty-title">${hasQuery ? 'No matching media found' : 'No media assets yet'}</h2>
+          <p class="empty-text">${hasQuery ? 'Try adjusting your search or clearing active filters.' : 'Upload images for your website pages and blog articles.'}</p>
+          <button class="btn btn-primary" type="button" id="emptyUploadBtn">Upload media</button>
+        </div>
+      `;
+      document.getElementById('emptyUploadBtn').onclick = () => {
+        state.uploadOpen = true;
+        uploadPanel.classList.add('open');
+      };
+    }
+
+    function renderActionMenu(item) {
+      return `
+        <div class="action-menu-wrap">
+          <button
+            class="icon-btn"
+            type="button"
+            aria-label="More actions for ${item.filename}"
+            aria-expanded="${state.openMenuId === item.id}"
+            data-menu-btn="${item.id}"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.75"/><circle cx="12" cy="12" r="1.75"/><circle cx="12" cy="19" r="1.75"/></svg>
+          </button>
+          <div class="dropdown-menu ${state.openMenuId === item.id ? 'open' : ''}" role="menu">
+            <button class="dropdown-item" type="button" role="menuitem" data-action="copy" data-id="${item.id}">Copy URL</button>
+            <button class="dropdown-item" type="button" role="menuitem" data-action="edit" data-id="${item.id}">Edit details</button>
+            <button class="dropdown-item" type="button" role="menuitem" data-action="move" data-id="${item.id}">Move to folder</button>
+            <button class="dropdown-item danger" type="button" role="menuitem" data-action="delete" data-id="${item.id}">Delete</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderListView(pageItems) {
+      const allPageSelected = pageItems.length > 0 && pageItems.every(i => state.selectedIds.has(i.id));
+      assetContainer.innerHTML = `
+        <div class="table-wrap">
+          <table class="asset-table">
+            <thead>
+              <tr>
+                <th class="col-check">
+                  <input class="checkbox" type="checkbox" id="selectAllCheckbox" aria-label="Select all visible assets" ${allPageSelected ? 'checked' : ''} />
+                </th>
+                <th class="col-asset">Asset</th>
+                <th class="col-seo">Title &amp; alt text</th>
+                <th class="col-actions"><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pageItems.map(item => {
+                const isSelected = state.selectedIds.has(item.id);
+                const missingAlt = !item.alt || item.alt.trim() === '';
+                return `
+                  <tr class="asset-row ${isSelected ? 'selected' : ''}">
+                    <td class="col-check">
+                      <input
+                        class="checkbox row-check"
+                        type="checkbox"
+                        data-id="${item.id}"
+                        aria-label="Select ${item.filename}"
+                        ${isSelected ? 'checked' : ''}
+                      />
+                    </td>
+                    <td class="col-asset">
+                      <div class="asset-cell">
+                        <img class="thumb-56" src="${item.thumb}" alt="${item.alt || item.title}" />
+                        <div class="asset-meta">
+                          <div class="asset-filename" title="${item.filename}">${item.filename}</div>
+                          <div class="asset-sub">${item.type} &middot; ${item.size}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="col-seo">
+                      <div class="seo-cell">
+                        <div class="seo-title" title="${item.title}">${item.title}</div>
+                        ${missingAlt
+                          ? `<span class="badge-amber">Alt text missing</span>`
+                          : `<div class="seo-alt"><span class="alt-label">Alt</span>${item.alt}</div>`
+                        }
+                      </div>
+                    </td>
+                    <td class="col-actions">
+                      ${renderActionMenu(item)}
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+
+      const selectAll = document.getElementById('selectAllCheckbox');
+      if (selectAll) {
+        selectAll.onchange = () => {
+          if (selectAll.checked) {
+            pageItems.forEach(i => state.selectedIds.add(i.id));
+          } else {
+            pageItems.forEach(i => state.selectedIds.delete(i.id));
+          }
+          render();
+        };
+      }
+    }
+
+    function renderGridView(pageItems) {
+      assetContainer.innerHTML = `
+        <div class="grid-wrap">
+          ${pageItems.map(item => {
+            const isSelected = state.selectedIds.has(item.id);
+            const missingAlt = !item.alt || item.alt.trim() === '';
+            return `
+              <article class="grid-card ${isSelected ? 'selected' : ''}">
+                <div class="grid-thumb-box">
+                  <img src="${item.thumb}" alt="${item.alt || item.title}" />
+                  <div class="grid-check-wrap">
+                    <input
+                      class="checkbox row-check"
+                      type="checkbox"
+                      data-id="${item.id}"
+                      aria-label="Select ${item.filename}"
+                      ${isSelected ? 'checked' : ''}
+                    />
+                  </div>
+                  <div class="grid-hover-details">
+                    <div class="grid-hover-title">${item.title}</div>
+                    <div class="grid-hover-alt">${missingAlt ? 'Alt text missing' : item.alt}</div>
+                  </div>
+                </div>
+                <div class="grid-body">
+                  <div class="grid-meta">
+                    <div class="grid-filename" title="${item.filename}">${item.filename}</div>
+                    <div class="grid-size">
+                      <span>${item.type} &middot; ${item.size}</span>
+                      ${missingAlt ? '<span class="badge-amber" style="margin-top:0;">Alt missing</span>' : ''}
+                    </div>
+                  </div>
+                  ${renderActionMenu(item)}
+                </div>
+              </article>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderPagination(total) {
+      const totalPages = Math.max(1, Math.ceil(total / state.perPage));
+      if (state.page > totalPages) state.page = totalPages;
+      const start = total === 0 ? 0 : (state.page - 1) * state.perPage + 1;
+      const end = Math.min(total, state.page * state.perPage);
+      footerCount.textContent = `Showing ${start} to ${end} of ${total} results`;
+
+      let buttons = '';
+      for (let p = 1; p <= totalPages; p++) {
+        buttons += `<button class="page-btn ${p === state.page ? 'active' : ''}" type="button" data-page="${p}" aria-label="Page ${p}" ${p === state.page ? 'aria-current="page"' : ''}>${p}</button>`;
+      }
+      buttons += `
+        <button class="page-btn" type="button" data-page="next" aria-label="Next page" ${state.page >= totalPages ? 'disabled' : ''}>
+          Next
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      `;
+      paginationControls.innerHTML = buttons;
+
+      paginationControls.querySelectorAll('[data-page]').forEach(btn => {
+        btn.onclick = () => {
+          if (btn.dataset.page === 'next') {
+            if (state.page < totalPages) state.page++;
+          } else {
+            state.page = Number(btn.dataset.page);
+          }
+          render();
+        };
+      });
+    }
+
+    function bindRowInteractions() {
+      document.querySelectorAll('.row-check').forEach(cb => {
+        cb.onchange = () => {
+          const id = Number(cb.dataset.id);
+          if (cb.checked) state.selectedIds.add(id);
+          else state.selectedIds.delete(id);
+          render();
+        };
+      });
+
+      document.querySelectorAll('[data-menu-btn]').forEach(btn => {
+        btn.onclick = (e) => {
+          e.stopPropagation();
+          const id = Number(btn.dataset.menuBtn);
+          state.openMenuId = state.openMenuId === id ? null : id;
+          render();
+        };
+      });
+
+      document.querySelectorAll('[data-action]').forEach(itemBtn => {
+        itemBtn.onclick = () => {
+          const id = Number(itemBtn.dataset.id);
+          const asset = state.assets.find(a => a.id === id);
+          state.openMenuId = null;
+          if (!asset) return;
+
+          if (itemBtn.dataset.action === 'copy') {
+            showToast(`Copied URL for ${asset.filename}`);
+          } else if (itemBtn.dataset.action === 'edit') {
+            state.editingId = id;
+            document.getElementById('editTitleInput').value = asset.title;
+            document.getElementById('editAltInput').value = asset.alt;
+            document.getElementById('editModal').classList.add('open');
+          } else if (itemBtn.dataset.action === 'move') {
+            showToast(`Moved ${asset.filename} to folder`);
+          } else if (itemBtn.dataset.action === 'delete') {
+            state.assets = state.assets.filter(a => a.id !== id);
+            state.selectedIds.delete(id);
+            showToast(`Deleted ${asset.filename}`);
+          }
+          render();
+        };
+      });
+    }
+
+    function render() {
+      pageSubtitle.textContent = `${state.assets.length} assets. Keep titles and alt text complete for SEO and accessibility.`;
+      uploadPanel.classList.toggle('open', state.uploadOpen);
+
+      renderFolders();
+      renderToolbar();
+
+      if (state.loading) {
+        renderLoading();
+        return;
+      }
+
+      const filtered = getFilteredAssets();
+      if (filtered.length === 0) {
+        renderEmpty();
+        return;
+      }
+
+      cardFooter.style.display = 'flex';
+      const totalPages = Math.max(1, Math.ceil(filtered.length / state.perPage));
+      if (state.page > totalPages) state.page = totalPages;
+      const startIdx = (state.page - 1) * state.perPage;
+      const pageItems = filtered.slice(startIdx, startIdx + state.perPage);
+
+      if (state.viewMode === 'list') renderListView(pageItems);
+      else renderGridView(pageItems);
+
+      renderPagination(filtered.length);
+      bindRowInteractions();
+    }
+
+    // Event Listeners
+    document.addEventListener('click', () => {
+      if (state.openMenuId !== null) {
+        state.openMenuId = null;
+        render();
+      }
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      state.search = e.target.value;
+      state.page = 1;
+      render();
+    });
+
+    btnFilters.addEventListener('click', () => {
+      state.filterOpen = !state.filterOpen;
+      render();
+    });
+
+    pillMissingAlt.addEventListener('click', () => {
+      state.filterMissingAlt = !state.filterMissingAlt;
+      state.page = 1;
+      render();
+    });
+
+    pillPng.addEventListener('click', () => {
+      state.filterPngOnly = !state.filterPngOnly;
+      state.page = 1;
+      render();
+    });
+
+    btnViewList.addEventListener('click', () => {
+      state.viewMode = 'list';
+      render();
+    });
+
+    btnViewGrid.addEventListener('click', () => {
+      state.viewMode = 'grid';
+      render();
+    });
+
+    perPageSelect.addEventListener('change', (e) => {
+      state.perPage = Number(e.target.value);
+      state.page = 1;
+      render();
+    });
+
+    // Upload panel
+    document.getElementById('btnUploadMedia').addEventListener('click', () => {
+      state.uploadOpen = !state.uploadOpen;
+      if (state.uploadOpen && uploadQueue.children.length === 0) {
+        simulateUploadQueue([
+          { name: 'meta-ads-creative-framework-2027.png', pct: 72, size: '184.2 KB' },
+          { name: 'lead-magnet-landing-wireframe.png', pct: 100, size: '132.0 KB' }
+        ]);
+      }
+      render();
+    });
+
+    document.getElementById('btnCloseUpload').addEventListener('click', () => {
+      state.uploadOpen = false;
+      render();
+    });
+
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    dropzone.addEventListener('click', () => fileInput.click());
+    dropzone.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        fileInput.click();
+      }
+    });
+    dropzone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropzone.classList.add('dragover');
+    });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropzone.classList.remove('dragover');
+      const files = Array.from(e.dataTransfer.files || []).map(f => ({ name: f.name, pct: 65, size: `${(f.size / 1024).toFixed(1)} KB` }));
+      if (files.length) simulateUploadQueue(files);
+    });
+    fileInput.addEventListener('change', () => {
+      const files = Array.from(fileInput.files || []).map(f => ({ name: f.name, pct: 65, size: `${(f.size / 1024).toFixed(1)} KB` }));
+      if (files.length) simulateUploadQueue(files);
+    });
+
+    function simulateUploadQueue(items) {
+      uploadQueue.innerHTML = items.map(f => `
+        <div class="upload-item">
+          <div class="upload-item-info">
+            <div class="upload-item-name">
+              <span>${f.name}</span>
+              <span style="color:var(--text-secondary);font-weight:500;">${f.pct === 100 ? 'Complete' : f.pct + '%'}</span>
+            </div>
+            <div class="upload-progress-track">
+              <div class="upload-progress-bar" style="width:${f.pct}%"></div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Modals
+    document.getElementById('btnCancelEdit').onclick = () => document.getElementById('editModal').classList.remove('open');
+    document.getElementById('btnSaveEdit').onclick = () => {
+      const asset = state.assets.find(a => a.id === state.editingId);
+      if (asset) {
+        asset.title = document.getElementById('editTitleInput').value.trim() || asset.title;
+        asset.alt = document.getElementById('editAltInput').value.trim();
+        showToast('Saved media details');
+      }
+      document.getElementById('editModal').classList.remove('open');
+      render();
+    };
+
+    const openFolderModal = () => {
+      document.getElementById('folderNameInput').value = '';
+      document.getElementById('folderModal').classList.add('open');
+    };
+    document.getElementById('btnNewFolder').onclick = openFolderModal;
+    document.getElementById('btnSidebarNewFolder').onclick = openFolderModal;
+    document.getElementById('btnCancelFolder').onclick = () => document.getElementById('folderModal').classList.remove('open');
+    document.getElementById('btnCreateFolder').onclick = () => {
+      const name = document.getElementById('folderNameInput').value.trim();
+      if (name) {
+        state.folders.push({ id: 'folder-' + Date.now(), name, parent: null });
+        showToast(`Created folder "${name}"`);
+      }
+      document.getElementById('folderModal').classList.remove('open');
+      render();
+    };
+
+    // Demo State Switcher
+    window.setDemoState = function(mode) {
+      state.loading = false;
+      state.uploadOpen = false;
+      state.filterMissingAlt = false;
+      state.filterPngOnly = false;
+      state.filterOpen = false;
+      state.search = '';
+      searchInput.value = '';
+      state.activeFolder = 'all';
+      state.selectedIds.clear();
+      state.page = 1;
+
+      if (mode === 'list') {
+        state.viewMode = 'list';
+      } else if (mode === 'grid') {
+        state.viewMode = 'grid';
+      } else if (mode === 'selected') {
+        state.viewMode = 'list';
+        state.selectedIds.add(1);
+        state.selectedIds.add(2);
+        state.selectedIds.add(3);
+      } else if (mode === 'missingAlt') {
+        state.viewMode = 'list';
+        state.filterOpen = true;
+        state.filterMissingAlt = true;
+      } else if (mode === 'upload') {
+        state.viewMode = 'list';
+        state.uploadOpen = true;
+        simulateUploadQueue([
+          { name: 'meta-ads-creative-framework-2027.png', pct: 72, size: '184.2 KB' },
+          { name: 'lead-magnet-landing-wireframe.png', pct: 100, size: '132.0 KB' }
+        ]);
+      } else if (mode === 'empty') {
+        state.viewMode = 'list';
+        state.search = 'nonexistent-asset';
+        searchInput.value = 'nonexistent-asset';
+      } else if (mode === 'loading') {
+        state.loading = true;
+      }
+      render();
+    };
+
+    render();
+  </script>
+</body>
+</html>

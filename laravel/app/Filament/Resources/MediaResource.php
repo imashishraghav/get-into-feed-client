@@ -23,7 +23,9 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteAction;
@@ -37,6 +39,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class MediaResource extends ManagedResource
@@ -47,7 +50,7 @@ class MediaResource extends ManagedResource
 
     protected static ?string $navigationIcon = 'heroicon-o-photo';
 
-    protected static ?string $navigationLabel = 'Media Library';
+    protected static ?string $navigationLabel = 'Media';
 
     protected static ?int $navigationSort = 4;
 
@@ -187,41 +190,64 @@ class MediaResource extends ManagedResource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query, $livewire) {
+                if ($livewire instanceof ListMedia && $livewire->activeFolderId !== null) {
+                    $childIds = MediaFolder::where('parent_id', $livewire->activeFolderId)->pluck('id')->all();
+                    $folderIds = array_merge([$livewire->activeFolderId], $childIds);
+                    $query->whereIn('folder_id', $folderIds);
+                }
+            })
+            ->defaultSort('created_at', 'desc')
+            ->defaultPaginationPageOption(10)
+            ->paginationPageOptions([10, 25, 50])
+            ->searchPlaceholder('Search by file name or title')
             ->columns([
                 ImageColumn::make('file_path')
                     ->disk('public')
-                    ->square()
-                    ->size(52)
-                    ->label('Thumbnail'),
+                    ->size(56)
+                    ->label('')
+                    ->extraImgAttributes(fn (Media $record) => [
+                        'class' => 'rounded-lg object-cover border border-slate-200 bg-slate-950',
+                        'alt' => $record->alt_text ?: $record->title ?: $record->file_name,
+                    ]),
 
                 TextColumn::make('file_name')
-                    ->label('Asset Details')
-                    ->description(fn (Media $record) => $record->dimensions ? "{$record->dimensions} • {$record->formatted_size}" : $record->formatted_size)
+                    ->label('Asset')
+                    ->weight(FontWeight::SemiBold)
+                    ->description(function (Media $record) {
+                        $ext = strtoupper(pathinfo($record->file_name, PATHINFO_EXTENSION) ?: 'FILE');
+
+                        return "{$ext} · {$record->formatted_size}";
+                    })
                     ->searchable()
                     ->sortable()
-                    ->weight('bold'),
+                    ->wrap(),
 
                 TextColumn::make('title')
-                    ->label('Title & Alt Text')
-                    ->description(fn (Media $record) => $record->alt_text ? "Alt: {$record->alt_text}" : '⚠️ Missing Alt Text')
+                    ->label('Title & alt text')
+                    ->weight(FontWeight::Medium)
                     ->searchable()
-                    ->limit(32),
+                    ->limit(52)
+                    ->description(function (Media $record): HtmlString {
+                        if (blank($record->alt_text)) {
+                            return new HtmlString(
+                                '<span class="inline-flex items-center mt-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-300">Alt text missing</span>'
+                            );
+                        }
+
+                        return new HtmlString(
+                            '<span class="block text-xs text-slate-600 line-clamp-2 mt-0.5"><strong class="font-semibold text-slate-900">Alt</strong> '
+                            .e(Str::limit($record->alt_text, 140))
+                            .'</span>'
+                        );
+                    }),
 
                 TextColumn::make('folder.name')
                     ->label('Folder')
                     ->badge()
                     ->color('primary')
-                    ->sortable(),
-
-                TextColumn::make('mime_type')
-                    ->label('Type')
-                    ->badge()
-                    ->color(fn ($state) => match ($state) {
-                        'image/webp', 'image/avif' => 'success',
-                        'image/svg+xml' => 'info',
-                        'application/pdf' => 'warning',
-                        default => 'gray',
-                    }),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('optimization_status')
                     ->label('Optimization')
@@ -230,7 +256,7 @@ class MediaResource extends ManagedResource
                         if ($record->webp_path) {
                             $pct = $record->savings_percentage;
 
-                            return $pct ? "⚡ WebP (-{$pct}%)" : '⚡ WebP';
+                            return $pct ? "WebP (-{$pct}%)" : 'WebP';
                         }
                         if (in_array($record->mime_type, ['image/jpeg', 'image/png'])) {
                             return 'Unoptimized';
@@ -239,10 +265,11 @@ class MediaResource extends ManagedResource
                         return 'Standard';
                     })
                     ->colors([
-                        'success' => fn ($state) => str_starts_with($state, '⚡ WebP'),
+                        'success' => fn ($state) => str_starts_with($state, 'WebP'),
                         'warning' => fn ($state) => $state === 'Unoptimized',
                         'gray' => fn ($state) => $state === 'Standard',
-                    ]),
+                    ])
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('usages')
                     ->label('Used In')
@@ -251,7 +278,8 @@ class MediaResource extends ManagedResource
                     ->colors([
                         'gray' => fn ($state) => $state === '0 places',
                         'success' => fn ($state) => $state !== '0 places',
-                    ]),
+                    ])
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
                     ->label('Uploaded')
@@ -260,155 +288,150 @@ class MediaResource extends ManagedResource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                Filter::make('missing_alt')
+                    ->label('Missing alt text')
+                    ->query(fn (Builder $query) => $query->whereNull('alt_text')->orWhere('alt_text', '')),
+
                 SelectFilter::make('mime_type')
-                    ->label('Filter by Format')
+                    ->label('Format')
                     ->options([
-                        'image/jpeg' => 'JPEG Images (.jpg, .jpeg)',
-                        'image/png' => 'PNG Images (.png)',
-                        'image/webp' => 'WebP Modern (.webp)',
-                        'image/svg+xml' => 'SVG Vectors (.svg)',
-                        'application/pdf' => 'PDF Documents (.pdf)',
+                        'image/jpeg' => 'JPEG (.jpg, .jpeg)',
+                        'image/png' => 'PNG (.png)',
+                        'image/webp' => 'WebP (.webp)',
+                        'image/svg+xml' => 'SVG (.svg)',
+                        'application/pdf' => 'PDF (.pdf)',
                     ]),
 
                 SelectFilter::make('folder_id')
-                    ->label('Filter by Folder')
+                    ->label('Folder')
                     ->options(fn () => MediaFolder::treeOptions()),
 
-                Filter::make('missing_alt')
-                    ->label('⚠️ Missing Alt Text')
-                    ->query(fn (Builder $query) => $query->whereNull('alt_text')->orWhere('alt_text', '')),
-
                 Filter::make('unoptimized')
-                    ->label('⚡ Unoptimized Images')
+                    ->label('Unoptimized images')
                     ->query(fn (Builder $query) => $query->whereIn('mime_type', ['image/jpeg', 'image/png'])->whereNull('webp_path')),
             ])
             ->actions([
-                Action::make('preview')
-                    ->label('Preview')
-                    ->icon('heroicon-o-eye')
-                    ->color('gray')
-                    ->modalHeading(fn (Media $record) => "Asset Inspector: {$record->file_name}")
-                    ->modalContent(fn (Media $record) => view('filament.widgets.media-preview-modal', ['media' => $record])),
-
-                Action::make('quick_webp')
-                    ->label('⚡ WebP')
-                    ->icon('heroicon-o-sparkles')
-                    ->color('success')
-                    ->visible(fn (Media $record) => in_array($record->mime_type, ['image/jpeg', 'image/png']) && ! $record->webp_path)
-                    ->action(function (Media $record) {
-                        $ok = MediaService::convertToWebp($record);
-                        if ($ok) {
-                            $pct = $record->savings_percentage;
+                ActionGroup::make([
+                    Action::make('copy_url')
+                        ->label('Copy URL')
+                        ->icon('heroicon-o-clipboard-document')
+                        ->action(function (Media $record, $livewire) {
+                            $livewire->dispatch('copy-to-clipboard', text: $record->url);
                             Notification::make()
                                 ->success()
-                                ->title('WebP Generated')
-                                ->body("Compressed by {$pct}%.")
+                                ->title('URL Copied')
+                                ->body("Copied URL for {$record->file_name}.")
                                 ->send();
-                        } else {
+                        }),
+
+                    EditAction::make()
+                        ->label('Edit details'),
+
+                    Action::make('move_folder')
+                        ->label('Move to folder')
+                        ->icon('heroicon-o-folder-arrow-down')
+                        ->form([
+                            Select::make('folder_id')
+                                ->label('Destination Folder')
+                                ->options(fn () => MediaFolder::treeOptions())
+                                ->placeholder('Root (No folder)')
+                                ->searchable(),
+                        ])
+                        ->action(function (Media $record, array $data) {
+                            $record->update(['folder_id' => $data['folder_id'] ?? null]);
                             Notification::make()
-                                ->danger()
-                                ->title('Optimization Failed')
-                                ->body('Could not generate WebP.')
+                                ->success()
+                                ->title('Moved')
+                                ->body("{$record->file_name} moved successfully.")
                                 ->send();
-                        }
-                    }),
+                        }),
 
-                Action::make('usages')
-                    ->label('Usages')
-                    ->icon('heroicon-o-link')
-                    ->color('info')
-                    ->modalHeading(fn (Media $record) => "Active References: #{$record->id} ({$record->file_name})")
-                    ->modalContent(fn (Media $record) => view('filament.widgets.media-usages-modal', ['usages' => $record->getUsages(true)])),
+                    Action::make('preview')
+                        ->label('Preview')
+                        ->icon('heroicon-o-eye')
+                        ->modalHeading(fn (Media $record) => "Asset Inspector: {$record->file_name}")
+                        ->modalContent(fn (Media $record) => view('filament.widgets.media-preview-modal', ['media' => $record])),
 
-                EditAction::make(),
+                    Action::make('quick_webp')
+                        ->label('Convert to WebP')
+                        ->icon('heroicon-o-sparkles')
+                        ->color('success')
+                        ->visible(fn (Media $record) => in_array($record->mime_type, ['image/jpeg', 'image/png']) && ! $record->webp_path)
+                        ->action(function (Media $record) {
+                            $ok = MediaService::convertToWebp($record);
+                            if ($ok) {
+                                $pct = $record->savings_percentage;
+                                Notification::make()
+                                    ->success()
+                                    ->title('WebP Generated')
+                                    ->body("Compressed by {$pct}%.")
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->danger()
+                                    ->title('Optimization Failed')
+                                    ->body('Could not generate WebP.')
+                                    ->send();
+                            }
+                        }),
 
-                DeleteAction::make()
-                    ->modalHeading('Delete Media Asset')
-                    ->modalDescription('Are you sure you want to delete this media asset? Physical files and active references will be cleanly unlinked.')
-                    ->before(function (Media $record) {
-                        try {
-                            $disk = Storage::disk($record->disk ?: 'public');
-                            if ($record->file_path && $disk->exists($record->file_path)) {
-                                $disk->delete($record->file_path);
-                            }
-                            if ($record->webp_path && $disk->exists($record->webp_path)) {
-                                $disk->delete($record->webp_path);
-                            }
-                            if ($record->avif_path && $disk->exists($record->avif_path)) {
-                                $disk->delete($record->avif_path);
-                            }
-                        } catch (\Throwable $e) {
-                        }
+                    Action::make('usages')
+                        ->label('View usages')
+                        ->icon('heroicon-o-link')
+                        ->modalHeading(fn (Media $record) => "Active References: #{$record->id} ({$record->file_name})")
+                        ->modalContent(fn (Media $record) => view('filament.widgets.media-usages-modal', ['usages' => $record->getUsages(true)])),
 
-                        try {
-                            Service::where('hero_media_id', $record->id)->update(['hero_media_id' => null]);
-                            CaseStudy::where('hero_media_id', $record->id)->update(['hero_media_id' => null]);
-                            BlogPost::where('featured_media_id', $record->id)->update(['featured_media_id' => null]);
-                            if (class_exists(TeamMember::class)) {
-                                TeamMember::where('avatar_media_id', $record->id)->update(['avatar_media_id' => null]);
-                            }
-                            if (class_exists(Testimonial::class)) {
-                                Testimonial::where('avatar_media_id', $record->id)->update(['avatar_media_id' => null]);
-                            }
-                            if (class_exists(Award::class)) {
-                                Award::where('badge_media_id', $record->id)->update(['badge_media_id' => null]);
-                            }
-                        } catch (\Throwable $e) {
-                        }
-                    }),
+                    DeleteAction::make()
+                        ->modalHeading('Delete Media Asset')
+                        ->modalDescription('Are you sure you want to delete this media asset? Physical files and active references will be cleanly unlinked.')
+                        ->before(function (Media $record) {
+                            self::cleanupMediaFilesAndReferences($record);
+                        }),
+                ])
+                    ->icon('heroicon-m-ellipsis-vertical')
+                    ->tooltip('More actions'),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->requiresConfirmation()
-                        ->modalHeading('Delete Selected Media Assets')
-                        ->modalDescription('Are you sure you want to permanently delete all selected media assets? Associated storage files and usages will be cleanly unlinked.')
-                        ->action(function (Collection $records) {
+                    BulkAction::make('move_to_folder')
+                        ->label('Move to folder')
+                        ->icon('heroicon-o-folder-arrow-down')
+                        ->form([
+                            Select::make('folder_id')
+                                ->label('Destination Folder')
+                                ->options(fn () => MediaFolder::treeOptions())
+                                ->placeholder('Root (No folder)')
+                                ->searchable(),
+                        ])
+                        ->action(function (Collection $records, array $data) {
+                            $folderId = $data['folder_id'] ?? null;
                             $count = $records->count();
-                            foreach ($records as $record) {
-                                try {
-                                    $disk = Storage::disk($record->disk ?: 'public');
-                                    if ($record->file_path && $disk->exists($record->file_path)) {
-                                        $disk->delete($record->file_path);
-                                    }
-                                    if ($record->webp_path && $disk->exists($record->webp_path)) {
-                                        $disk->delete($record->webp_path);
-                                    }
-                                    if ($record->avif_path && $disk->exists($record->avif_path)) {
-                                        $disk->delete($record->avif_path);
-                                    }
-                                } catch (\Throwable $e) {
-                                }
-
-                                try {
-                                    Service::where('hero_media_id', $record->id)->update(['hero_media_id' => null]);
-                                    CaseStudy::where('hero_media_id', $record->id)->update(['hero_media_id' => null]);
-                                    BlogPost::where('featured_media_id', $record->id)->update(['featured_media_id' => null]);
-                                    if (class_exists(TeamMember::class)) {
-                                        TeamMember::where('avatar_media_id', $record->id)->update(['avatar_media_id' => null]);
-                                    }
-                                    if (class_exists(Testimonial::class)) {
-                                        Testimonial::where('avatar_media_id', $record->id)->update(['avatar_media_id' => null]);
-                                    }
-                                    if (class_exists(Award::class)) {
-                                        Award::where('badge_media_id', $record->id)->update(['badge_media_id' => null]);
-                                    }
-                                } catch (\Throwable $e) {
-                                }
-
-                                $record->forceDelete();
-                            }
+                            Media::whereIn('id', $records->pluck('id'))->update(['folder_id' => $folderId]);
 
                             Notification::make()
                                 ->success()
-                                ->title('Media Assets Deleted')
-                                ->body("Successfully deleted {$count} selected media assets from storage and database.")
+                                ->title('Assets Moved')
+                                ->body("Moved {$count} selected assets.")
                                 ->send();
                         })
                         ->deselectRecordsAfterCompletion(),
 
+                    BulkAction::make('copy_urls')
+                        ->label('Copy URLs')
+                        ->icon('heroicon-o-clipboard-document')
+                        ->action(function (Collection $records, $livewire) {
+                            $urls = $records->pluck('url')->implode("\n");
+                            $livewire->dispatch('copy-to-clipboard', text: $urls);
+
+                            Notification::make()
+                                ->success()
+                                ->title('URLs Copied')
+                                ->body("Copied {$records->count()} asset URLs to clipboard.")
+                                ->send();
+                        }),
+
                     BulkAction::make('convert_selected_webp')
-                        ->label('⚡ Convert Selected to WebP')
+                        ->label('Convert Selected to WebP')
                         ->icon('heroicon-o-sparkles')
                         ->color('success')
                         ->action(function (Collection $records) {
@@ -427,11 +450,64 @@ class MediaResource extends ManagedResource
                                 ->send();
                         })
                         ->deselectRecordsAfterCompletion(),
+
+                    DeleteBulkAction::make()
+                        ->label('Delete')
+                        ->requiresConfirmation()
+                        ->modalHeading('Delete Selected Media Assets')
+                        ->modalDescription('Are you sure you want to permanently delete all selected media assets? Associated storage files and usages will be cleanly unlinked.')
+                        ->action(function (Collection $records) {
+                            $count = $records->count();
+                            foreach ($records as $record) {
+                                self::cleanupMediaFilesAndReferences($record);
+                                $record->forceDelete();
+                            }
+
+                            Notification::make()
+                                ->success()
+                                ->title('Media Assets Deleted')
+                                ->body("Successfully deleted {$count} selected media assets from storage and database.")
+                                ->send();
+                        })
+                        ->deselectRecordsAfterCompletion(),
                 ]),
             ])
             ->emptyStateHeading('No media assets found')
-            ->emptyStateDescription('Upload high-resolution graphics, hero visuals, client logos, or case study proof screenshots.')
+            ->emptyStateDescription('Upload images for your website pages and blog articles.')
             ->emptyStateIcon('heroicon-o-photo');
+    }
+
+    protected static function cleanupMediaFilesAndReferences(Media $record): void
+    {
+        try {
+            $disk = Storage::disk($record->disk ?: 'public');
+            if ($record->file_path && $disk->exists($record->file_path)) {
+                $disk->delete($record->file_path);
+            }
+            if ($record->webp_path && $disk->exists($record->webp_path)) {
+                $disk->delete($record->webp_path);
+            }
+            if ($record->avif_path && $disk->exists($record->avif_path)) {
+                $disk->delete($record->avif_path);
+            }
+        } catch (\Throwable $e) {
+        }
+
+        try {
+            Service::where('hero_media_id', $record->id)->update(['hero_media_id' => null]);
+            CaseStudy::where('hero_media_id', $record->id)->update(['hero_media_id' => null]);
+            BlogPost::where('featured_media_id', $record->id)->update(['featured_media_id' => null]);
+            if (class_exists(TeamMember::class)) {
+                TeamMember::where('avatar_media_id', $record->id)->update(['avatar_media_id' => null]);
+            }
+            if (class_exists(Testimonial::class)) {
+                Testimonial::where('avatar_media_id', $record->id)->update(['avatar_media_id' => null]);
+            }
+            if (class_exists(Award::class)) {
+                Award::where('badge_media_id', $record->id)->update(['badge_media_id' => null]);
+            }
+        } catch (\Throwable $e) {
+        }
     }
 
     public static function getPages(): array
