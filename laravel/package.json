@@ -25,7 +25,7 @@
     "@tiptap/extension-table-row": "^2.11.5",
     "@tiptap/extension-text-align": "^2.11.5",
     "@tiptap/extension-underline": "^2.11.5",
-    "@tiptap/extension-youtube": "^2.11.5",
+    "@tiptap/extension-youtube": "^3.35.0",
     "@tiptap/suggestion": "^2.11.5"
   }
 }
