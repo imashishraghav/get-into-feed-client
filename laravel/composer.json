@@ -7,7 +7,7 @@
     "require": {
         "php": "^8.2",
         "bacon/bacon-qr-code": "*",
-        "filament/filament": "^3.2",
+        "filament/filament": "^5.12",
         "laravel/framework": "^13.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "*",
