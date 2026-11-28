@@ -1,11 +1,11 @@
 {
-  "name": "Get Into Feed",
-  "short_name": "Get Into Feed",
-  "description": "Digital marketing agency for SEO, ads, content and lead generation.",
+  "name": "GetIntoFeed",
+  "short_name": "GetIntoFeed",
+  "description": "Premier creative performance marketing studio in India. Video reels, funnels, paid media.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f7faf8",
-  "theme_color": "#12211f",
+  "background_color": "#0b0f19",
+  "theme_color": "#d2ff00",
   "icons": [
     {
       "src": "/favicon.svg",

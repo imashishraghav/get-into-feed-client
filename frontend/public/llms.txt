@@ -1,0 +1,67 @@
+# GetIntoFeed
+
+> GetIntoFeed is a premier creative performance marketing agency and growth engineering studio based in New Delhi, India. We engineer high-converting digital funnels, algorithmic Meta & Google Ads campaigns, viral short-form video reels, technical SEO, brand positioning, and custom web development for ambitious consumer, D2C, real estate, fintech, and enterprise brands.
+
+## Core Pages
+
+- [Homepage](https://getintofeed.com/): Official homepage with strategic growth capabilities, performance metrics, client results, and agency introduction.
+- [Services Hub](https://getintofeed.com/services): Complete catalog of 8 core growth disciplines and specialized digital marketing services.
+- [Pricing & Plans](https://getintofeed.com/pricing): Transparent pricing starting from ₹10,500* for single-discipline starter support, scaling to comprehensive growth sprints (₹24,999 - ₹49,999/mo*) with clear scope breakdowns, FAQs, and zero hidden retainers.
+- [Case Studies & Work](https://getintofeed.com/case-studies): In-depth portfolio of verified client results, ROAS benchmarks, and full-funnel scaling case studies.
+- [Feed Notes Blog](https://getintofeed.com/blog): Actionable growth insights, performance marketing tactics, SEO playbooks, and conversion engineering articles.
+- [About Us](https://getintofeed.com/about): Company background, mission, leadership team (Sumit Mishra, Ashish Raghav, Shubham Mishra), and Delhi NCR studio headquarters.
+- [Contact & Strategy Call](https://getintofeed.com/contact): Direct strategy inquiry form, WhatsApp desk, office address, and consultation scheduling.
+- [Client Reviews & Testimonials](https://getintofeed.com/reviews): Verified customer testimonials, verified ratings, and client feedback.
+- [Growth Consultation & Audit](https://getintofeed.com/contact): Request a confidential audit of current ad spend efficiency and conversion bottlenecks.
+- [XML Sitemap](https://getintofeed.com/sitemap.xml): Complete search engine indexation directory of all site pages, services, and articles.
+
+## Services
+
+- [Google Ads Management](https://getintofeed.com/services/google-ads-services-delhi-ncr): High-intent Google Search, Performance Max, negative keyword architecture, and call conversion tracking.
+- [Meta Ads & Performance Marketing](https://getintofeed.com/services/meta-ads-services-delhi-ncr): Advantage+ shopping campaigns, CAPI server-side pixel tracking, and creative media buying on Instagram & Facebook.
+- [Search Engine Optimization (SEO)](https://getintofeed.com/services/seo-services-delhi-ncr): Technical SEO audits, programmatic search architecture, entity SEO, and Generative Engine Optimization (GEO).
+- [Website Design & Development](https://getintofeed.com/services/website-design-delhi-ncr): High-converting React SPA web architecture, sub-second edge loading, and CRO-focused UI/UX design.
+- [Content & Creative Strategy](https://getintofeed.com/services/content-creative-services-delhi-ncr): High-CTR ad creative production, commercial copywriting, and brand editorial strategies.
+- [Graphic Design & Branding](https://getintofeed.com/services/graphic-design-services-delhi-ncr): Brand identity systems, token design architecture, typography hierarchy, and conversion-focused vector creatives.
+- [Reels & Short-Form Video Editing](https://getintofeed.com/services/reels-video-editing-delhi-ncr): Viral Instagram Reels, YouTube Shorts, kinetic motion graphics, and high-retention 9:16 video production.
+- [Social Media Marketing](https://getintofeed.com/services/social-media-marketing-delhi-ncr): Organic social channel growth, community management, and brand distribution across major platforms.
+
+## Featured Case Studies
+
+- [UrbanThreads Co.](https://getintofeed.com/case-studies/urbanthreads-co): Scaled D2C fashion apparel revenue by 4.2x with Meta Advantage+ and dynamic creative batching.
+- [Skyline Residences](https://getintofeed.com/case-studies/skyline-residences): Generated 420+ high-intent buyer inquiries for luxury NCR real estate villas via Google Ads.
+- [DataSync Analytics](https://getintofeed.com/case-studies/datasync-analytics): Grew B2B SaaS demo signups by 340% via programmatic SEO landing pages and LinkedIn ads.
+- [VitaHealth App](https://getintofeed.com/case-studies/vitahealth-app): Accelerated health tech mobile app installs to 120,000+ at 38% lower cost per install.
+- [LuxeLiving Realty](https://getintofeed.com/case-studies/luxeliving-realty): Premium luxury real estate lead generation campaign delivering 420+ high-net-worth property inquiries.
+- [GlowUp Skincare](https://getintofeed.com/case-studies/glowup-skincare): Scaled an Indian D2C skincare brand from ₹8L to ₹42L/month with viral Reels and Meta ads.
+- [Apex FinTech](https://getintofeed.com/case-studies/apex-fintech): Scaled B2B qualified pipeline by +340% with high-intent Google Search ads and programmatic SEO funnels.
+
+## Growth Playbooks & Blog Articles
+
+- [Meta Advantage+ Ecommerce Scaling in 2026](https://getintofeed.com/blog/meta-advantage-plus-ecommerce-scaling): Algorithmic media buying, ASC budgets, and server-side CAPI attribution frameworks.
+- [5 High-Converting Hook Frameworks for TikTok & Reels](https://getintofeed.com/blog/tiktok-reels-hook-frameworks): Retention curves, visual patterns, and audio cues for viral short-form ads.
+- [Programmatic SEO for B2B SaaS](https://getintofeed.com/blog/programmatic-seo-b2b-saas): Scalable landing page templates, entity relationships, and internal linking structures.
+- [Why Your Retargeting Funnel Is Leaking Money](https://getintofeed.com/blog/retargeting-funnel-leaks-fix): Post-cookie attribution, exclusion audiences, and multi-touch remarketing windows.
+- [Designing Landing Pages That Convert at 10%+](https://getintofeed.com/blog/landing-page-ux-convert-10-percent): Above-the-fold visual hierarchy, social proof placements, and mobile checkout friction fixes.
+- [The Future of B2B Lead Generation](https://getintofeed.com/blog/future-of-b2b-lead-generation): Replacing gated PDFs with interactive tools, programmatic data, and founder-led content.
+- [Organic Content vs Paid Media](https://getintofeed.com/blog/organic-content-vs-paid-media): Strategic budget allocation framework between organic compounding and paid velocity.
+- [Anatomy of a 3-Second Thumb-Stop Hook](https://getintofeed.com/blog/thumb-stop-creative-hooks): How to increase video retention curves by 400% on Meta and TikTok.
+- [First-Party Attribution & Server-Side CAPI in 2026](https://getintofeed.com/blog/death-of-third-party-cookies): Technical implementation of Conversions API to eliminate signal degradation.
+- [Optimizing for AI Answer Engines (GEO)](https://getintofeed.com/blog/generative-search-optimization): How to earn citations in Perplexity, ChatGPT, and Google AI Overviews.
+- [7 Ways to Increase Form Field Conversion Rate](https://getintofeed.com/blog/7-ways-to-increase-form-field-conversion-rate): UX teardown on multi-step forms, field reduction, and instant WhatsApp handoff.
+
+## Legal & Compliance
+
+- [Privacy Policy](https://getintofeed.com/privacy): Data protection practices, cookie compliance, and GDPR/DPDP alignment.
+- [Terms of Service](https://getintofeed.com/terms): Service delivery terms, sprint engagement rules, and commercial agreements.
+- [Refund & Cancellation Policy](https://getintofeed.com/refund-policy): Transparent refund rules, milestone approvals, and retainer cancellation terms.
+- [Cookie Policy](https://getintofeed.com/cookie-policy): Details on first-party cookies, analytics tracking, and user consent controls.
+- [Disclaimer](https://getintofeed.com/disclaimer): Commercial disclaimers regarding ad spend, platform algorithms, and projected results.
+- [Non-Disclosure Agreement (NDA)](https://getintofeed.com/nda): Confidentiality commitments protecting client proprietary data, ad creatives, and customer records.
+
+## Optional
+
+- [Full LLM Knowledge Base](https://getintofeed.com/llms-full.txt): Comprehensive deep-dive documentation and complete service specifications for AI models.
+- [XML Sitemap](https://getintofeed.com/sitemap.xml): Full URL hierarchy and search indexation map.
+- [Robots Configuration](https://getintofeed.com/robots.txt): Machine crawler directives, crawl delays, and AI agent permissions.
+- [Model Context Protocol (MCP) Server Card](https://getintofeed.com/.well-known/mcp/server-card.json): Model Context Protocol server metadata and machine discovery descriptor.

@@ -4,15 +4,37 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "sync": "node ../scripts/sync_frontend_sources.cjs",
+    "prebuild": "node ../scripts/sync_frontend_sources.cjs",
     "build": "vite build",
     "dev": "vite --host 0.0.0.0",
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^5.4.11",
+    "dompurify": "^3.5.0",
+    "lucide-react": "^0.468.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "lucide-react": "^0.468.0"
+    "source-map-js": "1.2.2",
+    "vite": "^6.4.6"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.28",
+    "postcss-selector-parser": "^6.1.6",
+    "tailwindcss": "^3.4.19"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ],
+    "overrides": {
+      "source-map-js": "1.2.2",
+      "browserslist": "^4.29.0",
+      "baseline-browser-mapping": "^2.11.25",
+      "postcss": "^8.5.28",
+      "esbuild": "^0.25.12"
+    }
   }
 }

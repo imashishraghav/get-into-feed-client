@@ -1,7 +1,80 @@
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /admin/*
-Disallow: /api/admin/*
+# ==============================================================================
+# GET INTO FEED — ROBOTS.TXT
+# https://getintofeed.com/
+# ==============================================================================
 
-Sitemap: https://get-into-feed-client.vercel.app/sitemap.xml
+# Machine-readable Content Signals (agent-ready / RFC standard)
+Content-Signal: search=yes, ai-train=no
+
+User-agent: *
+Content-Signal: search=yes, ai-train=no
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Crawl-delay: 1
+
+# ── AI Model Training Crawlers (Blocked per ai-train=no policy) ──
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+# ── AI Search & Answer Engine Crawlers (Allowed for Search & Citation) ──
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: msnbot
+Allow: /
+
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+# Sitemaps & Context
+Sitemap: https://getintofeed.com/sitemap.xml
+
+# LLM & AI Engine Context Files (https://llmstxt.org/)
+# LLMs: https://getintofeed.com/llms.txt
+# MCP Server Card: https://getintofeed.com/.well-known/mcp/server-card.json

@@ -1,0 +1,869 @@
+[
+  {
+    "slug": "urbanthreads-co",
+    "brand": "UrbanThreads Co.",
+    "title": "Scaling a direct-to-consumer fashion brand from ₹50L to ₹2Cr monthly revenue using data-driven Meta and Google Ads structures.",
+    "category": "E-Commerce",
+    "subTag": "Performance Ads",
+    "filterCategories": [
+      "Paid Media",
+      "E-Commerce"
+    ],
+    "tags": [
+      "E-Commerce",
+      "Performance Ads",
+      "Content Strategy"
+    ],
+    "headlinePrefix": "Scaling a D2C Fashion Brand from ",
+    "headlineHighlight": "₹50L to ₹2Cr/mo",
+    "headlineSuffix": " in 90 Days.",
+    "heroDescription": "How we restructured Meta & Google Ads, overhauled their creative testing, and skyrocketed UrbanThreads' blended ROAS to a record 5.2x.",
+    "metric": "300%",
+    "result": "Revenue Growth",
+    "stat1": {
+      "val": "300%",
+      "label": "Revenue Growth"
+    },
+    "stat2": {
+      "val": "5.2x",
+      "label": "Blended ROAS"
+    },
+    "stats": [
+      {
+        "val": "300%",
+        "label": "Revenue Growth",
+        "highlight": true
+      },
+      {
+        "val": "5.2x",
+        "label": "Blended ROAS",
+        "highlight": true
+      },
+      {
+        "val": "-42%",
+        "label": "Cost Per Acq. (CPA)",
+        "highlight": true
+      },
+      {
+        "val": "90",
+        "label": "Days to Scale",
+        "highlight": false
+      }
+    ],
+    "year": "2025",
+    "services": [
+      "Paid Ads",
+      "Meta & Google Ads",
+      "Funnel CRO"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80",
+    "challenge": "Scaling a direct-to-consumer fashion brand from ₹50L to ₹2Cr monthly revenue using data-driven Meta and Google Ads structures.",
+    "challengeParagraphs": [
+      "UrbanThreads Co. had a great product—sustainable, premium streetwear—but they hit a hard plateau at ₹50 Lakhs in monthly revenue. Their Meta Ads were suffering from extreme ad fatigue, and their Customer Acquisition Cost (CAC) was eating up all their profit margins.",
+      "They were relying on a single 'hero' video from 6 months ago, and their Google Ads structure was disorganized, cannibalizing their own branded search terms while ignoring high-intent non-brand shopping queries. They needed a complete performance marketing reset to scale profitably."
+    ],
+    "obstacles": [
+      "Ad creative lifespan was less than 5 days.",
+      "Zero retargeting funnel; 98% of visitors bounced forever.",
+      "High CPMs due to broad, unsegmented audience targeting."
+    ],
+    "approachIntro": "We didn't just tweak their bids; we rebuilt their entire acquisition engine from the ground up. Our strategy centered around a high-velocity creative testing framework paired with a consolidated account structure.",
+    "approachSteps": [
+      {
+        "step": 1,
+        "title": "The \"UGC First\" Creative Pipeline",
+        "desc": "We sourced 15 micro-influencers to create authentic, unboxing and try-on User Generated Content (UGC). We turned these into fast-paced, TikTok-style ads, testing 20+ new variations every week to combat ad fatigue and drop CPA."
+      },
+      {
+        "step": 2,
+        "title": "Account Consolidation (Meta)",
+        "desc": "We collapsed their 35 messy campaigns into just 3 core campaigns: A Broad Prospecting Advantage+ campaign, a segmented Retargeting campaign, and a Dynamic Product Ads (DPA) catalog campaign for abandoned carts."
+      },
+      {
+        "step": 3,
+        "title": "Google Performance Max Rollout",
+        "desc": "We implemented highly segmented PMax campaigns, isolating top-selling SKUs into their own asset groups with custom lifestyle imagery, instantly improving click-through rates by 65% on the shopping tab."
+      }
+    ],
+    "creativeExecution": [
+      {
+        "image": "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Top Performing UGC Ad",
+        "metric": "ROAS: 6.8x"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Dynamic Product Catalog",
+        "metric": "CTR: 3.2%"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1558769132-cb1aea458c5e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Lifestyle Carousel",
+        "metric": "CPA: -35% vs baseline"
+      }
+    ],
+    "results": [
+      {
+        "label": "Revenue Growth",
+        "val": "300%"
+      },
+      {
+        "label": "Blended ROAS",
+        "val": "5.2x"
+      },
+      {
+        "label": "Monthly Revenue",
+        "val": "₹2.1 Crores"
+      }
+    ],
+    "testimonial": {
+      "quote": "GetIntoFeed didn't just run our ads; they became an extension of our growth team. Their creative strategy was exactly what we were missing. Breaking the ₹2Cr monthly mark seemed impossible 3 months ago.",
+      "author": "Rahul Sharma",
+      "role": "Founder & CEO, UrbanThreads Co.",
+      "avatar": "https://randomuser.me/api/portraits/men/32.jpg"
+    }
+  },
+  {
+    "slug": "skyline-residences",
+    "brand": "Skyline Residences",
+    "title": "Generating high-intent qualified leads for a luxury housing project through targeted content marketing and optimized search campaigns.",
+    "category": "Real Estate",
+    "subTag": "Lead Gen",
+    "filterCategories": [
+      "Real Estate",
+      "Paid Media"
+    ],
+    "tags": [
+      "Real Estate",
+      "Lead Gen",
+      "Search & Video"
+    ],
+    "headlinePrefix": "Generating ₹38Cr in Luxury Housing Pipeline with ",
+    "headlineHighlight": "45% Lower CPL",
+    "headlineSuffix": " in 60 Days.",
+    "heroDescription": "How we engineered ultra-targeted HNI buyer funnels, 4K architectural drone reels, and WhatsApp concierge booking for a luxury housing development.",
+    "metric": "-45%",
+    "result": "Cost Per Lead",
+    "stat1": {
+      "val": "-45%",
+      "label": "Cost Per Lead"
+    },
+    "stat2": {
+      "val": "1,200+",
+      "label": "Qualified Leads"
+    },
+    "stats": [
+      {
+        "val": "-45%",
+        "label": "Cost Per Lead",
+        "highlight": true
+      },
+      {
+        "val": "1,200+",
+        "label": "Qualified Leads",
+        "highlight": true
+      },
+      {
+        "val": "₹38Cr",
+        "label": "Inventory Booked",
+        "highlight": true
+      },
+      {
+        "val": "60",
+        "label": "Days to Milestone",
+        "highlight": false
+      }
+    ],
+    "year": "2025",
+    "services": [
+      "Lead Gen",
+      "Google Search",
+      "Content Marketing"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80",
+    "challenge": "Generating high-intent qualified leads for a luxury housing project through targeted content marketing and optimized search campaigns.",
+    "challengeParagraphs": [
+      "Skyline Residences had luxury inventory starting at ₹4.5 Crore, but was burning through digital ad spend with generic forms that brought in brokers and curious browsers rather than genuine HNI buyers.",
+      "Their internal sales team spent countless hours dialing cold leads while competitor projects were securing early booking commitments across Gurgaon and Delhi NCR."
+    ],
+    "obstacles": [
+      "Over 80% of form fills were unqualified or budget mismatches.",
+      "High site visit no-show rates resulting in burned broker commissions.",
+      "Absence of high-retention cinematic video showcasing rare architecture."
+    ],
+    "approachIntro": "We developed localized micro-campaigns targeting NRI buyers, combined with high-touch virtual 3D tour landing pages and automated WhatsApp follow-ups.",
+    "approachSteps": [
+      {
+        "step": 1,
+        "title": "4K Architectural Cinematography",
+        "desc": "Scripted and shot drone walkthroughs spotlighting rare double-height ceilings, private club access, and panoramic city views to halt high-net-worth thumbs instantly."
+      },
+      {
+        "step": 2,
+        "title": "Budget-Verified Survey Funnels",
+        "desc": "Integrated mandatory investment bracket qualifications before lead submission, eliminating tire-kickers and increasing sales desk efficiency by 300%."
+      },
+      {
+        "step": 3,
+        "title": "VIP WhatsApp Concierge",
+        "desc": "Configured automated WhatsApp booking confirmations with personalized preview slots within 90 seconds of form completion."
+      }
+    ],
+    "creativeExecution": [
+      {
+        "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Architectural 4K Drone Reel",
+        "metric": "Show-Up: 78%"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Penthouse Virtual Tour",
+        "metric": "CPL: -45%"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Private Villa Invitation Ad",
+        "metric": "Leads: 1,200+"
+      }
+    ],
+    "results": [
+      {
+        "label": "Cost Per Lead",
+        "val": "-45%"
+      },
+      {
+        "label": "Qualified Leads",
+        "val": "1,200+"
+      },
+      {
+        "label": "Inventory Booked",
+        "val": "₹38 Crores"
+      }
+    ],
+    "testimonial": {
+      "quote": "Our sales velocity doubled within 60 days. The lead quality was far superior to anything standard property portals delivered.",
+      "author": "Rajiv Oberoi",
+      "role": "Director of Sales, Skyline Residences",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
+    }
+  },
+  {
+    "slug": "datasync-analytics",
+    "brand": "DataSync Analytics",
+    "title": "Dominating non-branded search terms to drive organic product sign-ups through technical SEO and comprehensive programmatic content.",
+    "category": "B2B SaaS",
+    "subTag": "SEO",
+    "filterCategories": [
+      "SEO"
+    ],
+    "tags": [
+      "B2B SaaS",
+      "SEO",
+      "Organic Traffic"
+    ],
+    "headlinePrefix": "Dominating B2B Search Terms to Drive ",
+    "headlineHighlight": "+210% Organic Traffic",
+    "headlineSuffix": " for 40+ Keywords.",
+    "heroDescription": "How we engineered an 800-page programmatic SEO architecture, dominated non-branded enterprise search terms, and drove thousands of product trial signups.",
+    "metric": "210%",
+    "result": "Organic Traffic",
+    "stat1": {
+      "val": "210%",
+      "label": "Organic Traffic"
+    },
+    "stat2": {
+      "val": "Page 1",
+      "label": "For 40+ Keywords"
+    },
+    "stats": [
+      {
+        "val": "210%",
+        "label": "Organic Traffic",
+        "highlight": true
+      },
+      {
+        "val": "Page 1",
+        "label": "For 40+ Keywords",
+        "highlight": true
+      },
+      {
+        "val": "3,400+",
+        "label": "Monthly Organic MQLs",
+        "highlight": true
+      },
+      {
+        "val": "120",
+        "label": "Days to Compound",
+        "highlight": false
+      }
+    ],
+    "year": "2024",
+    "services": [
+      "Technical SEO",
+      "Programmatic Content",
+      "Authority Building"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80",
+    "challenge": "Dominating non-branded search terms to drive organic product sign-ups through technical SEO and comprehensive programmatic content.",
+    "challengeParagraphs": [
+      "In a crowded B2B SaaS environment where Google Search CPCs reached up to ₹500/click, DataSync needed an organic engine that could acquire qualified engineering teams with predictable compounding economics.",
+      "Legacy pages took over 4 seconds to load on mobile and had thin content that Google search crawlers routinely ignored."
+    ],
+    "obstacles": [
+      "Zero ranking presence for high-intent 'integration comparison' keywords.",
+      "Slow page speeds causing high bounce rates on product documentation.",
+      "High competitor ad spend pushing organic search results below the fold."
+    ],
+    "approachIntro": "We deployed an 800-page programmatic SEO architecture targeting enterprise integration searches, fixing core web vitals and building authoritative technical backlinks.",
+    "approachSteps": [
+      {
+        "step": 1,
+        "title": "Programmatic Comparison Matrix",
+        "desc": "Engineered scalable template architecture indexing 800+ API connector permutations and schema-verified software comparison tables."
+      },
+      {
+        "step": 2,
+        "title": "Sub-Second Technical Optimization",
+        "desc": "Optimized Core Web Vitals to sub-0.8s Largest Contentful Paint (LCP) and implemented server-side rendered dynamic documentation."
+      },
+      {
+        "step": 3,
+        "title": "Authoritative Engineering Backlinks",
+        "desc": "Published open-source benchmarking reports and developer tools that naturally earned high-domain editorial citations."
+      }
+    ],
+    "creativeExecution": [
+      {
+        "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Programmatic Connector Library",
+        "metric": "Traffic: +210%"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Interactive Latency Benchmarks",
+        "metric": "Signups: +85%"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Developer Documentation Hub",
+        "metric": "Page 1: 40+ Terms"
+      }
+    ],
+    "results": [
+      {
+        "label": "Organic Traffic",
+        "val": "210%"
+      },
+      {
+        "label": "Page 1 Keywords",
+        "val": "40+ Keywords"
+      },
+      {
+        "label": "Organic MQLs",
+        "val": "3,400+ / mo"
+      }
+    ],
+    "testimonial": {
+      "quote": "Our pipeline now compounds every month without our ad spend having to increase by a single rupee. Truly game-changing SEO.",
+      "author": "Meera Krishnan",
+      "role": "VP Marketing, DataSync",
+      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80"
+    }
+  },
+  {
+    "slug": "vitahealth-app",
+    "brand": "VitaHealth App",
+    "title": "Creating a viral short-form video strategy on Instagram Reels and TikTok to drive massive app installs at a fraction of standard acquisition costs.",
+    "category": "Healthcare",
+    "subTag": "Viral Social",
+    "filterCategories": [
+      "Content & Social"
+    ],
+    "tags": [
+      "Healthcare",
+      "Viral Social",
+      "Short-Form Video"
+    ],
+    "headlinePrefix": "Driving 50k+ App Installs via ",
+    "headlineHighlight": "15M+ Viral Video Views",
+    "headlineSuffix": " at -62% CPI.",
+    "heroDescription": "How we leveraged authentic doctor-verified short-form video hooks, creator UGC, and algorithmic Reels mechanics to scale wellness downloads.",
+    "metric": "15M+",
+    "result": "Video Views",
+    "stat1": {
+      "val": "15M+",
+      "label": "Video Views"
+    },
+    "stat2": {
+      "val": "50k+",
+      "label": "App Installs"
+    },
+    "stats": [
+      {
+        "val": "15M+",
+        "label": "Video Views",
+        "highlight": true
+      },
+      {
+        "val": "50k+",
+        "label": "App Installs",
+        "highlight": true
+      },
+      {
+        "val": "-62%",
+        "label": "Cost Per Install (CPI)",
+        "highlight": true
+      },
+      {
+        "val": "45",
+        "label": "Days to Virality",
+        "highlight": false
+      }
+    ],
+    "year": "2025",
+    "services": [
+      "Viral Social",
+      "Short-Form Video",
+      "Creator UGC"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80",
+    "challenge": "Creating a viral short-form video strategy on Instagram Reels and TikTok to drive massive app installs at a fraction of standard acquisition costs.",
+    "challengeParagraphs": [
+      "Health app ads traditionally suffer from sterile imagery, medical disclaimers, and boring voiceovers that users instantly swipe past.",
+      "VitaHealth had world-class preventive care algorithms, but their customer acquisition costs were climbing as generic App Store ads became saturated."
+    ],
+    "obstacles": [
+      "High drop-off rates on app install ad click-throughs.",
+      "Traditional static creatives fatigued in under 72 hours.",
+      "Strict algorithmic compliance and medical advertisement restrictions."
+    ],
+    "approachIntro": "We built a creator studio producing authentic doctor-reviewed health bite videos with thumb-stopping hooks, combined with direct app-store deep-linking.",
+    "approachSteps": [
+      {
+        "step": 1,
+        "title": "Algorithmic Hook Engineering",
+        "desc": "Created 3-second tension-generating hooks addressing common daily wellness pain points that arrested scrolling immediately."
+      },
+      {
+        "step": 2,
+        "title": "Medical Creator UGC Pipeline",
+        "desc": "Partnered with 20+ certified medical practitioners and fitness experts for unscripted, highly relatable explainer bites."
+      },
+      {
+        "step": 3,
+        "title": "Deep-Linked Conversion Pathways",
+        "desc": "Implemented direct-to-install mobile routing bypassing standard landing friction and increasing installation completion rates by 48%."
+      }
+    ],
+    "creativeExecution": [
+      {
+        "image": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Viral Doctor Mythbuster Reel",
+        "metric": "Views: 4.8M"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Morning Routine Teardown",
+        "metric": "Installs: 22k+"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Nutrition Comparison Shorts",
+        "metric": "CPI: -62%"
+      }
+    ],
+    "results": [
+      {
+        "label": "Video Views",
+        "val": "15M+"
+      },
+      {
+        "label": "App Installs",
+        "val": "50,000+"
+      },
+      {
+        "label": "CPI Reduction",
+        "val": "-62%"
+      }
+    ],
+    "testimonial": {
+      "quote": "GetIntoFeed cracked the code on viral wellness video. Our organic app installs shot up while our blended CPI dropped to historic lows.",
+      "author": "Dr. Alok Verma",
+      "role": "Co-Founder, VitaHealth",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80"
+    }
+  },
+  {
+    "slug": "luxeliving-realty",
+    "brand": "LuxeLiving Realty",
+    "title": "Scaling Luxury Real Estate Inbound Pipeline to ₹42Cr in 90 Days",
+    "category": "Real Estate",
+    "subTag": "High-Ticket Lead Gen",
+    "filterCategories": [
+      "Real Estate",
+      "Paid Media"
+    ],
+    "tags": [
+      "Real Estate",
+      "Paid Media",
+      "Lead Gen"
+    ],
+    "headlinePrefix": "Scaling Luxury Real Estate Inbound Pipeline to ",
+    "headlineHighlight": "₹42Cr in 90 Days",
+    "headlineSuffix": " with HNI Video Tours.",
+    "heroDescription": "How we replaced generic Facebook lead forms with cinematic 4K drone walkthroughs and private WhatsApp concierge qualification to unlock record villa bookings.",
+    "metric": "+380%",
+    "result": "Growth in Qualified Inbound HNI Buyer Leads",
+    "stat1": {
+      "val": "+380%",
+      "label": "Inbound Pipeline"
+    },
+    "stat2": {
+      "val": "₹42.8Cr",
+      "label": "Value Scaled"
+    },
+    "stats": [
+      {
+        "val": "+380%",
+        "label": "Inbound HNI Leads",
+        "highlight": true
+      },
+      {
+        "val": "₹42.8Cr",
+        "label": "Pipeline Value",
+        "highlight": true
+      },
+      {
+        "val": "-46.2%",
+        "label": "CPA Reduction",
+        "highlight": true
+      },
+      {
+        "val": "90",
+        "label": "Days to Milestone",
+        "highlight": false
+      }
+    ],
+    "year": "2025",
+    "services": [
+      "Paid Ads",
+      "Cinematic Video",
+      "CRO Funnel"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80",
+    "challenge": "LuxeLiving had high-ticket luxury villas in Bengaluru and Goa, but was burning ad spend on generic Facebook lead forms that delivered low-intent leads and unqualified tire-kickers.",
+    "challengeParagraphs": [
+      "LuxeLiving had premium luxury villas priced above ₹6.5 Crore, but their digital ad budget was getting exhausted on broad Meta lead forms that captured uninterested brokers and non-buyers.",
+      "The sales desk was overwhelmed with hundreds of phone calls with unqualified leads while actual ultra-high-net-worth investors were never being reached."
+    ],
+    "obstacles": [
+      "Ad creative failed to convey architectural rarity and bespoke finishes.",
+      "Generic lead forms attracted low-budget inquiries.",
+      "Over 75% of scheduled site visits failed to show up."
+    ],
+    "approachIntro": "We threw out generic stock photography and produced 4K cinematic drone tours focusing on architectural rarity, coupled with a private qualification survey funnel and WhatsApp concierge VIP booking.",
+    "approachSteps": [
+      {
+        "step": 1,
+        "title": "Bespoke 4K Drone Cinematography",
+        "desc": "Captured private pools, Italian marble cantilevered living spaces, and sunset sky-terraces to communicate ultra-luxury authority."
+      },
+      {
+        "step": 2,
+        "title": "Mandatory Net Worth Survey Screening",
+        "desc": "Built a 3-step qualification filter that ensured only verified high-net-worth individuals could schedule villa previews."
+      },
+      {
+        "step": 3,
+        "title": "Private WhatsApp VIP Concierge",
+        "desc": "Direct WhatsApp concierge coordination providing private calendar links, driving an unprecedented 78% site visit attendance rate."
+      }
+    ],
+    "creativeExecution": [
+      {
+        "image": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
+        "title": "Architectural Drone Showcase",
+        "metric": "Pipeline: ₹42.8Cr"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Private Sky-Villa Walkthrough",
+        "metric": "Show-Up Rate: 78%"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "VIP Invitation Reel",
+        "metric": "CPA: -46.2%"
+      }
+    ],
+    "results": [
+      {
+        "label": "Pipeline Value Generated",
+        "val": "₹42.8 Crores"
+      },
+      {
+        "label": "CPA Reduction",
+        "val": "-46.2%"
+      },
+      {
+        "label": "Site Visit Show-Up Rate",
+        "val": "78%"
+      }
+    ],
+    "testimonial": {
+      "quote": "GetIntoFeed transformed our entire lead quality. Instead of chasing leads who couldn't afford our properties, HNIs are now booking private villa previews directly through WhatsApp.",
+      "author": "Vikramaditya Singhania",
+      "role": "Managing Director, LuxeLiving",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
+    }
+  },
+  {
+    "slug": "glowup-skincare",
+    "brand": "GlowUp D2C Skincare",
+    "title": "Scaling a Clean Beauty Brand from ₹12L to ₹85L Monthly Run Rate",
+    "category": "E-Commerce",
+    "subTag": "UGC Video & Scaling",
+    "filterCategories": [
+      "E-Commerce",
+      "Content & Social",
+      "Paid Media"
+    ],
+    "tags": [
+      "E-Commerce",
+      "UGC Video",
+      "Meta Scaling"
+    ],
+    "headlinePrefix": "Scaling a Clean Beauty Brand from ",
+    "headlineHighlight": "₹12L to ₹85L/mo",
+    "headlineSuffix": " at 4.8x Blended ROAS.",
+    "heroDescription": "How we built a 30-creator UGC pipeline producing authentic texture videos, bundle offers, and 5-step automated retention flows.",
+    "metric": "4.8x",
+    "result": "Blended ROAS at Scale",
+    "stat1": {
+      "val": "4.8x",
+      "label": "Blended ROAS"
+    },
+    "stat2": {
+      "val": "₹85L/mo",
+      "label": "Run Rate"
+    },
+    "stats": [
+      {
+        "val": "₹85L/mo",
+        "label": "Monthly Revenue",
+        "highlight": true
+      },
+      {
+        "val": "4.8x",
+        "label": "Blended ROAS",
+        "highlight": true
+      },
+      {
+        "val": "34%",
+        "label": "Repeat Purchase Rate",
+        "highlight": true
+      },
+      {
+        "val": "90",
+        "label": "Days of Scaling",
+        "highlight": false
+      }
+    ],
+    "year": "2025",
+    "services": [
+      "Short-Form Video",
+      "Meta Ads",
+      "Klaviyo Retention"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1600&q=80",
+    "challenge": "GlowUp was stuck at ₹12 Lakh/mo with rising Meta acquisition costs and declining creative fatigue across their basic static product photos.",
+    "challengeParagraphs": [
+      "GlowUp had clinically backed botanical formulations, but their static product images failed to stand out on crowded Instagram and Facebook feeds.",
+      "Customer acquisition costs escalated while single-jar purchasers rarely returned for second orders, hurting customer lifetime value."
+    ],
+    "obstacles": [
+      "Creative fatigue hitting ad sets within 4 to 5 days of launch.",
+      "Low average order value due to single-product checkout patterns.",
+      "Non-existent post-purchase email and WhatsApp retention nurture flows."
+    ],
+    "approachIntro": "We built a 30-creator UGC pipeline producing authentic before-and-after texture videos, coupled with bundle offers and automated 5-step post-purchase retention flows.",
+    "approachSteps": [
+      {
+        "step": 1,
+        "title": "30-Creator UGC Studio Sprints",
+        "desc": "Scripted raw, highly believable skincare routine and unboxing videos highlighting sensory serum textures."
+      },
+      {
+        "step": 2,
+        "title": "High-AOV Bundle Architecture",
+        "desc": "Designed 'Morning to Night Glow' kits with free gift incentives, lifting average cart values by 44%."
+      },
+      {
+        "step": 3,
+        "title": "Automated Replenishment Funnels",
+        "desc": "Triggered WhatsApp and email refill reminders timed precisely to 30-day serum usage cycles."
+      }
+    ],
+    "creativeExecution": [
+      {
+        "image": "https://images.unsplash.com/photo-1556228720-195a672e8a03?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Macro Texture Application Reel",
+        "metric": "ROAS: 5.4x"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "3-Step Routine Bundle Offer",
+        "metric": "AOV: +44%"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1512290900672-1f4174070a25?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Dermatologist Reaction Reel",
+        "metric": "CTR: 3.8%"
+      }
+    ],
+    "results": [
+      {
+        "label": "Monthly Revenue",
+        "val": "₹85 Lakhs / mo"
+      },
+      {
+        "label": "Repeat Purchase Rate",
+        "val": "34%"
+      },
+      {
+        "label": "Video View-Through Rate",
+        "val": "68%"
+      }
+    ],
+    "testimonial": {
+      "quote": "The creative velocity GetIntoFeed delivers is ridiculous. Our ads never suffer fatigue anymore because their video team drops fresh winning hooks every single week.",
+      "author": "Sneha Kapur",
+      "role": "Co-Founder & CEO, GlowUp",
+      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80"
+    }
+  },
+  {
+    "slug": "apex-fintech",
+    "brand": "Apex Wealth FinTech",
+    "title": "Acquiring 28,000+ Active Retail Investors with Zero CAC Penalty",
+    "category": "B2B SaaS",
+    "subTag": "Programmatic SEO & Funnels",
+    "filterCategories": [
+      "SEO",
+      "Paid Media"
+    ],
+    "tags": [
+      "FinTech",
+      "Programmatic SEO",
+      "Customer Acquisition"
+    ],
+    "headlinePrefix": "Acquiring 28,000+ Active Investors with ",
+    "headlineHighlight": "Zero CAC Penalty",
+    "headlineSuffix": " via FinTech Portals.",
+    "heroDescription": "How we engineered an educational programmatic SEO portal with 1,200+ financial calculators and compliance-approved YouTube explainer reels.",
+    "metric": "-52%",
+    "result": "Cost Per Funded Account",
+    "stat1": {
+      "val": "-52%",
+      "label": "Cost Per Account"
+    },
+    "stat2": {
+      "val": "28,400+",
+      "label": "Active Investors"
+    },
+    "stats": [
+      {
+        "val": "28,400+",
+        "label": "Active Retail Investors",
+        "highlight": true
+      },
+      {
+        "val": "-52%",
+        "label": "CAC Reduction",
+        "highlight": true
+      },
+      {
+        "val": "420K",
+        "label": "Monthly Organic Visits",
+        "highlight": true
+      },
+      {
+        "val": "180",
+        "label": "Days to Compound",
+        "highlight": false
+      }
+    ],
+    "year": "2024",
+    "services": [
+      "Programmatic SEO",
+      "YouTube Ads",
+      "Web Development"
+    ],
+    "heroImage": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1600&q=80",
+    "challenge": "Strict SEBI compliance restrictions and skyrocketing fintech search bidding costs made acquiring verified KYC customers unsustainably expensive.",
+    "challengeParagraphs": [
+      "Financial advisory keyword CPCs in Google Search were surging above ₹750 per click, making paid search acquisition unprofitable for early-stage fintech margins.",
+      "Strict financial compliance guidelines required 100% legal verification across every single advertisement, restricting traditional aggressive growth hacking."
+    ],
+    "obstacles": [
+      "Sky-high CPCs on Google financial search terms.",
+      "High KYC abandonment rate on mobile sign-up funnels.",
+      "Lack of educational financial calculators to capture search intent."
+    ],
+    "approachIntro": "We engineered an educational programmatic SEO portal with 1,200+ financial calculators and compliance-approved YouTube explainer reels that ranked for high-intent search terms.",
+    "approachSteps": [
+      {
+        "step": 1,
+        "title": "1,200+ Programmatic Financial Calculators",
+        "desc": "Built lightning-fast interactive SIP, tax, and equity return calculators that indexed on Page 1 for high-volume search queries."
+      },
+      {
+        "step": 2,
+        "title": "Educational Short-Form Explainers",
+        "desc": "Scripted animated explainers demystifying complex wealth concepts that funneled viewers into free portfolio audits."
+      },
+      {
+        "step": 3,
+        "title": "Streamlined Mobile KYC Journey",
+        "desc": "Redesigned registration UX with instant DigiLocker integrations, dropping KYC completion drop-offs by 41%."
+      }
+    ],
+    "creativeExecution": [
+      {
+        "image": "https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Interactive SIP Calculator",
+        "metric": "Visits: 420K/mo"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Wealth Compounding Visualizer",
+        "metric": "KYC Accounts: 28k+"
+      },
+      {
+        "image": "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
+        "title": "Compliance-Approved Explainer",
+        "metric": "CAC: -52%"
+      }
+    ],
+    "results": [
+      {
+        "label": "Active New Accounts",
+        "val": "28,400+"
+      },
+      {
+        "label": "Organic Search Visits",
+        "val": "420K / mo"
+      },
+      {
+        "label": "Blended CAC",
+        "val": "₹185 per KYC"
+      }
+    ],
+    "testimonial": {
+      "quote": "They didn't just run ads; they built an organic software asset that now brings us tens of thousands of free financial signups every single month.",
+      "author": "Aditya Roy",
+      "role": "Chief Growth Officer, Apex Wealth",
+      "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80"
+    }
+  }
+]

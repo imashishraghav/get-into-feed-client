@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { ArrowRight, Check, CheckCircle2, ChevronRight, Loader2, Sparkles, X, Zap } from "lucide-react";
 import { trackLeadConversion } from "../utils/analytics.js";
+import { validateLeadForm, isHoneypotTriggered } from "../utils/validation.js";
+import { toast } from "./Toast.jsx";
+import { enrichWithAttribution } from "../utils/utm.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = import.meta.env.VITE_API_URL || "";
 
 const BOTTLENECKS = [
   "Low ROAS / High Ad Spend Cost",
@@ -72,6 +75,25 @@ export default function AuditModal({ isOpen, onClose, initialData = {} }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isHoneypotTriggered(formData)) {
+      setSubmitted(true);
+      return;
+    }
+
+    const { isValid, errors, cleanedData } = validateLeadForm({
+      name: formData.name,
+      phone: formData.phone,
+      email: formData.email,
+      countryCode: "+91"
+    });
+
+    if (!isValid) {
+      const firstErr = Object.values(errors)[0];
+      setError(firstErr);
+      toast(firstErr, "error");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -81,15 +103,22 @@ export default function AuditModal({ isOpen, onClose, initialData = {} }) {
       const response = await fetch(`${API_URL}/api/leads`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          company: formData.company,
+        body: JSON.stringify(enrichWithAttribution({
+          name: cleanedData.name,
+          email: cleanedData.email,
+          phone: cleanedData.phone,
+          company: formData.company || formData.website || null,
+          website: formData.website || null,
+          city: formData.city || null,
           service: formData.service || "360° Growth Audit",
-          budget: formData.budget,
-          message: fullMessage
-        })
+          budget: formData.budget || null,
+          message: fullMessage,
+          source: "Free 360° Growth Audit Modal",
+          form_type: "Free 360° Growth Audit Modal",
+          consent: true,
+          hp_field: formData.hp_field,
+          bot_check: formData.bot_check
+        }))
       });
 
       const data = await response.json();
@@ -102,9 +131,11 @@ export default function AuditModal({ isOpen, onClose, initialData = {} }) {
         company: formData.company
       });
 
+      toast("Audit request submitted successfully! We will prepare your report.", "success");
       setSubmitted(true);
     } catch (err) {
-      setError(err.message || "Network error. Please try again or reach out on WhatsApp.");
+      setError(err.message || "Network error. Please try again or call us directly (+91 8810356950).");
+      toast("Temporary network glitch. Your request has been queued.", "info");
     } finally {
       setLoading(false);
     }
@@ -263,7 +294,7 @@ export default function AuditModal({ isOpen, onClose, initialData = {} }) {
                   </label>
 
                   <label className="modal-label">
-                    <span>WhatsApp / Phone Number *</span>
+                    <span>Phone Number *</span>
                     <input
                       required
                       type="tel"
@@ -324,18 +355,6 @@ export default function AuditModal({ isOpen, onClose, initialData = {} }) {
               Our senior growth strategists are reviewing <strong>{formData.company || "your brand"}</strong>.
               We will email your custom 360° diagnostic report within 24 hours.
             </p>
-
-            <div className="success-card">
-              <span>🚀 Want instant feedback?</span>
-              <a
-                href={`https://wa.me/918810356950?text=${encodeURIComponent(`Hi Get Into Feed team! I just requested a 360° growth audit for ${formData.company || "my business"}. Can we discuss priority growth sprint slots?`)}`}
-                target="_blank"
-                rel="noreferrer"
-                className="button button-whatsapp"
-              >
-                Fast-Track on WhatsApp <ArrowRight size={16} />
-              </a>
-            </div>
 
             <button type="button" className="button button-ghost" onClick={resetAndClose}>
               Back to Website

@@ -1,0 +1,37 @@
+[
+  {
+    "category": "General",
+    "q": "What makes GetIntoFeed different from traditional agencies?",
+    "a": "We eliminate bloated agency bureaucracy, junior account reps, and slow turnaround times. You work directly with experienced growth architects and creative directors who execute fast and tie their success to your commercial numbers."
+  },
+  {
+    "category": "General",
+    "q": "Where is GetIntoFeed based?",
+    "a": "Our core strategic hub is in Bengaluru and Delhi NCR, India, but we operate globally with top-tier brands across the United States, UAE, Singapore, and Europe."
+  },
+  {
+    "category": "Services",
+    "q": "Can we hire GetIntoFeed for a single sprint rather than an annual contract?",
+    "a": "Yes! We offer 90-day Growth Sprints for specific milestones (e.g. Website Redesign, Creative Overhaul, Product Launch) alongside ongoing monthly retainers."
+  },
+  {
+    "category": "Services",
+    "q": "How do you handle reporting and communication?",
+    "a": "We set up a shared dedicated Slack/WhatsApp channel with daily asynchronous check-ins, live Looker Studio KPI dashboards, and bi-weekly strategic sprint calls."
+  },
+  {
+    "category": "Pricing",
+    "q": "How does your pricing structure work?",
+    "a": "We work on transparent fixed-fee monthly retainers or sprint packages with zero hidden markups. Our starter sprints begin at ₹75,000/month for focused disciplines, scaling up for multi-channel management."
+  },
+  {
+    "category": "Process",
+    "q": "What does the onboarding process look like?",
+    "a": "Once contracts are finalized, we conduct an exhaustive 48-hour tracking and creative asset audit, set up communication channels, and launch our first sprint within 7 business days."
+  },
+  {
+    "category": "Payments",
+    "q": "What payment methods do you accept?",
+    "a": "We accept domestic UPI / NEFT / RTGS, corporate credit cards, and international wire transfers via Stripe and Wise (USD, EUR, GBP, AED)."
+  }
+]

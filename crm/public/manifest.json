@@ -1,0 +1,49 @@
+{
+  "name": "FeedOS — GetIntoFeed Agency OS",
+  "short_name": "FeedOS",
+  "description": "Internal CRM and client operating system for GetIntoFeed Studio (Delhi NCR)",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#F8F9FB",
+  "background_color": "#F8F9FB",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Quick Add Lead",
+      "short_name": "Add Lead",
+      "description": "Create a new inbound agency lead",
+      "url": "/?action=quick_add",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Lead Pipeline",
+      "short_name": "Leads",
+      "description": "Open active agency sales pipeline",
+      "url": "/?module=leads",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Unified Inbox",
+      "short_name": "Inbox",
+      "description": "Open WhatsApp & email conversations",
+      "url": "/?module=inbox",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Reels Studio",
+      "short_name": "Reels",
+      "description": "Open creative delivery & approval studio",
+      "url": "/?module=reels",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}

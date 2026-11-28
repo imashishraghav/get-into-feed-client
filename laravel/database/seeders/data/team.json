@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Sarvesh Bagla",
+    "role": "Founder & Chief Executive",
+    "bio": "12+ years pioneering performance-led brand transformations for high-growth enterprises across India and global markets.",
+    "expertise": [
+      "Growth Architecture",
+      "Brand Strategy",
+      "Capital Efficiency"
+    ],
+    "image": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+    "linkedin": "https://linkedin.com"
+  },
+  {
+    "name": "Ajaz Mirza",
+    "role": "VP, Digital Operations",
+    "bio": "Specializes in algorithmic scaling, large-scale media operations, and cross-channel campaign architecture.",
+    "expertise": [
+      "Performance Media",
+      "Attribution Systems",
+      "Operations Scaling"
+    ],
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+    "linkedin": "https://linkedin.com"
+  },
+  {
+    "name": "Ananya Sharma",
+    "role": "VP, Client Growth & MarTech",
+    "bio": "Connects creative strategy to hard commercial balance sheets, unlocking compounding pipeline across B2B and consumer brands.",
+    "expertise": [
+      "Retention Engineering",
+      "Enterprise B2B",
+      "Funnel CRO"
+    ],
+    "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80",
+    "linkedin": "https://linkedin.com"
+  },
+  {
+    "name": "Rohan Malhotra",
+    "role": "Head of Paid Performance Media",
+    "bio": "Ex-Meta agency partner managing over ₹5Cr+ in annual media spend with a relentless focus on unit economics.",
+    "expertise": [
+      "Meta & YouTube Ads",
+      "Data Science",
+      "CAPI Tracking"
+    ],
+    "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+    "linkedin": "https://linkedin.com"
+  },
+  {
+    "name": "Tanya Sen",
+    "role": "Executive Creative Director",
+    "bio": "Directs art direction, video cinematography, and visual hook engineering that stops thumbs dead in the feed.",
+    "expertise": [
+      "Creative Direction",
+      "Motion Graphics",
+      "Thumb-Stop Hooks"
+    ],
+    "image": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80",
+    "linkedin": "https://linkedin.com"
+  },
+  {
+    "name": "Priya Nair",
+    "role": "Lead Performance Architect",
+    "bio": "Full-stack engineer and CRO specialist turning slow legacy web presences into sub-second revenue machines.",
+    "expertise": [
+      "React & Next.js",
+      "Core Web Vitals",
+      "Programmatic SEO"
+    ],
+    "image": "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=600&q=80",
+    "linkedin": "https://linkedin.com"
+  }
+]

@@ -1,28 +1,82 @@
 # ==============================================================================
-# GET INTO FEED - BLUEHOST CPANEL APACHE CONFIGURATION (.htaccess)
+# GET INTO FEED - PRODUCTION APACHE / LITESPEED CONFIGURATION
 # ==============================================================================
+
+# Disable broken Passenger runner so LiteSpeed directly serves SPA & PHP API
+<IfModule mod_passenger.c>
+  PassengerEnabled off
+</IfModule>
+PassengerEnabled off
+
+DirectoryIndex agent_router.php index.html index.php
 
 # 1. ENABLE REWRITE ENGINE
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # FORCE HTTPS (SSL REDIRECTION)
+  # ── LITESPEED / APACHE BOT PROTECTION & RATE LIMIT BYPASS ──
+  RewriteCond %{HTTP_USER_AGENT} (GPTBot|ChatGPT|ClaudeBot|Claude-Web|anthropic-ai|PerplexityBot|Google-Extended|Applebot|Bytespider|CCBot|cohere-ai|Diffbot|FacebookBot|Meta-ExternalAgent|AI-Agent|AgentBot|Amazonbot|YouBot|OAI-SearchBot) [NC]
+  RewriteRule .* - [E=nothrottle:1,E=noabort:1]
+
+  # FORCE HTTPS (SSL & CLOUDFLARE PROXY AWARE)
   RewriteCond %{HTTPS} off
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteCond %{HTTP:CF-Visitor} !'"scheme":"https"'
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # REACT ROUTER SPA FALLBACK (PREVENT 404 ON REFRESH FOR /services, /about, etc.)
-  RewriteRule ^index\.html$ - [L]
+  # ── 0. ALLOW DIRECT PHP EXECUTION & AGENT DISCOVERY ──
+  RewriteRule ^\.well-known(/.*)?$ - [L]
+  RewriteRule ^(laravel_bridge|agent_router|test_bridge)\.php$ - [L]
+  RewriteCond %{REQUEST_FILENAME} -f
+  RewriteRule \.php$ - [L]
+
+  # ── 1. FILAMENT ADMIN CMS (LARAVEL 12) ──
+  RewriteRule ^admin(/.*)?$ laravel_bridge.php [QSA,L]
+
+  # ── 2. CANONICAL & BACKWARD-COMPATIBLE API (LARAVEL 12) ──
+  RewriteRule ^api(/.*)?$ laravel_bridge.php [QSA,L]
+
+  # ── 3. LIVEWIRE & FILAMENT ASSET/ENDPOINT ROUTING ──
+  RewriteRule ^livewire(/.*)?$ laravel_bridge.php [QSA,L]
+  RewriteRule ^filament(/.*)?$ laravel_bridge.php [QSA,L]
+
+  # ── 3.5. FORCE MODERN CLEAN NODE/REACT URLS (STRIP ALL .HTML EXTENSIONS) ──
+  RewriteCond %{THE_REQUEST} /index\.html[\s?] [NC]
+  RewriteRule ^index\.html$ / [R=301,L]
+  RewriteCond %{THE_REQUEST} /([^\s?]+)\.html[\s?] [NC]
+  RewriteRule ^(.*)\.html$ /$1 [R=301,L]
+
+  # ── 3.8 DECOMMISSIONED PERMANENT 301 REDIRECTS ──
+  RewriteRule ^(careers|faqs|faq|awards|recognition|audit|sitemap)(/.*)?$ / [R=301,L]
+  RewriteRule ^(get-quote|quote)(/.*)?$ /contact [R=301,L]
+
+  # ── 5. 301 PERMANENT REDIRECTS FOR SEO CANONICAL CONSOLIDATION ──
+  RewriteRule ^work/?$ /case-studies [R=301,L]
+  RewriteRule ^work/(.+)$ /case-studies/$1 [R=301,L]
+  RewriteRule ^feed-notes/?$ /blog [R=301,L]
+  RewriteRule ^feed-notes/(.+)$ /blog/$1 [R=301,L]
+  RewriteRule ^privacy-policy/?$ /privacy [R=301,L]
+  RewriteRule ^terms-and-conditions/?$ /terms [R=301,L]
+
+  # ── Direct blog slug aliases (from old site structure) ──
+  RewriteRule ^how-metas-advantage-plus-changes-ecommerce/?$ /blog/meta-advantage-plus-ecommerce-scaling [R=301,L]
+  RewriteRule ^how-metas-advantage-plus-algorithm-changes-ecommerce-scaling-in-2026/?$ /blog/meta-advantage-plus-ecommerce-scaling [R=301,L]
+  RewriteRule ^advantage-plus/?$ /blog/meta-advantage-plus-ecommerce-scaling [R=301,L]
+  RewriteRule ^meta-advantage-plus-ecommerce-scaling/?$ /blog/meta-advantage-plus-ecommerce-scaling [R=301,L]
+
+  # ── 6. AGENT-READY CONTENT NEGOTIATION, REAL 404 & SPA ROUTER ──
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  RewriteCond %{REQUEST_URI} !\.(php|css|js|png|jpe?g|gif|svg|ico|webp|avif|woff2?|ttf|eot|xml|txt|json)$ [NC]
+  RewriteRule . agent_router.php [QSA,L]
 </IfModule>
 
 # 2. ENABLE GZIP COMPRESSION FOR SPEED & CORE WEB VITALS
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
   AddOutputFilterByType DEFLATE application/javascript application/x-javascript application/json
-  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/svg+xml application/ld+json text/markdown application/manifest+json
 </IfModule>
 
 # 3. LEVERAGE BROWSER CACHING FOR STATIC ASSETS
@@ -32,16 +86,87 @@
   ExpiresByType image/jpeg "access plus 1 year"
   ExpiresByType image/gif "access plus 1 year"
   ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/avif "access plus 1 year"
   ExpiresByType image/svg+xml "access plus 1 year"
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
   ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/markdown "access plus 0 seconds"
+  ExpiresByType application/manifest+json "access plus 1 month"
+  ExpiresByType text/plain "access plus 1 week"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+  ExpiresByType application/font-woff2 "access plus 1 year"
 </IfModule>
 
-# 4. SECURITY HEADERS
+# 4. SECURITY & CACHE-CONTROL HEADERS
 <IfModule mod_headers.c>
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+  Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
   Header set X-XSS-Protection "1; mode=block"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Machine-Readable Agent-Ready Directives & RFC 8288 Discovery
+  Header set Content-Signal "search=yes, ai-train=no"
+  Header set Link "</llms.txt>; rel=\"alternate\"; type=\"text/markdown\", </.well-known/mcp/server-card.json>; rel=\"service-desc\"; type=\"application/json\""
+
+  # NEVER CACHE HTML (ALWAYS FETCH LATEST SPA BUNDLE)
+  <FilesMatch "\.(html|htm|php)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+
+  # CACHE HASHED ASSETS & FONTS AGGRESSIVELY
+  <FilesMatch "\.(js|css|woff2?|ttf|eot)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # CACHE IMAGES FOR 1 YEAR
+  <FilesMatch "\.(png|jpg|jpeg|gif|webp|avif|svg|ico)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+
+  # OPEN DISCOVERY FILES FOR AI AGENTS & APIS
+  <FilesMatch "\.(json|txt)$">
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+    Header set Access-Control-Allow-Headers "Accept, Content-Type, Authorization, User-Agent"
+  </FilesMatch>
+
+  # LLMS DISCOVERY FILES (MARKDOWN CONTENT-TYPE & IMMEDIATE FRESHNESS)
+  <FilesMatch "^(llms|llms-full)\.txt$">
+    Header set Content-Type "text/markdown; charset=UTF-8"
+    Header set Cache-Control "public, max-age=0, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+  </FilesMatch>
+
+  # NOINDEX ADMIN — PREVENT ADMIN CMS FROM BEING INDEXED
+  <If "%{REQUEST_URI} =~ m#^/admin#">
+    Header set X-Robots-Tag "noindex, nofollow"
+  </If>
 </IfModule>
+
+# 5. MODERN IMAGE FORMAT & DISCOVERY MIME TYPES
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType image/avif .avif
+  AddType text/markdown .md
+  AddType text/plain .txt
+  AddType application/json .json
+</IfModule>
+
+# 6. LITESPEED / APACHE AI AGENT EXEMPTION FROM THROTTLING & ABORT
+<IfModule mod_setenvif.c>
+  SetEnvIfNoCase User-Agent "(GPTBot|ChatGPT|ClaudeBot|Claude-Web|anthropic-ai|PerplexityBot|Google-Extended|Applebot|Bytespider|CCBot|cohere-ai|Diffbot|FacebookBot|Meta-ExternalAgent|AI-Agent|AgentBot|Amazonbot|YouBot|OAI-SearchBot)" nothrottle=1 noabort=1
+</IfModule>
+
+# Force Phusion Passenger OFF so LiteSpeed serves static React SPA & PHP API directly
+<IfModule mod_passenger.c>
+  PassengerEnabled off
+</IfModule>
+PassengerEnabled off

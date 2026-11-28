@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  # GetIntoFeed CRM & Delivery OS Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: getintofeed-feedos-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=${DATABASE_URL:-postgresql://feedos:change_me_in_env@postgres:5432/getintofeed_crm?schema=public}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379}
+      - APP_SECRET=${APP_SECRET:-replace_with_env_secret}
+      - APP_URL=${APP_URL:-http://localhost:3000}
+      # Zero-Credential Mock Mode (Defaults to true for 100% offline local running)
+      - USE_MOCK_ADAPTERS=true
+      - WHATSAPP_MOCK=true
+      - RAZORPAY_MOCK=true
+      - ESIGN_MOCK=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - feedos-network
+
+  # PostgreSQL 16 Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: getintofeed-postgres
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-feedos}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change_me_in_env}
+      - POSTGRES_DB=${POSTGRES_DB:-getintofeed_crm}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U feedos -d getintofeed_crm"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - feedos-network
+
+  # Redis 7 for Queues, Caching & 5-Min SLA Timers
+  redis:
+    image: redis:7-alpine
+    container_name: getintofeed-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - feedos-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  feedos-network:
+    driver: bridge
